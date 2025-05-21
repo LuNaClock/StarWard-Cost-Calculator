@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星の翼 コストオーバー時の耐久値計算ツール</title>
+    <!-- Google Fonts - Noto Sans JP をインポート -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基本スタイルとカラースキーム */
+        :root {
+            --primary-dark: #2C3E50; /* 濃い青みがかったグレー */
+            --primary-light: #3498DB; /* 明るい青 */
+            --accent-orange: #F39C12; /* アクセントのオレンジ */
+            --background-light: #F9F9F9; /* ごく薄いグレー */
+            --card-background: #FFFFFF; /* カード背景 */
+            --text-color: #333333; /* 主要テキスト */
+            --light-grey-border: #E0E0E0; /* 薄いボーダー */
+            --medium-grey: #BDC3C7; /* 中間グレー */
+            --soft-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* 柔らかい影 */
+            --transition-speed: 0.3s ease;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--background-light);
+            -webkit-font-smoothing: antialiased; /* フォントのアンチエイリアス */
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .description {
+            background-color: #EAF2F8; /* 少し明るい背景色 */
+            border-left: 5px solid var(--primary-light);
+            padding: 20px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            font-size: 1.05em;
+            color: #555;
+        }
+        .description p {
+            margin-bottom: 10px;
+        }
+        .description strong {
+            color: var(--primary-dark);
+        }
+
+        /* 検索・フィルタリング・ソート */
+        .controls-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        #characterSearch {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-grey-border);
+            border-radius: 6px;
+            font-size: 1em;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+            transition: border-color var(--transition-speed);
+        }
+        #characterSearch:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: space-between; /* 左右に配置 */
+            align-items: center;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-label {
+            font-weight: bold;
+            white-space: nowrap;
+            color: var(--primary-dark);
+            font-size: 0.95em;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-button {
+            background-color: var(--light-grey-border);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px; /* 角丸を強く */
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-size: 0.9em;
+            color: var(--text-color);
+            white-space: nowrap;
+            min-width: 60px; /* 最小幅を設定 */
+            text-align: center;
+        }
+        .filter-button.active {
+            background-color: var(--primary-light);
+            color: var(--card-background);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+        .filter-button:hover:not(.active) {
+            background-color: #CCD1D1; /* ホバー時の色 */
+            transform: translateY(-1px);
+        }
+        .filter-button.active:hover {
+            background-color: #2980B9; /* アクティブ時のホバー */
+        }
+
+        /* キャラクターグリッドとカード */
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .character-card {
+            background-color: var(--card-background);
+            border-radius: 10px;
+            box-shadow: var(--soft-shadow);
+            overflow: hidden;
+            transition: transform var(--transition-speed);
+            display: flex;
+            flex-direction: column;
+        }
+        .character-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .character-header {
+            background-color: var(--primary-dark);
+            color: var(--card-background);
+            padding: 12px 20px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .character-cost {
+            background-color: var(--accent-orange);
+            color: var(--card-background);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 700;
+        }
+        .character-body {
+            padding: 20px;
+            flex-grow: 1; /* コンテンツが伸びるように */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 上下配置 */
+        }
+        .character-image {
+            width: 90px;
+            height: 90px;
+            background-color: #ECF0F1; /* 薄いグレー */
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 45px;
+            color: #7F8C8D; /* 暗めのグレー */
+            font-weight: 700;
+            border: 2px solid var(--light-grey-border);
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            overflow: hidden; /* 画像がはみ出さないように */
+        }
+        /* 画像をコンテナにフィットさせるスタイル */
+        .character-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 画像の縦横比を保ちつつコンテナに収まるように */
+            border-radius: 50%; /* 親要素のボーダーに合わせる */
+        }
+        /* イニシャル表示（フォールバック）のスタイル */
+        .character-image span.initial {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .character-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1em;
+            padding: 5px 0;
+            border-bottom: 1px solid var(--light-grey-border);
+        }
+        .character-hp {
+            font-weight: 700;
+            color: #E74C3C; /* 赤系のHP色 */
+            font-size: 1.1em;
+        }
+
+        /* テーブルスタイル */
+        .cost-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .cost-table th, .cost-table td {
+            padding: 10px 8px;
+            text-align: center;
+        }
+        .cost-table th {
+            background-color: var(--medium-grey);
+            color: var(--card-background);
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            white-space: nowrap; /* ヘッダーの改行を防ぐ */
+        }
+        .cost-table td {
+            border-top: 1px solid var(--light-grey-border);
+            color: var(--text-color);
+        }
+        .cost-table tr:nth-child(even) {
+            background-color: #FDFDFD; /* 薄いストライプ */
+        }
+        .cost-table tr:last-child td {
+            border-bottom: none; /* 最後の行のボーダーを削除 */
+        }
+
+        /* フッターのスタイルを追加 */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px 0;
+            border-top: 1px solid var(--light-grey-border);
+            color: var(--medium-grey);
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+        footer a {
+            color: var(--medium-grey);
+            text-decoration: none;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .description {
+                padding: 15px;
+            }
+            .filter-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .filter-group {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .filter-buttons {
+                width: 100%;
+                justify-content: space-around; /* 小画面で均等配置 */
+            }
+            .filter-button {
+                flex-grow: 1; /* ボタンが伸びるように */
+            }
+            .character-grid {
+                grid-template-columns: 1fr; /* 1列表示 */
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .character-image {
+                width: 70px;
+                height: 70px;
+                font-size: 35px;
+            }
+            .character-stats {
+                font-size: 0.9em;
+            }
+            .cost-table {
+                font-size: 0.8em;
+            }
+            .cost-table th, .cost-table td {
+                padding: 8px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>星の翼 コストオーバー時の耐久値計算ツール</h1>
+        
+        <div class="description">
+            <p>このツールは、ゲーム「星の翼」でコストオーバーが起こって再出撃した際の耐久値を計算します。</p>
+            <p>計算式: <strong>再出撃時の耐久値 = 本来の耐久値 × (残りコスト ÷ キャラクターのコスト)</strong></p>
+            <p>各キャラクターのカードには、残りコストごとの再出撃時耐久値が表示されています。</p>
+        </div>
+        
+        <div class="controls-container">
+            <div class="search-container">
+                <input type="text" id="characterSearch" placeholder="キャラクター名で検索...">
+            </div>
+            
+            <div class="filter-container">
+                <div class="filter-group">
+                    <span class="filter-label">コスト:</span>
+                    <div class="filter-buttons" id="costFilter">
+                        <button class="filter-button active" data-cost="all">全て</button>
+                        <button class="filter-button" data-cost="1.5">1.5</button>
+                        <button class="filter-button" data-cost="2">2.0</button>
+                        <button class="filter-button" data-cost="2.5">2.5</button>
+                        <button class="filter-button" data-cost="3">3.0</button>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <span class="filter-label">並び替え:</span>
+                    <div class="filter-buttons" id="sortFilter">
+                        <button class="filter-button active" data-sort="name">名前順</button>
+                        <button class="filter-button" data-sort="hp-desc">耐久値↓</button>
+                        <button class="filter-button" data-sort="hp-asc">耐久値↑</button>
+                        <button class="filter-button" data-sort="cost-desc">コスト↓</button>
+                        <button class="filter-button" data-sort="cost-asc">コスト↑</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="character-grid" id="characterGrid">
+            <!-- キャラクターカードがここに動的に生成されます -->
+        </div>
+    </main>
+
+    <script>
+        // CSVデータを読み込む (今回はJS配列として直接記述)
+        // 各キャラクターに 'image' プロパティを追加しました。
+        // 'assets/character_icons/' は仮のパスです。
+        // 実際の画像ファイルの場所とファイル名に合わせて変更してください。
+        // 'image' プロパティが指定されていない場合、イニシャルが表示されます。
+        const characterData = [
+            {name: "グリフィン", hp: 3020, cost: 3, image: "assets/character_icons/griffin.png"},
+            {name: "キャヴァリー", hp: 3003, cost: 3, image: "assets/character_icons/cavalry.png"},
+            {name: "ケルビム", hp: 2953, cost: 3, image: "assets/character_icons/cherubim.png"},
+            {name: "ラジエル", hp: 2953, cost: 3, image: "assets/character_icons/rasiel.png"},
+            {name: "影", hp: 2909, cost: 3, image: "assets/character_icons/shadow.png"},
+            {name: "ロタ", hp: 2892, cost: 3, image: "assets/character_icons/rota.png"},
+            {name: "ヒカリ", hp: 2886, cost: 3, image: "assets/character_icons/hikari.png"},
+            {name: "シュウウ", hp: 2886, cost: 3, image: "assets/character_icons/qiuyu.png"},
+            {name: "イーザー", hp: 2886, cost: 3, image: "assets/character_icons/ether.png"},
+            {name: "ライン", hp: 2850, cost: 3, image: "assets/character_icons/rhine.png"},
+            {name: "エルフィン", hp: 2808, cost: 3, image: "assets/character_icons/elfin.png"},
+            {name: "シャオリン", hp: 2772, cost: 2.5, image: "assets/character_icons/xiaoling.png"},
+            {name: "アリス", hp: 2772, cost: 2.5, image: "assets/character_icons/aliz.png"},
+            {name: "スズラン", hp: 2723, cost: 3, image: "assets/character_icons/convallaria.png"},
+            {name: "轟雷改", hp: 2669, cost: 2.5, image: "assets/character_icons/gourai-kai.png"},
+            {name: "フリード", hp: 2664, cost: 2.5, image: "assets/character_icons/ffreedo.png"},
+            {name: "スカイセーバー", hp: 2664, cost: 2.5, image: "assets/character_icons/skysaber.png"},
+            {name: "十八号", hp: 2664, cost: 2.5, image: "assets/character_icons/XVIII.png"},
+            {name: "カゼ", hp: 2592, cost: 2.5, image: "assets/character_icons/kaze.png"},
+            {name: "シャープ", hp: 2592, cost: 2.5, image: "assets/character_icons/sharp.png"},
+            {name: "ヴァルキア", hp: 2592, cost: 2.5, image: "assets/character_icons/valkia.png"},
+            {name: "稲", hp: 2556, cost: 2.5, image: "assets/character_icons/ine.png"},
+            {name: "エヴァ", hp: 2550, cost: 2.5, image: "assets/character_icons/iva.png"},
+            {name: "アンジェリス", hp: 2500, cost: 2.5, image: "assets/character_icons/angelis.png"},
+            {name: "シグナス", hp: 2492, cost: 3, image: "assets/character_icons/cygnus.png"},
+            {name: "パラス", hp: 2448, cost: 2, image: "assets/character_icons/pallas.png"},
+            {name: "ヴァーチェ", hp: 2348, cost: 2, image: "assets/character_icons/virtue.png"},
+            {name: "ベータ", hp: 2340, cost: 2, image: "assets/character_icons/beta.png"},
+            {name: "セラフィム", hp: 2340, cost: 2, image: "assets/character_icons/seraphim.png"},
+            {name: "咲迦", hp: 2298, cost: 2, image: "assets/character_icons/emika.png"},
+            {name: "スコーピオン", hp: 2268, cost: 2, image: "assets/character_icons/scorpion.png"},
+            {name: "チンニ", hp: 2268, cost: 2, image: "assets/character_icons/qingni.png"},
+            {name: "アイーダ", hp: 2240, cost: 2, image: "assets/character_icons/aida.png"},
+            {name: "ザハロワ", hp: 2196, cost: 2, image: "assets/character_icons/zakharova.png"},
+            {name: "デュカリオン", hp: 2168, cost: 2, image: "assets/character_icons/deucalion.png"},
+            {name: "ヒビキ", hp: 2168, cost: 2, image: "assets/character_icons/hibiki.png"},
+            {name: "ダークスター", hp: 2155, cost: 2, image: "assets/character_icons/darkstar.png"},
+            {name: "スティレット", hp: 2155, cost: 2, image: "assets/character_icons/stylet.png"},
+            {name: "ローランド", hp: 2088, cost: 1.5, image: "assets/character_icons/roland.png"},
+            {name: "カタリナ", hp: 2080, cost: 1.5, image: "assets/character_icons/katerina.png"},
+            {name: "オーキッド", hp: 1980, cost: 1.5, image: "assets/character_icons/orchid.png"},
+            {name: "ヤミン", hp: 1980, cost: 1.5, image: "assets/character_icons/yammyn.png"},
+            {name: "スノーウォル", hp: 1872, cost: 1.5, image: "assets/character_icons/snowowl.png"}
+        ];
+        
+        // コストごとに表示する残りコストの配列
+        const costRemainingMap = {
+            3.0: [0.5, 1.0, 1.5],
+            2.5: [0.5, 1.0, 1.5, 2.0],
+            2.0: [1.0, 1.5], // 変更済み
+            1.5: [0.5, 1.0]  // 変更済み
+        };
+        
+        // キャラクターカードを生成する関数
+        function generateCharacterCards(characters) {
+            const grid = document.getElementById('characterGrid');
+            grid.innerHTML = ''; // グリッドをクリア
+
+            if (characters.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: #777; font-size: 1.2em;">該当するキャラクターが見つかりませんでした。</p>';
+                return;
+            }
+            
+            characters.forEach(character => {
+                const card = document.createElement('div');
+                card.className = 'character-card';
+                
+                // キャラクターのコストに応じた残りコスト配列を取得
+                const applicableRemainingCosts = costRemainingMap[character.cost] || [];
+                
+                // 再出撃時の耐久値を計算
+                const costOverHPs = applicableRemainingCosts.map(remainingCost => {
+                    // 残りコストがキャラクターのコスト以上なら、本来の耐久値をそのまま返す
+                    // 現状の計算式では (remainingCost / character.cost) が1以上になるため、
+                    // 特にこの条件分岐は不要ですが、念のためロジックを明確に保ちます。
+                    if (remainingCost >= character.cost) {
+                        return character.hp;
+                    }
+                    return Math.round(character.hp * (remainingCost / character.cost));
+                });
+
+                // キャラクター画像またはイニシャル表示のHTMLを生成
+                const characterImageHtml = character.image 
+                    ? `<img src="${character.image}" alt="${character.name}" onerror="this.onerror=null; this.parentNode.innerHTML='<span class=\'initial\'>${character.name.charAt(0)}</span>';">`
+                    : `<span class="initial">${character.name.charAt(0)}</span>`;
+                
+                card.innerHTML = `
+                    <div class="character-header">
+                        <span>${character.name}</span>
+                        <span class="character-cost">コスト: ${character.cost.toFixed(1)}</span>
+                    </div>
+                    <div class="character-body">
+                        <div class="character-image">${characterImageHtml}</div>
+                        <div class="character-stats">
+                            <span>本来の耐久値:</span>
+                            <span class="character-hp">${character.hp.toLocaleString()}</span>
+                        </div>
+                        <table class="cost-table">
+                            <thead>
+                                <tr>
+                                    <th>残りコスト</th>
+                                    ${applicableRemainingCosts.map(cost => `<th>${cost.toFixed(1)}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>再出撃時耐久値</td>
+                                    ${costOverHPs.map(hp => `<td>${hp.toLocaleString()}</td>`).join('')}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        // 検索とフィルタリングを適用する関数
+        function applyFiltersAndSearch() {
+            const searchTerm = document.getElementById('characterSearch').value.toLowerCase();
+            const activeCostFilter = document.querySelector('#costFilter .active').dataset.cost;
+            const activeSortFilter = document.querySelector('#sortFilter .active').dataset.sort;
+            
+            let filteredCharacters = [...characterData];
+            
+            // 検索フィルタを適用
+            if (searchTerm) {
+                filteredCharacters = filteredCharacters.filter(character => 
+                    character.name.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // コストフィルタを適用
+            if (activeCostFilter !== 'all') {
+                const costValue = parseFloat(activeCostFilter);
+                filteredCharacters = filteredCharacters.filter(character => 
+                    character.cost === costValue
+                );
+            }
+            
+            // ソートを適用
+            switch (activeSortFilter) {
+                case 'name':
+                    filteredCharacters.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'hp-desc':
+                    filteredCharacters.sort((a, b) => b.hp - a.hp);
+                    break;
+                case 'hp-asc':
+                    filteredCharacters.sort((a, b) => a.hp - b.hp);
+                    break;
+                case 'cost-desc':
+                    filteredCharacters.sort((a, b) => b.cost - a.cost);
+                    break;
+                case 'cost-asc':
+                    filteredCharacters.sort((a, b) => a.cost - b.cost);
+                    break;
+            }
+            
+            generateCharacterCards(filteredCharacters);
+        }
+        
+        // イベントリスナーを設定
+        document.addEventListener('DOMContentLoaded', () => {
+            // 検索ボックスのイベントリスナー
+            document.getElementById('characterSearch').addEventListener('input', applyFiltersAndSearch);
+            
+            // コストフィルターのイベントリスナー
+            document.querySelectorAll('#costFilter .filter-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('#costFilter .filter-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    button.classList.add('active');
+                    applyFiltersAndSearch();
+                });
+            });
+            
+            // ソートフィルターのイベントリスナー
+            document.querySelectorAll('#sortFilter .filter-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('#sortFilter .filter-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    button.classList.add('active');
+                    applyFiltersAndSearch();
+                });
+            });
+            
+            // 初期表示
+            applyFiltersAndSearch();
+        });
+    </script>
+</body>
+<!-- ここにフッターを追加します -->
+<footer>
+    <p>© 2025 May 22, Lu:Na:Clock</p>
+</footer>
+</html>
