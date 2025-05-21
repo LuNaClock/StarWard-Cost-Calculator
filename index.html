@@ -1,342 +1,994 @@
+--- START OF FILE index.html ---
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>星の翼 コストオーバー時の耐久値計算ツール</title>
-    <!-- Google Fonts - Noto Sans JP をインポート -->
+    <!-- Google Fonts - Noto Sans JP (標準用) をインポート -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts - SF的なフォントをインポート -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
+    <!-- Font Awesome (アイコン用) をインポート -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* 基本スタイルとカラースキーム */
         :root {
-            --primary-dark: #2C3E50; /* 濃い青みがかったグレー */
-            --primary-light: #3498DB; /* 明るい青 */
-            --accent-orange: #F39C12; /* アクセントのオレンジ */
-            --background-light: #F9F9F9; /* ごく薄いグレー */
-            --card-background: #FFFFFF; /* カード背景 */
-            --text-color: #333333; /* 主要テキスト */
-            --light-grey-border: #E0E0E0; /* 薄いボーダー */
-            --medium-grey: #BDC3C7; /* 中間グレー */
-            --soft-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* 柔らかい影 */
-            --transition-speed: 0.3s ease;
+            /* SF感を意識したカラーパレット */
+            --primary-dark: #1A2C3E; /* 濃いネイビー/チャコール */
+            --primary-light: #00BFFF; /* 明るいスカイブルー (アクセント) */
+            --accent-orange: #FFD700; /* ゴールドっぽいイエロー (アクセント) */
+            --background-light: #F0F5F9; /* ごく薄いライトブルーグレー */
+            --card-background: #FFFFFF;
+            --text-color: #333333;
+            --light-grey-border: #CED4DA; /* 明るいグレー */
+            --medium-grey: #6C757D; /* 中間グレー */
+            --soft-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* 影を強調 */
+            --transition-speed: 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* よりSF的なイージング */
+
+            /* HPバーの色 (グラデーション用) */
+            --hp-low: #dc3545; /* 赤 */
+            --hp-medium: #ffc107; /* 黄 */
+            --hp-high: #28a745; /* 緑 */
+            --hp-pulse-color: rgba(220, 53, 69, 0.6); /* 低HP時の脈動色 */
+
+            /* SF演出用追加カラー */
+            --neon-glow: #00EFFF; /* ネオンブルー */
+            --neon-glow-strong: #00BFFF; /* より強いネオンブルー */
+            --glitch-color1: #FF00FF; /* マゼンタ */
+            --glitch-color2: #00FFFF; /* シアン */
+            --grid-line-color: rgba(0, 191, 255, 0.08); /* グリッド線の色 */
+            --loading-spinner-color: #00BFFF;
         }
 
+        /* ----- 基本スタイル ----- */
         body {
             font-family: 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
+            line-height: 1.7; /* 読みやすく */
             color: var(--text-color);
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: var(--background-light);
-            -webkit-font-smoothing: antialiased; /* フォントのアンチエイリアス */
+            padding: 25px; /* パディングを増やす */
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #102030 100%); /* 暗めのSF背景 */
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; /* 横スクロール防止 */
+            position: relative;
+            min-height: 100vh; /* 最小高さを確保 */
+            z-index: 1; /* グリッドやノイズの上にコンテンツを配置 */
+            /* 背景アニメーションを継続 */
+            background-size: 200% 200%;
+            animation: backgroundShift 60s ease-in-out infinite alternate; 
+        }
+
+        @keyframes backgroundShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* 背景の微細なグリッドパターンとノイズ */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body::before { /* グリッド */
+            background-image:
+                linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+            background-size: 50px 50px; /* グリッドのサイズ */
+            opacity: 0.2;
+            animation: gridPan 120s linear infinite;
+        }
+
+        @keyframes gridPan {
+            from { background-position: 0 0; }
+            to { background-position: 5000px 5000px; } /* 非常にゆっくり移動 */
+        }
+
+        body::after { /* ノイズオーバレイ */
+            /* base64エンコードされたSVGノイズ */
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB2aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGZpbHRlciBpZD0iaCI+PGZlVHVyYmVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9Ii44LjgiIG51b2N0YXZlcz0iMSIgc2VhbU9jdGF2ZXM9IjIiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsZXI9InVybCgjaCkiIG9wYWNpdHk9IjAuMDUiLz48L3N2Zz4=');
+            background-size: 200px;
+            opacity: 0.1;
         }
 
         h1 {
+            font-family: 'Orbitron', sans-serif; /* SFフォント適用 */
+            color: var(--card-background); /* 背景に合わせて白色に */
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 3.2em; /* さらに大きく */
+            font-weight: 700;
+            letter-spacing: 3px; /* 文字間を広げる */
+            text-shadow: 0 0 15px rgba(0, 191, 255, 0.6); /* 常にわずかに光る */
+            position: relative;
+            z-index: 10; /* 最前面に */
+            display: inline-block; /* text-shadowアニメーションのため */
+            padding: 5px 0;
+        }
+
+        /* ----- H1タイトル SF演出 (初期ロード時のみ) ----- */
+        .title-sf-effect {
+            animation: neonGlowInitial 1.5s ease-in-out forwards,
+                       glitchTextInitial 2s linear forwards;
+        }
+
+        @keyframes neonGlowInitial {
+            0% {
+                text-shadow:
+                    0 0 5px var(--neon-glow),
+                    0 0 10px var(--neon-glow),
+                    0 0 20px var(--neon-glow),
+                    0 0 40px rgba(0, 239, 255, 0.4);
+                color: var(--primary-light); /* 初期は強く発光 */
+            }
+            100% {
+                text-shadow: 0 0 15px rgba(0, 191, 255, 0.6); /* 落ち着いた輝きに */
+                color: var(--card-background);
+            }
+        }
+
+        @keyframes glitchTextInitial {
+            0% { transform: translate(0); text-shadow: none; }
+            5% { transform: translate(-2px, 2px); text-shadow: 2px 0 0 var(--glitch-color1); }
+            10% { transform: translate(2px, -2px); text-shadow: -2px 0 0 var(--glitch-color2); }
+            15% { transform: translate(-1px, 1px); text-shadow: 1px 0 0 var(--glitch-color1); }
+            20% { transform: translate(1px, -1px); text-shadow: -1px 0 0 var(--glitch-color2); }
+            21% { transform: translate(0); text-shadow: none; }
+            70% { transform: translate(0); text-shadow: none; }
+            75% { transform: translate(3px, -3px); text-shadow: -3px 0 0 var(--glitch-color2); }
+            80% { transform: translate(-3px, 3px); text-shadow: 3px 0 0 var(--glitch-color1); }
+            85% { transform: translate(2px, -2px); text-shadow: -2px 0 0 var(--glitch-color2); }
+            90% { transform: translate(-2px, 2px); text-shadow: 2px 0 0 var(--glitch-color1); }
+            91% { transform: translate(0); text-shadow: none; }
+            100% { transform: translate(0); text-shadow: none; }
+        }
+
+        /* ----- 使い方ガイド（旧description）のスタイル ----- */
+        .usage-guide-container {
+            background-color: var(--card-background);
+            padding: 30px;
+            margin-bottom: 50px;
+            border-radius: 12px;
+            box-shadow: var(--soft-shadow);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            position: relative;
+            overflow: hidden; /* 背景アニメーション用 */
+            border: 1px solid rgba(0, 191, 255, 0.2);
+        }
+        .usage-guide-container::before { /* 薄いグリッド背景 */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(to right, rgba(0, 191, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 191, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.5;
+            z-index: 0;
+        }
+        .usage-guide-container:hover {
+            transform: translateY(-8px); /* ホバー時の浮遊感を強調 */
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+            border-color: var(--primary-light);
+        }
+        .usage-guide-container h2 {
+            color: var(--primary-dark);
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1;
+        }
+        .usage-guide-container .guide-intro {
+            font-size: 1.15em;
+            color: #555;
+            margin-bottom: 35px;
+            text-align: center;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+            /* 修正点: 序文も読みやすい行長に制限 */
+            max-width: 70ch;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ----- アコーディオンのスタイル ----- */
+        .accordion {
+            border: 1px solid var(--primary-light); /* SF感のあるボーダー */
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #F8FCFF;
+            box-shadow: inset 0 0 15px rgba(0, 191, 255, 0.1);
+        }
+        .accordion-item {
+            border-bottom: 1px solid rgba(0, 191, 255, 0.1);
+        }
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+        .accordion-header {
+            background-color: var(--background-light);
+            color: var(--primary-dark);
+            padding: 18px 25px; /* パディングを増やす */
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            cursor: crosshair; /* SFカーソル */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.2em; /* さらに大きく */
+            font-weight: 700;
+            transition: all var(--transition-speed);
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+        .accordion-header::before { /* ホバー・アクティブ時の光るボーダー */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 0 0px var(--neon-glow-strong);
+            transition: box-shadow 0.3s ease-out;
+            z-index: -1;
+        }
+        .accordion-header:hover {
+            background-color: #E6EEF4;
+            color: var(--primary-light);
+            box-shadow: inset 0 0 15px rgba(0, 191, 255, 0.2);
+        }
+        .accordion-header:hover::before {
+            box-shadow: 0 0 15px 3px var(--neon-glow-strong);
+        }
+        .accordion-header.active {
+            background-color: var(--primary-light);
+            color: var(--card-background);
+            box-shadow: inset 0 0 25px rgba(0, 191, 255, 0.5);
+        }
+        .accordion-header.active::before {
+            box-shadow: 0 0 20px 5px var(--neon-glow-strong);
+        }
+        .accordion-header span {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .accordion-header i:first-child {
+            font-size: 1.4em;
+            color: var(--accent-orange);
+            transition: color var(--transition-speed);
+        }
+        .accordion-header.active i:first-child {
+            color: var(--card-background);
+        }
+        .accordion-icon {
+            font-size: 1.1em;
+            transition: transform var(--transition-speed);
+        }
+        .accordion-header.active .accordion-icon {
+            transform: rotate(180deg) scale(1.1); /* わずかに拡大 */
+        }
+
+        .accordion-content {
+            background-color: var(--card-background);
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            color: #555;
+            font-size: 1.05em;
+            opacity: 0;
+            transform: scaleY(0.8); /* 初期状態で縮小 */
+            transform-origin: top;
+        }
+        .accordion-content.show {
+            max-height: 500px; /* 十分な高さに設定 */
+            padding: 25px;
+            opacity: 1;
+            transform: scaleY(1); /* 表示時に元のサイズに */
+        }
+        .accordion-content p {
+            /* 修正点: 横に間延びした印象を軽減するためmax-widthを調整 */
+            max-width: 70ch; /* 読みやすい行長に制限 */
+            margin: 0 auto 12px; /* 中央揃えにして上下マージン */
+            line-height: 1.9; /* 行の高さを少し広げて読みやすく */
+            /* 修正点: フォントを縦方向にわずかに伸ばす */
+            transform: scaleY(1.03);
+            transform-origin: top center; /* スケール原点を設定 */
+        }
+        .accordion-content p:last-child {
+            margin-bottom: 0;
+        }
+        .accordion-content .formula {
+            background-color: #F0F8FF;
+            border-left: 6px solid var(--accent-orange);
+            padding: 15px 20px;
+            margin: 20px auto; /* 中央揃えに */
+            max-width: 650px; /* 計算式ブロックの最大幅も制限 */
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: 700;
             color: var(--primary-dark);
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            font-family: 'Rajdhani', sans-serif; /* SFフォント適用 */
         }
-
-        .description {
-            background-color: #EAF2F8; /* 少し明るい背景色 */
-            border-left: 5px solid var(--primary-light);
-            padding: 20px;
-            margin-bottom: 40px;
-            border-radius: 8px;
-            font-size: 1.05em;
-            color: #555;
-        }
-        .description p {
-            margin-bottom: 10px;
-        }
-        .description strong {
-            color: var(--primary-dark);
-        }
-
-        /* 検索・フィルタリング・ソート */
-        .controls-container {
-            margin-bottom: 30px;
+        .accordion-content .tip {
+            font-style: italic;
+            color: var(--medium-grey);
+            font-size: 0.98em;
             display: flex;
-            flex-direction: column;
-            gap: 20px;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 25px;
+            background-color: #FDFCDC;
+            border-radius: 8px;
+            padding: 12px 18px;
+            border: 1px solid #FFECB3;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            /* 修正点: tipブロックも中央揃えと最大幅を設定 */
+            max-width: 70ch;
+            margin-left: auto;
+            margin-right: auto;
         }
         
+        /* ----- 検索・フィルタリング・ソート ----- */
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* 間隔を広げる */
+            margin-bottom: 50px;
+        }
+        
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        .search-icon {
+            position: absolute;
+            left: 20px; /* パディングに合わせて調整 */
+            color: var(--primary-light);
+            font-size: 1.3em;
+            pointer-events: none;
+            /* animation: pulseIcon 1.8s ease-in-out infinite alternate; */ /* JSでアニメーション制御するためCSSアニメーションは削除 */
+            text-shadow: 0 0 8px rgba(0, 191, 255, 0.6);
+        }
+        /* @keyframes pulseIcon はJSで制御するため削除 */
+
         #characterSearch {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--light-grey-border);
-            border-radius: 6px;
-            font-size: 1em;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-            transition: border-color var(--transition-speed);
+            padding: 16px 20px 16px 60px; /* アイコン分のスペースを確保 */
+            border: 2px solid var(--light-grey-border); /* ボーダーを太く */
+            border-radius: 10px;
+            font-size: 1.1em;
+            background-color: var(--card-background);
+            /* transition: border-color var(--transition-speed), box-shadow var(--transition-speed); */ /* フォーカス時のbox-shadowはJSで制御するためtransitionとbox-shadowの初期値は削除 */
+            box-sizing: border-box;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.08); /* 通常時のshadow */
         }
         #characterSearch:focus {
             border-color: var(--primary-light);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            /* box-shadowはJSでアニメーションするためここでの定義は不要 */
+            /* box-shadow: 0 0 0 6px rgba(0, 191, 255, 0.4), inset 0 1px 8px rgba(0, 191, 255, 0.2); */
+        }
+        /* 検索結果なしメッセージ */
+        .no-results-message {
+            text-align: center;
+            color: #E74C3C;
+            font-size: 1.3em;
+            padding: 30px;
+            opacity: 0; /* 初期非表示 */
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+        }
+        @keyframes glitchDisplay {
+            0% { transform: translate(0); opacity: 0; }
+            10% { transform: translate(-2px, 2px); text-shadow: 2px 0 0 var(--glitch-color1); opacity: 1; }
+            20% { transform: translate(2px, -2px); text-shadow: -2px 0 0 var(--glitch-color2); }
+            30% { transform: translate(-1px, 1px); text-shadow: 1px 0 0 var(--glitch-color1); }
+            40% { transform: translate(1px, -1px); text-shadow: -1px 0 0 var(--glitch-color2); opacity: 1; }
+            50% { transform: translate(0); text-shadow: none; opacity: 1; }
+            100% { transform: translate(0); text-shadow: none; opacity: 1; }
         }
 
         .filter-container {
             display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: space-between; /* 左右に配置 */
-            align-items: center;
+            flex-direction: column; /* 修正点: 常に縦並びにする */
+            gap: 30px;
+            /* flex-wrap: wrap; */ /* 不要 */
+            align-items: flex-start; /* 修正点: 常に左寄せ */
+            /* justify-content: space-between; */ /* 不要 */
         }
         .filter-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             flex-wrap: wrap;
+            width: 100%; /* 修正点: グループが全幅を占めるようにする */
+            justify-content: flex-start; /* 修正点: ボタンを左寄せ */
         }
         .filter-label {
             font-weight: bold;
             white-space: nowrap;
-            color: var(--primary-dark);
-            font-size: 0.95em;
+            color: var(--card-background); /* 白に変更済み。現在の背景色ではこれが最適 */
+            font-size: 1.05em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 5px rgba(0, 191, 255, 0.4); /* わずかなグローを追加 */
         }
+        .filter-label i {
+            color: var(--accent-orange);
+            font-size: 1.2em;
+            animation: bounceIcon 1.5s ease-in-out infinite alternate;
+        }
+        .filter-label:nth-of-type(2) i {
+            animation-delay: 0.15s; /* アイコンのバウンスに遅延 */
+        }
+        @keyframes bounceIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
         .filter-buttons {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             flex-wrap: wrap;
         }
         .filter-button {
             background-color: var(--light-grey-border);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px; /* 角丸を強く */
-            cursor: pointer;
+            border: 2px solid var(--light-grey-border);
+            padding: 12px 20px; /* パディングを増やす */
+            border-radius: 30px; /* 角丸を大きく */
+            cursor: crosshair; /* SFカーソル */
             transition: all var(--transition-speed);
-            font-size: 0.9em;
+            font-size: 1em;
             color: var(--text-color);
             white-space: nowrap;
-            min-width: 60px; /* 最小幅を設定 */
+            min-width: 80px; /* 最小幅を確保 */
             text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12); /* 影を強調 */
+            position: relative;
+            overflow: hidden; /* 波紋エフェクト用 */
         }
+        .filter-button i { /* 動的に追加されるアイコンのスタイル */
+            margin-left: 8px; /* テキストとアイコンの間隔 */
+            font-size: 0.9em; /* テキストに合わせたサイズ */
+            color: var(--text-color); /* デフォルト色 */
+            transition: color 0.3s ease;
+        }
+        .filter-button.active i {
+            color: var(--card-background); /* アクティブ時の色 */
+        }
+
+        .filter-button::after { /* 波紋エフェクト */
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1);
+            transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+            z-index: 1; /* ボタン内容の上に表示 */
+        }
+        .filter-button:active::after {
+            transform: translate(-50%, -50%) scale(20);
+            opacity: 1;
+            transition: 0s; /* クリック時に即時表示 */
+        }
+        .filter-button::before { /* 光沢アニメーション */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: skewX(-20deg);
+            transition: all 0.5s ease;
+            z-index: 1; /* ボタン内容の上に表示 */
+        }
+        .filter-button:hover::before {
+            left: 100%;
+        }
+
         .filter-button.active {
             background-color: var(--primary-light);
             color: var(--card-background);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 5px 15px rgba(0, 191, 255, 0.5); /* アクティブ時の影を強調 */
+            border-color: var(--primary-light);
+            font-weight: bold;
+            background-image: linear-gradient(45deg, rgba(0, 191, 255, 0.8) 0%, rgba(0, 150, 200, 0.8) 100%);
+            background-size: 200% 200%;
+            animation: activeButtonGlow 4s ease-in-out infinite alternate;
         }
-        .filter-button:hover:not(.active) {
-            background-color: #CCD1D1; /* ホバー時の色 */
-            transform: translateY(-1px);
-        }
-        .filter-button.active:hover {
-            background-color: #2980B9; /* アクティブ時のホバー */
+        @keyframes activeButtonGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
-        /* キャラクターグリッドとカード */
+        .filter-button:hover:not(.active) {
+            background-color: #E6EEF4;
+            transform: translateY(-5px); /* 浮遊感を強調 */
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+            border-color: var(--medium-grey);
+        }
+        .filter-button.active:hover {
+            background-color: #008DCC;
+            transform: translateY(-5px);
+        }
+        .filter-button:active {
+            transform: translateY(2px) scale(0.97); /* 押下感を強調 */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border-color: var(--primary-light);
+        }
+
+        /* ----- キャラクターグリッドとカード ----- */
         .character-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* さらに大きく */
+            gap: 35px; /* 間隔を広げる */
+            margin-top: 50px;
         }
         .character-card {
             background-color: var(--card-background);
-            border-radius: 10px;
+            border-radius: 15px; /* 角丸を大きく */
             box-shadow: var(--soft-shadow);
             overflow: hidden;
-            transition: transform var(--transition-speed);
             display: flex;
             flex-direction: column;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            position: relative;
+            border: 2px solid rgba(0, 191, 255, 0.1);
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,245,249,0.9)); /* 薄いグラデーション */
         }
+        .character-card::before { /* ボーダーに沿って光るエフェクト */
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 15px;
+            background: linear-gradient(45deg, var(--neon-glow-strong) 0%, transparent 50%, var(--neon-glow-strong) 100%);
+            background-size: 400% 400%;
+            z-index: -1;
+            opacity: 0.2; /* 常時薄く発光 */
+            animation: cardBorderFlow 8s linear infinite; /* 常にゆっくり流れる */
+        }
+        .character-card:hover::before {
+            opacity: 0.8; /* ホバーで強く発光 */
+        }
+        @keyframes cardBorderFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
         .character-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-15px) scale(1.02) rotateZ(1deg); /* 浮遊感とわずかな拡大・回転 */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-light);
         }
 
         .character-header {
             background-color: var(--primary-dark);
             color: var(--card-background);
-            padding: 12px 20px;
+            padding: 18px 30px; /* パディングを増やす */
             font-weight: 700;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            font-size: 1.2em;
+            font-family: 'Rajdhani', sans-serif; /* SFフォント適用 */
         }
         .character-cost {
             background-color: var(--accent-orange);
-            color: var(--card-background);
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.85em;
+            color: var(--primary-dark);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.95em;
             font-weight: 700;
+            box-shadow: inset 0 0 8px rgba(255, 215, 0, 0.4);
         }
         .character-body {
-            padding: 20px;
-            flex-grow: 1; /* コンテンツが伸びるように */
+            padding: 30px; /* パディングを増やす */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* 上下配置 */
+            justify-content: space-between;
         }
         .character-image {
-            width: 90px;
-            height: 90px;
-            background-color: #ECF0F1; /* 薄いグレー */
+            width: 120px; /* さらに大きく */
+            height: 120px;
+            background-color: #F0F5F9;
             border-radius: 50%;
-            margin: 0 auto 20px;
+            margin: 0 auto 30px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 45px;
-            color: #7F8C8D; /* 暗めのグレー */
+            font-size: 60px;
+            color: #7F8C8D;
             font-weight: 700;
-            border: 2px solid var(--light-grey-border);
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
-            overflow: hidden; /* 画像がはみ出さないように */
+            border: 4px solid var(--primary-light); /* ボーダーを太く */
+            box-shadow: 0 0 0 4px rgba(0, 191, 255, 0.3), inset 0 0 12px rgba(0,0,0,0.18);
+            overflow: hidden;
+            transition: all var(--transition-speed);
         }
-        /* 画像をコンテナにフィットさせるスタイル */
+        .character-image:hover {
+            transform: scale(1.1) rotateZ(5deg); /* より強調された拡大と回転 */
+            box-shadow: 0 0 0 6px rgba(0, 191, 255, 0.6), inset 0 0 15px rgba(0,0,0,0.25);
+        }
         .character-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 画像の縦横比を保ちつつコンテナに収まるように */
-            border-radius: 50%; /* 親要素のボーダーに合わせる */
+            object-fit: cover;
+            border-radius: 50%;
+            display: none; /* 初期は非表示 */
         }
-        /* イニシャル表示（フォールバック）のスタイル */
         .character-image span.initial {
             width: 100%;
             height: 100%;
-            display: flex;
+            display: flex; /* 初期は表示 (画像がない場合や読み込み失敗時) */
             justify-content: center;
             align-items: center;
+            font-family: 'Orbitron', sans-serif;
         }
 
         .character-stats {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            font-size: 1em;
-            padding: 5px 0;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            padding: 10px 0;
             border-bottom: 1px solid var(--light-grey-border);
+            font-weight: 500;
         }
         .character-hp {
+            font-family: 'Rajdhani', sans-serif; /* SFフォント適用 */
             font-weight: 700;
-            color: #E74C3C; /* 赤系のHP色 */
-            font-size: 1.1em;
+            color: #E74C3C;
+            font-size: 1.3em; /* さらに大きく */
+            cursor: crosshair; /* SFカーソル */
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 0 5px rgba(231, 76, 60, 0.3);
+        }
+        .character-hp:hover {
+            color: var(--primary-light);
+            text-shadow: 0 0 12px rgba(0, 191, 255, 0.7); /* ホバー時のグロー */
+        }
+        .character-hp:active {
+            transform: translateY(2px) scale(0.96);
+            color: #C0392B;
+        }
+        /* GSAPでHP数値アニメーション中に一時的に適用されるクラス */
+        .character-hp.animating {
+            color: var(--primary-light);
+            text-shadow: 0 0 15px var(--neon-glow-strong);
         }
 
-        /* テーブルスタイル */
+
+        /* ----- HPバーのスタイル ----- */
+        .hp-bar-container {
+            width: 100%;
+            height: 12px; /* さらに太く */
+            background-color: #E0E0E0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+            position: relative;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .hp-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--hp-low) 0%, var(--hp-medium) 50%, var(--hp-high) 100%);
+            width: 100%;
+            transition: width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-origin: left;
+            position: relative;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .hp-bar-fill::after { /* HPバー内部のSF的な光沢アニメーション */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: skewX(-30deg);
+            animation: hpShine 2.5s linear infinite; /* 継続的な光沢 */
+            opacity: 0.8;
+        }
+        @keyframes hpShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        /* 低HP時の脈動アニメーション */
+        .hp-bar-low-pulse {
+            animation: hpPulse 1.2s ease-in-out infinite alternate;
+            box-shadow: 0 0 15px 5px var(--hp-pulse-color); /* 脈動する影 */
+        }
+        @keyframes hpPulse {
+            0% { transform: scaleX(1); box-shadow: 0 0 10px 3px var(--hp-pulse-color); }
+            100% { transform: scaleX(1.01); box-shadow: 0 0 20px 8px var(--hp-pulse-color); }
+        }
+
+        /* ----- テーブルスタイル ----- */
         .cost-table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 0.9em;
+            border-collapse: separate; /* border-radiusのために */
+            border-spacing: 0;
+            margin-top: 20px;
+            font-size: 1em;
+            border-radius: 8px;
+            overflow: hidden; /* 角丸対応 */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .cost-table th, .cost-table td {
-            padding: 10px 8px;
+            padding: 15px 8px; /* 修正点: パディングを減らして横幅を確保 */
             text-align: center;
+            font-size: 0.95em; /* 修正点: フォントサイズをわずかに小さく */
         }
         .cost-table th {
-            background-color: var(--medium-grey);
+            background-color: var(--primary-light);
             color: var(--card-background);
             font-weight: 700;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            white-space: nowrap; /* ヘッダーの改行を防ぐ */
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            white-space: nowrap;
+            font-family: 'Rajdhani', sans-serif; /* SFフォント適用 */
         }
+        .cost-table th:first-child { border-top-left-radius: 8px; }
+        .cost-table th:last-child { border-top-right-radius: 8px; }
+
         .cost-table td {
             border-top: 1px solid var(--light-grey-border);
             color: var(--text-color);
+            cursor: crosshair; /* SFカーソル */
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            position: relative;
+            background-color: var(--card-background);
         }
-        .cost-table tr:nth-child(even) {
-            background-color: #FDFDFD; /* 薄いストライプ */
+        .cost-table td:hover {
+            background-color: #EBF7FF;
+            color: var(--primary-dark);
+            box-shadow: inset 0 0 10px rgba(0, 191, 255, 0.3); /* ホバー時の内側の影を強調 */
+            transform: translateY(-2px); /* わずかに浮遊 */
         }
-        .cost-table tr:last-child td {
-            border-bottom: none; /* 最後の行のボーダーを削除 */
+        .cost-table td.active-hp-display {
+            background-color: #D3EEFF;
+            font-weight: bold;
+            color: var(--primary-dark);
+            box-shadow: inset 0 0 15px rgba(0, 191, 255, 0.4); /* アクティブ時の影を強調 */
+            border: 1px solid var(--primary-light);
+            transform: translateY(0); /* 浮遊を打ち消す */
         }
 
-        /* フッターのスタイルを追加 */
+        .cost-table tr:nth-child(even) td {
+            background-color: #F8FCFF;
+        }
+        .cost-table tr:last-child td:first-child { border-bottom-left-radius: 8px; }
+        .cost-table tr:last-child td:last-child { border-bottom-right-radius: 8px; }
+
+        /* ----- ローディングインジケーターのスタイル ----- */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 44, 62, 0.8); /* primary-darkの半透明 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            backdrop-filter: blur(5px); /* 背景をぼかす */
+        }
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top: 5px solid var(--loading-spinner-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: relative;
+            box-shadow: 0 0 15px var(--loading-spinner-color);
+        }
+        .loading-spinner::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15px;
+            height: 15px;
+            background-color: var(--loading-spinner-color);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--loading-spinner-color);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ----- フッターのスタイル ----- */
         footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 20px 0;
-            border-top: 1px solid var(--light-grey-border);
+            margin-top: 80px; /* マージンを増やす */
+            padding: 30px 0;
+            border-top: 1px solid rgba(0, 191, 255, 0.2);
             color: var(--medium-grey);
-            font-size: 0.85em;
-            letter-spacing: 0.5px;
+            font-size: 0.95em; /* 少し大きく */
+            letter-spacing: 1px;
+            opacity: 0.7;
+            background-color: rgba(0,0,0,0.1); /* 半透明の背景 */
+            position: relative;
+            z-index: 1;
         }
         footer a {
             color: var(--medium-grey);
             text-decoration: none;
+            transition: color var(--transition-speed);
+        }
+        footer a:hover {
+            color: var(--primary-light);
+            text-shadow: 0 0 8px rgba(0, 191, 255, 0.5);
         }
 
-        /* レスポンシブ対応 */
+        /* ----- レスポンシブ対応 ----- */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-            .description {
-                padding: 15px;
-            }
-            .filter-container {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            .filter-group {
-                width: 100%;
-                justify-content: flex-start;
-            }
-            .filter-buttons {
-                width: 100%;
-                justify-content: space-around; /* 小画面で均等配置 */
-            }
-            .filter-button {
-                flex-grow: 1; /* ボタンが伸びるように */
-            }
-            .character-grid {
-                grid-template-columns: 1fr; /* 1列表示 */
+            body { padding: 20px; }
+            h1 { font-size: 2.5em; letter-spacing: 2px; }
+            .usage-guide-container, .controls-container { padding: 25px; }
+            .usage-guide-container h2 { font-size: 1.8em; gap: 10px; }
+            .filter-container { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .filter-group { width: 100%; justify-content: flex-start; }
+            .filter-buttons { width: 100%; justify-content: space-around; }
+            .filter-button { flex-grow: 1; min-width: unset; }
+            .character-grid { grid-template-columns: 1fr; gap: 25px; }
+            .character-image { width: 100px; height: 100px; font-size: 50px; }
+            .character-stats { font-size: 1em; }
+            .character-hp { font-size: 1.2em; }
+            .cost-table { font-size: 0.85em; /* 修正点: モバイルでのテーブルフォントサイズ */ }
+            .cost-table th, .cost-table td { padding: 10px 5px; /* 修正点: モバイルでのテーブルパディング */ }
+            .accordion-header { font-size: 1.1em; padding: 15px 20px; }
+            .accordion-content { padding: 0 20px; }
+            .accordion-content.show { padding: 20px; }
+            .accordion-content p, .accordion-content .formula, .accordion-content .tip, .usage-guide-container .guide-intro {
+                max-width: 100%; /* モバイルでは横幅をいっぱい使う */
+                margin-left: 0;
+                margin-right: 0;
+                transform: none; /* モバイルでは縦伸ばしを解除 */
             }
         }
         @media (max-width: 480px) {
-            body {
-                padding: 15px;
-            }
-            h1 {
-                font-size: 1.8em;
-            }
-            .character-image {
-                width: 70px;
-                height: 70px;
-                font-size: 35px;
-            }
-            .character-stats {
-                font-size: 0.9em;
-            }
-            .cost-table {
-                font-size: 0.8em;
-            }
-            .cost-table th, .cost-table td {
-                padding: 8px 5px;
-            }
+            body { padding: 15px; }
+            h1 { font-size: 2em; letter-spacing: 1px; }
+            .usage-guide-container h2 { font-size: 1.6em; gap: 8px; }
+            .character-image { width: 90px; height: 90px; font-size: 45px; margin-bottom: 25px;}
+            .character-stats { font-size: 0.95em; }
+            .character-hp { font-size: 1.15em; }
+            .cost-table { font-size: 0.8em; /* さらに小さく */ }
+            .cost-table th, .cost-table td { padding: 8px 4px; /* さらに狭く */ }
+            .accordion-header { font-size: 1em; padding: 12px 15px; }
+            .accordion-content { padding: 0 15px; }
+            .accordion-content.show { padding: 15px; }
         }
     </style>
 </head>
 <body>
     <main>
-        <h1>星の翼 コストオーバー時の耐久値計算ツール</h1>
+        <h1 class="title-sf-effect">星の翼 コストオーバー時の耐久値計算ツール</h1>
         
-        <div class="description">
-            <p>このツールは、ゲーム「星の翼」でコストオーバーが起こって再出撃した際の耐久値を計算します。</p>
-            <p>計算式: <strong>再出撃時の耐久値 = 本来の耐久値 × (残りコスト ÷ キャラクターのコスト)</strong></p>
-            <p>各キャラクターのカードには、残りコストごとの再出撃時耐久値が表示されています。</p>
+        <div class="usage-guide-container">
+            <h2><i class="fas fa-question-circle"></i> ツールの使い方ガイド</h2>
+            <p class="guide-intro">このツールは、ゲーム「星の翼」でコストオーバーが起こって再出撃した際の耐久値を計算します。以下の手順でご利用ください。</p>
+            
+            <div class="accordion">
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span><i class="fas fa-search"></i> 1. キャラクターを検索・絞り込む</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <p>上部の検索ボックスにキャラクター名を入力するか、コストフィルターや並び替えオプションを使って目的のキャラクターを素早く見つけられます。</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span><i class="fas fa-calculator"></i> 2. 計算式と本来の耐久値を確認する</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <p>各キャラクターカードには、コストオーバー時の耐久値を計算するための基本情報が表示されます。計算式は以下の通りです。</p>
+                        <p class="formula"><strong>再出撃時耐久値 = 本来の耐久値 × (残りコスト ÷ キャラクターのコスト)</strong></p>
+                        <p>「本来の耐久値」はキャラクターカードのHPバーの上に大きく表示されています。</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span><i class="fas fa-chart-bar"></i> 3. HPバーの変動をシミュレーションする</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <p>各キャラクターカードのテーブル内にある**「再出撃時耐久値」のセルをクリック**してください。</p>
+                        <p>クリックされた数値が「本来の耐久値」に対してどれくらいの割合になるか、その上のHPバーで視覚的に確認できます。</p>
+                        <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: セルにカーソルを合わせると、クリック可能であることが強調表示されます。</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span><i class="fas fa-sync-alt"></i> 4. HPバーをリセットする</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <p>シミュレーションを終了してHPバーを100%の状態に戻したい場合は、**キャラクターカードの「本来の耐久値」の数値をクリック**してください。</p>
+                        <p>いつでも元の満タン状態に戻して、別の再出撃時耐久値を比較できます。</p>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="controls-container">
             <div class="search-container">
+                <i class="fas fa-search search-icon"></i> <!-- 検索アイコン -->
                 <input type="text" id="characterSearch" placeholder="キャラクター名で検索...">
             </div>
             
             <div class="filter-container">
                 <div class="filter-group">
-                    <span class="filter-label">コスト:</span>
+                    <span class="filter-label"><i class="fas fa-coins"></i> コスト:</span> <!-- コストアイコン -->
                     <div class="filter-buttons" id="costFilter">
                         <button class="filter-button active" data-cost="all">全て</button>
                         <button class="filter-button" data-cost="1.5">1.5</button>
@@ -347,13 +999,14 @@
                 </div>
                 
                 <div class="filter-group">
-                    <span class="filter-label">並び替え:</span>
+                    <span class="filter-label"><i class="fas fa-sort"></i> 並び替え:</span> <!-- 並び替えアイコン -->
                     <div class="filter-buttons" id="sortFilter">
                         <button class="filter-button active" data-sort="name">名前順</button>
-                        <button class="filter-button" data-sort="hp-desc">耐久値↓</button>
-                        <button class="filter-button" data-sort="hp-asc">耐久値↑</button>
-                        <button class="filter-button" data-sort="cost-desc">コスト↓</button>
-                        <button class="filter-button" data-sort="cost-asc">コスト↑</button>
+                        <!-- 修正点: コスト関連のボタンを前に移動 -->
+                        <button class="filter-button" data-sort="cost-desc">コスト</button>
+                        <button class="filter-button" data-sort="cost-asc">コスト</button>
+                        <button class="filter-button" data-sort="hp-desc">耐久値</button>
+                        <button class="filter-button" data-sort="hp-asc">耐久値</button>
                     </div>
                 </div>
             </div>
@@ -364,134 +1017,223 @@
         </div>
     </main>
 
+    <!-- ローディングオーバーレイ -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- GSAPのCDNをインポート -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+
     <script>
         // CSVデータを読み込む (今回はJS配列として直接記述)
-        // 各キャラクターに 'image' プロパティを追加しました。
-        // 'assets/character_icons/' は仮のパスです。
-        // 実際の画像ファイルの場所とファイル名に合わせて変更してください。
-        // 'image' プロパティが指定されていない場合、イニシャルが表示されます。
         const characterData = [
-            {name: "グリフィン", hp: 3020, cost: 3, image: "assets/character_icons/griffin.png"},
-            {name: "キャヴァリー", hp: 3003, cost: 3, image: "assets/character_icons/cavalry.png"},
-            {name: "ケルビム", hp: 2953, cost: 3, image: "assets/character_icons/cherubim.png"},
-            {name: "ラジエル", hp: 2953, cost: 3, image: "assets/character_icons/rasiel.png"},
-            {name: "影", hp: 2909, cost: 3, image: "assets/character_icons/shadow.png"},
-            {name: "ロタ", hp: 2892, cost: 3, image: "assets/character_icons/rota.png"},
-            {name: "ヒカリ", hp: 2886, cost: 3, image: "assets/character_icons/hikari.png"},
-            {name: "シュウウ", hp: 2886, cost: 3, image: "assets/character_icons/qiuyu.png"},
-            {name: "イーザー", hp: 2886, cost: 3, image: "assets/character_icons/ether.png"},
-            {name: "ライン", hp: 2850, cost: 3, image: "assets/character_icons/rhine.png"},
-            {name: "エルフィン", hp: 2808, cost: 3, image: "assets/character_icons/elfin.png"},
-            {name: "シャオリン", hp: 2772, cost: 2.5, image: "assets/character_icons/xiaoling.png"},
-            {name: "アリス", hp: 2772, cost: 2.5, image: "assets/character_icons/aliz.png"},
-            {name: "スズラン", hp: 2723, cost: 3, image: "assets/character_icons/convallaria.png"},
-            {name: "轟雷改", hp: 2669, cost: 2.5, image: "assets/character_icons/gourai-kai.png"},
-            {name: "フリード", hp: 2664, cost: 2.5, image: "assets/character_icons/ffreedo.png"},
-            {name: "スカイセーバー", hp: 2664, cost: 2.5, image: "assets/character_icons/skysaber.png"},
-            {name: "十八号", hp: 2664, cost: 2.5, image: "assets/character_icons/xviii.png"},
-            {name: "カゼ", hp: 2592, cost: 2.5, image: "assets/character_icons/kaze.png"},
-            {name: "シャープ", hp: 2592, cost: 2.5, image: "assets/character_icons/sharp.png"},
-            {name: "ヴァルキア", hp: 2592, cost: 2.5, image: "assets/character_icons/valkia.png"},
-            {name: "稲", hp: 2556, cost: 2.5, image: "assets/character_icons/ine.png"},
-            {name: "エヴァ", hp: 2550, cost: 2.5, image: "assets/character_icons/iva.png"},
-            {name: "アンジェリス", hp: 2500, cost: 2.5, image: "assets/character_icons/angelis.png"},
-            {name: "シグナス", hp: 2492, cost: 3, image: "assets/character_icons/cygnus.png"},
-            {name: "パラス", hp: 2448, cost: 2, image: "assets/character_icons/pallas.png"},
-            {name: "ヴァーチェ", hp: 2348, cost: 2, image: "assets/character_icons/virtue.png"},
-            {name: "ベータ", hp: 2340, cost: 2, image: "assets/character_icons/beta.png"},
-            {name: "セラフィム", hp: 2340, cost: 2, image: "assets/character_icons/seraphim.png"},
-            {name: "咲迦", hp: 2298, cost: 2, image: "assets/character_icons/emika.png"},
-            {name: "スコーピオン", hp: 2268, cost: 2, image: "assets/character_icons/scorpion.png"},
-            {name: "チンニ", hp: 2268, cost: 2, image: "assets/character_icons/qingni.png"},
-            {name: "アイーダ", hp: 2240, cost: 2, image: "assets/character_icons/aida.png"},
-            {name: "ザハロワ", hp: 2196, cost: 2, image: "assets/character_icons/zakharova.png"},
-            {name: "デュカリオン", hp: 2168, cost: 2, image: "assets/character_icons/deucalion.png"},
-            {name: "ヒビキ", hp: 2168, cost: 2, image: "assets/character_icons/hibiki.png"},
-            {name: "ダークスター", hp: 2155, cost: 2, image: "assets/character_icons/darkstar.png"},
-            {name: "スティレット", hp: 2155, cost: 2, image: "assets/character_icons/stylet.png"},
-            {name: "ローランド", hp: 2088, cost: 1.5, image: "assets/character_icons/roland.png"},
-            {name: "カタリナ", hp: 2080, cost: 1.5, image: "assets/character_icons/katerina.png"},
-            {name: "オーキッド", hp: 1980, cost: 1.5, image: "assets/character_icons/orchid.png"},
-            {name: "ヤミン", hp: 1980, cost: 1.5, image: "assets/character_icons/yammyn.png"},
-            {name: "スノーウォル", hp: 1872, cost: 1.5, image: "assets/character_icons/snowowl.png"}
+            {name: "グリフィン", hp: 3020, cost: 3, image: "assets/character_icons/GRIFFIN.png"},
+            {name: "キャヴァリー", hp: 3003, cost: 3, image: "assets/character_icons/CAVALRY.png"},
+            {name: "ケルビム", hp: 2953, cost: 3, image: "assets/character_icons/CHERUBIM.png"},
+            {name: "ラジエル", hp: 2953, cost: 3, image: "assets/character_icons/RASIEL.png"},
+            {name: "影", hp: 2909, cost: 3, image: "assets/character_icons/SHADOW.png"},
+            {name: "ロタ", hp: 2892, cost: 3, image: "assets/character_icons/ROTA.png"},
+            {name: "ヒカリ", hp: 2886, cost: 3, image: "assets/character_icons/HIKARI.png"},
+            {name: "シュウウ", hp: 2886, cost: 3, image: "assets/character_icons/QIUYU.png"},
+            {name: "イーザー", hp: 2886, cost: 3, image: "assets/character_icons/ETHER.png"},
+            {name: "ライン", hp: 2850, cost: 3, image: "assets/character_icons/RHINE.png"},
+            {name: "エルフィン", hp: 2808, cost: 3, image: "assets/character_icons/ELFIN.png"},
+            {name: "シャオリン", hp: 2772, cost: 2.5, image: "assets/character_icons/XIAOLING.png"},
+            {name: "アリス", hp: 2772, cost: 2.5, image: "assets/character_icons/ALIZ.png"},
+            {name: "スズラン", hp: 2723, cost: 3, image: "assets/character_icons/CONVALLARIA.png"},
+            {name: "轟雷改", hp: 2669, cost: 2.5, image: "assets/character_icons/GOURAI-KAI.png"},
+            {name: "フリード", hp: 2664, cost: 2.5, image: "assets/character_icons/FFREEDO.png"},
+            {name: "スカイセーバー", hp: 2664, cost: 2.5, image: "assets/character_icons/SKYSABER.png"},
+            {name: "十八号", hp: 2664, cost: 2.5, image: "assets/character_icons/XVIII.png"},
+            {name: "カゼ", hp: 2592, cost: 2.5, image: "assets/character_icons/KAZE.png"},
+            {name: "シャープ", hp: 2592, cost: 2.5, image: "assets/character_icons/SHARP.png"},
+            {name: "ヴァルキア", hp: 2592, cost: 2.5, image: "assets/character_icons/VALKIA.png"},
+            {name: "稲", hp: 2556, cost: 2.5, image: "assets/character_icons/INE.png"},
+            {name: "エヴァ", hp: 2550, cost: 2.5, image: "assets/character_icons/IVA.png"},
+            {name: "アンジェリス", hp: 2500, cost: 2.5, image: "assets/character_icons/ANGELIS.png"},
+            {name: "シグナス", hp: 2492, cost: 3, image: "assets/character_icons/CYGNUS.png"},
+            {name: "パラス", hp: 2448, cost: 2, image: "assets/character_icons/PALLAS.png"},
+            {name: "ヴァーチェ", hp: 2348, cost: 2, image: "assets/character_icons/VIRTUE.png"},
+            {name: "ベータ", hp: 2340, cost: 2, image: "assets/character_icons/BETA.png"},
+            {name: "セラフィム", hp: 2340, cost: 2, image: "assets/character_icons/SERAPHIM.png"},
+            {name: "咲迦", hp: 2298, cost: 2, image: "assets/character_icons/EMIKA.png"},
+            {name: "スコーピオン", hp: 2268, cost: 2, image: "assets/character_icons/SCORPION.png"},
+            {name: "チンニ", hp: 2268, cost: 2, image: "assets/character_icons/QINGNI.png"},
+            {name: "アイーダ", hp: 2240, cost: 2, image: "assets/character_icons/AIDA.png"},
+            {name: "ザハロワ", hp: 2196, cost: 2, image: "assets/character_icons/ZAKHAROVA.png"},
+            {name: "デュカリオン", hp: 2168, cost: 2, image: "assets/character_icons/DEUCALION.png"},
+            {name: "ヒビキ", hp: 2168, cost: 2, image: "assets/character_icons/HIBIKI.png"},
+            {name: "ダークスター", hp: 2155, cost: 2, image: "assets/character_icons/DARKSTAR.png"},
+            {name: "スティレット", hp: 2155, cost: 2, image: "assets/character_icons/STYLET.png"},
+            {name: "ローランド", hp: 2088, cost: 1.5, image: "assets/character_icons/ROLAND.png"},
+            {name: "カタリナ", hp: 2080, cost: 1.5, image: "assets/character_icons/KATERINA.png"},
+            {name: "オーキッド", hp: 1980, cost: 1.5, image: "assets/character_icons/ORCHID.png"},
+            {name: "ヤミン", hp: 1980, cost: 1.5, image: "assets/character_icons/YAMMYN.png"},
+            {name: "スノーウォル", hp: 1872, cost: 1.5, image: "assets/character_icons/SNOWOWL.png"}
         ];
         
         // コストごとに表示する残りコストの配列
         const costRemainingMap = {
             3.0: [0.5, 1.0, 1.5],
             2.5: [0.5, 1.0, 1.5, 2.0],
-            2.0: [1.0, 1.5], // 変更済み
-            1.5: [0.5, 1.0]  // 変更済み
+            2.0: [1.0, 1.5],
+            1.5: [0.5, 1.0]
         };
-        
-        // キャラクターカードを生成する関数
+
+        // DOM要素のキャッシュ
+        const characterGrid = document.getElementById('characterGrid');
+        const characterSearchInput = document.getElementById('characterSearch');
+        const searchIcon = document.querySelector('.search-icon'); // 検索アイコンのキャッシュ
+        const costFilterButtons = document.querySelectorAll('#costFilter .filter-button');
+        const sortFilterButtons = document.querySelectorAll('#sortFilter .filter-button');
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // ローディングインジケーターの表示/非表示を制御する関数
+        function showLoading() {
+            loadingOverlay.classList.add('active');
+        }
+
+        function hideLoading() {
+            gsap.to(loadingOverlay, { opacity: 0, duration: 0.3, onComplete: () => {
+                loadingOverlay.classList.remove('active');
+                loadingOverlay.style.opacity = 1; // 次回表示のためにリセット
+            }});
+        }
+
+        // キャラクターカードを生成し、GSAPアニメーションを適用する関数
         function generateCharacterCards(characters) {
-            const grid = document.getElementById('characterGrid');
-            grid.innerHTML = ''; // グリッドをクリア
-
-            if (characters.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; color: #777; font-size: 1.2em;">該当するキャラクターが見つかりませんでした。</p>';
-                return;
-            }
+            showLoading(); // ローディング表示
             
-            characters.forEach(character => {
-                const card = document.createElement('div');
-                card.className = 'character-card';
-                
-                // キャラクターのコストに応じた残りコスト配列を取得
-                const applicableRemainingCosts = costRemainingMap[character.cost] || [];
-                
-                // 再出撃時の耐久値を計算
-                const costOverHPs = applicableRemainingCosts.map(remainingCost => {
-                    // 残りコストがキャラクターのコスト以上なら、本来の耐久値をそのまま返す
-                    // 現状の計算式では (remainingCost / character.cost) が1以上になるため、
-                    // 特にこの条件分岐は不要ですが、念のためロジックを明確に保ちます。
-                    if (remainingCost >= character.cost) {
-                        return character.hp;
-                    }
-                    return Math.round(character.hp * (remainingCost / character.cost));
-                });
+            // 現在表示されているカードをフェードアウト・スケールダウン
+            gsap.to(Array.from(characterGrid.children), {
+                opacity: 0,
+                scale: 0.8,
+                y: 50,
+                duration: 0.2,
+                stagger: 0.01,
+                ease: "power2.in",
+                onComplete: () => {
+                    characterGrid.innerHTML = ''; // アニメーション後にグリッドをクリア
 
-                // キャラクター画像またはイニシャル表示のHTMLを生成
-                const characterImageHtml = character.image 
-                    ? `<img src="${character.image}" alt="${character.name}" onerror="this.onerror=null; this.parentNode.innerHTML='<span class=\'initial\'>${character.name.charAt(0)}</span>';">`
-                    : `<span class="initial">${character.name.charAt(0)}</span>`;
-                
-                card.innerHTML = `
-                    <div class="character-header">
-                        <span>${character.name}</span>
-                        <span class="character-cost">コスト: ${character.cost.toFixed(1)}</span>
-                    </div>
-                    <div class="character-body">
-                        <div class="character-image">${characterImageHtml}</div>
-                        <div class="character-stats">
-                            <span>本来の耐久値:</span>
-                            <span class="character-hp">${character.hp.toLocaleString()}</span>
-                        </div>
-                        <table class="cost-table">
-                            <thead>
-                                <tr>
-                                    <th>残りコスト</th>
-                                    ${applicableRemainingCosts.map(cost => `<th>${cost.toFixed(1)}</th>`).join('')}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>再出撃時耐久値</td>
-                                    ${costOverHPs.map(hp => `<td>${hp.toLocaleString()}</td>`).join('')}
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-                
-                grid.appendChild(card);
+                    if (characters.length === 0) {
+                        const noResultsMessage = document.createElement('p');
+                        noResultsMessage.className = 'no-results-message';
+                        noResultsMessage.textContent = 'ERROR: NO DATA FOUND';
+                        characterGrid.appendChild(noResultsMessage);
+                        gsap.fromTo(noResultsMessage, 
+                            { opacity: 0, scale: 0.8 },
+                            { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out", delay: 0.1, animation: 'glitchDisplay 2s ease-in-out forwards' }
+                        );
+                        hideLoading(); // ローディング非表示
+                        return;
+                    }
+                    
+                    characters.forEach((character, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'character-card';
+                        card.dataset.originalHp = character.hp;
+                        
+                        const applicableRemainingCosts = costRemainingMap[character.cost] || [];
+                        
+                        const costOverHPs = applicableRemainingCosts.map(remainingCost => {
+                            return Math.round(character.hp * (remainingCost / character.cost));
+                        });
+
+                        // 修正点: 画像と頭文字のspanを両方HTMLに含める
+                        card.innerHTML = `
+                            <div class="character-header">
+                                <span>${character.name}</span>
+                                <span class="character-cost">コスト: ${character.cost.toFixed(1)}</span>
+                            </div>
+                            <div class="character-body">
+                                <div class="character-image">
+                                    <img src="${character.image}" alt="${character.name}" class="character-icon-img">
+                                    <span class="initial">${character.name.charAt(0)}</span>
+                                </div>
+                                <div class="character-stats">
+                                    <span>本来の耐久値:</span>
+                                    <span class="character-hp">${character.hp.toLocaleString()}</span>
+                                </div>
+                                <div class="hp-bar-container">
+                                    <div class="hp-bar-fill"></div>
+                                </div>
+                                <table class="cost-table">
+                                    <thead>
+                                        <tr>
+                                            <th>残りコスト</th>
+                                            ${applicableRemainingCosts.map(cost => `<th>${cost.toFixed(1)}</th>`).join('')}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>再出撃時耐久値</td>
+                                            ${costOverHPs.map(hp => `<td data-redeploy-hp="${hp}">${hp.toLocaleString()}</td>`).join('')}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                        
+                        characterGrid.appendChild(card);
+
+                        // 修正点: 画像ロードのロジックを変更
+                        const imgElement = card.querySelector('.character-icon-img');
+                        const initialSpan = card.querySelector('.initial');
+
+                        if (character.image) {
+                            // 画像がロードされたらimgを表示し、頭文字を非表示
+                            imgElement.onload = function() {
+                                this.style.display = 'block'; 
+                                initialSpan.style.display = 'none'; 
+                            };
+                            // ロード失敗したらimgは非表示、頭文字を表示
+                            imgElement.onerror = function() {
+                                this.style.display = 'none'; 
+                                initialSpan.style.display = 'flex'; 
+                            };
+                            // ブラウザキャッシュからのロードでonloadが発火しない場合の対策
+                            // completeプロパティでチェックし、既にロード済みの場合は手動でdisplayを設定
+                            if (imgElement.complete && imgElement.naturalWidth > 0) {
+                                imgElement.style.display = 'block';
+                                initialSpan.style.display = 'none';
+                            } else {
+                                // まだロード中でない場合やエラーの場合は、一旦頭文字を表示
+                                imgElement.style.display = 'none';
+                                initialSpan.style.display = 'flex';
+                            }
+                        } else {
+                            // 画像パスがない場合、最初から頭文字を表示
+                            imgElement.style.display = 'none';
+                            initialSpan.style.display = 'flex';
+                        }
+                        
+                        // GSAPで新しいカードの登場アニメーション
+                        gsap.from(card, {
+                            opacity: 0,
+                            y: 80, // 少し長めにスライド
+                            scale: 0.8,
+                            rotateZ: gsap.utils.random(-5, 5), // 左右にわずかに回転
+                            duration: 0.45,
+                            ease: "power3.out",
+                            delay: index * 0.03 // 0.02 から 0.03 に調整
+                        });
+
+                        // 初期状態のHPバーを本来の耐久値（100%）に設定
+                        const hpBarFill = card.querySelector('.hp-bar-fill');
+                        if (hpBarFill) {
+                            gsap.set(hpBarFill, { width: '100%' });
+                        }
+                    });
+                    hideLoading(); // ローディング非表示
+                }
             });
         }
         
         // 検索とフィルタリングを適用する関数
         function applyFiltersAndSearch() {
-            const searchTerm = document.getElementById('characterSearch').value.toLowerCase();
+            const searchTerm = characterSearchInput.value.toLowerCase();
             const activeCostFilter = document.querySelector('#costFilter .active').dataset.cost;
             const activeSortFilter = document.querySelector('#sortFilter .active').dataset.sort;
             
@@ -533,16 +1275,169 @@
             
             generateCharacterCards(filteredCharacters);
         }
+
+        // HPバーと数値のアニメーションを管理する関数
+        function animateHpDisplay(card, targetHp) {
+            const hpBarFill = card.querySelector('.hp-bar-fill');
+            const originalHp = parseFloat(card.dataset.originalHp);
+            const currentHpSpan = card.querySelector('.character-hp');
+            const allRedeployCells = card.querySelectorAll('.cost-table td[data-redeploy-hp]');
+
+            const hpPercentage = (targetHp / originalHp); // 0-1の割合
+            
+            // HPバーの幅をアニメーション
+            gsap.to(hpBarFill, {
+                width: `${hpPercentage * 100}%`,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+
+            // 低HP時の脈動アニメーションの管理 (HPが30%以下になったら適用)
+            if (hpPercentage <= 0.3) {
+                hpBarFill.classList.add('hp-bar-low-pulse');
+            } else {
+                hpBarFill.classList.remove('hp-bar-low-pulse');
+            }
+
+            // 数値のカウントアップアニメーション
+            let currentDisplayedHp = parseFloat(currentHpSpan.textContent.replace(/,/g, ''));
+            
+            currentHpSpan.classList.add('animating'); // アニメーション開始時にクラス追加
+            gsap.to({ value: currentDisplayedHp }, {
+                value: targetHp,
+                duration: 0.8,
+                ease: "power2.out",
+                onUpdate: function() {
+                    currentHpSpan.textContent = Math.round(this.targets[0].value).toLocaleString();
+                },
+                onComplete: function() {
+                    currentHpSpan.classList.remove('animating'); // アニメーション終了時にクラス削除
+                }
+            });
+
+            // アクティブクラスの管理
+            allRedeployCells.forEach(cell => cell.classList.remove('active-hp-display'));
+            if (targetHp !== originalHp) { // 本来の耐久値以外の場合のみアクティブにする
+                const clickedCell = Array.from(allRedeployCells).find(cell => parseFloat(cell.dataset.redeployHp) === targetHp);
+                if (clickedCell) {
+                    clickedCell.classList.add('active-hp-display');
+                }
+            }
+        }
+        
+        // 検索アイコンの常時アニメーションを制御するタイムライン
+        let searchIconPulseTl;
+        function initSearchIconPulseAnimation() {
+            if (!searchIcon) return; // searchIconがまだ存在しない場合はスキップ
+
+            searchIconPulseTl = gsap.timeline({ repeat: -1, yoyo: true, defaults: { duration: 1.8, ease: "power2.inOut" } });
+            searchIconPulseTl.to(searchIcon, { scale: 1.08, opacity: 1 });
+        }
+
+        // 入力時の検索アイコンと入力欄のアニメーション
+        let searchInputGlowTl; // 入力欄グローのタイムラインを管理
+        let searchIconShakeTl; // アイコン揺れを管理
+        
+        function animateSearchInputInteraction() {
+            // 検索入力欄のグローアニメーション (一時的な強調)
+            if (searchInputGlowTl) searchInputGlowTl.kill(); // 以前のアニメーションを停止
+            searchInputGlowTl = gsap.timeline();
+            searchInputGlowTl.fromTo(characterSearchInput,
+                { boxShadow: '0 0 0 0px rgba(0, 191, 255, 0)' }, // 初期状態
+                { 
+                    boxShadow: '0 0 0 6px rgba(0, 191, 255, 0.4), inset 0 1px 8px rgba(0, 191, 255, 0.2)', // ターゲット状態
+                    duration: 0.2, 
+                    ease: "power2.out" 
+                }
+            ).to(characterSearchInput, 
+                { 
+                    boxShadow: '0 0 0 0px rgba(0, 191, 255, 0), inset 0 1px 4px rgba(0,0,0,0.08)', // 通常のshadowに戻す
+                    duration: 0.5, 
+                    ease: "power2.in", 
+                    delay: 0.3 
+                }
+            );
+
+            // 検索アイコンの揺れアニメーション
+            if (searchIconShakeTl) searchIconShakeTl.kill(); // 以前のアニメーションを停止
+            searchIconShakeTl = gsap.to(searchIcon, {
+                x: gsap.utils.random(-3, 3),
+                y: gsap.utils.random(-3, 3),
+                rotation: gsap.utils.random(-5, 5),
+                duration: 0.1,
+                repeat: 3, // 3回揺れる
+                yoyo: true,
+                ease: "rough({strength: 1, points: 20, taper: 'none', randomize: true, ease: 'none'})",
+                onComplete: () => {
+                    gsap.to(searchIcon, { x: 0, y: 0, rotation: 0, duration: 0.2, ease: "power1.out" }); // 元の位置に戻す
+                }
+            });
+        }
+
+        // ソートアイコンの状態を更新する関数 (JSでアイコンを動的に生成・削除する用)
+        function updateSortIcons() {
+            sortFilterButtons.forEach(button => {
+                // まず全てのボタンから既存のアイコンを削除
+                const existingIcon = button.querySelector('i');
+                if (existingIcon) {
+                    existingIcon.remove();
+                }
+
+                // アクティブなボタンにのみ、適切なアイコンを再追加
+                const sortType = button.dataset.sort;
+                let iconClass = '';
+                
+                if (sortType.includes('desc')) {
+                    iconClass = 'fas fa-arrow-down';
+                } else if (sortType.includes('asc')) {
+                    iconClass = 'fas fa-arrow-up';
+                }
+
+                if (iconClass) {
+                    const newIcon = document.createElement('i');
+                    newIcon.className = iconClass;
+                    // GSAPアニメーションはクリック時のみに適用されるようにする
+                    // 初回ロード時にはアニメーションしない
+                    if (!button.classList.contains('active') && !button.hasAttribute('data-initial-load-done')) {
+                        // 初回ロード時はアニメーションしない
+                        // data-initial-load-done は後の処理で追加
+                    } else if (button.classList.contains('active')) {
+                        // アクティブボタンがクリックされた時、または初期アクティブ状態
+                        gsap.from(newIcon, {
+                            scale: 0,
+                            rotation: 180,
+                            duration: 0.3,
+                            ease: "back.out(1.7)"
+                        });
+                    }
+                    button.appendChild(newIcon);
+                }
+            });
+             // 初回ロード後にアイコンが正しく表示されたことをマーク
+            sortFilterButtons.forEach(button => button.setAttribute('data-initial-load-done', 'true'));
+        }
         
         // イベントリスナーを設定
         document.addEventListener('DOMContentLoaded', () => {
+
+            // 初期ロードアニメーション
+            const tl = gsap.timeline({defaults: {opacity: 0, ease: "power3.out"}});
+
+            tl.from("h1", { y: -50, duration: 1, scale: 0.8, delay: 0.5 })
+              .from(".usage-guide-container", { y: 50, duration: 0.8 }, "-=0.5")
+              .from(".controls-container", { y: 50, duration: 0.7 }, "-=0.4")
+              .add(initSearchIconPulseAnimation) // 検索アイコン常時アニメーション開始
+              .add(applyFiltersAndSearch, "-=0.3") // フィルタ適用をシーケンスに追加
+              .add(updateSortIcons, "+=0.1"); // 初期ソートアイコンを更新
+
             // 検索ボックスのイベントリスナー
-            document.getElementById('characterSearch').addEventListener('input', applyFiltersAndSearch);
-            
+            characterSearchInput.addEventListener('input', animateSearchInputInteraction); // 新しいインタラクション
+            characterSearchInput.addEventListener('input', applyFiltersAndSearch); // 検索・フィルター処理
+
             // コストフィルターのイベントリスナー
-            document.querySelectorAll('#costFilter .filter-button').forEach(button => {
+            costFilterButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    document.querySelectorAll('#costFilter .filter-button').forEach(btn => {
+                    costFilterButtons.forEach(btn => {
                         btn.classList.remove('active');
                     });
                     button.classList.add('active');
@@ -551,22 +1446,88 @@
             });
             
             // ソートフィルターのイベントリスナー
-            document.querySelectorAll('#sortFilter .filter-button').forEach(button => {
+            sortFilterButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    document.querySelectorAll('#sortFilter .filter-button').forEach(btn => {
+                    sortFilterButtons.forEach(btn => {
                         btn.classList.remove('active');
                     });
                     button.classList.add('active');
+                    
+                    updateSortIcons(); // アイコンの表示状態を更新
                     applyFiltersAndSearch();
                 });
             });
+
+            // HPバー更新とリセットのためのイベント委譲
+            characterGrid.addEventListener('click', (event) => {
+                const clickedElement = event.target;
+                const card = clickedElement.closest('.character-card');
+
+                if (!card) return; // キャラクターカード外のクリックは無視
+
+                const originalHp = parseFloat(card.dataset.originalHp);
+
+                // Case 1: 再出撃時耐久値のセルがクリックされた場合
+                const clickedRedeployCell = clickedElement.closest('.cost-table td[data-redeploy-hp]');
+                if (clickedRedeployCell) {
+                    const redeployHp = parseFloat(clickedRedeployCell.dataset.redeployHp);
+                    animateHpDisplay(card, redeployHp);
+                }
+                // Case 2: 「本来の耐久値」の数値がクリックされた場合（リセット）
+                else if (clickedElement.classList.contains('character-hp')) {
+                    animateHpDisplay(card, originalHp);
+                }
+            });
+
+            // アコーディオンの開閉機能
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const currentItem = header.closest('.accordion-item');
+                    const currentContent = currentItem.querySelector('.accordion-content');
+                    const isActive = header.classList.contains('active');
+
+                    // 全てのアコーディオンを閉じる
+                    accordionHeaders.forEach(otherHeader => {
+                        const otherItem = otherHeader.closest('.accordion-item');
+                        const otherContent = otherItem.querySelector('.accordion-content');
+                        
+                        if (otherHeader.classList.contains('active')) {
+                            gsap.to(otherContent, {
+                                maxHeight: 0,
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                                opacity: 0,
+                                transform: 'scaleY(0.8)',
+                                duration: 0.35,
+                                ease: "power2.in"
+                            });
+                            otherHeader.classList.remove('active');
+                            otherContent.classList.remove('show');
+                        }
+                    });
+
+                    // クリックされたアコーディオンを開く
+                    if (!isActive) {
+                        header.classList.add('active');
+                        currentContent.classList.add('show');
+                        gsap.to(currentContent, {
+                            maxHeight: currentContent.scrollHeight + 40,
+                            paddingTop: 25,
+                            paddingBottom: 25,
+                            opacity: 1,
+                            transform: 'scaleY(1)',
+                            duration: 0.45,
+                            ease: "power2.out"
+                        });
+                    }
+                });
+            });
             
-            // 初期表示
-            applyFiltersAndSearch();
+            // applyFiltersAndSearch は初期ロードアニメーションのタイムライン内で呼び出される
+            // 初期表示はDOMContentLoadedではなく、タイムラインの最後に実行される
         });
     </script>
 </body>
-<!-- ここにフッターを追加します -->
 <footer>
     <p>© 2025 May 22, Lu:Na:Clock</p>
 </footer>
