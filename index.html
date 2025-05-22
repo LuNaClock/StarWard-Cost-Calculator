@@ -716,7 +716,7 @@
             background-color: #E0E0E0;
             border-radius: 6px;
             overflow: hidden;
-            margin-bottom: 30px;
+            margin-bottom: 5px; /* UPDATED: 割合表示のスペースを確保するためマージンを調整 */
             box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
             position: relative;
             border: 1px solid rgba(0,0,0,0.1);
@@ -741,15 +741,33 @@
         }
         /* 低HP時の脈動アニメーション */
         .hp-bar-low-pulse {
-            /* UPDATED: transform: scaleX を削除し、box-shadowのみに限定 */
             animation: hpPulse 1.2s ease-in-out infinite alternate;
             box-shadow: 0 0 15px 5px var(--hp-pulse-color); /* 脈動する影 */
             will-change: box-shadow; /* transform はここでアニメーションしないため削除 */
         }
-        /* UPDATED: @keyframes hpPulse から transform を削除 */
         @keyframes hpPulse {
             0% { box-shadow: 0 0 10px 3px var(--hp-pulse-color); }
             100% { box-shadow: 0 0 20px 8px var(--hp-pulse-color); } /* より強調 */
+        }
+
+        /* ----- HP割合表示のスタイル (新しく追加) ----- */
+        .hp-percentage-display {
+            text-align: center;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2em; /* 割合の文字サイズ */
+            font-weight: 700;
+            color: var(--primary-light); /* UPDATED: 明るいスカイブルーに変更 */
+            margin-top: 5px; /* UPDATED: HPバーの下に適切なマージンを設定 */
+            margin-bottom: 20px; /* 下のテーブルとの間隔 */
+            text-shadow: 0 0 8px rgba(0, 191, 255, 0.5); /* UPDATED: 明るい青系統の影に変更 */
+            position: relative; /* z-index指定のため */
+            z-index: 2; /* HPバーより手前に表示するため */
+            pointer-events: none; /* クリックイベントの邪魔をしないように */
+            opacity: 0; /* 初期非表示 */
+            transition: opacity 0.3s ease; /* フェードイン/アウト */
+        }
+        .hp-percentage-display.show {
+            opacity: 1;
         }
 
         /* ----- テーブルスタイル ----- */
@@ -757,7 +775,7 @@
             width: 100%;
             border-collapse: separate; /* border-radiusのために */
             border-spacing: 0;
-            margin-top: 20px;
+            margin-top: 20px; /* UPDATED: 割合表示の下に配置されるためマージンを調整 */
             font-size: 1em;
             border-radius: 8px;
             overflow: hidden; /* 角丸対応 */
@@ -903,16 +921,17 @@
             .character-image { width: 100px; height: 100px; font-size: 50px; }
             .character-stats { font-size: 1em; }
             .character-hp { font-size: 1.2em; }
-            .cost-table { font-size: 0.85em; /* 修正点: モバイルでのテーブルフォントサイズ */ }
-            .cost-table th, .cost-table td { padding: 10px 5px; /* 修正点: モバイルでのテーブルパディング */ }
+            .hp-percentage-display { margin-top: -15px; margin-bottom: 15px; font-size: 1.1em; }
+            .cost-table { font-size: 0.85em; }
+            .cost-table th, .cost-table td { padding: 10px 5px; }
             .accordion-header { font-size: 1.1em; padding: 15px 20px; }
             .accordion-content { padding: 0 20px; }
             .accordion-content.show { padding: 20px; }
             .accordion-content p, .accordion-content .formula, .accordion-content .tip, .usage-guide-container .guide-intro {
-                max-width: 100%; /* モバイルでは横幅をいっぱい使う */
+                max-width: 100%;
                 margin-left: 0;
                 margin-right: 0;
-                transform: none; /* モバイルでは縦伸ばしを解除 */
+                transform: none;
             }
         }
         @media (max-width: 480px) {
@@ -922,16 +941,17 @@
             .character-image { width: 90px; height: 90px; font-size: 45px; margin-bottom: 25px;}
             .character-stats { font-size: 0.95em; }
             .character-hp { font-size: 1.15em; }
-            .cost-table { font-size: 0.8em; /* さらに小さく */ }
-            .cost-table th, .cost-table td { padding: 8px 4px; /* さらに狭く */ }
+            .hp-percentage-display { margin-top: -10px; margin-bottom: 10px; font-size: 1em; }
+            .cost-table { font-size: 0.8em; }
+            .cost-table th, .cost-table td { padding: 8px 4px; }
             .accordion-header { font-size: 1em; padding: 12px 15px; }
             .accordion-content { padding: 0 15px; }
             .accordion-content.show { padding: 15px; }
             .accordion-content p, .accordion-content .formula, .accordion-content .tip, .usage-guide-container .guide-intro {
-                max-width: 100%; /* モバイルでは横幅をいっぱい使う */
+                max-width: 100%;
                 margin-left: 0;
                 margin-right: 0;
-                transform: none; /* モバイルでは縦伸ばしを解除 */
+                transform: none;
             }
         }
     </style>
@@ -1089,7 +1109,7 @@
         const costRemainingMap = {
             3.0: [0.5, 1.0, 1.5],
             2.5: [0.5, 1.0, 1.5, 2.0],
-            2.0: [1.0, 1.5],
+            2.0: [0.5, 1.0, 1.5],
             1.5: [0.5, 1.0]
         };
 
@@ -1171,6 +1191,8 @@
                                 <div class="hp-bar-container">
                                     <div class="hp-bar-fill"></div>
                                 </div>
+                                <!-- UPDATED: HP割合表示要素を追加 -->
+                                <div class="hp-percentage-display"></div>
                                 <table class="cost-table">
                                     <thead>
                                         <tr>
@@ -1295,6 +1317,7 @@
             const hpBarFill = card.querySelector('.hp-bar-fill');
             const originalHp = parseFloat(card.dataset.originalHp);
             const currentHpSpan = card.querySelector('.character-hp');
+            const hpPercentageDisplayElement = card.querySelector('.hp-percentage-display'); // UPDATED: 割合表示要素を取得
             const allRedeployCellsInCard = card.querySelectorAll('.cost-table td[data-redeploy-hp]');
 
             // --- デバッグログの追加 ---
@@ -1314,11 +1337,12 @@
             const defaultColor = '#E74C3C'; // 赤
             const defaultTextShadow = '0 0 5px rgba(231, 76, 60, 0.3)'; // 赤い影
 
-            // UPDATED: 「本来の耐久値」の表示を常に固定する
-            // まず、currentHpSpanのGSAPアニメーションを全て停止し、デフォルトの見た目に設定
+            // UPDATED: 「本来の耐久値」の表示は常に固定
+            // currentHpSpanのGSAPアニメーションを全て停止し、デフォルトの見た目に設定
             gsap.killTweensOf(currentHpSpan);
             gsap.set(currentHpSpan, { color: defaultColor, textShadow: defaultTextShadow });
             currentHpSpan.textContent = originalHp.toLocaleString(); // 数値も常に本来の耐久値に設定
+            currentHpSpan.classList.remove('animating'); // animatingクラスも解除を保証
 
             // HPバーアニメーション
             gsap.killTweensOf(hpBarFill); // 既存のHPバーアニメーションを強制終了
@@ -1339,6 +1363,12 @@
                     currentHpSpan.classList.remove('animating');
                 });
 
+                // UPDATED: 割合表示を「100%」に設定し、表示
+                if (hpPercentageDisplayElement) {
+                    hpPercentageDisplayElement.textContent = '100%'; // 「約」を削除
+                    hpPercentageDisplayElement.classList.add('show');
+                }
+
             } else {
                 // 再出撃時耐久値がクリックされた場合（通常のアニメーション）
                 const hpPercentage = (targetHp / originalHp);
@@ -1349,7 +1379,20 @@
                     duration: 0.8,
                     ease: "power3.out",
                     transformOrigin: 'left center',
-                    overwrite: true
+                    overwrite: true,
+                    onUpdate: function() { // UPDATED: HPバーのアニメーション中に割合を更新
+                        if (hpPercentageDisplayElement) {
+                            const currentScaleX = gsap.getProperty(hpBarFill, "scaleX");
+                            const percentage = Math.round(currentScaleX * 100);
+                            hpPercentageDisplayElement.textContent = `${percentage}%`; // 「約」を削除
+                        }
+                    },
+                    onComplete: function() { // UPDATED: アニメーション完了時に割合表示を確実に更新
+                        if (hpPercentageDisplayElement) {
+                            const finalPercentage = Math.round(hpPercentage * 100);
+                            hpPercentageDisplayElement.textContent = `${finalPercentage}%`; // 「約」を削除
+                        }
+                    }
                 });
 
                 // 低HP時の脈動アニメーションの管理
@@ -1360,10 +1403,18 @@
                 }
 
                 // HPバー変動時に「本来の耐久値」の数字を拡大アニメーション
-                currentHpSpan.classList.add('animating');
+                currentHpSpan.classList.add('animating'); // このクラスで拡大のみをトリガー
                 gsap.delayedCall(0.8, () => { // HPバーアニメーションの完了に合わせてクラスを削除
                     currentHpSpan.classList.remove('animating');
                 });
+
+                // UPDATED: 割合表示要素を表示
+                if (hpPercentageDisplayElement) {
+                    hpPercentageDisplayElement.classList.add('show');
+                    // 初期値を設定 (アニメーション開始時)
+                    const initialPercentage = Math.round(parseFloat(gsap.getProperty(hpBarFill, "scaleX")) * 100);
+                    hpPercentageDisplayElement.textContent = `${initialPercentage}%`; // 「約」を削除
+                }
 
                 // アクティブクラスの管理 (テーブルセル)
                 allRedeployCellsInCard.forEach(cell => {
