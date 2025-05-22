@@ -57,6 +57,7 @@
             /* 背景アニメーションを継続 */
             background-size: 200% 200%;
             animation: backgroundShift 60s ease-in-out infinite alternate; 
+            will-change: background-position; /* will-changeを追加 */
         }
 
         @keyframes backgroundShift {
@@ -80,9 +81,10 @@
             background-image:
                 linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
                 linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
-            background-size: 50px 50px; /* グリッドのサイズ */
+            background-size: 50px 50px;
             opacity: 0.2;
             animation: gridPan 120s linear infinite;
+            will-change: background-position; /* will-changeを追加 */
         }
 
         @keyframes gridPan {
@@ -92,7 +94,7 @@
 
         body::after { /* ノイズオーバレイ */
             /* base64エンコードされたSVGノイズ */
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB2aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGZpbHRlciBpZD0iaCI+PGZlVHVyYmVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9Ii44LjgiIG51b2N0YXZlcz0iMSIgc2VhbU9jdGF2ZXM9IjIiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsZXI9InVybCgjaCkiIG9wYWNpdHk9IjAuMDUiLz48L3N2Zz4=');
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB2aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGZpbHRlciBpZD0iaCI+PGZlVHVyYmVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9Ii44LjgiIG51b2N0YXZlcz0iMSIyc2VhbU9jdGF2ZXM9IjIiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsZXI9InVybCgjaCkiIG9wYWNpdHk9IjAuMDUiLz48L2Z2Zz4=');
             background-size: 200px;
             opacity: 0.1;
         }
@@ -116,6 +118,7 @@
         .title-sf-effect {
             animation: neonGlowInitial 1.5s ease-in-out forwards,
                        glitchTextInitial 2s linear forwards;
+            will-change: transform, text-shadow, color; /* will-changeを追加 */
         }
 
         @keyframes neonGlowInitial {
@@ -160,20 +163,7 @@
             position: relative;
             overflow: hidden; /* 背景アニメーション用 */
             border: 1px solid rgba(0, 191, 255, 0.2);
-        }
-        .usage-guide-container::before { /* 薄いグリッド背景 */
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(to right, rgba(0, 191, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 191, 255, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-            opacity: 0.5;
-            z-index: 0;
+            will-change: transform, box-shadow; /* will-changeを追加 */
         }
         .usage-guide-container:hover {
             transform: translateY(-8px); /* ホバー時の浮遊感を強調 */
@@ -204,9 +194,9 @@
             position: relative;
             z-index: 1;
             /* 修正点: 序文も読みやすい行長に制限 */
-            max-width: 70ch;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 70ch; /* 追加 */
+            margin-left: auto; /* 追加 */
+            margin-right: auto; /* 追加 */
         }
 
         /* ----- アコーディオンのスタイル ----- */
@@ -241,6 +231,7 @@
             box-sizing: border-box;
             position: relative;
             overflow: hidden;
+            will-change: background-color, color, box-shadow; /* will-changeを追加 */
         }
         .accordion-header::before { /* ホバー・アクティブ時の光るボーダー */
             content: '';
@@ -253,6 +244,7 @@
             box-shadow: 0 0 0 0px var(--neon-glow-strong);
             transition: box-shadow 0.3s ease-out;
             z-index: -1;
+            will-change: box-shadow; /* will-changeを追加 */
         }
         .accordion-header:hover {
             background-color: #E6EEF4;
@@ -286,6 +278,7 @@
         .accordion-icon {
             font-size: 1.1em;
             transition: transform var(--transition-speed);
+            will-change: transform; /* will-changeを追加 */
         }
         .accordion-header.active .accordion-icon {
             transform: rotate(180deg) scale(1.1); /* わずかに拡大 */
@@ -305,6 +298,7 @@
             opacity: 0;
             transform: scaleY(0.8); /* 初期状態で縮小 */
             transform-origin: top;
+            will-change: max-height, padding, opacity, transform; /* will-changeを追加 */
         }
         .accordion-content.show {
             max-height: 500px; /* 十分な高さに設定 */
@@ -378,10 +372,9 @@
             color: var(--primary-light);
             font-size: 1.3em;
             pointer-events: none;
-            /* animation: pulseIcon 1.8s ease-in-out infinite alternate; */ /* JSでアニメーション制御するためCSSアニメーションは削除 */
             text-shadow: 0 0 8px rgba(0, 191, 255, 0.6);
+            will-change: transform, opacity, text-shadow; /* will-changeを追加 */
         }
-        /* @keyframes pulseIcon はJSで制御するため削除 */
 
         #characterSearch {
             width: 100%;
@@ -390,15 +383,13 @@
             border-radius: 10px;
             font-size: 1.1em;
             background-color: var(--card-background);
-            /* transition: border-color var(--transition-speed), box-shadow var(--transition-speed); */ /* フォーカス時のbox-shadowはJSで制御するためtransitionとbox-shadowの初期値は削除 */
             box-sizing: border-box;
             box-shadow: inset 0 1px 4px rgba(0,0,0,0.08); /* 通常時のshadow */
+            will-change: border-color, box-shadow; /* will-changeを追加 */
         }
         #characterSearch:focus {
             border-color: var(--primary-light);
             outline: none;
-            /* box-shadowはJSでアニメーションするためここでの定義は不要 */
-            /* box-shadow: 0 0 0 6px rgba(0, 191, 255, 0.4), inset 0 1px 8px rgba(0, 191, 255, 0.2); */
         }
         /* 検索結果なしメッセージ */
         .no-results-message {
@@ -409,6 +400,7 @@
             opacity: 0; /* 初期非表示 */
             font-family: 'Orbitron', sans-serif;
             text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+            will-change: transform, opacity, text-shadow; /* will-changeを追加 */
         }
         @keyframes glitchDisplay {
             0% { transform: translate(0); opacity: 0; }
@@ -424,9 +416,7 @@
             display: flex;
             flex-direction: column; /* 修正点: 常に縦並びにする */
             gap: 30px;
-            /* flex-wrap: wrap; */ /* 不要 */
             align-items: flex-start; /* 修正点: 常に左寄せ */
-            /* justify-content: space-between; */ /* 不要 */
         }
         .filter-group {
             display: flex;
@@ -450,6 +440,7 @@
             color: var(--accent-orange);
             font-size: 1.2em;
             animation: bounceIcon 1.5s ease-in-out infinite alternate;
+            will-change: transform; /* will-changeを追加 */
         }
         .filter-label:nth-of-type(2) i {
             animation-delay: 0.15s; /* アイコンのバウンスに遅延 */
@@ -479,6 +470,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.12); /* 影を強調 */
             position: relative;
             overflow: hidden; /* 波紋エフェクト用 */
+            will-change: transform, background-color, box-shadow, color; /* will-changeを追加 */
         }
         .filter-button i { /* 動的に追加されるアイコンのスタイル */
             margin-left: 8px; /* テキストとアイコンの間隔 */
@@ -503,6 +495,7 @@
             transform: translate(-50%, -50%) scale(1);
             transition: transform 0.6s ease-out, opacity 0.6s ease-out;
             z-index: 1; /* ボタン内容の上に表示 */
+            will-change: transform, opacity; /* will-changeを追加 */
         }
         .filter-button:active::after {
             transform: translate(-50%, -50%) scale(20);
@@ -520,6 +513,7 @@
             transform: skewX(-20deg);
             transition: all 0.5s ease;
             z-index: 1; /* ボタン内容の上に表示 */
+            will-change: transform, left; /* will-changeを追加 */
         }
         .filter-button:hover::before {
             left: 100%;
@@ -534,6 +528,7 @@
             background-image: linear-gradient(45deg, rgba(0, 191, 255, 0.8) 0%, rgba(0, 150, 200, 0.8) 100%);
             background-size: 200% 200%;
             animation: activeButtonGlow 4s ease-in-out infinite alternate;
+            will-change: background-position, box-shadow; /* will-changeを追加 */
         }
         @keyframes activeButtonGlow {
             0% { background-position: 0% 50%; }
@@ -574,6 +569,7 @@
             position: relative;
             border: 2px solid rgba(0, 191, 255, 0.1);
             background-image: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,245,249,0.9)); /* 薄いグラデーション */
+            will-change: transform, box-shadow, opacity; /* will-changeを追加 */
         }
         .character-card::before { /* ボーダーに沿って光るエフェクト */
             content: '';
@@ -588,6 +584,7 @@
             z-index: -1;
             opacity: 0.2; /* 常時薄く発光 */
             animation: cardBorderFlow 8s linear infinite; /* 常にゆっくり流れる */
+            will-change: background-position, opacity; /* will-changeを追加 */
         }
         .character-card:hover::before {
             opacity: 0.8; /* ホバーで強く発光 */
@@ -647,6 +644,7 @@
             box-shadow: 0 0 0 4px rgba(0, 191, 255, 0.3), inset 0 0 12px rgba(0,0,0,0.18);
             overflow: hidden;
             transition: all var(--transition-speed);
+            will-change: transform, box-shadow; /* will-changeを追加 */
         }
         .character-image:hover {
             transform: scale(1.1) rotateZ(5deg); /* より強調された拡大と回転 */
@@ -688,6 +686,7 @@
             position: relative;
             overflow: hidden;
             text-shadow: 0 0 5px rgba(231, 76, 60, 0.3);
+            will-change: color, text-shadow, transform; /* will-changeを追加 */
         }
         .character-hp:hover {
             color: var(--primary-light);
@@ -698,9 +697,15 @@
             color: #C0392B;
         }
         /* GSAPでHP数値アニメーション中に一時的に適用されるクラス */
+        /* このクラスはHPバー変動時に数字がわずかに拡大するアニメーションをトリガーします */
         .character-hp.animating {
-            color: var(--primary-light);
-            text-shadow: 0 0 15px var(--neon-glow-strong);
+            animation: hpNumberPop 0.8s ease-out forwards; 
+            will-change: transform; /* colorとtext-shadowはCSSで固定されるため削除 */
+        }
+        @keyframes hpNumberPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
         }
 
 
@@ -718,38 +723,33 @@
         }
         .hp-bar-fill {
             height: 100%;
-            background: linear-gradient(to right, var(--hp-low) 0%, var(--hp-medium) 50%, var(--hp-high) 100%);
-            width: 100%;
-            transition: width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: linear-gradient(to right, var(--hp-low) 0%, var(--hp-medium) 50%, var(--hp-high) 100%),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
+            background-size: 100% 100%, 50% 100%; /* 最初のグラデーションはフルサイズ、光沢は幅の半分 */
+            background-repeat: no-repeat;
+            background-position: left center, -50% center; /* 最初のグラデーションは固定、光沢は左外から開始 */
             transform-origin: left;
             position: relative;
             overflow: hidden;
             border-radius: 6px;
+            animation: hpShineBackground 2.5s linear infinite; /* background-positionをアニメーション */
+            will-change: transform, background-position;
         }
-        .hp-bar-fill::after { /* HPバー内部のSF的な光沢アニメーション */
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transform: skewX(-30deg);
-            animation: hpShine 2.5s linear infinite; /* 継続的な光沢 */
-            opacity: 0.8;
-        }
-        @keyframes hpShine {
-            0% { left: -100%; }
-            100% { left: 100%; }
+        @keyframes hpShineBackground {
+            0% { background-position: left center, -50% center; } /* 光沢を左外から開始 */
+            100% { background-position: left center, 150% center; } /* 光沢を右外まで移動 */
         }
         /* 低HP時の脈動アニメーション */
         .hp-bar-low-pulse {
+            /* UPDATED: transform: scaleX を削除し、box-shadowのみに限定 */
             animation: hpPulse 1.2s ease-in-out infinite alternate;
             box-shadow: 0 0 15px 5px var(--hp-pulse-color); /* 脈動する影 */
+            will-change: box-shadow; /* transform はここでアニメーションしないため削除 */
         }
+        /* UPDATED: @keyframes hpPulse から transform を削除 */
         @keyframes hpPulse {
-            0% { transform: scaleX(1); box-shadow: 0 0 10px 3px var(--hp-pulse-color); }
-            100% { transform: scaleX(1.01); box-shadow: 0 0 20px 8px var(--hp-pulse-color); }
+            0% { box-shadow: 0 0 10px 3px var(--hp-pulse-color); }
+            100% { box-shadow: 0 0 20px 8px var(--hp-pulse-color); } /* より強調 */
         }
 
         /* ----- テーブルスタイル ----- */
@@ -786,6 +786,10 @@
             transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
             position: relative;
             background-color: var(--card-background);
+            will-change: background-color, color, box-shadow, transform; /* will-changeを追加 */
+        }
+        .cost-table tr:nth-child(even) td {
+            background-color: #F8FCFF;
         }
         .cost-table td:hover {
             background-color: #EBF7FF;
@@ -794,17 +798,20 @@
             transform: translateY(-2px); /* わずかに浮遊 */
         }
         .cost-table td.active-hp-display {
-            background-color: #D3EEFF;
+            background-color: #D3EEFF; /* 薄い青色 */
             font-weight: bold;
-            color: var(--primary-dark);
+            color: var(--hp-low); /* 文字色を赤色に変更 */
             box-shadow: inset 0 0 15px rgba(0, 191, 255, 0.4); /* アクティブ時の影を強調 */
             border: 1px solid var(--primary-light);
             transform: translateY(0); /* 浮遊を打ち消す */
+            animation: cellFlash 0.3s ease-out; /* アニメーションを再有効化 */
+        }
+        /* 修正点: cellFlashキーフレームは引き続き残す (JS側でGSAPで使う可能性も考慮) */
+        @keyframes cellFlash {
+            0% { background-color: #D3EEFF; box-shadow: inset 0 0 30px rgba(0, 191, 255, 0.8), 0 0 20px 5px rgba(0, 191, 255, 0.8); }
+            100% { background-color: #D3EEFF; box-shadow: inset 0 0 20px rgba(0, 191, 255, 0.6), 0 0 10px 3px rgba(0, 191, 255, 0.5); }
         }
 
-        .cost-table tr:nth-child(even) td {
-            background-color: #F8FCFF;
-        }
         .cost-table tr:last-child td:first-child { border-bottom-left-radius: 8px; }
         .cost-table tr:last-child td:last-child { border-bottom-right-radius: 8px; }
 
@@ -824,6 +831,7 @@
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
             backdrop-filter: blur(5px); /* 背景をぼかす */
+            will-change: opacity, visibility, backdrop-filter; /* will-changeを追加 */
         }
         .loading-overlay.active {
             opacity: 1;
@@ -839,6 +847,7 @@
             animation: spin 1s linear infinite;
             position: relative;
             box-shadow: 0 0 15px var(--loading-spinner-color);
+            will-change: transform, box-shadow; /* will-changeを追加 */
         }
         .loading-spinner::before {
             content: '';
@@ -891,7 +900,6 @@
             .filter-group { width: 100%; justify-content: flex-start; }
             .filter-buttons { width: 100%; justify-content: space-around; }
             .filter-button { flex-grow: 1; min-width: unset; }
-            .character-grid { grid-template-columns: 1fr; gap: 25px; }
             .character-image { width: 100px; height: 100px; font-size: 50px; }
             .character-stats { font-size: 1em; }
             .character-hp { font-size: 1.2em; }
@@ -919,6 +927,12 @@
             .accordion-header { font-size: 1em; padding: 12px 15px; }
             .accordion-content { padding: 0 15px; }
             .accordion-content.show { padding: 15px; }
+            .accordion-content p, .accordion-content .formula, .accordion-content .tip, .usage-guide-container .guide-intro {
+                max-width: 100%; /* モバイルでは横幅をいっぱい使う */
+                margin-left: 0;
+                margin-right: 0;
+                transform: none; /* モバイルでは縦伸ばしを解除 */
+            }
         }
     </style>
 </head>
@@ -1112,6 +1126,7 @@
                 duration: 0.2,
                 stagger: 0.01,
                 ease: "power2.in",
+                overwrite: true,
                 onComplete: () => {
                     characterGrid.innerHTML = ''; // アニメーション後にグリッドをクリア
 
@@ -1122,7 +1137,7 @@
                         characterGrid.appendChild(noResultsMessage);
                         gsap.fromTo(noResultsMessage, 
                             { opacity: 0, scale: 0.8 },
-                            { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out", delay: 0.1, animation: 'glitchDisplay 2s ease-in-out forwards' }
+                            { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out", delay: 0.1, animation: 'glitchDisplay 2s ease-in-out forwards', overwrite: true }
                         );
                         hideLoading(); // ローディング非表示
                         return;
@@ -1139,7 +1154,6 @@
                             return Math.round(character.hp * (remainingCost / character.cost));
                         });
 
-                        // 修正点: 画像と頭文字のspanを両方HTMLに含める
                         card.innerHTML = `
                             <div class="character-header">
                                 <span>${character.name}</span>
@@ -1176,12 +1190,11 @@
                         
                         characterGrid.appendChild(card);
 
-                        // 修正点: 画像ロードのロジックを強化し、completeプロパティでキャッシュ対応
+                        // 画像ロードのロジックを強化し、completeプロパティでキャッシュ対応
                         const imgElement = card.querySelector('.character-icon-img');
                         const initialSpan = card.querySelector('.initial');
 
                         if (character.image) {
-                            // ロード成功/失敗時のハンドラを設定
                             imgElement.onload = function() {
                                 this.style.display = 'block'; 
                                 initialSpan.style.display = 'none'; 
@@ -1191,23 +1204,14 @@
                                 initialSpan.style.display = 'flex'; 
                             };
 
-                            // ブラウザキャッシュからのロードでonloadが発火しない場合の対策
-                            // img.complete は画像ロードが完了したかを示す
-                            // img.naturalWidth > 0 は画像データが有効であることを示す（エラーの場合は0になる）
                             if (imgElement.complete && imgElement.naturalWidth > 0) {
                                 imgElement.style.display = 'block';
                                 initialSpan.style.display = 'none';
                             } else {
-                                // まだロード中でない場合やエラーの場合は、一旦頭文字を表示
                                 imgElement.style.display = 'none';
                                 initialSpan.style.display = 'flex';
                             }
-                            // imgElement.src がHTMLに設定されているため、通常はブラウザが自動でロードを開始します。
-                            // 明示的にロードを再トリガーしたい場合は imgElement.src = character.image; とすることも可能ですが、
-                            // これだと既にロード済みの画像でも再度ロード処理が走る可能性があります。
-                            // 上記の complete / naturalWidth チェックの方が効率的です。
                         } else {
-                            // 画像パスがない場合、最初から頭文字を表示
                             imgElement.style.display = 'none';
                             initialSpan.style.display = 'flex';
                         }
@@ -1218,15 +1222,16 @@
                             y: 80, // 少し長めにスライド
                             scale: 0.8,
                             rotateZ: gsap.utils.random(-5, 5), // 左右にわずかに回転
-                            duration: 0.45,
+                            duration: 0.4,
                             ease: "power3.out",
-                            delay: index * 0.03 // 0.02 から 0.03 に調整
+                            delay: index * 0.02,
+                            overwrite: true
                         });
 
                         // 初期状態のHPバーを本来の耐久値（100%）に設定
                         const hpBarFill = card.querySelector('.hp-bar-fill');
                         if (hpBarFill) {
-                            gsap.set(hpBarFill, { width: '100%' });
+                            gsap.set(hpBarFill, { scaleX: 1 }); // transform: scaleX を初期設定
                         }
                     });
                     hideLoading(); // ローディング非表示
@@ -1236,25 +1241,30 @@
         
         // 検索とフィルタリングを適用する関数
         function applyFiltersAndSearch() {
-            const searchTerm = characterSearchInput.value.toLowerCase();
+            const searchTerm = characterSearchInput.value.trim().toLowerCase();
             const activeCostFilter = document.querySelector('#costFilter .active').dataset.cost;
             const activeSortFilter = document.querySelector('#sortFilter .active').dataset.sort;
             
+            console.log(`applyFiltersAndSearch called: searchTerm='${searchTerm}', activeCostFilter='${activeCostFilter}', activeSortFilter='${activeSortFilter}'`); // デバッグログ
+
             let filteredCharacters = [...characterData];
+            console.log(`ステップ1: 初期キャラクター数`, filteredCharacters.length); // デバッグログ
             
             // 検索フィルタを適用
             if (searchTerm) {
                 filteredCharacters = filteredCharacters.filter(character => 
                     character.name.toLowerCase().includes(searchTerm)
                 );
+                console.log(`ステップ2: 検索後キャラクター数`, filteredCharacters.length); // デバッグログ
             }
             
-            // コストフィルタを適用
-            if (activeCostFilter !== 'all') {
-                const costValue = parseFloat(activeCostFilter);
-                filteredCharacters = filteredCharacters.filter(character => 
-                    character.cost === costValue
+            // コストフィルターを適用
+            if (activeCostFilter !== 'all') { // 'all' 以外のフィルタが選択されている場合のみ適用
+                const costToFilter = parseFloat(activeCostFilter);
+                filteredCharacters = filteredCharacters.filter(character =>
+                    character.cost === costToFilter
                 );
+                console.log(`ステップ3: コストフィルター後キャラクター数`, filteredCharacters.length); // デバッグログ
             }
             
             // ソートを適用
@@ -1275,7 +1285,8 @@
                     filteredCharacters.sort((a, b) => a.cost - b.cost);
                     break;
             }
-            
+            console.log(`ステップ4: 最終キャラクター数`, filteredCharacters.length); // デバッグログ
+
             generateCharacterCards(filteredCharacters);
         }
 
@@ -1284,44 +1295,81 @@
             const hpBarFill = card.querySelector('.hp-bar-fill');
             const originalHp = parseFloat(card.dataset.originalHp);
             const currentHpSpan = card.querySelector('.character-hp');
-            const allRedeployCells = card.querySelectorAll('.cost-table td[data-redeploy-hp]');
+            const allRedeployCellsInCard = card.querySelectorAll('.cost-table td[data-redeploy-hp]');
 
-            const hpPercentage = (targetHp / originalHp); // 0-1の割合
-            
-            // HPバーの幅をアニメーション
-            gsap.to(hpBarFill, {
-                width: `${hpPercentage * 100}%`,
-                duration: 0.8,
-                ease: "power2.out"
-            });
+            // --- デバッグログの追加 ---
+            const characterName = card.querySelector('.character-header span:first-child').textContent;
+            console.log(`--- Debug for ${characterName} ---`);
+            console.log(`Original HP: ${originalHp}`);
+            console.log(`Target HP (Redeploy): ${targetHp}`);
+            const characterCostText = card.querySelector('.character-cost').textContent; // "コスト: X.X"
+            const characterCost = parseFloat(characterCostText.replace('コスト: ', ''));
+            console.log(`Character Cost: ${characterCost}`);
+            const inferredRemainingCost = (targetHp / originalHp) * characterCost;
+            console.log(`Inferred Remaining Cost: ${inferredRemainingCost.toFixed(1)}`); 
+            console.log(`--------------------`);
+            // --- デバッグログの追加ここまで ---
 
-            // 低HP時の脈動アニメーションの管理 (HPが30%以下になったら適用)
-            if (hpPercentage <= 0.3) {
-                hpBarFill.classList.add('hp-bar-low-pulse');
+            // Define default colors/shadows for HP number (always red and its shadow)
+            const defaultColor = '#E74C3C'; // 赤
+            const defaultTextShadow = '0 0 5px rgba(231, 76, 60, 0.3)'; // 赤い影
+
+            // UPDATED: 「本来の耐久値」の表示を常に固定する
+            // まず、currentHpSpanのGSAPアニメーションを全て停止し、デフォルトの見た目に設定
+            gsap.killTweensOf(currentHpSpan);
+            gsap.set(currentHpSpan, { color: defaultColor, textShadow: defaultTextShadow });
+            currentHpSpan.textContent = originalHp.toLocaleString(); // 数値も常に本来の耐久値に設定
+
+            // HPバーアニメーション
+            gsap.killTweensOf(hpBarFill); // 既存のHPバーアニメーションを強制終了
+
+            if (targetHp === originalHp) {
+                // 「本来の耐久値」がクリックされた場合（リセット操作）
+                gsap.to(hpBarFill, { scaleX: 1, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true });
+                hpBarFill.classList.remove('hp-bar-low-pulse'); // 低HP脈動も解除
+
+                // セルハイライトの解除
+                allRedeployCellsInCard.forEach(cell => {
+                    cell.classList.remove('active-hp-display');
+                });
+                
+                // HPバーリセット時に「本来の耐久値」の数字の拡大アニメーションも実行
+                currentHpSpan.classList.add('animating');
+                gsap.delayedCall(0.8, () => { // HPバーアニメーションの完了に合わせてクラスを削除
+                    currentHpSpan.classList.remove('animating');
+                });
+
             } else {
-                hpBarFill.classList.remove('hp-bar-low-pulse');
-            }
+                // 再出撃時耐久値がクリックされた場合（通常のアニメーション）
+                const hpPercentage = (targetHp / originalHp);
+                console.log(`Calculated Percentage: ${hpPercentage}`); // デバッグログで正しいパーセンテージを確認
 
-            // 数値のカウントアップアニメーション
-            let currentDisplayedHp = parseFloat(currentHpSpan.textContent.replace(/,/g, ''));
-            
-            currentHpSpan.classList.add('animating'); // アニメーション開始時にクラス追加
-            gsap.to({ value: currentDisplayedHp }, {
-                value: targetHp,
-                duration: 0.8,
-                ease: "power2.out",
-                onUpdate: function() {
-                    currentHpSpan.textContent = Math.round(this.targets[0].value).toLocaleString();
-                },
-                onComplete: function() {
-                    currentHpSpan.classList.remove('animating'); // アニメーション終了時にクラス削除
+                gsap.to(hpBarFill, {
+                    scaleX: hpPercentage,
+                    duration: 0.8,
+                    ease: "power3.out",
+                    transformOrigin: 'left center',
+                    overwrite: true
+                });
+
+                // 低HP時の脈動アニメーションの管理
+                if (hpPercentage <= 0.3) { 
+                    hpBarFill.classList.add('hp-bar-low-pulse');
+                } else {
+                    hpBarFill.classList.remove('hp-bar-low-pulse');
                 }
-            });
 
-            // アクティブクラスの管理
-            allRedeployCells.forEach(cell => cell.classList.remove('active-hp-display'));
-            if (targetHp !== originalHp) { // 本来の耐久値以外の場合のみアクティブにする
-                const clickedCell = Array.from(allRedeployCells).find(cell => parseFloat(cell.dataset.redeployHp) === targetHp);
+                // HPバー変動時に「本来の耐久値」の数字を拡大アニメーション
+                currentHpSpan.classList.add('animating');
+                gsap.delayedCall(0.8, () => { // HPバーアニメーションの完了に合わせてクラスを削除
+                    currentHpSpan.classList.remove('animating');
+                });
+
+                // アクティブクラスの管理 (テーブルセル)
+                allRedeployCellsInCard.forEach(cell => {
+                    cell.classList.remove('active-hp-display');
+                });
+                const clickedCell = Array.from(allRedeployCellsInCard).find(cell => parseFloat(cell.dataset.redeployHp) === targetHp);
                 if (clickedCell) {
                     clickedCell.classList.add('active-hp-display');
                 }
@@ -1333,7 +1381,7 @@
         function initSearchIconPulseAnimation() {
             if (!searchIcon) return; // searchIconがまだ存在しない場合はスキップ
 
-            searchIconPulseTl = gsap.timeline({ repeat: -1, yoyo: true, defaults: { duration: 1.8, ease: "power2.inOut" } });
+            searchIconPulseTl = gsap.timeline({ repeat: -1, yoyo: true, defaults: { duration: 1.8, ease: "power2.inOut", overwrite: true } });
             searchIconPulseTl.to(searchIcon, { scale: 1.08, opacity: 1 });
         }
 
@@ -1344,7 +1392,7 @@
         function animateSearchInputInteraction() {
             // 検索入力欄のグローアニメーション (一時的な強調)
             if (searchInputGlowTl) searchInputGlowTl.kill(); // 以前のアニメーションを停止
-            searchInputGlowTl = gsap.timeline();
+            searchInputGlowTl = gsap.timeline({ overwrite: true });
             searchInputGlowTl.fromTo(characterSearchInput,
                 { boxShadow: '0 0 0 0px rgba(0, 191, 255, 0)' }, // 初期状態
                 { 
@@ -1371,8 +1419,9 @@
                 repeat: 3, // 3回揺れる
                 yoyo: true,
                 ease: "rough({strength: 1, points: 20, taper: 'none', randomize: true, ease: 'none'})",
+                overwrite: true,
                 onComplete: () => {
-                    gsap.to(searchIcon, { x: 0, y: 0, rotation: 0, duration: 0.2, ease: "power1.out" }); // 元の位置に戻す
+                    gsap.to(searchIcon, { x: 0, y: 0, rotation: 0, duration: 0.2, ease: "power1.out", overwrite: true }); // 元の位置に戻す
                 }
             });
         }
@@ -1402,21 +1451,11 @@
                     
                     // アクティブなボタンのアイコンは即時表示、非アクティブなボタンのアイコンも常に表示
                     // GSAPアニメーションはクリック時のみに適用されるようにする
-                    // 初回ロード時にはアニメーションしない
                     // data-initial-load-done 属性を使って初回ロードかどうかを判別
                     if (button.classList.contains('active') && !button.hasAttribute('data-initial-sort-applied')) {
                         // 初回アクティブなボタンのアイコンはアニメーションさせずに直接表示
                         button.appendChild(newIcon);
                         button.setAttribute('data-initial-sort-applied', 'true'); // 初回適用済みのマーク
-                    } else if (button.classList.contains('active')) {
-                        // 2回目以降のアクティブ化（クリック時）はアニメーション
-                        gsap.from(newIcon, {
-                            scale: 0,
-                            rotation: 180,
-                            duration: 0.3,
-                            ease: "back.out(1.7)"
-                        });
-                        button.appendChild(newIcon);
                     } else {
                         // 非アクティブなボタンのアイコンは単純に追加
                         button.appendChild(newIcon);
@@ -1429,7 +1468,7 @@
         document.addEventListener('DOMContentLoaded', () => {
 
             // 初期ロードアニメーション
-            const tl = gsap.timeline({defaults: {opacity: 0, ease: "power3.out"}});
+            const tl = gsap.timeline({defaults: {opacity: 0, ease: "power3.out", overwrite: true }});
 
             tl.from("h1", { y: -50, duration: 1, scale: 0.8, delay: 0.5 })
               .from(".usage-guide-container", { y: 50, duration: 0.8 }, "-=0.5")
@@ -1438,9 +1477,44 @@
               .add(applyFiltersAndSearch, "-=0.3") // フィルタ適用をシーケンスに追加
               .add(updateSortIcons, "+=0.1"); // 初期ソートアイコンを更新
 
-            // 検索ボックスのイベントリスナー
-            characterSearchInput.addEventListener('input', animateSearchInputInteraction); // 新しいインタラクション
-            characterSearchInput.addEventListener('input', applyFiltersAndSearch); // 検索・フィルター処理
+            // IME入力の状態を管理するフラグ
+            let isComposing = false;
+            let searchTimeout;
+
+            // IME変換開始時
+            characterSearchInput.addEventListener('compositionstart', () => {
+                isComposing = true;
+                clearTimeout(searchTimeout); // IME開始時はデバウンスタイマーをクリア
+            });
+
+            // IME変換終了時（確定時）
+            characterSearchInput.addEventListener('compositionend', () => {
+                isComposing = false;
+                clearTimeout(searchTimeout); // 念のため再度クリア
+                applyFiltersAndSearch(); // 確定後、即座に検索を実行
+            });
+
+            // 検索ボックスのイベントリスナー (デバウンス処理とIME対応)
+            characterSearchInput.addEventListener('input', () => {
+                animateSearchInputInteraction(); // アニメーションは即時実行
+
+                // IME入力中でない場合のみデバウンスを適用
+                // IME入力中のinputイベントはcompositionendで処理されることを期待
+                if (!isComposing) {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        applyFiltersAndSearch();
+                    }, 300); // 300msのデバウンス
+                }
+            });
+
+            // Inputフィールドがフォーカスを失った時に、まだ検索が保留中であれば強制的に実行
+            characterSearchInput.addEventListener('blur', () => {
+                if (!isComposing) { // IME変換中ではない場合のみ
+                    clearTimeout(searchTimeout); // 保留中のデバウンスをクリア
+                    applyFiltersAndSearch(); // 即座に検索を実行
+                }
+            });
 
             // コストフィルターのイベントリスナー
             costFilterButtons.forEach(button => {
@@ -1507,7 +1581,8 @@
                                 opacity: 0,
                                 transform: 'scaleY(0.8)',
                                 duration: 0.35,
-                                ease: "power2.in"
+                                ease: "power2.in",
+                                overwrite: true
                             });
                             otherHeader.classList.remove('active');
                             otherContent.classList.remove('show');
@@ -1525,14 +1600,14 @@
                             opacity: 1,
                             transform: 'scaleY(1)',
                             duration: 0.45,
-                            ease: "power2.out"
+                            ease: "power2.out",
+                            overwrite: true
                         });
                     }
                 });
             });
             
             // applyFiltersAndSearch は初期ロードアニメーションのタイムライン内で呼び出される
-            // 初期表示はDOMContentLoadedではなく、タイムラインの最後に実行される
         });
     </script>
 </body>
