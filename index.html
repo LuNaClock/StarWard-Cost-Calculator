@@ -427,7 +427,7 @@
         .controls-container {
             display: flex;
             flex-direction: column;
-            gap: 30px; /* 間隔を広げる */
+            /* gap: 30px; */ /* 修正: gapを削除 */
             margin-bottom: 50px;
         }
 
@@ -437,6 +437,8 @@
             align-items: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             border-radius: 10px;
+            margin-top: 20px; /* 追加: 検索欄の上のスペース */
+            margin-bottom: 20px; /* 追加: 検索欄の下のスペース */
         }
 
         .search-icon {
