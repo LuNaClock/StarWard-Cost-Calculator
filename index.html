@@ -344,7 +344,7 @@
                 color: var(--card-background);
             }
 
-        .accordion-icon {
+        .accordion-icon { /*共用アイコンスタイル*/
             font-size: 1.1em;
             transition: transform var(--transition-speed);
             will-change: transform; /* will-changeを追加 */
@@ -1673,69 +1673,92 @@
                 .total-hp-scenario .redeploy-char-info:last-of-type {
                     margin-bottom: 0;
                 }
-
-            .total-hp-scenario h5 {
+            /* NEW: Total HP Accordion Styles */
+            .total-hp-accordion-header {
+                background-color: transparent;
+                border: none;
+                border-bottom: 1px dashed rgba(0,0,0,0.1);
+                padding: 10px 0 8px 0;
+                width: 100%;
+                text-align: left;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-top: 15px;
+                margin-bottom: 0;
+                outline: none;
+                transition: background-color 0.3s ease;
+            }
+            .total-hp-accordion-header:hover {
+                background-color: rgba(0, 191, 255, 0.05);
+            }
+            .total-hp-accordion-title {
                 color: var(--primary-dark);
                 font-size: 1.1em;
-                margin-top: 15px;
-                margin-bottom: 10px;
                 font-weight: 600;
-                border-bottom: 1px dashed rgba(0,0,0,0.1);
-                padding-bottom: 8px;
             }
+            .total-hp-accordion-header .accordion-icon { /* Uses shared .accordion-icon for rotation */
+                font-size: 1em; /* Override if needed, or rely on .accordion-icon base */
+                color: var(--primary-dark);
+            }
+             /* .total-hp-accordion-header.active .accordion-icon is handled by generic .active .accordion-icon */
 
-            .total-hp-scenario ul {
+            .total-hp-accordion-content {
                 list-style: none;
-                padding: 0;
-                margin: 0;
                 font-size: 0.95em;
                 color: var(--text-color);
                 text-align: left;
-                flex-grow: 1;
                 overflow-y: auto;
-                max-height: 300px;
-                border: 1px solid var(--light-grey-border);
+                max-height: 0; /* Closed by default */
+                border-style: solid;
+                border-color: var(--light-grey-border);
+                border-width: 0px; /* Closed by default */
                 border-radius: 5px;
-                padding: 8px;
                 background-color: var(--card-background);
                 scrollbar-width: thin;
                 scrollbar-color: var(--primary-light) #f1f1f1;
+                opacity: 0; /* Closed by default */
+                padding: 0; /* Closed by default */
+                margin: 0; /* Closed by default */
+                transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                            opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                            padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                            margin-top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                            border-width 0.4s ease;
+            }
+            .total-hp-accordion-content.show {
+                max-height: 300px; /* Original ul max-height */
+                opacity: 1;
+                padding: 8px; /* Original ul padding */
+                margin-top: 10px; /* Spacing from header */
+                border-width: 1px; /* Show border when open */
             }
 
-                .total-hp-scenario ul::-webkit-scrollbar {
-                    width: 10px;
-                }
+            .total-hp-accordion-content::-webkit-scrollbar { width: 10px; }
+            .total-hp-accordion-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+            .total-hp-accordion-content::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 10px; }
+            .total-hp-accordion-content::-webkit-scrollbar-thumb:hover { background: #008DCC; }
 
-                .total-hp-scenario ul::-webkit-scrollbar-track {
-                    background: #f1f1f1;
-                    border-radius: 10px;
-                }
-
-                .total-hp-scenario ul::-webkit-scrollbar-thumb {
-                    background: var(--primary-light);
-                    border-radius: 10px;
-                }
-
-                    .total-hp-scenario ul::-webkit-scrollbar-thumb:hover {
-                        background: #008DCC;
-                    }
-
-                .total-hp-scenario ul li {
-                    background-color: var(--card-background);
-                    padding: 6px 10px;
-                    border-radius: 5px;
-                    margin-bottom: 5px;
-                    border: 1px solid var(--light-grey-border);
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-                    transition: transform 0.2s ease, box-shadow 0.2s ease;
-                    white-space: normal;
-                    word-break: break-word;
-                }
-
-                    .total-hp-scenario ul li:hover {
-                        transform: translateX(5px);
-                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                    }
+            .total-hp-accordion-content li {
+                background-color: var(--card-background); /* Should be same as ul's bg */
+                padding: 6px 10px;
+                border-radius: 5px;
+                margin-bottom: 5px;
+                border: 1px solid var(--light-grey-border);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                white-space: normal;
+                word-break: break-word;
+            }
+            .total-hp-accordion-content li:last-child {
+                margin-bottom: 0;
+            }
+            .total-hp-accordion-content li:hover {
+                transform: translateX(5px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+            /* End NEW Total HP Accordion Styles */
 
             .total-hp-scenario .info-label {
                 font-size: 0.85em;
@@ -1892,8 +1915,11 @@
                     <div class="redeploy-char-info">
                         <span class="info-label">合計獲得耐久値:</span> <span id="idealGainedHp" class="info-value">--</span>
                     </div>
-                    <h5>撃墜順序と獲得HP</h5>
-                    <ul id="idealSequenceList"></ul>
+                    <button class="total-hp-accordion-header" aria-expanded="false">
+                        <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <ul id="idealSequenceList" class="total-hp-accordion-content"></ul>
                 </div>
 
                 <div class="total-hp-scenario">
@@ -1901,8 +1927,11 @@
                     <div class="redeploy-char-info">
                         <span class="info-label">合計獲得耐久値:</span> <span id="minGainedHpHpSpan" class="info-value">--</span>
                     </div>
-                    <h5>撃墜順序と獲得HP</h5>
-                    <ul id="minSequenceList"></ul>
+                    <button class="total-hp-accordion-header" aria-expanded="false">
+                        <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <ul id="minSequenceList" class="total-hp-accordion-content"></ul>
                 </div>
                 
                 <div class="total-hp-scenario"> <!-- チーム合計耐久値(爆弾) -->
@@ -1910,8 +1939,11 @@
                     <div class="redeploy-char-info">
                         <span class="info-label">合計獲得耐久値:</span> <span id="bombGainedHp" class="info-value">--</span>
                     </div>
-                    <h5>撃墜順序と獲得HP</h5>
-                    <ul id="bombSequenceList"></ul>
+                    <button class="total-hp-accordion-header" aria-expanded="false">
+                        <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <ul id="bombSequenceList" class="total-hp-accordion-content"></ul>
                 </div>
 
                 <div class="total-hp-scenario"> <!-- チーム合計耐久値(最低) -->
@@ -1919,8 +1951,11 @@
                     <div class="redeploy-char-info">
                         <span class="info-label">合計獲得耐久値:</span> <span id="lowestGainedHp" class="info-value">--</span>
                     </div>
-                    <h5>撃墜順序と獲得HP</h5>
-                    <ul id="lowestSequenceList"></ul>
+                    <button class="total-hp-accordion-header" aria-expanded="false">
+                        <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <ul id="lowestSequenceList" class="total-hp-accordion-content"></ul>
                 </div>
             </div>
         </div>
@@ -1964,8 +1999,25 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script>
-        const characterData = [
+        <script>
+        // Helper functions for Hiragana/Katakana conversion
+        function toHiragana(str) {
+            if (!str) return "";
+            return str.replace(/[\u30A1-\u30F6]/g, function(match) { // Katakana to Hiragana
+                var chr = match.charCodeAt(0) - 0x60;
+                return String.fromCharCode(chr);
+            });
+        }
+
+        function toKatakana(str) {
+            if (!str) return "";
+            return str.replace(/[\u3041-\u3096]/g, function(match) { // Hiragana to Katakana
+                var chr = match.charCodeAt(0) + 0x60;
+                return String.fromCharCode(chr);
+            });
+        }
+
+        const rawCharacterData = [
             { name: "グリフィン", hp: 3020, cost: 3, image: "assets/character_icons/griffin.png" },
             { name: "キャヴァリー", hp: 3003, cost: 3, image: "assets/character_icons/cavalry.png" },
             { name: "ケルビム", hp: 2953, cost: 3, image: "assets/character_icons/cherubim.png" },
@@ -2011,6 +2063,31 @@
             { name: "スノーウォル", hp: 1872, cost: 1.5, image: "assets/character_icons/snowowl.png" }
         ];
 
+        const kanjiNameReadings = {
+            "影": { hiragana: "かげ", katakana: "カゲ" },
+            "轟雷改": { hiragana: "ごうらいかい", katakana: "ゴウライカイ" },
+            "十八号": { hiragana: "じゅうはちごう", katakana: "ジュウハチゴウ" },
+            "稲": { hiragana: "いね", katakana: "イネ" },
+            "咲迦": { hiragana: "えみか", katakana: "エミカ" }
+        };
+
+        const characterData = rawCharacterData.map(char => {
+            let yomi_hiragana, yomi_katakana;
+            if (kanjiNameReadings[char.name]) {
+                yomi_hiragana = kanjiNameReadings[char.name].hiragana;
+                yomi_katakana = kanjiNameReadings[char.name].katakana;
+            } else {
+                yomi_hiragana = toHiragana(char.name);
+                yomi_katakana = toKatakana(char.name);
+            }
+            return {
+                ...char,
+                yomi_hiragana,
+                yomi_katakana
+            };
+        });
+
+
         const costRemainingMap = {
             3.0: [0.5, 1.0, 1.5],
             2.5: [0.5, 1.0, 1.5, 2.0],
@@ -2031,7 +2108,7 @@
         let highestHpScenarioTitleSpan, idealGainedHpSpan, idealSequenceList;
         let compromiseHpScenarioTitleSpan, minGainedHpHpSpan, minSequenceList;
         let lowestHpScenarioTitleSpan, lowestGainedHpSpan, lowestSequenceList;
-        let bombHpScenarioTitleSpan, bombGainedHpSpan, bombSequenceList; // ADDED for bomb scenario
+        let bombHpScenarioTitleSpan, bombGainedHpSpan, bombSequenceList; 
         let selectedPlayerCharNameSummary, selectedPartnerCharNameSummary;
         
         let char1ForCompromise = null; 
@@ -2103,21 +2180,54 @@
         }
 
         function applyFiltersAndSearch() {
-            const searchTerm = characterSearchInput.value.trim().toLowerCase();
+            const searchTermInput = characterSearchInput.value.trim();
+            const inputRawLower = searchTermInput.toLowerCase();
+            const inputHiragana = toHiragana(inputRawLower);
+            const inputKatakana = toKatakana(inputRawLower);
+
             const activeCostFilter = document.querySelector('#costFilter .active').dataset.cost;
             const activeSortFilter = document.querySelector('#sortFilter .active').dataset.sort;
-            let filteredCharacters = [...characterData];
-            if (searchTerm) filteredCharacters = filteredCharacters.filter(c => c.name.toLowerCase().includes(searchTerm));
-            if (activeCostFilter !== 'all') filteredCharacters = filteredCharacters.filter(c => c.cost === parseFloat(activeCostFilter));
+            let filteredCharacters = [...characterData]; 
+
+            if (searchTermInput) { 
+                filteredCharacters = filteredCharacters.filter(c => {
+                    const nameLower = c.name.toLowerCase();
+                    const yomiHiraLower = c.yomi_hiragana.toLowerCase(); 
+                    const yomiKataLower = c.yomi_katakana.toLowerCase(); 
+
+                    const matchFound = 
+                        nameLower.includes(inputRawLower) || nameLower.includes(inputHiragana) || nameLower.includes(inputKatakana) ||
+                        yomiHiraLower.includes(inputRawLower) || yomiHiraLower.includes(inputHiragana) || yomiHiraLower.includes(inputKatakana) ||
+                        yomiKataLower.includes(inputRawLower) || yomiKataLower.includes(inputHiragana) || yomiKataLower.includes(inputKatakana);
+                    
+                    return matchFound;
+                });
+            }
+
+            if (activeCostFilter !== 'all') {
+                filteredCharacters = filteredCharacters.filter(c => c.cost === parseFloat(activeCostFilter));
+            }
+
             switch (activeSortFilter) {
-                case 'name': filteredCharacters.sort((a, b) => a.name.localeCompare(b.name)); break;
-                case 'hp-desc': filteredCharacters.sort((a, b) => b.hp - a.hp); break;
-                case 'hp-asc': filteredCharacters.sort((a, b) => a.hp - b.hp); break;
-                case 'cost-desc': filteredCharacters.sort((a, b) => b.cost - a.cost); break;
-                case 'cost-asc': filteredCharacters.sort((a, b) => a.cost - b.cost); break;
+                case 'name': 
+                    filteredCharacters.sort((a, b) => a.name.localeCompare(b.name, 'ja')); 
+                    break;
+                case 'hp-desc': 
+                    filteredCharacters.sort((a, b) => b.hp - a.hp || a.name.localeCompare(b.name, 'ja')); 
+                    break;
+                case 'hp-asc': 
+                    filteredCharacters.sort((a, b) => a.hp - b.hp || a.name.localeCompare(b.name, 'ja')); 
+                    break;
+                case 'cost-desc': 
+                    filteredCharacters.sort((a, b) => b.cost - a.cost || a.name.localeCompare(b.name, 'ja')); 
+                    break;
+                case 'cost-asc': 
+                    filteredCharacters.sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name, 'ja')); 
+                    break;
             }
             generateCharacterCards(filteredCharacters);
         }
+
 
         function animateHpDisplay(card, targetHp) {
             const hpBarFill = card.querySelector('.hp-bar-fill');
@@ -2191,7 +2301,7 @@
         function populateCharacterSelects() {
             const defaultOption = '<option value="">-- 選択してください --</option>';
             playerCharSelect.innerHTML = defaultOption; partnerCharSelect.innerHTML = defaultOption;
-            characterData.forEach((char, index) => {
+            characterData.forEach((char, index) => { // Use processed characterData
                 const option = `<option value="${index}">${char.name} (コスト:${char.cost.toFixed(1)})</option>`;
                 playerCharSelect.innerHTML += option; partnerCharSelect.innerHTML += option;
             });
@@ -2586,7 +2696,7 @@
                 fallingChar_bomb = selectedPartnerChar; livingChar_bomb = selectedPlayerChar;
             } else { 
                 if (selectedPlayerChar.hp >= selectedPartnerChar.hp) {
-                    fallingChar_bomb = selectedPlayerChar; livingChar_bomb = selectedPartnerChar;
+                    fallingChar_bomb = selectedPlayerChar; livingChar_bomb = selectedPartnerChar; // If costs are equal, higher HP char falls first as "bomb" (arbitrary, could be lower HP too)
                 } else {
                     fallingChar_bomb = selectedPartnerChar; livingChar_bomb = selectedPlayerChar;
                 }
@@ -2604,7 +2714,7 @@
                 bombSequence.push(item);
             });
             const bombResult = {
-                name: `チーム合計耐久値(爆弾) (${fallingChar_bomb.name}のみ撃墜)`,
+                name: `チーム合計耐久値(爆弾) (${fallingChar_bomb.name}のみ連続撃墜)`, // Clarified title
                 totalHp: bombTotalHp,
                 sequence: bombSequence
             };
@@ -2613,25 +2723,43 @@
             // --- 4. チーム合計耐久値(最低) ---
             const playerContinuousFall = simulateMinimumSequence(selectedPlayerChar, selectedPartnerChar);
             const partnerContinuousFall = simulateMinimumSequence(selectedPartnerChar, selectedPlayerChar);
-            let lowestScenarioBase = (playerContinuousFall.totalHp + selectedPlayerChar.hp) < (partnerContinuousFall.totalHp + selectedPartnerChar.hp) ? 
-                                    { char: selectedPlayerChar, result: playerContinuousFall} : 
-                                    { char: selectedPartnerChar, result: partnerContinuousFall};
-            const lowestTotalHp = lowestScenarioBase.char.hp + lowestScenarioBase.result.totalHp; // Initial HP is only of the falling char
-            let lowestSequence = [
-                { turn: 0, charName: "初期HP", charType: "", charCost: 0, 
-                  hpGained: lowestScenarioBase.char.hp, // HP of only the falling character
-                  costConsumed: 0, 
-                  remainingCost: MAX_TEAM_COST.toFixed(1), 
-                  note: `${lowestScenarioBase.char.name} (${lowestScenarioBase.char.hp.toLocaleString()}) のみ` } // This note
-            ];
-            lowestScenarioBase.result.sequence.forEach(item => {
-                lowestSequence.push(item);
-            });
-            const lowestResult = {
-                name: `チーム合計耐久値(最低) (${lowestScenarioBase.char.name}のみ被弾)`,
-                totalHp: lowestTotalHp,
-                sequence: lowestSequence
-            };
+            
+            // Lowest total HP: initial HP of one character + redeploy HP of that SAME character only.
+            // Scenario 1: Player falls repeatedly, Partner never dies (conceptually)
+            const lowestPlayerScenarioTotalHp = selectedPlayerChar.hp + playerContinuousFall.totalHp;
+            // Scenario 2: Partner falls repeatedly, Player never dies (conceptually)
+            const lowestPartnerScenarioTotalHp = selectedPartnerChar.hp + partnerContinuousFall.totalHp;
+
+            let lowestResult;
+            if (lowestPlayerScenarioTotalHp <= lowestPartnerScenarioTotalHp) {
+                 let lowestPlayerSequence = [
+                    { turn: 0, charName: "初期HP", charType: "", charCost: 0, 
+                      hpGained: selectedPlayerChar.hp,
+                      costConsumed: 0, 
+                      remainingCost: MAX_TEAM_COST.toFixed(1), 
+                      note: `${selectedPlayerChar.name} (${selectedPlayerChar.hp.toLocaleString()}) のみ初期生存` }
+                ];
+                playerContinuousFall.sequence.forEach(item => lowestPlayerSequence.push(item));
+                lowestResult = {
+                    name: `チーム合計耐久値(最低/${selectedPlayerChar.name}集中狙い)`,
+                    totalHp: lowestPlayerScenarioTotalHp,
+                    sequence: lowestPlayerSequence
+                };
+            } else {
+                let lowestPartnerSequence = [
+                    { turn: 0, charName: "初期HP", charType: "", charCost: 0, 
+                      hpGained: selectedPartnerChar.hp,
+                      costConsumed: 0, 
+                      remainingCost: MAX_TEAM_COST.toFixed(1), 
+                      note: `${selectedPartnerChar.name} (${selectedPartnerChar.hp.toLocaleString()}) のみ初期生存` }
+                ];
+                partnerContinuousFall.sequence.forEach(item => lowestPartnerSequence.push(item));
+                 lowestResult = {
+                    name: `チーム合計耐久値(最低/${selectedPartnerChar.name}集中狙い)`,
+                    totalHp: lowestPartnerScenarioTotalHp,
+                    sequence: lowestPartnerSequence
+                };
+            }
             
             gsap.delayedCall(0.1, () => displayTotalTeamHpResults(highestHpScenario, compromiseScenario, bombResult, lowestResult));
         }
@@ -2736,7 +2864,7 @@
             searchIcon = document.querySelector('.search-icon');
             costFilterButtons = document.querySelectorAll('#costFilter .filter-button');
             sortFilterButtons = document.querySelectorAll('#sortFilter .filter-button');
-            accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders = document.querySelectorAll('.accordion-header'); // General accordion headers
             loadingOverlay = document.getElementById('loadingOverlay');
             playerCharSelect = document.getElementById('playerCharSelect');
             partnerCharSelect = document.getElementById('partnerCharSelect');
@@ -2766,9 +2894,9 @@
             lowestHpScenarioTitleSpan = document.getElementById('lowestHpScenarioTitle'); 
             lowestGainedHpSpan = document.getElementById('lowestGainedHp'); 
             lowestSequenceList = document.getElementById('lowestSequenceList'); 
-            bombHpScenarioTitleSpan = document.getElementById('bombHpScenarioTitle'); // ADDED
-            bombGainedHpSpan = document.getElementById('bombGainedHp'); // ADDED
-            bombSequenceList = document.getElementById('bombSequenceList'); // ADDED
+            bombHpScenarioTitleSpan = document.getElementById('bombHpScenarioTitle'); 
+            bombGainedHpSpan = document.getElementById('bombGainedHp'); 
+            bombSequenceList = document.getElementById('bombSequenceList'); 
             selectedPlayerCharNameSummary = document.getElementById('selectedPlayerCharNameSummary');
             selectedPartnerCharNameSummary = document.getElementById('selectedPartnerCharNameSummary');
 
@@ -2796,14 +2924,64 @@
             }
             if(costFilterButtons) costFilterButtons.forEach(button => button.addEventListener('click', () => { costFilterButtons.forEach(btn => btn.classList.remove('active')); button.classList.add('active'); applyFiltersAndSearch(); }));
             if(sortFilterButtons) sortFilterButtons.forEach(button => button.addEventListener('click', () => { sortFilterButtons.forEach(btn => btn.classList.remove('active')); button.classList.add('active'); updateSortIcons(); applyFiltersAndSearch(); }));
-            if(accordionHeaders) accordionHeaders.forEach(header => {
-                header.addEventListener('click', () => {
-                    const content = header.nextElementSibling; const isExpanded = header.getAttribute('aria-expanded') === 'true';
-                    header.setAttribute('aria-expanded', !isExpanded); header.classList.toggle('active'); content.classList.toggle('show');
-                    if (!isExpanded) gsap.to(content, { maxHeight: content.scrollHeight + "px", paddingTop: "25px", paddingBottom: "25px", opacity: 1, scaleY: 1, duration: 0.4, ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"});
-                    else gsap.to(content, { maxHeight: 0, paddingTop: 0, paddingBottom: 0, opacity: 0, scaleY: 0.8, duration: 0.4, ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"});
+            
+            // Main Accordion Logic
+            if(accordionHeaders) {
+                accordionHeaders.forEach(header => {
+                    header.addEventListener('click', function() {
+                        const content = this.nextElementSibling; 
+                        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                        this.setAttribute('aria-expanded', !isExpanded); 
+                        this.classList.toggle('active'); 
+                        content.classList.toggle('show'); // This class is used by CSS for initial hide/show by max-height and opacity
+                        
+                        if (!isExpanded) { // If it WAS collapsed, now expanding
+                            gsap.to(content, { maxHeight: content.scrollHeight + "px", paddingTop: "25px", paddingBottom: "25px", opacity: 1, scaleY: 1, duration: 0.4, ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"});
+                        } else { // If it WAS expanded, now collapsing
+                            gsap.to(content, { maxHeight: 0, paddingTop: 0, paddingBottom: 0, opacity: 0, scaleY: 0.8, duration: 0.4, ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"});
+                        }
+                    });
                 });
-            });
+            }
+
+            // Total HP Scenario Accordion Logic
+            const totalHpAccordionHeaders = document.querySelectorAll('.total-hp-accordion-header');
+            if (totalHpAccordionHeaders) {
+                totalHpAccordionHeaders.forEach(header => {
+                    header.addEventListener('click', function() {
+                        this.classList.toggle('active'); // For styling the header itself (e.g., icon rotation)
+                        this.setAttribute('aria-expanded', this.classList.contains('active'));
+                        const content = this.nextElementSibling; // Assumes <ul> is always the next sibling
+                        const isShown = content.classList.toggle('show'); // This class is used by CSS for initial hide/show by max-height and opacity
+
+                        if (isShown) { // If it's now shown (was hidden)
+                            gsap.to(content, { 
+                                maxHeight: "300px", // Target max-height for scrollable content
+                                opacity: 1, 
+                                paddingTop: "8px", 
+                                paddingBottom: "8px",
+                                marginTop: "10px",
+                                borderWidth: "1px",
+                                duration: 0.4, 
+                                ease: "power2.out" 
+                            });
+                        } else { // If it's now hidden (was shown)
+                            gsap.to(content, { 
+                                maxHeight: 0, 
+                                opacity: 0, 
+                                paddingTop: 0, 
+                                paddingBottom: 0, 
+                                marginTop: 0,
+                                borderWidth: "0px",
+                                duration: 0.4, 
+                                ease: "power2.in" 
+                            });
+                        }
+                    });
+                });
+            }
+
+
             if(characterGrid) characterGrid.addEventListener('click', (event) => {
                 const clickedElement = event.target; const card = clickedElement.closest('.character-card'); if (!card) return;
                 const originalHp = parseFloat(card.dataset.originalHp);
