@@ -250,10 +250,9 @@
                 line-height: 1.8;
                 position: relative;
                 z-index: 1;
-                /* 修正点: 序文も読みやすい行長に制限 */
-                max-width: 70ch; /* 追加 */
-                margin-left: auto; /* 追加 */
-                margin-right: auto; /* 追加 */
+                max-width: 70ch;
+                margin-left: auto;
+                margin-right: auto;
             }
 
         /* ----- アコーディオンのスタイル ----- */
@@ -376,11 +375,9 @@
             }
 
             .accordion-content p {
-                /* 修正点: 横に間延びした印象を軽減するためmax-widthを調整 */
                 max-width: 70ch; /* 読みやすい行長に制限 */
                 margin: 0 auto 12px; /* 中央揃えにして上下マージン */
                 line-height: 1.9; /* 行の高さを少し広げて読みやすく */
-                /* 修正点: フォントを縦方向にわずかに伸ばす */
                 transform: scaleY(1.03);
                 transform-origin: top center; /* スケール原点を設定 */
             }
@@ -417,7 +414,6 @@
                 padding: 12px 18px;
                 border: 1px solid #FFECB3;
                 box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-                /* 修正点: tipブロックも中央揃えと最大幅を設定 */
                 max-width: 70ch;
                 margin-left: auto;
                 margin-right: auto;
@@ -427,7 +423,6 @@
         .controls-container {
             display: flex;
             flex-direction: column;
-            /* gap: 30px; */ /* 修正: gapを削除 */
             margin-bottom: 50px;
         }
 
@@ -522,9 +517,9 @@
 
         .filter-container {
             display: flex;
-            flex-direction: column; /* 修正点: 常に縦並びにする */
+            flex-direction: column;
             gap: 30px;
-            align-items: flex-start; /* 修正点: 常に左寄せ */
+            align-items: flex-start;
         }
 
         .filter-group {
@@ -532,19 +527,19 @@
             align-items: center;
             gap: 15px;
             flex-wrap: wrap;
-            width: 100%; /* 修正点: グループが全幅を占めるようにする */
-            justify-content: flex-start; /* 修正点: ボタンを左寄せ */
+            width: 100%;
+            justify-content: flex-start;
         }
 
         .filter-label {
             font-weight: bold;
             white-space: nowrap;
-            color: var(--card-background); /* 白に変更済み。現在の背景色ではこれが最適 */
+            color: var(--card-background);
             font-size: 1.05em;
             display: flex;
             align-items: center;
             gap: 10px;
-            text-shadow: 0 0 5px rgba(0, 191, 255, 0.4); /* わずかなグローを追加 */
+            text-shadow: 0 0 5px rgba(0, 191, 255, 0.4);
         }
 
             .filter-label i {
@@ -846,11 +841,9 @@
                 transform: translateY(2px) scale(0.96);
                 color: #C0392B;
             }
-            /* GSAPでHP数値アニメーション中に一時的に適用されるクラス */
-            /* このクラスはHPバー変動時に数字がわずかに拡大するアニメーションをトリガーします */
             .character-hp.animating {
                 animation: hpNumberPop 0.8s ease-out forwards;
-                will-change: transform; /* colorとtext-shadowはCSSで固定されるため削除 */
+                will-change: transform;
             }
 
         @keyframes hpNumberPop {
@@ -875,7 +868,7 @@
             background-color: #E0E0E0;
             border-radius: 6px;
             overflow: hidden;
-            margin-bottom: 5px; /* UPDATED: 割合表示のスペースを確保するためマージンを調整 */
+            margin-bottom: 5px;
             box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
             position: relative;
             border: 1px solid rgba(0,0,0,0.1);
@@ -884,9 +877,9 @@
         .hp-bar-fill {
             height: 100%;
             background: linear-gradient(to right, var(--hp-low) 0%, var(--hp-medium) 50%, var(--hp-high) 100%), linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
-            background-size: 100% 100%, 50% 100%; /* 最初のグラデーションはフルサイズ、光沢は幅の半分 */
+            background-size: 100% 100%, 50% 100%;
             background-repeat: no-repeat;
-            background-position: left center, -50% center; /* 最初のグラデーションは固定、光沢は左外から開始 */
+            background-position: left center, -50% center;
             transform-origin: left;
             position: relative;
             overflow: hidden;
@@ -899,17 +892,14 @@
             0% {
                 background-position: left center, -50% center;
             }
-            /* 光沢を左外から開始 */
             100% {
                 background-position: left center, 150% center;
             }
-            /* 光沢を右外まで移動 */
         }
-        /* 低HP時の脈動アニメーション */
         .hp-bar-low-pulse {
             animation: hpPulse 1.2s ease-in-out infinite alternate;
-            box-shadow: 0 0 15px 5px var(--hp-pulse-color); /* 脈動する影 */
-            will-change: box-shadow; /* transform はここでアニメーションしないため削除 */
+            box-shadow: 0 0 15px 5px var(--hp-pulse-color);
+            will-change: box-shadow;
         }
 
         @keyframes hpPulse {
@@ -920,7 +910,6 @@
             100% {
                 box-shadow: 0 0 20px 8px var(--hp-pulse-color);
             }
-            /* より強調 */
         }
 
         /* ----- HP割合表示のスタイル (新しく追加) ----- */
@@ -929,13 +918,13 @@
             font-family: 'Rajdhani', sans-serif;
             font-size: 1.2em; /* 割合の文字サイズ */
             font-weight: 700;
-            color: var(--primary-light); /* UPDATED: 明るいスカイブルーに変更 */
-            margin-top: 5px; /* UPDATED: HPバーの下に適切なマージンを設定 */
+            color: var(--primary-light);
+            margin-top: 5px;
             margin-bottom: 20px; /* 下のテーブルとの間隔 */
-            text-shadow: 0 0 8px rgba(0, 191, 255, 0.5); /* UPDATED: 明るい青系統の影に変更 */
-            position: relative; /* z-index指定のため */
-            z-index: 2; /* HPバーより手前に表示するため */
-            pointer-events: none; /* クリックイベントの邪魔をしないように */
+            text-shadow: 0 0 8px rgba(0, 191, 255, 0.5);
+            position: relative;
+            z-index: 2;
+            pointer-events: none;
             opacity: 0; /* 初期非表示 */
             transition: opacity 0.3s ease; /* フェードイン/アウト */
         }
@@ -949,7 +938,7 @@
             width: 100%;
             border-collapse: separate; /* border-radiusのために */
             border-spacing: 0;
-            margin-top: 20px; /* UPDATED: 割合表示の下に配置されるためマージンを調整 */
+            margin-top: 20px;
             font-size: 1em;
             border-radius: 8px;
             overflow: hidden; /* 角丸対応 */
@@ -957,9 +946,9 @@
         }
 
             .cost-table th, .cost-table td {
-                padding: 15px 8px; /* 修正点: パディングを減らして横幅を確保 */
+                padding: 15px 8px;
                 text-align: center;
-                font-size: 0.95em; /* 修正点: フォントサイズをわずかに小さく */
+                font-size: 0.95em;
             }
 
             .cost-table th {
@@ -1009,7 +998,6 @@
                 transform: translateY(0);
                 animation: cellFlash 0.3s ease-out;
             }
-        /* 修正点: cellFlashキーフレームは引き続き残す (JS側でGSAPで使う可能性も考慮) */
         @keyframes cellFlash {
             0% {
                 background-color: #D3EEFF;
@@ -1040,7 +1028,7 @@
             background-color: rgba(26, 44, 62, 0.8); /* primary-darkの半透明 */
             display: flex;
             justify-content: center;
-            align-items: center; /* 修正: align */
+            align-items: center;
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
@@ -1219,6 +1207,17 @@
                 box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.3);
             }
 
+        /* Make number input fields look like select-dropdown */
+        input[type="number"].select-dropdown {
+            -moz-appearance: textfield; /* Firefox */
+        }
+        input[type="number"].select-dropdown::-webkit-outer-spin-button,
+        input[type="number"].select-dropdown::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+
         .team-cost-display {
             text-align: center;
             margin-bottom: 30px;
@@ -1376,6 +1375,79 @@
                     color: var(--accent-orange);
                     font-size: 1.2em;
                 }
+        /* Awakening specific input groups */
+        .awakening-simulation-area .simulation-input-group {
+            max-width: none; /* Allow full width within its container */
+            margin-bottom: 15px;
+        }
+        .awakening-additional-options { /* Container for new checkbox groups */
+            display: flex;
+            flex-direction: column; /* Default to vertical stacking */
+            gap: 10px; /* Space between checkbox groups */
+            text-align: left;
+            max-width: 450px; /* Control width of this section */
+            margin: 15px auto; /* Center the section */
+        }
+
+        .awakening-additional-options .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .awakening-additional-options .checkbox-group label {
+            font-weight: normal;
+            font-size: 1em;
+            margin-bottom: 0;
+            margin-left: 5px; /* Space between icon/checkbox and text */
+        }
+        .awakening-additional-options .checkbox-group input[type="checkbox"] {
+            margin-right: 0; /* Remove default margin if icon is present */
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+         .awakening-additional-options .checkbox-group > i {
+            color: var(--accent-orange);
+            font-size: 1.2em;
+            width: 20px; /* Ensure icon has some width */
+            text-align: center;
+        }
+
+        .awakening-additional-options .select-dropdown-container {
+             margin-left: 30px; /* Indent dropdown if it's under a checkbox with icon */
+             margin-top: 5px;
+             display: none;
+        }
+
+        /* Responsive layout for awakening options */
+        @media (min-width: 768px) { /* Apply for wider screens */
+            .awakening-additional-options {
+                flex-direction: row; /* Stack horizontally */
+                flex-wrap: wrap; /* Allow wrapping if not enough space */
+                justify-content: space-around; /* Distribute space */
+                align-items: flex-start;
+                gap: 20px; /* Adjust gap for horizontal layout */
+                max-width: none; /* Allow to use more width */
+            }
+            .awakening-additional-options .simulation-input-group.checkbox-group {
+                /* Adjust width for horizontal items if needed, e.g., flex-basis */
+                 min-width: 200px; /* Example minimum width */
+            }
+            .awakening-additional-options .select-dropdown-container {
+                width: 100%; /* Make dropdown take full width of its parent group if needed */
+                margin-left: 0; /* Reset indent if it's part of a horizontal group */
+            }
+             /* If a checkbox group has a dropdown, make them stack vertically even in horizontal layout */
+            .awakening-additional-options .simulation-input-group.has-dropdown {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start; /* Align checkbox and dropdown to the left */
+            }
+            .awakening-additional-options .simulation-input-group.has-dropdown .select-dropdown-container {
+                 margin-left: 30px; /* Re-apply indent for dropdown */
+            }
+        }
+
+
 
         .simulation-buttons {
             display: flex;
@@ -1605,7 +1677,6 @@
 
         .total-hp-grid {
             display: grid;
-            /* 変更: 基本を2列表示に設定 */
             grid-template-columns: repeat(2, 1fr);
             gap: 25px;
             margin-bottom: 25px;
@@ -1614,24 +1685,21 @@
             margin-left: auto;
             margin-right: auto;
         }
-        @media (max-width: 1200px) { /* 4列が厳しくなるおおよそのブレークポイント */
+        @media (max-width: 1200px) {
              .total-hp-grid {
-                /* 変更: 1200px以下でも2列を維持 */
                 grid-template-columns: repeat(2, 1fr);
             }
         }
         @media (max-width: 920px) {
             .total-hp-grid {
-                /* 変更: 920px以下でも2列を維持 */
                 grid-template-columns: repeat(2, 1fr);
-                 max-width: 700px; /* コンテナの最大幅は維持 */
+                 max-width: 700px;
             }
         }
         @media (max-width: 650px) {
             .total-hp-grid {
-                /* 変更なし: 650px以下では1列表示を維持 */
                 grid-template-columns: 1fr;
-                max-width: 400px; /* コンテナの最大幅は維持 */
+                max-width: 400px;
             }
         }
 
@@ -1698,11 +1766,10 @@
                 font-size: 1.1em;
                 font-weight: 600;
             }
-            .total-hp-accordion-header .accordion-icon { /* Uses shared .accordion-icon for rotation */
-                font-size: 1em; /* Override if needed, or rely on .accordion-icon base */
+            .total-hp-accordion-header .accordion-icon {
+                font-size: 1em;
                 color: var(--primary-dark);
             }
-             /* .total-hp-accordion-header.active .accordion-icon is handled by generic .active .accordion-icon */
 
             .total-hp-accordion-content {
                 list-style: none;
@@ -1721,18 +1788,18 @@
                 opacity: 0; /* Closed by default */
                 padding: 0; /* Closed by default */
                 margin: 0; /* Closed by default */
-                transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                             opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                             padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                             margin-top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                             border-width 0.4s ease;
             }
             .total-hp-accordion-content.show {
-                max-height: 300px; /* Original ul max-height */
+                max-height: 300px;
                 opacity: 1;
-                padding: 8px; /* Original ul padding */
-                margin-top: 10px; /* Spacing from header */
-                border-width: 1px; /* Show border when open */
+                padding: 8px;
+                margin-top: 10px;
+                border-width: 1px;
             }
 
             .total-hp-accordion-content::-webkit-scrollbar { width: 10px; }
@@ -1741,7 +1808,7 @@
             .total-hp-accordion-content::-webkit-scrollbar-thumb:hover { background: #008DCC; }
 
             .total-hp-accordion-content li {
-                background-color: var(--card-background); /* Should be same as ul's bg */
+                background-color: var(--card-background);
                 padding: 6px 10px;
                 border-radius: 5px;
                 margin-bottom: 5px;
@@ -1758,7 +1825,6 @@
                 transform: translateX(5px);
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             }
-            /* End NEW Total HP Accordion Styles */
 
             .total-hp-scenario .info-label {
                 font-size: 0.85em;
@@ -1782,6 +1848,47 @@
                 font-size: 1.1em;
             }
         }
+
+        /* NEW Awakening Simulation Area Styles */
+        .awakening-simulation-area {
+            display: none; /* Initially hidden */
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--light-grey-border);
+        }
+        .simulation-results.active .awakening-simulation-area {
+            display: block; /* Show when results are active */
+        }
+
+        .awakening-possible {
+            color: var(--hp-high) !important; /* Greenish color, !important to override other styles */
+            text-shadow: 0 0 8px rgba(40, 167, 69, 0.5) !important;
+            font-weight: bold;
+        }
+        .awakening-not-possible {
+            color: var(--hp-low) !important; /* Reddish color, !important to override other styles */
+            text-shadow: 0 0 8px rgba(220, 53, 69, 0.5) !important;
+            font-weight: bold;
+        }
+        .awakening-simulation-area .simulation-input-group label {
+             margin-bottom: 8px;
+        }
+        .awakening-additional-options .simulation-input-group {
+            margin-bottom: 10px; /* Reduced margin for checkbox groups */
+        }
+        .awakening-additional-options .select-dropdown-container {
+            margin-left: 25px; /* Indent dropdown under checkbox */
+            margin-top: 5px;
+            display: none; /* Hidden by default */
+        }
+        .awakening-additional-options .checkbox-group {
+            align-items: center; /* Vertically align checkbox and label */
+        }
+        .awakening-additional-options .checkbox-group label {
+            font-weight: normal; /* Less emphasis for checkbox label */
+            margin-left: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -1898,6 +2005,57 @@
                     <div class="hp-bar-fill"></div>
                 </div>
                 <div class="hp-percentage-display simulation-hp-percentage"></div>
+
+                <!-- Awakening Simulation Area with new features -->
+                <div class="awakening-simulation-area">
+                    <h4><i class="fas fa-brain"></i> 覚醒ゲージ予測</h4>
+                    <div class="simulation-input-group">
+                        <label for="beforeShotdownAwakeningGaugeInput"><i class="fas fa-meteor"></i> 覚醒が溜まるか調べたい覚醒ゲージ:</label>
+                        <input type="number" id="beforeShotdownAwakeningGaugeInput" class="select-dropdown" min="0" max="100" step="1" value="0">
+                    </div>
+                    <div class="simulation-input-group">
+                        <label for="beforeShotdownHpInput"><i class="fas fa-heart-broken"></i> 覚醒が溜まるか調べたい耐久値:</label>
+                        <input type="number" id="beforeShotdownHpInput" class="select-dropdown" min="0" step="1" value="0">
+                    </div>
+
+                    <div class="awakening-additional-options">
+                        <div class="simulation-input-group checkbox-group">
+                            <i class="fas fa-crosshairs"></i>
+                            <input type="checkbox" id="considerOwnDownCheckbox">
+                            <label for="considerOwnDownCheckbox">再出撃直後のゲージ量にする</label>
+                        </div>
+
+                        <div class="simulation-input-group checkbox-group has-dropdown"> <!-- Added has-dropdown for specific styling if needed -->
+                            <i class="fas fa-fist-raised"></i>
+                            <input type="checkbox" id="considerDamageDealtCheckbox">
+                            <label for="considerDamageDealtCheckbox">与ダメージ考慮</label>
+                            <div class="select-dropdown-container" id="damageDealtOptionsContainer">
+                                <select id="damageDealtAwakeningBonusSelect" class="select-dropdown">
+                                    <option value="0">選択なし</option>
+                                    <option value="3">覚醒ゲージ+3 (ズンダ約1回分)</option>
+                                    <option value="6">覚醒ゲージ+6 (ズンダ約2回分)</option>
+                                    <option value="9">覚醒ゲージ+9 (ズンダ約3回分)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="simulation-input-group checkbox-group">
+                             <i class="fas fa-user-slash"></i>
+                             <input type="checkbox" id="considerPartnerDownCheckbox">
+                             <label for="considerPartnerDownCheckbox">相方撃墜考慮</label>
+                        </div>
+                    </div>
+
+
+                    <div class="result-display-area">
+                         <div class="redeploy-char-info">
+                            <span class="info-label">予測覚醒ゲージ:</span> <span id="predictedAwakeningGauge" class="info-value">--</span>
+                        </div>
+                        <div class="redeploy-char-info">
+                            <span class="info-label">覚醒使用:</span> <span id="awakeningAvailability" class="info-value">--</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1933,7 +2091,7 @@
                     </button>
                     <ul id="minSequenceList" class="total-hp-accordion-content"></ul>
                 </div>
-                
+
                 <div class="total-hp-scenario"> <!-- チーム合計耐久値(爆弾) -->
                     <h4><i class="fas fa-bomb"></i> <span id="bombHpScenarioTitle">チーム合計耐久値(爆弾)</span></h4>
                     <div class="redeploy-char-info">
@@ -1999,7 +2157,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-        <script>
+    <script>
         // Helper functions for Hiragana/Katakana conversion
         function toHiragana(str) {
             if (!str) return "";
@@ -2089,15 +2247,33 @@
 
 
         const costRemainingMap = {
-            3.0: [0.5, 1.0, 1.5],
-            2.5: [0.5, 1.0, 1.5, 2.0],
-            2.0: [0.5, 1.0, 1.5],
-            1.5: [0.5, 1.0]
+            "3.0": [0.5, 1.0, 1.5],
+            "2.5": [0.5, 1.0, 1.5, 2.0],
+            "2.0": [0.5, 1.0, 1.5],
+            "1.5": [0.5, 1.0]
         };
+
 
         let selectedPlayerChar = null;
         let selectedPartnerChar = null;
+        let currentlySimulatingCharType = null;
+
         const MAX_TEAM_COST = 6.0;
+        const AVERAGE_GAUGE_COEFFICIENT = 0.5980;
+        const AWAKENING_THRESHOLD = 50;
+        const AWAKENING_BONUS_BY_COST = {
+            "3.0": 22, "3": 22,
+            "2.5": 22,
+            "2.0": 20, "2": 20,
+            "1.5": 15
+        };
+        const PARTNER_DOWN_AWAKENING_BONUS = {
+            "3.0": 10, "3": 10,
+            "2.5": 9,
+            "2.0": 7, "2": 7,
+            "1.5": 5
+        };
+
 
         let characterGrid, characterSearchInput, searchIcon, costFilterButtons, sortFilterButtons, accordionHeaders, loadingOverlay;
         let playerCharSelect, partnerCharSelect, totalTeamCostSpan, selectedCharsDisplay, remainingTeamCostInput;
@@ -2108,11 +2284,12 @@
         let highestHpScenarioTitleSpan, idealGainedHpSpan, idealSequenceList;
         let compromiseHpScenarioTitleSpan, minGainedHpHpSpan, minSequenceList;
         let lowestHpScenarioTitleSpan, lowestGainedHpSpan, lowestSequenceList;
-        let bombHpScenarioTitleSpan, bombGainedHpSpan, bombSequenceList; 
+        let bombHpScenarioTitleSpan, bombGainedHpSpan, bombSequenceList;
         let selectedPlayerCharNameSummary, selectedPartnerCharNameSummary;
-        
-        let char1ForCompromise = null; 
-        let char2ForCompromise = null; 
+        let beforeShotdownAwakeningGaugeInput, beforeShotdownHpInput_damageTakenInput;
+        let predictedAwakeningGaugeSpan, awakeningAvailabilitySpan;
+        let considerOwnDownCheckbox, considerDamageDealtCheckbox, damageDealtOptionsContainer, damageDealtAwakeningBonusSelect;
+        let considerPartnerDownCheckbox;
 
 
         function showLoading() {
@@ -2141,7 +2318,7 @@
                         const card = document.createElement('div');
                         card.className = 'character-card';
                         card.dataset.originalHp = character.hp;
-                        const applicableRemainingCosts = costRemainingMap[character.cost] || [];
+                        const applicableRemainingCosts = costRemainingMap[character.cost.toString()] || [];
                         const costOverHPs = applicableRemainingCosts.map(remainingCost => {
                             let calculatedHpForDisplay;
                             if (character.cost <= 0) calculatedHpForDisplay = 0;
@@ -2167,8 +2344,10 @@
                         if (character.image) {
                             imgElement.onload = () => { imgElement.style.display = 'block'; initialSpan.style.display = 'none'; };
                             imgElement.onerror = () => { imgElement.style.display = 'none'; initialSpan.style.display = 'flex'; };
-                            if (imgElement.complete && imgElement.naturalWidth > 0) { imgElement.style.display = 'block'; initialSpan.style.display = 'none'; }
-                            else { imgElement.style.display = 'none'; initialSpan.style.display = 'flex'; imgElement.src = character.image; }
+                            imgElement.src = character.image;
+                             if (imgElement.complete && imgElement.naturalWidth > 0) {
+                                imgElement.style.display = 'block'; initialSpan.style.display = 'none';
+                            }
                         } else { imgElement.style.display = 'none'; initialSpan.style.display = 'flex'; }
                         gsap.from(card, { opacity: 0, y: 80, scale: 0.8, rotateZ: gsap.utils.random(-5, 5), duration: 0.4, ease: "power3.out", delay: index * 0.02, overwrite: true });
                         const hpBarFill = card.querySelector('.hp-bar-fill');
@@ -2180,54 +2359,37 @@
         }
 
         function applyFiltersAndSearch() {
-            const searchTermInput = characterSearchInput.value.trim();
-            const inputRawLower = searchTermInput.toLowerCase();
+            const searchTermInputVal = characterSearchInput.value.trim();
+            const inputRawLower = searchTermInputVal.toLowerCase();
             const inputHiragana = toHiragana(inputRawLower);
             const inputKatakana = toKatakana(inputRawLower);
 
             const activeCostFilter = document.querySelector('#costFilter .active').dataset.cost;
             const activeSortFilter = document.querySelector('#sortFilter .active').dataset.sort;
-            let filteredCharacters = [...characterData]; 
+            let filteredCharacters = [...characterData];
 
-            if (searchTermInput) { 
+            if (searchTermInputVal) {
                 filteredCharacters = filteredCharacters.filter(c => {
                     const nameLower = c.name.toLowerCase();
-                    const yomiHiraLower = c.yomi_hiragana.toLowerCase(); 
-                    const yomiKataLower = c.yomi_katakana.toLowerCase(); 
-
-                    const matchFound = 
-                        nameLower.includes(inputRawLower) || nameLower.includes(inputHiragana) || nameLower.includes(inputKatakana) ||
-                        yomiHiraLower.includes(inputRawLower) || yomiHiraLower.includes(inputHiragana) || yomiHiraLower.includes(inputKatakana) ||
-                        yomiKataLower.includes(inputRawLower) || yomiKataLower.includes(inputHiragana) || yomiKataLower.includes(inputKatakana);
-                    
-                    return matchFound;
+                    const yomiHiraLower = c.yomi_hiragana.toLowerCase();
+                    const yomiKataLower = c.yomi_katakana.toLowerCase();
+                    return nameLower.includes(inputRawLower) || nameLower.includes(inputHiragana) || nameLower.includes(inputKatakana) ||
+                           yomiHiraLower.includes(inputRawLower) || yomiHiraLower.includes(inputHiragana) || yomiHiraLower.includes(inputKatakana) ||
+                           yomiKataLower.includes(inputRawLower) || yomiKataLower.includes(inputHiragana) || yomiKataLower.includes(inputKatakana);
                 });
             }
-
             if (activeCostFilter !== 'all') {
-                filteredCharacters = filteredCharacters.filter(c => c.cost === parseFloat(activeCostFilter));
+                filteredCharacters = filteredCharacters.filter(c => c.cost.toString() === activeCostFilter);
             }
-
             switch (activeSortFilter) {
-                case 'name': 
-                    filteredCharacters.sort((a, b) => a.name.localeCompare(b.name, 'ja')); 
-                    break;
-                case 'hp-desc': 
-                    filteredCharacters.sort((a, b) => b.hp - a.hp || a.name.localeCompare(b.name, 'ja')); 
-                    break;
-                case 'hp-asc': 
-                    filteredCharacters.sort((a, b) => a.hp - b.hp || a.name.localeCompare(b.name, 'ja')); 
-                    break;
-                case 'cost-desc': 
-                    filteredCharacters.sort((a, b) => b.cost - a.cost || a.name.localeCompare(b.name, 'ja')); 
-                    break;
-                case 'cost-asc': 
-                    filteredCharacters.sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name, 'ja')); 
-                    break;
+                case 'name': filteredCharacters.sort((a, b) => a.name.localeCompare(b.name, 'ja')); break;
+                case 'hp-desc': filteredCharacters.sort((a, b) => b.hp - a.hp || a.name.localeCompare(b.name, 'ja')); break;
+                case 'hp-asc': filteredCharacters.sort((a, b) => a.hp - b.hp || a.name.localeCompare(b.name, 'ja')); break;
+                case 'cost-desc': filteredCharacters.sort((a, b) => b.cost - a.cost || a.name.localeCompare(b.name, 'ja')); break;
+                case 'cost-asc': filteredCharacters.sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name, 'ja')); break;
             }
             generateCharacterCards(filteredCharacters);
         }
-
 
         function animateHpDisplay(card, targetHp) {
             const hpBarFill = card.querySelector('.hp-bar-fill');
@@ -2273,27 +2435,17 @@
             if (searchIcon) searchIconPulseTl.to(searchIcon, { scale: 1.08, opacity: 1 });
         }
 
-        function animateSearchInputInteraction() {
-             // Implementation from previous response
-        }
-
         function updateSortIcons() {
              sortFilterButtons.forEach(button => {
-                const existingIcon = button.querySelector('i');
-                if (existingIcon) existingIcon.remove();
-                const sortType = button.dataset.sort;
-                let iconClass = '';
+                const existingIcon = button.querySelector('i'); if (existingIcon) existingIcon.remove();
+                const sortType = button.dataset.sort; let iconClass = '';
                 if (sortType.includes('desc')) iconClass = 'fas fa-arrow-down';
                 else if (sortType.includes('asc')) iconClass = 'fas fa-arrow-up';
                 if (iconClass) {
-                    const newIcon = document.createElement('i');
-                    newIcon.className = iconClass;
+                    const newIcon = document.createElement('i'); newIcon.className = iconClass;
                     if (button.classList.contains('active') && !button.hasAttribute('data-initial-sort-applied')) {
-                        button.appendChild(newIcon);
-                        button.setAttribute('data-initial-sort-applied', 'true');
-                    } else {
-                        button.appendChild(newIcon);
-                    }
+                        button.appendChild(newIcon); button.setAttribute('data-initial-sort-applied', 'true');
+                    } else { button.appendChild(newIcon); }
                 }
             });
         }
@@ -2301,7 +2453,7 @@
         function populateCharacterSelects() {
             const defaultOption = '<option value="">-- 選択してください --</option>';
             playerCharSelect.innerHTML = defaultOption; partnerCharSelect.innerHTML = defaultOption;
-            characterData.forEach((char, index) => { // Use processed characterData
+            characterData.forEach((char, index) => {
                 const option = `<option value="${index}">${char.name} (コスト:${char.cost.toFixed(1)})</option>`;
                 playerCharSelect.innerHTML += option; partnerCharSelect.innerHTML += option;
             });
@@ -2320,8 +2472,7 @@
         function updateSelectedCharactersDisplay() {
             selectedCharsDisplay.innerHTML = '';
             const createMiniCard = (character) => {
-                const miniCard = document.createElement('div');
-                miniCard.className = 'mini-character-card active';
+                const miniCard = document.createElement('div'); miniCard.className = 'mini-character-card active';
                 miniCard.innerHTML = `
                     <div class="char-name">${character.name}</div>
                     <div class="char-image">
@@ -2329,15 +2480,13 @@
                         <span class="initial" style="display: ${character.image ? 'none' : 'flex'};">${character.name.charAt(0)}</span>
                     </div>
                     <div class="char-cost">コスト: ${character.cost.toFixed(1)}</div>`;
-                const imgElement = miniCard.querySelector('.mini-char-img');
-                const initialSpan = miniCard.querySelector('.initial');
+                const imgElement = miniCard.querySelector('.mini-char-img'); const initialSpan = miniCard.querySelector('.initial');
                 if (character.image && imgElement) {
                     imgElement.onload = () => { imgElement.style.display = 'block'; if(initialSpan) initialSpan.style.display = 'none'; };
                     imgElement.onerror = () => { if(imgElement) imgElement.style.display = 'none'; if(initialSpan) initialSpan.style.display = 'flex'; };
-                } else if (initialSpan) {
-                     if(imgElement) imgElement.style.display = 'none';
-                     initialSpan.style.display = 'flex';
-                }
+                    imgElement.src = character.image;
+                    if (imgElement.complete && imgElement.naturalWidth > 0) { imgElement.style.display = 'block'; if(initialSpan) initialSpan.style.display = 'none';}
+                } else if (initialSpan) { if(imgElement) imgElement.style.display = 'none'; initialSpan.style.display = 'flex';}
                 return miniCard;
             };
             if (selectedPlayerChar) selectedCharsDisplay.appendChild(createMiniCard(selectedPlayerChar));
@@ -2350,7 +2499,6 @@
             }
         }
 
-
         function updateTeamCost() {
             const playerCost = selectedPlayerChar ? selectedPlayerChar.cost : 0;
             const partnerCost = selectedPartnerChar ? selectedPartnerChar.cost : 0;
@@ -2361,9 +2509,7 @@
             const targetValue = autoCalculatedRemainingCost.toFixed(1);
             if (Array.from(remainingTeamCostInput.options).some(opt => opt.value === targetValue)) {
                 remainingTeamCostInput.value = targetValue;
-            } else {
-                remainingTeamCostInput.value = "0.0";
-            }
+            } else { remainingTeamCostInput.value = "0.0"; }
             resetSimulationResults();
             findTeamHpCombinations();
         }
@@ -2381,164 +2527,155 @@
                     if (simulationHpBarFill) { simulationHpBarFill.style.transform = 'scaleX(0)'; simulationHpBarFill.classList.remove('hp-bar-low-pulse');}
                     if (simulationHpPercentageDisplay) { simulationHpPercentageDisplay.classList.remove('show'); simulationHpPercentageDisplay.textContent = '';}
                     if (redeployCalculatedHpSpan) { redeployCalculatedHpSpan.classList.remove('low-hp-value', 'red-value');}
+                    const awakeningArea = document.querySelector('.awakening-simulation-area');
+                    if (awakeningArea) awakeningArea.style.display = 'none';
+                    if (beforeShotdownAwakeningGaugeInput) beforeShotdownAwakeningGaugeInput.value = 0;
+                    if (beforeShotdownHpInput_damageTakenInput) { beforeShotdownHpInput_damageTakenInput.value = 0; beforeShotdownHpInput_damageTakenInput.style.borderColor = '';}
+                    if(considerOwnDownCheckbox) considerOwnDownCheckbox.checked = false;
+                    if (considerDamageDealtCheckbox) {
+                        considerDamageDealtCheckbox.checked = false;
+                        if(damageDealtOptionsContainer) damageDealtOptionsContainer.style.display = 'none';
+                        if(damageDealtAwakeningBonusSelect) damageDealtAwakeningBonusSelect.value = "0";
+                    }
+                    if (considerPartnerDownCheckbox) considerPartnerDownCheckbox.checked = false;
+                    if (predictedAwakeningGaugeSpan) predictedAwakeningGaugeSpan.textContent = '--';
+                    if (awakeningAvailabilitySpan) { awakeningAvailabilitySpan.textContent = '--'; awakeningAvailabilitySpan.className = 'info-value';}
                 }
             });
         }
 
-        function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeamCostRemaining, currentRedeployCount) {
-            const charCost = charToRedeploy.cost;
+        function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeamCostRemaining, currentRedeployCount, isTeamHpScenario = false) {
+            const charFullCost = charToRedeploy.cost;
             const originalHp = charToRedeploy.hp;
-            let hpGained = 0;
-            let costConsumed = 0;
+            let calculatedHpGained = 0;
+            let costActuallyConsumed = 0;
             let finalNote = "";
-            let isFinalCostZeroRuleApplied = false;
+            let teamCostAfterConsumption = currentTeamCostRemaining;
 
-            if (currentTeamCostRemaining < 0.001) {
-                hpGained = 0; costConsumed = 0; finalNote = "チームコスト0のため出撃不可";
-                return { hpGained, costConsumed, note: finalNote };
+            if (currentTeamCostRemaining < 0.001 && !(isTeamHpScenario && currentTeamCostRemaining === 0 && charFullCost > 0)) {
+                calculatedHpGained = 0; costActuallyConsumed = 0; finalNote = "チームコスト0のため出撃不可";
+                return { hpGained: calculatedHpGained, costConsumed: costActuallyConsumed, note: finalNote, remainingCostAfterConsumption: currentTeamCostRemaining };
             }
-            if (currentTeamCostRemaining < charCost) {
-                const costRatio = (charCost > 0) ? currentTeamCostRemaining / charCost : 0;
-                hpGained = Math.round(originalHp * costRatio);
-                costConsumed = currentTeamCostRemaining;
-                finalNote = `コストオーバー (${costConsumed.toFixed(1)}コスト換算)`;
-                if ((currentTeamCostRemaining - costConsumed) < 0.001) {
-                    hpGained = 0;
-                    if (!finalNote.includes("最終残りコスト0のためHP0")) finalNote += (finalNote ? ", " : "") + "最終残りコスト0のためHP0";
-                    isFinalCostZeroRuleApplied = true;
-                }
+
+            let hpBasedOnPreRedeployCost;
+            let initialNotePart = "";
+            if (currentTeamCostRemaining >= charFullCost) {
+                hpBasedOnPreRedeployCost = originalHp;
+                initialNotePart = `(${charFullCost.toFixed(1)}コスト換算)`;
             } else {
-                costConsumed = charCost;
-                const hypotheticalNextRemainingCost = currentTeamCostRemaining - costConsumed;
-                const effectiveCostForHpCalc = Math.max(0, hypotheticalNextRemainingCost);
-                if (charCost > 0 && effectiveCostForHpCalc < charCost) {
-                    const costRatio = effectiveCostForHpCalc / charCost;
-                    hpGained = Math.round(originalHp * costRatio);
-                    finalNote = `コストオーバー (${effectiveCostForHpCalc.toFixed(1)}コスト換算`;
-                } else {
-                    hpGained = originalHp;
-                    finalNote = `(${costConsumed.toFixed(1)}コスト換算)`;
-                }
-                if (hypotheticalNextRemainingCost < 0.001 && !isFinalCostZeroRuleApplied) {
-                    if (hpGained > 0 || !finalNote.includes("最終残りコスト0のためHP0")) {
-                         hpGained = 0;
-                         if (finalNote && !finalNote.endsWith(", ")) finalNote += ", ";
-                         else if (!finalNote) finalNote = "";
-                         finalNote += "最終残りコスト0のためHP0";
+                hpBasedOnPreRedeployCost = (charFullCost > 0) ? Math.round(originalHp * (currentTeamCostRemaining / charFullCost)) : 0;
+                initialNotePart = `コストオーバー (${currentTeamCostRemaining.toFixed(1)}コスト換算)`;
+            }
+
+            if (currentTeamCostRemaining >= charFullCost) {
+                costActuallyConsumed = charFullCost;
+            } else {
+                costActuallyConsumed = currentTeamCostRemaining;
+            }
+            teamCostAfterConsumption = Math.max(0.0, currentTeamCostRemaining - costActuallyConsumed);
+
+            calculatedHpGained = hpBasedOnPreRedeployCost;
+            finalNote = initialNotePart;
+
+            if (isTeamHpScenario) {
+                if (teamCostAfterConsumption < charFullCost && teamCostAfterConsumption > 0.0001) {
+                    calculatedHpGained = Math.round(originalHp * (teamCostAfterConsumption / charFullCost));
+                     if (!initialNotePart.toLowerCase().includes("コストオーバー")) {
+                        finalNote = `(${charFullCost.toFixed(1)}コスト換算), 消費後実質コストオーバー(${teamCostAfterConsumption.toFixed(1)}換算)`;
+                    } else { // Was already a cost-over, note should reflect the new effective cost for HP
+                        finalNote = `コストオーバー (${teamCostAfterConsumption.toFixed(1)}コスト換算)`;
                     }
                 }
             }
-            return { hpGained, costConsumed, note: finalNote };
+
+            if (teamCostAfterConsumption < 0.001) {
+                calculatedHpGained = 0;
+                if (finalNote && !finalNote.endsWith(", ") && finalNote.length > 0) finalNote += ", ";
+                else if (!finalNote) finalNote = "";
+                if (!finalNote.includes("最終残りコスト0のためHP0")) {
+                     finalNote += "最終残りコスト0のためHP0";
+                }
+            }
+            if (currentTeamCostRemaining < 0.001 && costActuallyConsumed == 0 && !initialNotePart.includes("出撃不可")) {
+                 finalNote = "チームコスト0のため出撃不可";
+                 calculatedHpGained = 0;
+            }
+            return { hpGained: calculatedHpGained, costConsumed: costActuallyConsumed, note: finalNote, remainingCostAfterConsumption: teamCostAfterConsumption };
         }
-        
-        function simulateRemainingSequenceContinuous(fallingChar, initialRemainingCost, fallCountOfThisCharBeforeThisSubsequence) {
+
+
+        function simulateRemainingSequenceContinuous(fallingChar, initialRemainingCost, fallCountOfThisCharBeforeThisSubsequence, isTeamScenario) {
             let currentTeamCostRemaining = initialRemainingCost;
             let totalGainedHpInSubSequence = 0;
             const subSequence = [];
             let currentFallCountForChar = fallCountOfThisCharBeforeThisSubsequence;
-
-            const maxRedeployAttempts = 5; 
-            let attemptsInSub = 0;
+            const maxRedeployAttempts = 5; let attemptsInSub = 0;
 
             while (currentTeamCostRemaining >= 0.001 && attemptsInSub < maxRedeployAttempts) {
                 attemptsInSub++;
-                let result = calculateRedeployEffect(fallingChar, null, currentTeamCostRemaining, currentFallCountForChar);
-                const projectedNextCost = currentTeamCostRemaining - result.costConsumed;
+                let result = calculateRedeployEffect(fallingChar, null, currentTeamCostRemaining, currentFallCountForChar, isTeamScenario);
+                if (result.note.includes("出撃不可") && result.hpGained <= 0 && result.costConsumed <= 0 && currentTeamCostRemaining < 0.001 && attemptsInSub > 1 ) break;
 
-                if (result.hpGained <= 0 && result.costConsumed <=0 && result.note.includes("出撃不可")) break;
-                
                 subSequence.push({
-                    turn: attemptsInSub, 
-                    charName: fallingChar.name,
-                    charType: (fallingChar === selectedPlayerChar) ? "自機" : "相方",
-                    charCost: fallingChar.cost,
-                    hpGained: result.hpGained,
-                    costConsumed: result.costConsumed,
-                    remainingCost: Math.max(0.0, projectedNextCost).toFixed(1),
-                    note: result.note
+                    turn: attemptsInSub, charName: fallingChar.name, charType: (fallingChar === selectedPlayerChar) ? "自機" : "相方",
+                    charCost: fallingChar.cost, hpGained: result.hpGained, costConsumed: result.costConsumed,
+                    remainingCost: result.remainingCostAfterConsumption.toFixed(1), note: result.note
                 });
                 totalGainedHpInSubSequence += result.hpGained;
-                currentTeamCostRemaining = projectedNextCost;
-                currentFallCountForChar++; 
-                if (result.note.includes("出撃不可")) break;
+                currentTeamCostRemaining = result.remainingCostAfterConsumption;
+                currentFallCountForChar++;
+                if (result.note.includes("出撃不可") && result.hpGained <= 0 && result.costConsumed <= 0 && currentTeamCostRemaining < 0.001) break;
             }
             return { totalHp: totalGainedHpInSubSequence, sequence: subSequence };
         }
 
-        function simulateRemainingSequenceAlternating(charA, charB, initialRemainingCost, fallCountA_before, fallCountB_before) {
+        function simulateRemainingSequenceAlternating(charA, charB, initialRemainingCost, fallCountA_before, fallCountB_before, isTeamScenario) {
             let currentTeamCostRemaining = initialRemainingCost;
             let totalGainedHpInSubSequence = 0;
             const subSequence = [];
-            let currentFallCountA = fallCountA_before;
-            let currentFallCountB = fallCountB_before;
-
-            const maxRedeployAttempts = 5;
-            let attemptsInSub = 0;
-            let nextToFallIsA = true;
+            let currentFallCountA = fallCountA_before; let currentFallCountB = fallCountB_before;
+            const maxRedeployAttempts = 5; let attemptsInSub = 0; let nextToFallIsA = true;
 
             while (currentTeamCostRemaining >= 0.001 && attemptsInSub < maxRedeployAttempts) {
                 attemptsInSub++;
                 let charToRedeploy, currentOverallFallCountForChar;
-
-                if (nextToFallIsA) {
-                    charToRedeploy = charA;
-                    currentOverallFallCountForChar = currentFallCountA;
-                    currentFallCountA++;
-                } else {
-                    charToRedeploy = charB;
-                    currentOverallFallCountForChar = currentFallCountB;
-                    currentFallCountB++;
-                }
-                
-                let result = calculateRedeployEffect(charToRedeploy, null, currentTeamCostRemaining, currentOverallFallCountForChar);
-                const projectedNextCost = currentTeamCostRemaining - result.costConsumed;
-
-                if (result.hpGained <= 0 && result.costConsumed <=0 && result.note.includes("出撃不可")) break;
+                if (nextToFallIsA) { charToRedeploy = charA; currentOverallFallCountForChar = currentFallCountA; currentFallCountA++;}
+                else { charToRedeploy = charB; currentOverallFallCountForChar = currentFallCountB; currentFallCountB++; }
+                let result = calculateRedeployEffect(charToRedeploy, null, currentTeamCostRemaining, currentOverallFallCountForChar, isTeamScenario);
+                if (result.note.includes("出撃不可") && result.hpGained <= 0 && result.costConsumed <= 0 && currentTeamCostRemaining < 0.001 && attemptsInSub > 1) break;
 
                 subSequence.push({
-                    turn: attemptsInSub,
-                    charName: charToRedeploy.name,
-                    charType: (charToRedeploy === selectedPlayerChar) ? "自機" : "相方",
-                    charCost: charToRedeploy.cost,
-                    hpGained: result.hpGained,
-                    costConsumed: result.costConsumed,
-                    remainingCost: Math.max(0.0, projectedNextCost).toFixed(1),
-                    note: result.note
+                    turn: attemptsInSub, charName: charToRedeploy.name, charType: (charToRedeploy === selectedPlayerChar) ? "自機" : "相方",
+                    charCost: charToRedeploy.cost, hpGained: result.hpGained, costConsumed: result.costConsumed,
+                    remainingCost: result.remainingCostAfterConsumption.toFixed(1), note: result.note
                 });
                 totalGainedHpInSubSequence += result.hpGained;
-                currentTeamCostRemaining = projectedNextCost;
+                currentTeamCostRemaining = result.remainingCostAfterConsumption;
                 nextToFallIsA = !nextToFallIsA;
-                if (result.note.includes("出撃不可")) break;
+                if (result.note.includes("出撃不可") && result.hpGained <= 0 && result.costConsumed <= 0 && currentTeamCostRemaining < 0.001) break;
             }
             return { totalHp: totalGainedHpInSubSequence, sequence: subSequence };
         }
 
-        function simulateMinimumSequence(fallingChar, livingPartnerChar) {
+        function simulateMinimumSequence(fallingChar, isTeamScenario) {
             let currentTeamCostRemaining = MAX_TEAM_COST;
-            let totalGainedRedeployHp = 0; 
-            let redeployCountForThisCharInSequence = 0; 
-            const sequence = []; 
-            const maxRedeployAttempts = 10; 
-            let attempts = 0;
+            let totalGainedRedeployHp = 0; let redeployCountForThisCharInSequence = 0; const sequence = [];
+            const maxRedeployAttempts = 10; let attempts = 0;
 
             while (currentTeamCostRemaining >= 0.001 && attempts < maxRedeployAttempts) {
                 attempts++;
-                let result = calculateRedeployEffect(fallingChar, null, currentTeamCostRemaining, redeployCountForThisCharInSequence);
-                const projectedNextCost = currentTeamCostRemaining - result.costConsumed;
+                let result = calculateRedeployEffect(fallingChar, null, currentTeamCostRemaining, redeployCountForThisCharInSequence, isTeamScenario);
+                if (result.note.includes("出撃不可") && result.hpGained <= 0 && result.costConsumed <= 0 && currentTeamCostRemaining < 0.001 && attempts > 1) break;
+
                 sequence.push({
-                    turn: redeployCountForThisCharInSequence + 1, 
-                    charName: fallingChar.name,
-                    charType: (fallingChar === selectedPlayerChar) ? "自機" : "相方",
-                    charCost: fallingChar.cost,
-                    hpGained: result.hpGained,
-                    costConsumed: result.costConsumed,
-                    remainingCost: Math.max(0.0, projectedNextCost).toFixed(1),
-                    note: result.note
+                    turn: redeployCountForThisCharInSequence + 1, charName: fallingChar.name, charType: (fallingChar === selectedPlayerChar) ? "自機" : "相方",
+                    charCost: fallingChar.cost, hpGained: result.hpGained, costConsumed: result.costConsumed,
+                    remainingCost: result.remainingCostAfterConsumption.toFixed(1), note: result.note
                 });
                 totalGainedRedeployHp += result.hpGained;
-                currentTeamCostRemaining = projectedNextCost;
-                redeployCountForThisCharInSequence++; 
-                if (result.note.includes("出撃不可")) break;
+                currentTeamCostRemaining = result.remainingCostAfterConsumption;
+                redeployCountForThisCharInSequence++;
+                if (result.note.includes("出撃不可") && result.hpGained <= 0 && result.costConsumed <= 0 && currentTeamCostRemaining < 0.001) break;
             }
             return { totalHp: totalGainedRedeployHp, sequence: sequence };
         }
@@ -2546,317 +2683,243 @@
 
         function findTeamHpCombinations() {
             if (!selectedPlayerChar || !selectedPartnerChar) {
-                gsap.to(totalHpDisplayArea, { opacity: 0, y: 20, duration: 0.3, ease: "power2.in", onComplete: () => { if (totalHpDisplayArea) { totalHpDisplayArea.classList.remove('active'); if(highestHpScenarioTitleSpan) highestHpScenarioTitleSpan.textContent = '-- シナリオ --'; if(idealGainedHpSpan) idealGainedHpSpan.textContent = '--'; if(idealSequenceList) idealSequenceList.innerHTML = ''; if(compromiseHpScenarioTitleSpan) compromiseHpScenarioTitleSpan.textContent = '-- シナリオ --'; if(minGainedHpHpSpan) minGainedHpHpSpan.textContent = '--'; if(minSequenceList) minSequenceList.innerHTML = ''; if(lowestHpScenarioTitleSpan) lowestHpScenarioTitleSpan.textContent = '-- シナリオ --'; if(lowestGainedHpSpan) lowestGainedHpSpan.textContent = '--'; if(lowestSequenceList) lowestSequenceList.innerHTML = ''; if(bombHpScenarioTitleSpan) bombHpScenarioTitleSpan.textContent = '-- シナリオ --'; if(bombGainedHpSpan) bombGainedHpSpan.textContent = '--'; if(bombSequenceList) bombSequenceList.innerHTML = '';}}});
+                gsap.to(totalHpDisplayArea, { opacity: 0, y: 20, duration: 0.3, ease: "power2.in", onComplete: () => { /* ... reset display ... */ }});
                 return;
             }
+            const IS_TEAM_SCENARIO = true;
 
-            // --- 1. チーム合計耐久値(最高) ---
             let firstFallChar_highest, secondFallChar_highest;
-            if (selectedPlayerChar.cost > selectedPartnerChar.cost) {
-                firstFallChar_highest = selectedPlayerChar; secondFallChar_highest = selectedPartnerChar;
-            } else if (selectedPartnerChar.cost > selectedPlayerChar.cost) {
-                firstFallChar_highest = selectedPartnerChar; secondFallChar_highest = selectedPlayerChar;
-            } else { 
-                if (selectedPlayerChar.hp >= selectedPartnerChar.hp) {
-                    firstFallChar_highest = selectedPlayerChar; secondFallChar_highest = selectedPartnerChar;
-                } else {
-                    firstFallChar_highest = selectedPartnerChar; secondFallChar_highest = selectedPlayerChar;
-                }
-            }
-            
+            if (selectedPlayerChar.cost > selectedPartnerChar.cost) { firstFallChar_highest = selectedPlayerChar; secondFallChar_highest = selectedPartnerChar; }
+            else if (selectedPartnerChar.cost > selectedPlayerChar.cost) { firstFallChar_highest = selectedPartnerChar; secondFallChar_highest = selectedPlayerChar; }
+            else { if (selectedPlayerChar.hp >= selectedPartnerChar.hp) { firstFallChar_highest = selectedPlayerChar; secondFallChar_highest = selectedPartnerChar; }
+                   else { firstFallChar_highest = selectedPartnerChar; secondFallChar_highest = selectedPlayerChar; } }
             let highestHpScenario = { name: "", totalHp: 0, sequence: [] };
             let currentHpForHighest = selectedPlayerChar.hp + selectedPartnerChar.hp;
             let currentCostForHighest = MAX_TEAM_COST;
             let highestSequence = [];
-            let fallCount_A_highest = 0;
-            let fallCount_B_highest = 0;
-            let currentTurn_highest = 0;
-
-            highestSequence.push({
-                turn: currentTurn_highest++, charName: "初期HP", charType: "", charCost: 0,
-                hpGained: currentHpForHighest, // This is the sum of both characters' HP
-                costConsumed: 0,
-                remainingCost: currentCostForHighest.toFixed(1),
-                note: `${selectedPlayerChar.name} (${selectedPlayerChar.hp.toLocaleString()}) + ${selectedPartnerChar.name} (${selectedPartnerChar.hp.toLocaleString()})` // This note will be used
-            });
-
-            let res1_highest = calculateRedeployEffect(firstFallChar_highest, null, currentCostForHighest, fallCount_A_highest++);
-            currentHpForHighest += res1_highest.hpGained;
-            currentCostForHighest -= res1_highest.costConsumed;
-            highestSequence.push({
-                turn: currentTurn_highest++, charName: firstFallChar_highest.name, charType: (firstFallChar_highest === selectedPlayerChar) ? "自機" : "相方",
-                charCost: firstFallChar_highest.cost, hpGained: res1_highest.hpGained, costConsumed: res1_highest.costConsumed,
-                remainingCost: Math.max(0.0, currentCostForHighest).toFixed(1), note: res1_highest.note
-            });
-            
-            if (currentCostForHighest >= 0.001 && res1_highest.hpGained > 0) {
-                let res2_highest = calculateRedeployEffect(secondFallChar_highest, null, currentCostForHighest, fallCount_B_highest++);
-                currentHpForHighest += res2_highest.hpGained;
-                currentCostForHighest -= res2_highest.costConsumed;
-                highestSequence.push({
-                    turn: currentTurn_highest++, charName: secondFallChar_highest.name, charType: (secondFallChar_highest === selectedPlayerChar) ? "自機" : "相方",
-                    charCost: secondFallChar_highest.cost, hpGained: res2_highest.hpGained, costConsumed: res2_highest.costConsumed,
-                    remainingCost: Math.max(0.0, currentCostForHighest).toFixed(1), note: res2_highest.note
-                });
-
-                if (currentCostForHighest >= 0.001 && res2_highest.hpGained > 0) {
-                    const subA_h = simulateRemainingSequenceAlternating(firstFallChar_highest, secondFallChar_highest, currentCostForHighest, fallCount_A_highest, fallCount_B_highest);
-                    const subB_h = simulateRemainingSequenceContinuous(firstFallChar_highest, currentCostForHighest, fallCount_A_highest);
-                    const subC_h = simulateRemainingSequenceContinuous(secondFallChar_highest, currentCostForHighest, fallCount_B_highest);
-                    
-                    let bestSub_h = subA_h;
-                    if (subB_h.totalHp > bestSub_h.totalHp) bestSub_h = subB_h;
-                    if (subC_h.totalHp > bestSub_h.totalHp) bestSub_h = subC_h;
-
-                    currentHpForHighest += bestSub_h.totalHp;
-                    bestSub_h.sequence.forEach(item => {
-                        highestSequence.push({ ...item, turn: currentTurn_highest + item.turn -1 });
-                    });
+            let fallCount_A_highest = 0; let fallCount_B_highest = 0; let currentTurn_highest = 0;
+            highestSequence.push({ turn: currentTurn_highest++, charName: "初期HP", charType: "", charCost: 0, hpGained: currentHpForHighest, costConsumed: 0, remainingCost: currentCostForHighest.toFixed(1), note: `${selectedPlayerChar.name} (${selectedPlayerChar.hp.toLocaleString()}) + ${selectedPartnerChar.name} (${selectedPartnerChar.hp.toLocaleString()})` });
+            let res1_highest = calculateRedeployEffect(firstFallChar_highest, null, currentCostForHighest, fallCount_A_highest++, IS_TEAM_SCENARIO);
+            currentHpForHighest += res1_highest.hpGained; currentCostForHighest = res1_highest.remainingCostAfterConsumption;
+            highestSequence.push({ turn: currentTurn_highest++, charName: firstFallChar_highest.name, charType: (firstFallChar_highest === selectedPlayerChar) ? "自機" : "相方", charCost: firstFallChar_highest.cost, hpGained: res1_highest.hpGained, costConsumed: res1_highest.costConsumed, remainingCost: currentCostForHighest.toFixed(1), note: res1_highest.note });
+            if (currentCostForHighest >= 0.001 && !(res1_highest.note.includes("出撃不可") && res1_highest.hpGained <= 0 && res1_highest.costConsumed <= 0 && currentCostForHighest < 0.001)) {
+                let res2_highest = calculateRedeployEffect(secondFallChar_highest, null, currentCostForHighest, fallCount_B_highest++, IS_TEAM_SCENARIO);
+                currentHpForHighest += res2_highest.hpGained; currentCostForHighest = res2_highest.remainingCostAfterConsumption;
+                highestSequence.push({ turn: currentTurn_highest++, charName: secondFallChar_highest.name, charType: (secondFallChar_highest === selectedPlayerChar) ? "自機" : "相方", charCost: secondFallChar_highest.cost, hpGained: res2_highest.hpGained, costConsumed: res2_highest.costConsumed, remainingCost: currentCostForHighest.toFixed(1), note: res2_highest.note });
+                if (currentCostForHighest >= 0.001 && !(res2_highest.note.includes("出撃不可") && res2_highest.hpGained <= 0 && res2_highest.costConsumed <= 0 && currentCostForHighest < 0.001)) {
+                    const subA_h = simulateRemainingSequenceAlternating(firstFallChar_highest, secondFallChar_highest, currentCostForHighest, fallCount_A_highest, fallCount_B_highest, IS_TEAM_SCENARIO);
+                    const subB_h = simulateRemainingSequenceContinuous(firstFallChar_highest, currentCostForHighest, fallCount_A_highest, IS_TEAM_SCENARIO);
+                    const subC_h = simulateRemainingSequenceContinuous(secondFallChar_highest, currentCostForHighest, fallCount_B_highest, IS_TEAM_SCENARIO);
+                    let bestSub_h = subA_h; if (subB_h.totalHp > bestSub_h.totalHp) bestSub_h = subB_h; if (subC_h.totalHp > bestSub_h.totalHp) bestSub_h = subC_h;
+                    currentHpForHighest += bestSub_h.totalHp; let subTurnCounter = currentTurn_highest; bestSub_h.sequence.forEach(item => { highestSequence.push({ ...item, turn: subTurnCounter++ }); });
                 }
             }
-            highestHpScenario.totalHp = currentHpForHighest;
-            highestHpScenario.sequence = highestSequence;
-            highestHpScenario.name = `チーム合計耐久値(理想) (${firstFallChar_highest.name}先落ち→${secondFallChar_highest.name}後落ち後最適化)`;
+            highestHpScenario.totalHp = currentHpForHighest; highestHpScenario.sequence = highestSequence; highestHpScenario.name = `チーム合計耐久値(理想) (${firstFallChar_highest.name}先落ち→${secondFallChar_highest.name}後落ち後最適化)`;
 
-
-            // --- 2. チーム合計耐久値(妥協) ---
             let firstFallChar_compromise, secondFallChar_compromise;
-             if (selectedPlayerChar.cost < selectedPartnerChar.cost) {
-                firstFallChar_compromise = selectedPlayerChar; secondFallChar_compromise = selectedPartnerChar;
-            } else if (selectedPartnerChar.cost < selectedPlayerChar.cost) {
-                firstFallChar_compromise = selectedPartnerChar; secondFallChar_compromise = selectedPlayerChar;
-            } else { 
-                if (selectedPlayerChar.hp <= selectedPartnerChar.hp) {
-                    firstFallChar_compromise = selectedPlayerChar; secondFallChar_compromise = selectedPartnerChar;
-                } else {
-                    firstFallChar_compromise = selectedPartnerChar; secondFallChar_compromise = selectedPlayerChar;
-                }
-            }
-
+            if (selectedPlayerChar.cost < selectedPartnerChar.cost) { firstFallChar_compromise = selectedPlayerChar; secondFallChar_compromise = selectedPartnerChar; }
+            else if (selectedPartnerChar.cost < selectedPlayerChar.cost) { firstFallChar_compromise = selectedPartnerChar; secondFallChar_compromise = selectedPlayerChar; }
+            else { if (selectedPlayerChar.hp <= selectedPartnerChar.hp) { firstFallChar_compromise = selectedPlayerChar; secondFallChar_compromise = selectedPartnerChar; } else { firstFallChar_compromise = selectedPartnerChar; secondFallChar_compromise = selectedPlayerChar;} }
             let compromiseScenario = { name: "", totalHp: 0, sequence: [] };
             let currentHpForCompromise = selectedPlayerChar.hp + selectedPartnerChar.hp;
             let currentCostForCompromise = MAX_TEAM_COST;
             let compromiseSequence = [];
-            let fallCount_A_compromise = 0; 
-            let fallCount_B_compromise = 0; 
-            let currentTurn_compromise = 0;
-
-            compromiseSequence.push({
-                turn: currentTurn_compromise++, charName: "初期HP", charType: "", charCost: 0,
-                hpGained: currentHpForCompromise, // Sum of both characters' HP
-                costConsumed: 0,
-                remainingCost: currentCostForCompromise.toFixed(1),
-                note: `${selectedPlayerChar.name} (${selectedPlayerChar.hp.toLocaleString()}) + ${selectedPartnerChar.name} (${selectedPartnerChar.hp.toLocaleString()})` // This note
-            });
-            
-            let res1_compromise = calculateRedeployEffect(firstFallChar_compromise, null, currentCostForCompromise, fallCount_A_compromise++);
-            currentHpForCompromise += res1_compromise.hpGained;
-            currentCostForCompromise -= res1_compromise.costConsumed;
-            compromiseSequence.push({
-                turn: currentTurn_compromise++, charName: firstFallChar_compromise.name, charType: (firstFallChar_compromise === selectedPlayerChar) ? "自機" : "相方",
-                charCost: firstFallChar_compromise.cost, hpGained: res1_compromise.hpGained, costConsumed: res1_compromise.costConsumed,
-                remainingCost: Math.max(0.0, currentCostForCompromise).toFixed(1), note: res1_compromise.note
-            });
-
-            if(currentCostForCompromise >= 0.001 && res1_compromise.hpGained > 0) {
-                let res2_compromise = calculateRedeployEffect(secondFallChar_compromise, null, currentCostForCompromise, fallCount_B_compromise++);
-                currentHpForCompromise += res2_compromise.hpGained;
-                currentCostForCompromise -= res2_compromise.costConsumed;
-                compromiseSequence.push({
-                    turn: currentTurn_compromise++, charName: secondFallChar_compromise.name, charType: (secondFallChar_compromise === selectedPlayerChar) ? "自機" : "相方",
-                    charCost: secondFallChar_compromise.cost, hpGained: res2_compromise.hpGained, costConsumed: res2_compromise.costConsumed,
-                    remainingCost: Math.max(0.0, currentCostForCompromise).toFixed(1), note: res2_compromise.note
-                });
-
-                if (currentCostForCompromise >= 0.001 && res2_compromise.hpGained > 0) {
-                    const subA_c = simulateRemainingSequenceAlternating(firstFallChar_compromise, secondFallChar_compromise, currentCostForCompromise, fallCount_A_compromise, fallCount_B_compromise);
-                    const subB_c = simulateRemainingSequenceContinuous(firstFallChar_compromise, currentCostForCompromise, fallCount_A_compromise);
-                    const subC_c = simulateRemainingSequenceContinuous(secondFallChar_compromise, currentCostForCompromise, fallCount_B_compromise);
-
-                    let bestSub_c = subA_c;
-                    if (subB_c.totalHp > bestSub_c.totalHp) bestSub_c = subB_c;
-                    if (subC_c.totalHp > bestSub_c.totalHp) bestSub_c = subC_c;
-
-                    currentHpForCompromise += bestSub_c.totalHp;
-                    bestSub_c.sequence.forEach(item => {
-                        compromiseSequence.push({ ...item, turn: currentTurn_compromise + item.turn -1 });
-                    });
+            let fallCount_A_compromise = 0; let fallCount_B_compromise = 0; let currentTurn_compromise = 0;
+            compromiseSequence.push({ turn: currentTurn_compromise++, charName: "初期HP", charType: "", charCost: 0, hpGained: currentHpForCompromise, costConsumed: 0, remainingCost: currentCostForCompromise.toFixed(1), note: `${selectedPlayerChar.name} (${selectedPlayerChar.hp.toLocaleString()}) + ${selectedPartnerChar.name} (${selectedPartnerChar.hp.toLocaleString()})` });
+            let res1_compromise = calculateRedeployEffect(firstFallChar_compromise, null, currentCostForCompromise, fallCount_A_compromise++, IS_TEAM_SCENARIO);
+            currentHpForCompromise += res1_compromise.hpGained; currentCostForCompromise = res1_compromise.remainingCostAfterConsumption;
+            compromiseSequence.push({ turn: currentTurn_compromise++, charName: firstFallChar_compromise.name, charType: (firstFallChar_compromise === selectedPlayerChar) ? "自機" : "相方", charCost: firstFallChar_compromise.cost, hpGained: res1_compromise.hpGained, costConsumed: res1_compromise.costConsumed, remainingCost: currentCostForCompromise.toFixed(1), note: res1_compromise.note });
+            if(currentCostForCompromise >= 0.001 && !(res1_compromise.note.includes("出撃不可") && res1_compromise.hpGained <= 0 && res1_compromise.costConsumed <= 0 && currentCostForCompromise < 0.001)) {
+                let res2_compromise = calculateRedeployEffect(secondFallChar_compromise, null, currentCostForCompromise, fallCount_B_compromise++, IS_TEAM_SCENARIO);
+                currentHpForCompromise += res2_compromise.hpGained; currentCostForCompromise = res2_compromise.remainingCostAfterConsumption;
+                compromiseSequence.push({ turn: currentTurn_compromise++, charName: secondFallChar_compromise.name, charType: (secondFallChar_compromise === selectedPlayerChar) ? "自機" : "相方", charCost: secondFallChar_compromise.cost, hpGained: res2_compromise.hpGained, costConsumed: res2_compromise.costConsumed, remainingCost: currentCostForCompromise.toFixed(1), note: res2_compromise.note });
+                if (currentCostForCompromise >= 0.001 && !(res2_compromise.note.includes("出撃不可") && res2_compromise.hpGained <= 0 && res2_compromise.costConsumed <= 0 && currentCostForCompromise < 0.001)) {
+                    const subA_c = simulateRemainingSequenceAlternating(firstFallChar_compromise, secondFallChar_compromise, currentCostForCompromise, fallCount_A_compromise, fallCount_B_compromise, IS_TEAM_SCENARIO);
+                    const subB_c = simulateRemainingSequenceContinuous(firstFallChar_compromise, currentCostForCompromise, fallCount_A_compromise, IS_TEAM_SCENARIO);
+                    const subC_c = simulateRemainingSequenceContinuous(secondFallChar_compromise, currentCostForCompromise, fallCount_B_compromise, IS_TEAM_SCENARIO);
+                    let bestSub_c = subA_c; if (subB_c.totalHp > bestSub_c.totalHp) bestSub_c = subB_c; if (subC_c.totalHp > bestSub_c.totalHp) bestSub_c = subC_c;
+                    currentHpForCompromise += bestSub_c.totalHp; let subTurnCounter_c = currentTurn_compromise; bestSub_c.sequence.forEach(item => { compromiseSequence.push({ ...item, turn: subTurnCounter_c++ }); });
                 }
             }
-            compromiseScenario.totalHp = currentHpForCompromise;
-            compromiseScenario.sequence = compromiseSequence;
-            compromiseScenario.name = `チーム合計耐久値(妥協) (${firstFallChar_compromise.name}先落ち→${secondFallChar_compromise.name}後落ち後最適化)`;
+            compromiseScenario.totalHp = currentHpForCompromise; compromiseScenario.sequence = compromiseSequence; compromiseScenario.name = `チーム合計耐久値(妥協) (${firstFallChar_compromise.name}先落ち→${secondFallChar_compromise.name}後落ち後最適化)`;
 
-
-            // --- 3. チーム合計耐久値(爆弾) ---
-            let fallingChar_bomb, livingChar_bomb;
-            if (selectedPlayerChar.cost < selectedPartnerChar.cost) {
-                fallingChar_bomb = selectedPlayerChar; livingChar_bomb = selectedPartnerChar;
-            } else if (selectedPartnerChar.cost < selectedPlayerChar.cost) {
-                fallingChar_bomb = selectedPartnerChar; livingChar_bomb = selectedPlayerChar;
-            } else { 
-                if (selectedPlayerChar.hp >= selectedPartnerChar.hp) {
-                    fallingChar_bomb = selectedPlayerChar; livingChar_bomb = selectedPartnerChar; // If costs are equal, higher HP char falls first as "bomb" (arbitrary, could be lower HP too)
-                } else {
-                    fallingChar_bomb = selectedPartnerChar; livingChar_bomb = selectedPlayerChar;
-                }
-            }
-            const bombFallResult = simulateMinimumSequence(fallingChar_bomb, livingChar_bomb);
+            let fallingChar_bomb;
+            if (selectedPlayerChar.cost < selectedPartnerChar.cost) { fallingChar_bomb = selectedPlayerChar; }
+            else if (selectedPartnerChar.cost < selectedPlayerChar.cost) { fallingChar_bomb = selectedPartnerChar; }
+            else { fallingChar_bomb = (selectedPlayerChar.hp <= selectedPartnerChar.hp) ? selectedPlayerChar : selectedPartnerChar; }
+            const bombFallResult = simulateMinimumSequence(fallingChar_bomb, IS_TEAM_SCENARIO);
             const bombTotalHp = selectedPlayerChar.hp + selectedPartnerChar.hp + bombFallResult.totalHp;
-            let bombSequence = [
-                { turn: 0, charName: "初期HP", charType: "", charCost: 0, 
-                  hpGained: selectedPlayerChar.hp + selectedPartnerChar.hp, // Sum of both characters' HP
-                  costConsumed: 0, 
-                  remainingCost: MAX_TEAM_COST.toFixed(1), 
-                  note: `${selectedPlayerChar.name} (${selectedPlayerChar.hp.toLocaleString()}) + ${selectedPartnerChar.name} (${selectedPartnerChar.hp.toLocaleString()})` } // This note
-            ];
-            bombFallResult.sequence.forEach(item => {
-                bombSequence.push(item);
-            });
-            const bombResult = {
-                name: `チーム合計耐久値(爆弾) (${fallingChar_bomb.name}のみ連続撃墜)`, // Clarified title
-                totalHp: bombTotalHp,
-                sequence: bombSequence
-            };
+            let bombSequence = [ { turn: 0, charName: "初期HP", charType: "", charCost: 0, hpGained: selectedPlayerChar.hp + selectedPartnerChar.hp, costConsumed: 0, remainingCost: MAX_TEAM_COST.toFixed(1), note: `${selectedPlayerChar.name} (${selectedPlayerChar.hp.toLocaleString()}) + ${selectedPartnerChar.name} (${selectedPartnerChar.hp.toLocaleString()})` } ];
+            bombFallResult.sequence.forEach(item => { bombSequence.push(item); });
+            const bombResult = { name: `チーム合計耐久値(爆弾) (${fallingChar_bomb.name}のみ連続撃墜)`, totalHp: bombTotalHp, sequence: bombSequence };
 
+            const playerFocusRedeploys = simulateMinimumSequence(selectedPlayerChar, IS_TEAM_SCENARIO);
+            const lowestPlayerFocusTotalHp = selectedPlayerChar.hp + playerFocusRedeploys.totalHp;
+            let lowestPlayerFocusSequence = [ { turn: 0, charName: "初期HP", charType: "", charCost: 0, hpGained: selectedPlayerChar.hp, costConsumed: 0, remainingCost: MAX_TEAM_COST.toFixed(1), note: `${selectedPlayerChar.name}(${selectedPlayerChar.hp.toLocaleString()})で開始、${selectedPlayerChar.name}が集中狙い` } ];
+            playerFocusRedeploys.sequence.forEach(item => lowestPlayerFocusSequence.push(item));
 
-            // --- 4. チーム合計耐久値(最低) ---
-            const playerContinuousFall = simulateMinimumSequence(selectedPlayerChar, selectedPartnerChar);
-            const partnerContinuousFall = simulateMinimumSequence(selectedPartnerChar, selectedPlayerChar);
-            
-            // Lowest total HP: initial HP of one character + redeploy HP of that SAME character only.
-            // Scenario 1: Player falls repeatedly, Partner never dies (conceptually)
-            const lowestPlayerScenarioTotalHp = selectedPlayerChar.hp + playerContinuousFall.totalHp;
-            // Scenario 2: Partner falls repeatedly, Player never dies (conceptually)
-            const lowestPartnerScenarioTotalHp = selectedPartnerChar.hp + partnerContinuousFall.totalHp;
+            const partnerFocusRedeploys = simulateMinimumSequence(selectedPartnerChar, IS_TEAM_SCENARIO);
+            const lowestPartnerFocusTotalHp = selectedPartnerChar.hp + partnerFocusRedeploys.totalHp;
+            let lowestPartnerFocusSequence = [ { turn: 0, charName: "初期HP", charType: "", charCost: 0, hpGained: selectedPartnerChar.hp, costConsumed: 0, remainingCost: MAX_TEAM_COST.toFixed(1), note: `${selectedPartnerChar.name}(${selectedPartnerChar.hp.toLocaleString()})で開始、${selectedPartnerChar.name}が集中狙い` } ];
+            partnerFocusRedeploys.sequence.forEach(item => lowestPartnerFocusSequence.push(item));
 
             let lowestResult;
-            if (lowestPlayerScenarioTotalHp <= lowestPartnerScenarioTotalHp) {
-                 let lowestPlayerSequence = [
-                    { turn: 0, charName: "初期HP", charType: "", charCost: 0, 
-                      hpGained: selectedPlayerChar.hp,
-                      costConsumed: 0, 
-                      remainingCost: MAX_TEAM_COST.toFixed(1), 
-                      note: `${selectedPlayerChar.name} (${selectedPlayerChar.hp.toLocaleString()}) のみ初期生存` }
-                ];
-                playerContinuousFall.sequence.forEach(item => lowestPlayerSequence.push(item));
-                lowestResult = {
-                    name: `チーム合計耐久値(最低/${selectedPlayerChar.name}集中狙い)`,
-                    totalHp: lowestPlayerScenarioTotalHp,
-                    sequence: lowestPlayerSequence
-                };
+            if (lowestPlayerFocusTotalHp <= lowestPartnerFocusTotalHp) {
+                lowestResult = { name: `チーム合計耐久値(最低/${selectedPlayerChar.name}集中狙い)`, totalHp: lowestPlayerFocusTotalHp, sequence: lowestPlayerFocusSequence };
             } else {
-                let lowestPartnerSequence = [
-                    { turn: 0, charName: "初期HP", charType: "", charCost: 0, 
-                      hpGained: selectedPartnerChar.hp,
-                      costConsumed: 0, 
-                      remainingCost: MAX_TEAM_COST.toFixed(1), 
-                      note: `${selectedPartnerChar.name} (${selectedPartnerChar.hp.toLocaleString()}) のみ初期生存` }
-                ];
-                partnerContinuousFall.sequence.forEach(item => lowestPartnerSequence.push(item));
-                 lowestResult = {
-                    name: `チーム合計耐久値(最低/${selectedPartnerChar.name}集中狙い)`,
-                    totalHp: lowestPartnerScenarioTotalHp,
-                    sequence: lowestPartnerSequence
-                };
+                lowestResult = { name: `チーム合計耐久値(最低/${selectedPartnerChar.name}集中狙い)`, totalHp: lowestPartnerFocusTotalHp, sequence: lowestPartnerFocusSequence };
             }
-            
+
             gsap.delayedCall(0.1, () => displayTotalTeamHpResults(highestHpScenario, compromiseScenario, bombResult, lowestResult));
         }
-
 
         function displayTotalTeamHpResults(idealScenario, compromiseScenario, bombScenario, lowestScenario) {
             if (maxTeamCostValueDisplay) maxTeamCostValueDisplay.textContent = MAX_TEAM_COST.toFixed(1);
             if (selectedPlayerCharNameSummary && selectedPlayerChar) selectedPlayerCharNameSummary.textContent = selectedPlayerChar.name;
             if (selectedPartnerCharNameSummary && selectedPartnerChar) selectedPartnerCharNameSummary.textContent = selectedPartnerChar.name;
             if (totalHpDisplayArea) { totalHpDisplayArea.style.opacity = 1; totalHpDisplayArea.style.transform = 'translateY(0)'; totalHpDisplayArea.classList.add('active'); } else return;
-
             const generateListItems = (sequence) => {
                 return sequence?.map(item => {
-                    if (item.turn === 0) {
-                        // For initial HP display (turn 0)
-                        return `<li>初期HP: ${item.hpGained.toLocaleString()} HP獲得 (${item.note})</li>`;
-                    } else {
-                        // For subsequent redeploy events
-                        const charTypeDisplay = item.charType ? ` (${item.charType})` : '';
-                        const costConsumedDisplay = typeof item.costConsumed === 'number' ? item.costConsumed.toFixed(1) : item.costConsumed;
-                        return `<li>${item.turn}落ち: ${item.charName}${charTypeDisplay} - ${item.hpGained.toLocaleString()} HP獲得 ${item.note ? `${item.note}` : ''}, 残り: ${item.remainingCost})</li>`;
-                    }
+                    const charTypeDisplay = item.charType ? ` (${item.charType})` : '';
+                    const costConsumedDisplay = typeof item.costConsumed === 'number' ? item.costConsumed.toFixed(1) : String(item.costConsumed);
+                    if (item.turn === 0) { return `<li>初期HP: ${item.hpGained.toLocaleString()} HP獲得 (${item.note})</li>`; }
+                    else { const remainingCostDisplay = item.remainingCost !== undefined ? `, 残り: ${item.remainingCost}` : '';
+                           return `<li>${item.turn}落ち: ${item.charName}${charTypeDisplay} - ${item.hpGained.toLocaleString()} HP獲得 (${item.note}${remainingCostDisplay})</li>`; }
                 }).join('') || '';
             };
-
-            if(highestHpScenarioTitleSpan) highestHpScenarioTitleSpan.textContent = idealScenario.name; 
+            if(highestHpScenarioTitleSpan) highestHpScenarioTitleSpan.textContent = idealScenario.name;
             if(idealGainedHpSpan) idealGainedHpSpan.textContent = idealScenario.totalHp?.toLocaleString() || '--';
             if(idealSequenceList) idealSequenceList.innerHTML = generateListItems(idealScenario.sequence);
-            
-            if(compromiseHpScenarioTitleSpan) compromiseHpScenarioTitleSpan.textContent = compromiseScenario.name; 
+            if(compromiseHpScenarioTitleSpan) compromiseHpScenarioTitleSpan.textContent = compromiseScenario.name;
             if(minGainedHpHpSpan) minGainedHpHpSpan.textContent = compromiseScenario.totalHp?.toLocaleString() || '--';
             if(minSequenceList) minSequenceList.innerHTML = generateListItems(compromiseScenario.sequence);
-
             if(bombHpScenarioTitleSpan) bombHpScenarioTitleSpan.textContent = bombScenario.name;
             if(bombGainedHpSpan) bombGainedHpSpan.textContent = bombScenario.totalHp?.toLocaleString() || '--';
             if(bombSequenceList) bombSequenceList.innerHTML = generateListItems(bombScenario.sequence);
-
             if(lowestHpScenarioTitleSpan) lowestHpScenarioTitleSpan.textContent = lowestScenario.name;
             if(lowestGainedHpSpan) lowestGainedHpSpan.textContent = lowestScenario.totalHp?.toLocaleString() || '--';
             if(lowestSequenceList) lowestSequenceList.innerHTML = generateListItems(lowestScenario.sequence);
-
             if (totalHpDisplayArea) gsap.to(totalHpDisplayArea, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
         }
 
         function simulateRedeploy(charType) {
-            if (!selectedPlayerChar || !selectedPartnerChar) {
-                alert("自機と相方の両方を選択してください。");
-                resetSimulationResults();
-                return;
-            }
+            if (!selectedPlayerChar || !selectedPartnerChar) { alert("自機と相方の両方を選択してください。"); resetSimulationResults(); return; }
+            currentlySimulatingCharType = charType;
 
             const allocatedCostForThisRedeploy = parseFloat(remainingTeamCostInput.value);
             let charToRedeploy = (charType === 'player') ? selectedPlayerChar : selectedPartnerChar;
-            
+
             let calculatedHp;
             let actualCostConsumed = 0;
+            const originalCharHp = charToRedeploy.hp;
+            const charFullCost = charToRedeploy.cost;
 
-            if (charToRedeploy.cost <= 0) {
+            // Individual simulation: HP calculation based on allocatedCostForThisRedeploy
+            // This specific simulation does NOT use the "final remaining cost 0 -> HP 0" rule from calculateRedeployEffect.
+            if (charFullCost <= 0 || allocatedCostForThisRedeploy <= 0) {
                 calculatedHp = 0;
-                actualCostConsumed = 0;
-            } else if (allocatedCostForThisRedeploy >= charToRedeploy.cost) {
-                calculatedHp = charToRedeploy.hp;
-                actualCostConsumed = charToRedeploy.cost;
+            } else if (allocatedCostForThisRedeploy >= charFullCost) {
+                calculatedHp = originalCharHp;
+            } else { // Cost-over based on allocatedCostForThisRedeploy
+                calculatedHp = Math.round(originalCharHp * (allocatedCostForThisRedeploy / charFullCost));
+            }
+
+            // Determine actual cost consumed for display (same as before)
+            if (allocatedCostForThisRedeploy >= charFullCost) {
+                actualCostConsumed = charFullCost;
             } else if (allocatedCostForThisRedeploy > 0) {
-                calculatedHp = Math.round(charToRedeploy.hp * (allocatedCostForThisRedeploy / charToRedeploy.cost));
                 actualCostConsumed = allocatedCostForThisRedeploy;
             } else {
-                calculatedHp = 0;
                 actualCostConsumed = 0;
             }
 
             redeployCharNameSpan.textContent = charToRedeploy.name;
             redeployCharCostSpan.textContent = charToRedeploy.cost.toFixed(1);
             redeployOriginalHpSpan.textContent = charToRedeploy.hp.toLocaleString();
-            redeployCostConsumedSpan.textContent = actualCostConsumed.toFixed(1); 
+            redeployCostConsumedSpan.textContent = actualCostConsumed.toFixed(1);
             redeployCalculatedHpSpan.textContent = calculatedHp.toLocaleString();
-
             const originalHpValue = charToRedeploy.hp;
-            
             redeployCalculatedHpSpan.classList.remove('red-value', 'low-hp-value');
-            if (originalHpValue > 0 && (calculatedHp / originalHpValue) < 0.995) { 
-                redeployCalculatedHpSpan.classList.add('red-value');
-            }
-            
+            if (originalHpValue > 0 && calculatedHp < originalHpValue && calculatedHp > 0) { redeployCalculatedHpSpan.classList.add('red-value'); }
+            else if (calculatedHp === 0 && originalHpValue > 0) { redeployCalculatedHpSpan.classList.add('red-value'); }
             const hpPercentage = originalHpValue > 0 ? (calculatedHp / originalHpValue) : 0;
             gsap.to(simulationHpBarFill, {
                 scaleX: hpPercentage, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true,
                 onUpdate: () => { if (simulationHpPercentageDisplay) simulationHpPercentageDisplay.textContent = `${Math.round(gsap.getProperty(simulationHpBarFill, "scaleX") * 100)}%`; },
                 onComplete: () => { if (simulationHpPercentageDisplay) simulationHpPercentageDisplay.textContent = `${Math.round(hpPercentage * 100)}%`; }
             });
-
             if (hpPercentage <= 0.3) simulationHpBarFill.classList.add('hp-bar-low-pulse'); else simulationHpBarFill.classList.remove('hp-bar-low-pulse');
-            
             if (simulationHpPercentageDisplay) simulationHpPercentageDisplay.classList.add('show');
 
-            gsap.fromTo(simulationResultsDiv, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", onComplete: () => simulationResultsDiv.classList.add('active') });
+            const targetCharForAwakeningData = charToRedeploy;
+            if (beforeShotdownAwakeningGaugeInput) {
+                beforeShotdownAwakeningGaugeInput.dataset.originalCharacterHp = targetCharForAwakeningData.hp;
+                beforeShotdownAwakeningGaugeInput.dataset.characterCost = targetCharForAwakeningData.cost.toFixed(1);
+            }
+            if (beforeShotdownHpInput_damageTakenInput) {
+                beforeShotdownHpInput_damageTakenInput.max = targetCharForAwakeningData.hp;
+                beforeShotdownHpInput_damageTakenInput.dataset.originalCharacterHp = targetCharForAwakeningData.hp;
+                beforeShotdownHpInput_damageTakenInput.dataset.characterCost = targetCharForAwakeningData.cost.toFixed(1);
+            }
+
+            gsap.fromTo(simulationResultsDiv, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", onComplete: () => {
+                simulationResultsDiv.classList.add('active');
+                const awakeningArea = document.querySelector('.awakening-simulation-area');
+                if (awakeningArea) awakeningArea.style.display = 'block';
+                calculateAndDisplayAwakeningGauge();
+            }});
         };
+
+        function calculateAndDisplayAwakeningGauge() {
+            if (!predictedAwakeningGaugeSpan || !awakeningAvailabilitySpan || !beforeShotdownAwakeningGaugeInput || !beforeShotdownHpInput_damageTakenInput ||
+                !considerOwnDownCheckbox || !considerDamageDealtCheckbox || !damageDealtAwakeningBonusSelect || !considerPartnerDownCheckbox) return;
+
+            let charForBonusCost;
+            if (currentlySimulatingCharType === 'player' && selectedPlayerChar) {
+                charForBonusCost = selectedPlayerChar;
+            } else if (currentlySimulatingCharType === 'partner' && selectedPartnerChar) {
+                charForBonusCost = selectedPartnerChar;
+            } else { // Fallback if context is lost or not set (should ideally not happen if simulateRedeploy sets it)
+                charForBonusCost = { cost: parseFloat(beforeShotdownHpInput_damageTakenInput.dataset.characterCost || "0") };
+            }
+
+            const originalCharActualMaxHp = parseFloat(beforeShotdownHpInput_damageTakenInput.dataset.originalCharacterHp);
+            const gaugeBeforeShotdown = parseFloat(beforeShotdownAwakeningGaugeInput.value) || 0;
+            let damageTakenInputValue = parseFloat(beforeShotdownHpInput_damageTakenInput.value);
+
+            if (isNaN(originalCharActualMaxHp) || !charForBonusCost || isNaN(charForBonusCost.cost) ||
+                isNaN(gaugeBeforeShotdown) || isNaN(damageTakenInputValue) || originalCharActualMaxHp <= 0) {
+                predictedAwakeningGaugeSpan.textContent = '---';
+                awakeningAvailabilitySpan.textContent = '--'; awakeningAvailabilitySpan.className = 'info-value';
+                if(beforeShotdownHpInput_damageTakenInput) beforeShotdownHpInput_damageTakenInput.style.borderColor = 'red';
+                return;
+            }
+            if(beforeShotdownHpInput_damageTakenInput) beforeShotdownHpInput_damageTakenInput.style.borderColor = '';
+            let actualDamageTaken = Math.max(0, Math.min(damageTakenInputValue, originalCharActualMaxHp));
+            if(beforeShotdownHpInput_damageTakenInput.value !== actualDamageTaken.toString()) beforeShotdownHpInput_damageTakenInput.value = actualDamageTaken;
+
+            const hpLossPercentage = (originalCharActualMaxHp > 0) ? (actualDamageTaken / originalCharActualMaxHp) * 100 : 0;
+            const damageBasedGaugeIncrease = Math.floor(hpLossPercentage * AVERAGE_GAUGE_COEFFICIENT);
+            let costBonusOnOwnDown = 0;
+            if (considerOwnDownCheckbox.checked) {
+                costBonusOnOwnDown = AWAKENING_BONUS_BY_COST[charForBonusCost.cost.toFixed(1)] || 0;
+            }
+            let additionalGaugeFromDamageDealt = 0;
+            if (considerDamageDealtCheckbox.checked) additionalGaugeFromDamageDealt = parseInt(damageDealtAwakeningBonusSelect.value) || 0;
+            let additionalGaugeFromPartnerDown = 0;
+            if (considerPartnerDownCheckbox.checked) {
+                additionalGaugeFromPartnerDown = PARTNER_DOWN_AWAKENING_BONUS[charForBonusCost.cost.toFixed(1)] || 0;
+            }
+            let finalPredictedGauge = gaugeBeforeShotdown + damageBasedGaugeIncrease + costBonusOnOwnDown + additionalGaugeFromDamageDealt + additionalGaugeFromPartnerDown;
+            finalPredictedGauge = Math.max(0, Math.min(100, Math.floor(finalPredictedGauge)));
+            predictedAwakeningGaugeSpan.textContent = finalPredictedGauge;
+            awakeningAvailabilitySpan.classList.remove('awakening-possible', 'awakening-not-possible');
+            if (finalPredictedGauge >= AWAKENING_THRESHOLD) {
+                awakeningAvailabilitySpan.textContent = '使用可能'; awakeningAvailabilitySpan.classList.add('awakening-possible');
+            } else {
+                awakeningAvailabilitySpan.textContent = '使用不可'; awakeningAvailabilitySpan.classList.add('awakening-not-possible');
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             characterGrid = document.getElementById('characterGrid');
@@ -2864,7 +2927,7 @@
             searchIcon = document.querySelector('.search-icon');
             costFilterButtons = document.querySelectorAll('#costFilter .filter-button');
             sortFilterButtons = document.querySelectorAll('#sortFilter .filter-button');
-            accordionHeaders = document.querySelectorAll('.accordion-header'); // General accordion headers
+            accordionHeaders = document.querySelectorAll('.accordion-header');
             loadingOverlay = document.getElementById('loadingOverlay');
             playerCharSelect = document.getElementById('playerCharSelect');
             partnerCharSelect = document.getElementById('partnerCharSelect');
@@ -2884,21 +2947,43 @@
                  simulationHpPercentageDisplay = simulationResultsDiv.querySelector('.hp-percentage-display');
             }
             totalHpDisplayArea = document.getElementById('totalHpDisplayArea');
-            maxTeamCostValueDisplay = document.getElementById('maxTeamCostValueDisplay');
-            highestHpScenarioTitleSpan = document.getElementById('highestHpScenarioTitle'); 
+            // maxTeamCostValueDisplay might not be used, so check existence if relying on it
+            highestHpScenarioTitleSpan = document.getElementById('highestHpScenarioTitle');
             idealGainedHpSpan = document.getElementById('idealGainedHp');
             idealSequenceList = document.getElementById('idealSequenceList');
-            compromiseHpScenarioTitleSpan = document.getElementById('compromiseHpScenarioTitle'); 
+            compromiseHpScenarioTitleSpan = document.getElementById('compromiseHpScenarioTitle');
             minGainedHpHpSpan = document.getElementById('minGainedHpHpSpan');
             minSequenceList = document.getElementById('minSequenceList');
-            lowestHpScenarioTitleSpan = document.getElementById('lowestHpScenarioTitle'); 
-            lowestGainedHpSpan = document.getElementById('lowestGainedHp'); 
-            lowestSequenceList = document.getElementById('lowestSequenceList'); 
-            bombHpScenarioTitleSpan = document.getElementById('bombHpScenarioTitle'); 
-            bombGainedHpSpan = document.getElementById('bombGainedHp'); 
-            bombSequenceList = document.getElementById('bombSequenceList'); 
+            lowestHpScenarioTitleSpan = document.getElementById('lowestHpScenarioTitle');
+            lowestGainedHpSpan = document.getElementById('lowestGainedHp');
+            lowestSequenceList = document.getElementById('lowestSequenceList');
+            bombHpScenarioTitleSpan = document.getElementById('bombHpScenarioTitle');
+            bombGainedHpSpan = document.getElementById('bombGainedHp');
+            bombSequenceList = document.getElementById('bombSequenceList');
             selectedPlayerCharNameSummary = document.getElementById('selectedPlayerCharNameSummary');
             selectedPartnerCharNameSummary = document.getElementById('selectedPartnerCharNameSummary');
+            beforeShotdownAwakeningGaugeInput = document.getElementById('beforeShotdownAwakeningGaugeInput');
+            beforeShotdownHpInput_damageTakenInput = document.getElementById('beforeShotdownHpInput');
+            predictedAwakeningGaugeSpan = document.getElementById('predictedAwakeningGauge');
+            awakeningAvailabilitySpan = document.getElementById('awakeningAvailability');
+            considerOwnDownCheckbox = document.getElementById('considerOwnDownCheckbox');
+            considerDamageDealtCheckbox = document.getElementById('considerDamageDealtCheckbox');
+            damageDealtOptionsContainer = document.getElementById('damageDealtOptionsContainer');
+            damageDealtAwakeningBonusSelect = document.getElementById('damageDealtAwakeningBonusSelect');
+            considerPartnerDownCheckbox = document.getElementById('considerPartnerDownCheckbox');
+
+            [ beforeShotdownAwakeningGaugeInput, beforeShotdownHpInput_damageTakenInput, damageDealtAwakeningBonusSelect, considerOwnDownCheckbox, considerPartnerDownCheckbox, considerDamageDealtCheckbox ].forEach(el => {
+                if (el) {
+                    if (el.type === 'checkbox' || el.tagName === 'SELECT') el.addEventListener('change', calculateAndDisplayAwakeningGauge);
+                    else el.addEventListener('input', calculateAndDisplayAwakeningGauge);
+                }
+            });
+            if(considerDamageDealtCheckbox && damageDealtOptionsContainer) {
+                considerDamageDealtCheckbox.addEventListener('change', function() {
+                    damageDealtOptionsContainer.style.display = this.checked ? 'block' : 'none';
+                    if (!this.checked && damageDealtAwakeningBonusSelect) damageDealtAwakeningBonusSelect.value = "0";
+                });
+            }
 
             const tl = gsap.timeline({ defaults: { opacity: 0, ease: "power3.out", overwrite: true } });
             tl.from("h1", { y: -50, duration: 1, scale: 0.8, delay: 0.5 })
@@ -2916,72 +3001,32 @@
             if(characterSearchInput) {
                 characterSearchInput.addEventListener('compositionstart', () => { isComposing = true; clearTimeout(searchTimeout); });
                 characterSearchInput.addEventListener('compositionend', () => { isComposing = false; clearTimeout(searchTimeout); applyFiltersAndSearch(); });
-                characterSearchInput.addEventListener('input', () => {
-                    animateSearchInputInteraction();
-                    if (!isComposing) { clearTimeout(searchTimeout); searchTimeout = setTimeout(applyFiltersAndSearch, 300); }
-                });
+                characterSearchInput.addEventListener('input', () => { if (!isComposing) { clearTimeout(searchTimeout); searchTimeout = setTimeout(applyFiltersAndSearch, 300); }});
                 characterSearchInput.addEventListener('blur', () => { if (!isComposing) { clearTimeout(searchTimeout); applyFiltersAndSearch(); }});
             }
             if(costFilterButtons) costFilterButtons.forEach(button => button.addEventListener('click', () => { costFilterButtons.forEach(btn => btn.classList.remove('active')); button.classList.add('active'); applyFiltersAndSearch(); }));
             if(sortFilterButtons) sortFilterButtons.forEach(button => button.addEventListener('click', () => { sortFilterButtons.forEach(btn => btn.classList.remove('active')); button.classList.add('active'); updateSortIcons(); applyFiltersAndSearch(); }));
-            
-            // Main Accordion Logic
             if(accordionHeaders) {
                 accordionHeaders.forEach(header => {
                     header.addEventListener('click', function() {
-                        const content = this.nextElementSibling; 
-                        const isExpanded = this.getAttribute('aria-expanded') === 'true';
-                        this.setAttribute('aria-expanded', !isExpanded); 
-                        this.classList.toggle('active'); 
-                        content.classList.toggle('show'); // This class is used by CSS for initial hide/show by max-height and opacity
-                        
-                        if (!isExpanded) { // If it WAS collapsed, now expanding
-                            gsap.to(content, { maxHeight: content.scrollHeight + "px", paddingTop: "25px", paddingBottom: "25px", opacity: 1, scaleY: 1, duration: 0.4, ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"});
-                        } else { // If it WAS expanded, now collapsing
-                            gsap.to(content, { maxHeight: 0, paddingTop: 0, paddingBottom: 0, opacity: 0, scaleY: 0.8, duration: 0.4, ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"});
-                        }
+                        const content = this.nextElementSibling; const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                        this.setAttribute('aria-expanded', !isExpanded); this.classList.toggle('active'); content.classList.toggle('show');
+                        if (!isExpanded) gsap.to(content, { maxHeight: content.scrollHeight + "px", paddingTop: "25px", paddingBottom: "25px", opacity: 1, scaleY: 1, duration: 0.4, ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"});
+                        else gsap.to(content, { maxHeight: 0, paddingTop: 0, paddingBottom: 0, opacity: 0, scaleY: 0.8, duration: 0.4, ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"});
                     });
                 });
             }
-
-            // Total HP Scenario Accordion Logic
             const totalHpAccordionHeaders = document.querySelectorAll('.total-hp-accordion-header');
             if (totalHpAccordionHeaders) {
                 totalHpAccordionHeaders.forEach(header => {
                     header.addEventListener('click', function() {
-                        this.classList.toggle('active'); // For styling the header itself (e.g., icon rotation)
-                        this.setAttribute('aria-expanded', this.classList.contains('active'));
-                        const content = this.nextElementSibling; // Assumes <ul> is always the next sibling
-                        const isShown = content.classList.toggle('show'); // This class is used by CSS for initial hide/show by max-height and opacity
-
-                        if (isShown) { // If it's now shown (was hidden)
-                            gsap.to(content, { 
-                                maxHeight: "300px", // Target max-height for scrollable content
-                                opacity: 1, 
-                                paddingTop: "8px", 
-                                paddingBottom: "8px",
-                                marginTop: "10px",
-                                borderWidth: "1px",
-                                duration: 0.4, 
-                                ease: "power2.out" 
-                            });
-                        } else { // If it's now hidden (was shown)
-                            gsap.to(content, { 
-                                maxHeight: 0, 
-                                opacity: 0, 
-                                paddingTop: 0, 
-                                paddingBottom: 0, 
-                                marginTop: 0,
-                                borderWidth: "0px",
-                                duration: 0.4, 
-                                ease: "power2.in" 
-                            });
-                        }
+                        this.classList.toggle('active'); this.setAttribute('aria-expanded', this.classList.contains('active'));
+                        const content = this.nextElementSibling; const isShown = content.classList.toggle('show');
+                        if (isShown) gsap.to(content, { maxHeight: "300px", opacity: 1, paddingTop: "8px", paddingBottom: "8px", marginTop: "10px", borderWidth: "1px", duration: 0.4, ease: "power2.out" });
+                        else gsap.to(content, { maxHeight: 0, opacity: 0, paddingTop: 0, paddingBottom: 0, marginTop: 0, borderWidth: "0px", duration: 0.4, ease: "power2.in" });
                     });
                 });
             }
-
-
             if(characterGrid) characterGrid.addEventListener('click', (event) => {
                 const clickedElement = event.target; const card = clickedElement.closest('.character-card'); if (!card) return;
                 const originalHp = parseFloat(card.dataset.originalHp);
