@@ -23,7 +23,7 @@
 
             <div class="accordion">
                 <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false" data-tooltip="キャラクターリストの検索、コストや条件での絞り込み、表示順の変更方法について説明します。">
+                    <button class="accordion-header" aria-expanded="false">
                         <span><i class="fas fa-search"></i> 1. キャラクターを検索・絞り込む</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false" data-tooltip="再出撃時の耐久値がどのように計算されるか、その基本となる計算式とキャラクターの元々の耐久値について説明します。">
+                    <button class="accordion-header" aria-expanded="false">
                         <span><i class="fas fa-calculator"></i> 2. 計算式と本来の耐久値を確認する</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
@@ -45,19 +45,19 @@
                 </div>
 
                 <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false" data-tooltip="キャラクターカード内の数値をクリックすることで、HPバーがどのように変化するかを視覚的に確認する方法について説明します。">
+                    <button class="accordion-header" aria-expanded="false">
                         <span><i class="fas fa-chart-bar"></i> 3. HPバーの変動をシミュレーションする</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
                         <p>各キャラクターカードのテーブル内にある**「再出撃時耐久値」のセルをクリック**してください。</p>
                         <p>クリックされた数値が「本来の耐久値」に対してどれくらいの割合になるか、その上のHPバーで視覚的に確認できます。</p>
-                        <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: セルにカーソルを合わせると、クリック可能であることが強調表示されます。</p>
+                        <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: セルにカーソルを合わせると、クリック可能であることが強調表示される場合があります。</p>
                     </div>
                 </div>
 
                 <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false" data-tooltip="シミュレーションしたHPバーを初期状態（100%）に戻す簡単な方法について説明します。">
+                    <button class="accordion-header" aria-expanded="false">
                         <span><i class="fas fa-sync-alt"></i> 4. HPバーをリセットする</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
@@ -71,21 +71,21 @@
 
         <!-- 新規追加: 再出撃シミュレーションセクション -->
         <div class="simulation-container">
-            <h2><i class="fas fa-robot" data-tooltip="ここでは、選択した自機と相方、そしてチームの残りコストに基づいて、どちらかが撃墜された後の再出撃状況をシミュレーションします。"></i> 再出撃シミュレーション</h2>
+            <h2><i class="fas fa-robot"></i> 再出撃シミュレーション</h2>
             <p class="guide-intro">自機と相方を選択し、現在のチーム残りコストを入力することで、どちらかの機体が再出撃した場合の耐久値をシミュレーションできます。</p>
 
             <div class="character-select-group">
                 <div class="select-wrapper">
-                    <label for="playerCharSelect" data-tooltip="あなたの操作するキャラクター（自機）を選択してください。"><i class="fas fa-user-astronaut"></i> 自機:</label>
+                    <label for="playerCharSelect"><i class="fas fa-user-astronaut"></i> 自機:</label>
                     <select id="playerCharSelect" class="select-dropdown"></select>
                 </div>
                 <div class="select-wrapper">
-                    <label for="partnerCharSelect" data-tooltip="あなたのチームメイトのキャラクター（相方）を選択してください。"><i class="fas fa-user-friends"></i> 相方:</label>
+                    <label for="partnerCharSelect"><i class="fas fa-user-friends"></i> 相方:</label>
                     <select id="partnerCharSelect" class="select-dropdown"></select>
                 </div>
             </div>
 
-            <div class="team-cost-display" data-tooltip="選択された自機と相方のコストの合計値です。\n最大チームコストは6.0です。">
+            <div class="team-cost-display">
                 <span class="cost-label"><i class="fas fa-users-cog"></i> チーム合計コスト:</span>
                 <span id="totalTeamCost" class="cost-value">0.0</span>
             </div>
@@ -95,63 +95,63 @@
             </div>
 
             <div class="simulation-input-group">
-                <label for="remainingTeamCostInput" data-tooltip="シミュレーション対象の機体が撃墜された後の、チーム全体の残りコスト（総力ゲージの値）を入力します。\nこの値に基づいて再出撃時の耐久値が計算されます。"><i class="fas fa-coins"></i> 指定キャラ撃墜後の残りコスト:</label>
+                <label for="remainingTeamCostInput"><i class="fas fa-coins"></i> 指定キャラ撃墜後の残りコスト:</label>
                 <select id="remainingTeamCostInput" class="select-dropdown"></select>
             </div>
 
             <div class="simulation-buttons">
-                <button id="simulatePlayerRedeploy" class="simulation-button" data-tooltip="選択した自機が、入力された『残りコスト』で再出撃した場合の耐久値と覚醒ゲージをシミュレートします。">自機が再出撃した場合</button>
-                <button id="simulatePartnerRedeploy" class="simulation-button" data-tooltip="選択した相方が、入力された『残りコスト』で再出撃した場合の耐久値と覚醒ゲージをシミュレートします。">相方が再出撃した場合</button>
+                <button id="simulatePlayerRedeploy" class="simulation-button">自機が再出撃した場合</button>
+                <button id="simulatePartnerRedeploy" class="simulation-button">相方が再出撃した場合</button>
             </div>
 
             <div class="simulation-results" id="simulationResults">
                 <h3><i class="fas fa-bolt"></i> 再出撃予測結果</h3>
                 <div class="result-display-area">
-                    <div class="redeploy-char-info" data-tooltip="シミュレーションによって再出撃すると判定された機体の名前です。">
+                    <div class="redeploy-char-info">
                         <span class="info-label">再出撃機体:</span> <span id="redeployCharName" class="info-value">--</span>
                     </div>
-                    <div class="redeploy-char-info" data-tooltip="再出撃する機体の元々のコストです。">
+                    <div class="redeploy-char-info">
                         <span class="info-label">機体コスト:</span> <span id="redeployCharCost" class="info-value">--</span>
                     </div>
-                    <div class="redeploy-char-info" data-tooltip="再出撃する機体のコストオーバーしていない状態での最大HPです。">
+                    <div class="redeploy-char-info">
                         <span class="info-label">本来の耐久値:</span> <span id="redeployOriginalHp" class="info-value">--</span>
                     </div>
-                    <div class="redeploy-char-info" data-tooltip="再出撃する際に、チームの残りコストから実際に消費されるコストの値です。\n残りコストが機体コスト未満の場合は、残りコスト分だけ消費します。">
+                    <div class="redeploy-char-info">
                         <span class="info-label">再出撃時コスト消費:</span> <span id="redeployCostConsumed" class="info-value">--</span>
                     </div>
-                    <div class="redeploy-char-info" data-tooltip="計算された、再出撃後のHPです。\n残りコストと機体コストの比率で変動します。">
+                    <div class="redeploy-char-info">
                         <span class="info-label">再出撃時耐久値:</span> <span id="redeployCalculatedHp" class="info-value">--</span>
                     </div>
                 </div>
-                <div class="hp-bar-container simulation-hp-bar" data-tooltip="再出撃時耐久値の割合を視覚的に表示します。">
+                <div class="hp-bar-container simulation-hp-bar">
                     <div class="hp-bar-fill"></div>
                 </div>
-                <div class="hp-percentage-display simulation-hp-percentage" data-tooltip="再出撃時耐久値が、本来の耐久値に対して何パーセントになるかを表示します。"></div>
+                <div class="hp-percentage-display simulation-hp-percentage"></div>
 
                 <!-- Awakening Simulation Area with new features -->
                 <div class="awakening-simulation-area">
-                    <h4><i class="fas fa-brain" data-tooltip="再出撃した機体が、撃墜前の状況や各種ボーナスを考慮して覚醒ゲージがいくつになるか、そして覚醒が使用可能になるかを予測します。"></i> 覚醒ゲージ予測</h4>
+                    <h4><i class="fas fa-brain"></i> 覚醒ゲージ予測</h4>
                     <div class="simulation-input-group">
-                        <label for="beforeShotdownAwakeningGaugeInput" data-tooltip="撃墜される直前の、再出撃する機体の覚醒ゲージ残量(0-100%)を入力します。\nこの値が多いほど、再出撃後の覚醒が溜まりやすくなります。"><i class="fas fa-meteor"></i> 覚醒が溜まるか調べたい覚醒ゲージ:</label>
+                        <label for="beforeShotdownAwakeningGaugeInput"><i class="fas fa-meteor"></i> 覚醒が溜まるか調べたい覚醒ゲージ:</label>
                         <input type="number" id="beforeShotdownAwakeningGaugeInput" class="select-dropdown" min="0" max="100" step="1" value="0">
                     </div>
                     <div class="simulation-input-group">
-                        <label for="beforeShotdownHpInput" data-tooltip="撃墜される直前の、再出撃する機体の残りHPを入力します。\nこの値と最大HPから被ダメージ量を計算し、覚醒ゲージ増加に反映されます。\n0に近づくほど被ダメージによるゲージ増加は大きくなります。"><i class="fas fa-heart-broken"></i> 覚醒が溜まるか調べたい耐久値:</label>
+                        <label for="beforeShotdownHpInput"><i class="fas fa-heart-broken"></i> 覚醒が溜まるか調べたい耐久値:</label>
                         <input type="number" id="beforeShotdownHpInput" class="select-dropdown" min="0" step="1" value="0">
                     </div>
 
                     <div class="awakening-additional-options">
-                        <div class="simulation-input-group checkbox-group" data-tooltip="チェックすると、機体が撃墜された際に得られるコストに応じた覚醒ゲージボーナスを加算します。\n(3.0コスト機: +22%, 2.5コスト機: +22%, 2.0コスト機: +20%, 1.5コスト機: +15%)">
+                        <div class="simulation-input-group checkbox-group">
                             <i class="fas fa-crosshairs"></i>
                             <input type="checkbox" id="considerOwnDownCheckbox">
                             <label for="considerOwnDownCheckbox">再出撃直後のゲージ量にする</label>
                         </div>
 
-                        <div class="simulation-input-group checkbox-group has-dropdown" data-tooltip="チェックすると、撃墜されるまでに与えたダメージによる覚醒ゲージ増加分を下のドロップダウンから選択して加算できます。">
+                        <div class="simulation-input-group checkbox-group has-dropdown">
                             <i class="fas fa-fist-raised"></i>
                             <input type="checkbox" id="considerDamageDealtCheckbox">
                             <label for="considerDamageDealtCheckbox">与ダメージ考慮</label>
-                            <div class="select-dropdown-container" id="damageDealtOptionsContainer" data-tooltip="撃墜されるまでに与えたダメージによる覚醒ゲージ増加量を選択します。\n目安としてズンダ約1回で+3%程度です。">
+                            <div class="select-dropdown-container" id="damageDealtOptionsContainer">
                                 <select id="damageDealtAwakeningBonusSelect" class="select-dropdown">
                                     <option value="0">選択なし</option>
                                     <option value="3">覚醒ゲージ+3 (ズンダ約1回分)</option>
@@ -161,7 +161,7 @@
                             </div>
                         </div>
 
-                        <div class="simulation-input-group checkbox-group" data-tooltip="チェックすると、相方が既に撃墜されている場合に得られる覚醒ゲージボーナスを加算します。\n(3.0コスト機: +10%, 2.5コスト機: +9%, 2.0コスト機: +7%, 1.5コスト機: +5%)">
+                        <div class="simulation-input-group checkbox-group">
                              <i class="fas fa-user-slash"></i>
                              <input type="checkbox" id="considerPartnerDownCheckbox">
                              <label for="considerPartnerDownCheckbox">相方撃墜考慮</label>
@@ -170,10 +170,10 @@
 
 
                     <div class="result-display-area">
-                         <div class="redeploy-char-info" data-tooltip="全ての入力とオプションを考慮して計算された、再出撃後の予測覚醒ゲージ量(%)です。">
+                         <div class="redeploy-char-info">
                             <span class="info-label">予測覚醒ゲージ:</span> <span id="predictedAwakeningGauge" class="info-value">--</span>
                         </div>
-                        <div class="redeploy-char-info" data-tooltip="予測覚醒ゲージが50%以上の場合に「使用可能」、未満の場合に「使用不可」と表示されます。">
+                        <div class="redeploy-char-info">
                             <span class="info-label">覚醒使用:</span> <span id="awakeningAvailability" class="info-value">--</span>
                         </div>
                     </div>
@@ -183,7 +183,7 @@
 
         <!-- 新規追加: 合計耐久力表示エリア -->
         <div class="total-hp-display-area" id="totalHpDisplayArea">
-            <h3><i class="fas fa-medal" data-tooltip="選択した自機と相方のペアで、様々な撃墜シナリオを想定した場合のチーム全体で獲得できる総耐久力を予測します。"></i> チーム合計耐久力予測</h3>
+            <h3><i class="fas fa-medal"></i> チーム合計耐久力予測</h3>
             <p class="total-hp-summary">
                 選択された<span class="cost-value-small" id="selectedPlayerCharNameSummary">自機</span>と<span class="cost-value-small" id="selectedPartnerCharNameSummary">相方</span>の組み合わせで、
                 高コストから落ちた場合(理想)、低コストから落ちた場合(妥協)、低コストのみ落ちた場合(爆弾)、最も非効率的な落ち方をした場合の合計耐久力を予測します。
@@ -191,11 +191,11 @@
 
             <div class="total-hp-grid">
                 <div class="total-hp-scenario">
-                    <h4 data-tooltip="高コスト機が先に撃墜され、次に低コスト機が撃墜。\nその後、残りのチームコストで最も多くのHPを得られるように立ち回った場合のチーム総耐久力予測です。" id="highestHpScenarioTitleParent"><i class="fas fa-chart-line"></i> <span id="highestHpScenarioTitle">チーム合計耐久値(最高)</span></h4>
-                    <div class="redeploy-char-info" data-tooltip="このシナリオでチーム全体が獲得すると予測される総耐久値です。\n初期HPと再出撃による加算HPの合計です。">
+                    <h4 id="highestHpScenarioTitleParent"><i class="fas fa-chart-line"></i> <span id="highestHpScenarioTitle">チーム合計耐久値(最高)</span></h4>
+                    <div class="redeploy-char-info">
                         <span class="info-label">合計獲得耐久値:</span> <span id="idealGainedHp" class="info-value">--</span>
                     </div>
-                    <button class="total-hp-accordion-header" aria-expanded="false" data-tooltip="クリックすると、このシナリオでの詳細な撃墜の進行と、各段階での獲得HP・残りチームコストの内訳を表示/非表示します。">
+                    <button class="total-hp-accordion-header" aria-expanded="false">
                         <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
@@ -203,11 +203,11 @@
                 </div>
 
                 <div class="total-hp-scenario">
-                    <h4 data-tooltip="低コスト機が先に撃墜され、次に高コスト機が撃墜。\nその後、残りのチームコストで最も多くのHPを得られるように立ち回った場合のチーム総耐久力予測です。" id="compromiseHpScenarioTitleParent"><i class="fas fa-chart-area"></i> <span id="compromiseHpScenarioTitle">チーム合計耐久値(妥協)</span></h4>
-                    <div class="redeploy-char-info" data-tooltip="このシナリオでチーム全体が獲得すると予測される総耐久値です。\n初期HPと再出撃による加算HPの合計です。">
+                    <h4 id="compromiseHpScenarioTitleParent"><i class="fas fa-chart-area"></i> <span id="compromiseHpScenarioTitle">チーム合計耐久値(妥協)</span></h4>
+                    <div class="redeploy-char-info">
                         <span class="info-label">合計獲得耐久値:</span> <span id="minGainedHpHpSpan" class="info-value">--</span>
                     </div>
-                    <button class="total-hp-accordion-header" aria-expanded="false" data-tooltip="クリックすると、このシナリオでの詳細な撃墜の進行と、各段階での獲得HP・残りチームコストの内訳を表示/非表示します。">
+                    <button class="total-hp-accordion-header" aria-expanded="false">
                         <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
@@ -215,11 +215,11 @@
                 </div>
 
                 <div class="total-hp-scenario"> <!-- チーム合計耐久値(爆弾) -->
-                    <h4 data-tooltip="編成内の低コスト機のみが連続して撃墜された場合のチーム総耐久力予測です。「爆弾処理」とも呼ばれる戦術に関連します。" id="bombHpScenarioTitleParent"><i class="fas fa-bomb"></i> <span id="bombHpScenarioTitle">チーム合計耐久値(爆弾)</span></h4>
-                    <div class="redeploy-char-info" data-tooltip="このシナリオでチーム全体が獲得すると予測される総耐久値です。\n初期HPと再出撃による加算HPの合計です。">
+                    <h4 id="bombHpScenarioTitleParent"><i class="fas fa-bomb"></i> <span id="bombHpScenarioTitle">チーム合計耐久値(爆弾)</span></h4>
+                    <div class="redeploy-char-info">
                         <span class="info-label">合計獲得耐久値:</span> <span id="bombGainedHp" class="info-value">--</span>
                     </div>
-                    <button class="total-hp-accordion-header" aria-expanded="false" data-tooltip="クリックすると、このシナリオでの詳細な撃墜の進行と、各段階での獲得HP・残りチームコストの内訳を表示/非表示します。">
+                    <button class="total-hp-accordion-header" aria-expanded="false">
                         <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
@@ -227,11 +227,11 @@
                 </div>
 
                 <div class="total-hp-scenario"> <!-- チーム合計耐久値(最低) -->
-                    <h4 data-tooltip="どちらか一方の機体のみが集中して連続撃墜された場合、より総耐久力が低くなる方のシナリオのチーム総耐久力予測です。\n最も非効率的な落ち方の一つです。" id="lowestHpScenarioTitleParent"><i class="fas fa-arrow-down"></i> <span id="lowestHpScenarioTitle">チーム合計耐久値(最低)</span></h4>
-                    <div class="redeploy-char-info" data-tooltip="このシナリオでチーム全体が獲得すると予測される総耐久値です。\n初期HPと再出撃による加算HPの合計です。">
+                    <h4 id="lowestHpScenarioTitleParent"><i class="fas fa-arrow-down"></i> <span id="lowestHpScenarioTitle">チーム合計耐久値(最低)</span></h4>
+                    <div class="redeploy-char-info">
                         <span class="info-label">合計獲得耐久値:</span> <span id="lowestGainedHp" class="info-value">--</span>
                     </div>
-                    <button class="total-hp-accordion-header" aria-expanded="false" data-tooltip="クリックすると、このシナリオでの詳細な撃墜の進行と、各段階での獲得HP・残りチームコストの内訳を表示/非表示します。">
+                    <button class="total-hp-accordion-header" aria-expanded="false">
                         <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
@@ -242,30 +242,30 @@
 
         <div class="controls-container">
             <div class="search-container">
-                <i class="fas fa-search search-icon" data-tooltip="キャラクター名で検索します。\nひらがな・カタカナでの入力や、部分一致にも対応しています。\n入力後、少し待つかフォーカスを外すと結果が反映されます。"></i>
-                <input type="text" id="characterSearch" placeholder="キャラクター名で検索..." data-tooltip="ここにキャラクター名の一部または全部を入力して検索します。">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="characterSearch" placeholder="キャラクター名で検索...">
             </div>
 
             <div class="filter-container">
                 <div class="filter-group">
-                    <span class="filter-label"><i class="fas fa-coins" data-tooltip="キャラクターをコスト別に絞り込むためのフィルターです。"></i> コスト:</span>
+                    <span class="filter-label"><i class="fas fa-coins"></i> コスト:</span>
                     <div class="filter-buttons" id="costFilter">
-                        <button class="filter-button active" data-cost="all" data-tooltip="全てのコストのキャラクターを表示します。">全て</button>
-                        <button class="filter-button" data-cost="1.5" data-tooltip="コスト1.5のキャラクターのみを表示します。">1.5</button>
-                        <button class="filter-button" data-cost="2" data-tooltip="コスト2.0のキャラクターのみを表示します。">2.0</button>
-                        <button class="filter-button" data-cost="2.5" data-tooltip="コスト2.5のキャラクターのみを表示します。">2.5</button>
-                        <button class="filter-button" data-cost="3" data-tooltip="コスト3.0のキャラクターのみを表示します。">3.0</button>
+                        <button class="filter-button active" data-cost="all">全て</button>
+                        <button class="filter-button" data-cost="1.5">1.5</button>
+                        <button class="filter-button" data-cost="2">2.0</button>
+                        <button class="filter-button" data-cost="2.5">2.5</button>
+                        <button class="filter-button" data-cost="3">3.0</button>
                     </div>
                 </div>
 
                 <div class="filter-group">
-                    <span class="filter-label"><i class="fas fa-sort" data-tooltip="キャラクターリストの表示順を変更するためのオプションです。"></i> 並び替え:</span>
+                    <span class="filter-label"><i class="fas fa-sort"></i> 並び替え:</span>
                     <div class="filter-buttons" id="sortFilter">
-                        <button class="filter-button active" data-sort="name" data-tooltip="キャラクターを名前順（昇順）に並び替えます。">名前順</button>
-                        <button class="filter-button" data-sort="cost-desc" data-tooltip="キャラクターをコストの高い順に並び替えます。">コスト</button>
-                        <button class="filter-button" data-sort="cost-asc" data-tooltip="キャラクターをコストの低い順に並び替えます。">コスト</button>
-                        <button class="filter-button" data-sort="hp-desc" data-tooltip="キャラクターを耐久値の高い順に並び替えます。">耐久値</button>
-                        <button class="filter-button" data-sort="hp-asc" data-tooltip="キャラクターを耐久値の低い順に並び替えます。">耐久値</button>
+                        <button class="filter-button active" data-sort="name">名前順</button>
+                        <button class="filter-button" data-sort="cost-desc">コスト</button>
+                        <button class="filter-button" data-sort="cost-asc">コスト</button>
+                        <button class="filter-button" data-sort="hp-desc">耐久値</button>
+                        <button class="filter-button" data-sort="hp-asc">耐久値</button>
                     </div>
                 </div>
             </div>

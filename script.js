@@ -556,10 +556,25 @@ function displayTotalTeamHpResults(idealScenario, compromiseScenario, bombScenar
     const generateListItems = (sequence) => {
         return sequence?.map(item => {
             const charTypeDisplay = item.charType ? ` (${item.charType})` : '';
-            const costConsumedDisplay = typeof item.costConsumed === 'number' ? item.costConsumed.toFixed(1) : String(item.costConsumed);
-            if (item.turn === 0) { return `<li>初期HP: ${item.hpGained.toLocaleString()} HP獲得 (${item.note})</li>`; }
-            else { const remainingCostDisplay = item.remainingCost !== undefined ? `, 残り: ${item.remainingCost}` : '';
-                   return `<li>${item.turn}落ち: ${item.charName}${charTypeDisplay} - ${item.hpGained.toLocaleString()} HP獲得 (${item.note}${remainingCostDisplay})</li>`; }
+            // const costConsumedDisplay = typeof item.costConsumed === 'number' ? item.costConsumed.toFixed(1) : String(item.costConsumed); // Not used in the final string
+
+            let processedNote = item.note; // Start with the original note
+
+            if (item.turn === 0) {
+                return `<li>初期HP: ${item.hpGained.toLocaleString()} HP獲得 (${processedNote})</li>`;
+            } else {
+                // Regex to find: "(X.Xコスト換算), 消費後実質コストオーバー(Y.Y換算)"
+                // Replace with: "コストオーバー(Y.Y換算)"
+                const regexToReplace = /\((\d+\.\d+)コスト換算\), 消費後実質コストオーバー\((\d+\.\d+)換算\)/;
+                processedNote = processedNote.replace(regexToReplace, (match, p1, p2) => {
+                    // p1 is the full cost (e.g., "2.5")
+                    // p2 is the effective cost after consumption (e.g., "0.5")
+                    return `コストオーバー(${p2}換算)`;
+                });
+
+                const remainingCostDisplay = item.remainingCost !== undefined ? `, 残り: ${item.remainingCost}` : '';
+                return `<li>${item.turn}落ち: ${item.charName}${charTypeDisplay} - ${item.hpGained.toLocaleString()} HP獲得 (${processedNote}${remainingCostDisplay})</li>`;
+            }
         }).join('') || '';
     };
     if(highestHpScenarioTitleSpan) highestHpScenarioTitleSpan.textContent = idealScenario.name;

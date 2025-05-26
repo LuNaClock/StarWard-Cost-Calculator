@@ -791,6 +791,9 @@ h1 {
         display: flex; /* 初期は表示 (画像がない場合や読み込み失敗時) */
         justify-content: center;
         align-items: center;
+        font-size: 60px;
+        color: #7F8C8D;
+        font-weight: 700;
         font-family: 'Orbitron', sans-serif;
     }
 
@@ -1125,9 +1128,6 @@ footer {
         position: relative;
         z-index: 1;
     }
-    .simulation-container h2 i {
-        /* No tooltip-specific cursor here, if the icon is not interactive */
-    }
 
     .simulation-container .guide-intro {
         font-size: 1.15em;
@@ -1369,9 +1369,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     max-width: none; /* Allow full width within its container */
     margin-bottom: 15px;
 }
- .awakening-simulation-area h4 i {
-     /* No tooltip-specific cursor here, if the icon is not interactive */
- }
 
 .awakening-additional-options { /* Container for new checkbox groups */
     display: flex;
@@ -1409,9 +1406,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
      margin-left: 30px; /* Indent dropdown if it's under a checkbox with icon */
      margin-top: 5px;
      display: none;
-}
-.awakening-additional-options .select-dropdown-container .select-dropdown {
-    /* No tooltip-specific cursor here, if the select is not interactive */
 }
 
 
@@ -1876,7 +1870,7 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 .awakening-additional-options .select-dropdown-container {
     margin-left: 25px; /* Indent dropdown under checkbox */
     margin-top: 5px;
-    display: none; /* Hidden by default */
+    display: none;
 }
 .awakening-additional-options .checkbox-group {
     align-items: center; /* Vertically align checkbox and label */
