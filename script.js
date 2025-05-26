@@ -43,8 +43,8 @@ let playerCharSelect, partnerCharSelect, totalTeamCostSpan, selectedCharsDisplay
 let simulatePlayerRedeployBtn, simulatePartnerRedeployBtn, simulationResultsDiv;
 let redeployCharNameSpan, redeployCharCostSpan, redeployOriginalHpSpan, redeployCostConsumedSpan, redeployCalculatedHpSpan;
 let simulationHpBarFill, simulationHpPercentageDisplay;
-let totalHpDisplayArea, maxTeamCostValueDisplay;
-let highestHpScenarioTitleSpan, idealGainedHpSpan, idealSequenceList;
+let totalHpDisplayArea; // Re-declare totalHpDisplayArea
+let highestHpScenarioTitleSpan, idealGainedHpSpan, idealSequenceList; // Re-declare these
 let compromiseHpScenarioTitleSpan, minGainedHpHpSpan, minSequenceList;
 let lowestHpScenarioTitleSpan, lowestGainedHpSpan, lowestSequenceList;
 let bombHpScenarioTitleSpan, bombGainedHpSpan, bombSequenceList;
@@ -53,9 +53,6 @@ let beforeShotdownAwakeningGaugeInput, beforeShotdownHpInput_damageTakenInput;
 let predictedAwakeningGaugeSpan, awakeningAvailabilitySpan;
 let considerOwnDownCheckbox, considerDamageDealtCheckbox, damageDealtOptionsContainer, damageDealtAwakeningBonusSelect;
 let considerPartnerDownCheckbox;
-
-let tooltipElementGlobal;
-let tooltipTimeout;
 
 
 function showLoading() {
@@ -84,9 +81,6 @@ function generateCharacterCards(characters) {
                 const card = document.createElement('div');
                 card.className = 'character-card';
                 card.dataset.originalHp = character.hp;
-                // card.dataset.charName = character.name; // For potential future use, not for direct tooltip by default
-                // card.dataset.charCost = character.cost.toFixed(1);
-                // card.dataset.charHp = character.hp.toLocaleString();
 
                 const applicableRemainingCosts = costRemainingMap[character.cost.toFixed(1)] || [];
                 const costOverHPs = applicableRemainingCosts.map(remainingCost => {
@@ -101,11 +95,11 @@ function generateCharacterCards(characters) {
                     <div class="character-header"><span>${character.name}</span><span class="character-cost">コスト: ${character.cost.toFixed(1)}</span></div>
                     <div class="character-body">
                         <div class="character-image"><img src="" alt="${character.name}" class="character-icon-img"><span class="initial">${character.name.charAt(0)}</span></div>
-                        <div class="character-stats"><span>本来の耐久値:</span><span class="character-hp" data-tooltip="このキャラクターのコストオーバーしていない状態での最大HPです。\nクリックするとHPバー表示を100%にリセットします。">${character.hp.toLocaleString()}</span></div>
-                        <div class="hp-bar-container" data-tooltip="現在のHPの割合を視覚的に表示します。\n下の表の数値をクリックすると変動します。"><div class="hp-bar-fill"></div></div><div class="hp-percentage-display"></div>
+                        <div class="character-stats"><span>本来の耐久値:</span><span class="character-hp">${character.hp.toLocaleString()}</span></div>
+                        <div class="hp-bar-container"><div class="hp-bar-fill"></div></div><div class="hp-percentage-display"></div>
                         <table class="cost-table">
-                            <thead><tr><th data-tooltip="この行は、チームの残り総力ゲージの値を示します。">残りコスト</th>${applicableRemainingCosts.map(cost => `<th>${cost.toFixed(1)}</th>`).join('')}</tr></thead>
-                            <tbody><tr><td data-tooltip="この行は、各『残りコスト』の状況で再出撃した場合の、計算上の耐久値を示します。\n右側の数値セルをクリックすると上のHPバーに耐久値が反映されます。">再出撃時耐久値</td>${costOverHPs.map((hp, idx) => `<td data-redeploy-hp="${hp}" data-tooltip="残りコスト${applicableRemainingCosts[idx].toFixed(1)}で再出撃した場合の耐久値: ${hp.toLocaleString()}\nクリックするとHPバーに反映されます。">${hp.toLocaleString()}</td>`).join('')}</tr></tbody>
+                            <thead><tr><th>残りコスト</th>${applicableRemainingCosts.map(cost => `<th>${cost.toFixed(1)}</th>`).join('')}</tr></thead>
+                            <tbody><tr><td>再出撃時耐久値</td>${costOverHPs.map((hp, idx) => `<td data-redeploy-hp="${hp}">${hp.toLocaleString()}</td>`).join('')}</tr></tbody>
                         </table>
                     </div>`;
                 characterGrid.appendChild(card);
@@ -120,13 +114,7 @@ function generateCharacterCards(characters) {
                     }
                 } else { imgElement.style.display = 'none'; initialSpan.style.display = 'flex'; }
                 gsap.from(card, { opacity: 0, y: 80, scale: 0.8, rotateZ: gsap.utils.random(-5, 5), duration: 0.4, ease: "power3.out", delay: index * 0.02, overwrite: true });
-                const hpBarFill = card.querySelector('.hp-bar-fill');
-                if (hpBarFill) gsap.set(hpBarFill, { scaleX: 1 });
             });
-
-            if (typeof initTooltips === 'function') {
-                initTooltips();
-            }
             hideLoading();
         }
     });
@@ -357,7 +345,7 @@ function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeamCostRem
              if (!initialNotePart.toLowerCase().includes("コストオーバー")) {
                 finalNote = `(${charFullCost.toFixed(1)}コスト換算), 消費後実質コストオーバー(${teamCostAfterConsumption.toFixed(1)}換算)`;
             } else { // Was already a cost-over, note should reflect the new effective cost for HP
-                finalNote = `コストオーバー (${teamCostAfterConsumption.toFixed(1)}コスト換算)`;
+                finalNote = `コストオーバー (${teamCostAfterConsumption.toFixed(1)}換算)`;
             }
         }
     }
@@ -458,7 +446,6 @@ function simulateMinimumSequence(fallingChar, isTeamScenario) {
 function findTeamHpCombinations() {
     if (!selectedPlayerChar || !selectedPartnerChar) {
         gsap.to(totalHpDisplayArea, { opacity: 0, y: 20, duration: 0.3, ease: "power2.in", onComplete: () => {
-            if (totalHpDisplayArea) totalHpDisplayArea.classList.remove('active');
             if (highestHpScenarioTitleSpan) highestHpScenarioTitleSpan.textContent = 'チーム合計耐久値(最高)';
             if (idealGainedHpSpan) idealGainedHpSpan.textContent = '--';
             if (idealSequenceList) idealSequenceList.innerHTML = '';
@@ -562,7 +549,7 @@ function findTeamHpCombinations() {
 }
 
 function displayTotalTeamHpResults(idealScenario, compromiseScenario, bombScenario, lowestScenario) {
-    if (maxTeamCostValueDisplay) maxTeamCostValueDisplay.textContent = MAX_TEAM_COST.toFixed(1);
+    // maxTeamCostValueDisplayはHTMLから削除されたため、ここでの参照も削除
     if (selectedPlayerCharNameSummary && selectedPlayerChar) selectedPlayerCharNameSummary.textContent = selectedPlayerChar.name;
     if (selectedPartnerCharNameSummary && selectedPartnerChar) selectedPartnerCharNameSummary.textContent = selectedPartnerChar.name;
     if (totalHpDisplayArea) { totalHpDisplayArea.style.opacity = 1; totalHpDisplayArea.style.transform = 'translateY(0)'; totalHpDisplayArea.classList.add('active'); } else return;
@@ -706,103 +693,6 @@ function calculateAndDisplayAwakeningGauge() {
     }
 }
 
-function initTooltips() {
-    if (!tooltipElementGlobal) {
-        tooltipElementGlobal = document.createElement('div');
-        tooltipElementGlobal.className = 'custom-tooltip';
-        document.body.appendChild(tooltipElementGlobal);
-        gsap.set(tooltipElementGlobal, { opacity: 0, visibility: 'hidden', y: 10 });
-    }
-
-    const elementsWithTooltip = document.querySelectorAll('[data-tooltip]');
-
-    elementsWithTooltip.forEach(el => {
-        el.removeEventListener('mouseenter', handleTooltipEnter);
-        el.removeEventListener('mouseleave', handleTooltipLeave);
-
-        el.addEventListener('mouseenter', handleTooltipEnter);
-        el.addEventListener('mouseleave', handleTooltipLeave);
-    });
-}
-
-function handleTooltipEnter(e) {
-    const el = e.currentTarget;
-    clearTimeout(tooltipTimeout);
-    tooltipTimeout = setTimeout(() => {
-        let tooltipText = el.getAttribute('data-tooltip');
-
-        if (el.classList.contains('character-card') && !el.hasAttribute('data-tooltip') && el.dataset.charName) {
-            // This logic would provide a default tooltip for character cards if they don't have an explicit one.
-            // For now, we only show tooltips for elements with an explicit data-tooltip.
-            // tooltipText = `キャラクター名: ${el.dataset.charName}\nコスト: ${el.dataset.charCost}\n本来の耐久値: ${el.dataset.charHp}`;
-            return; // No explicit data-tooltip, do nothing for the card itself
-        }
-
-        if (!tooltipText) return;
-
-        tooltipElementGlobal.innerHTML = tooltipText.replace(/\n/g, '<br>');
-        gsap.killTweensOf(tooltipElementGlobal);
-
-        const targetRect = el.getBoundingClientRect();
-        let tooltipTop = targetRect.bottom + window.scrollY + 8; // Adjusted offset
-        let tooltipLeft = targetRect.left + window.scrollX + (targetRect.width / 2);
-
-        gsap.set(tooltipElementGlobal, {
-            x: 0,
-            y: 0,
-            opacity: 0,
-            visibility: 'visible',
-            display: 'block'
-        });
-
-        const tooltipRect = tooltipElementGlobal.getBoundingClientRect();
-        tooltipLeft -= tooltipRect.width / 2;
-
-        if (tooltipLeft < 10) {
-            tooltipLeft = 10;
-        } else if (tooltipLeft + tooltipRect.width > window.innerWidth - 10) {
-            tooltipLeft = window.innerWidth - tooltipRect.width - 10;
-        }
-
-        tooltipElementGlobal.classList.remove('tooltip-on-top');
-        if ((tooltipTop + tooltipRect.height > window.innerHeight + window.scrollY - 10) &&
-            (targetRect.top + window.scrollY > tooltipRect.height + 15) ) {
-            tooltipTop = targetRect.top + window.scrollY - tooltipRect.height - 8; // Adjusted offset
-            tooltipElementGlobal.classList.add('tooltip-on-top');
-        }
-
-        let initialY = tooltipTop + (tooltipElementGlobal.classList.contains('tooltip-on-top') ? 10 : -10);
-
-        gsap.set(tooltipElementGlobal, {
-            x: tooltipLeft,
-            y: initialY,
-        });
-
-        gsap.to(tooltipElementGlobal, {
-            opacity: 1,
-            y: tooltipTop,
-            duration: 0.25,
-            ease: 'power2.out'
-        });
-    }, 180); // Slightly shorter delay
-}
-
-function handleTooltipLeave() {
-    clearTimeout(tooltipTimeout);
-    gsap.killTweensOf(tooltipElementGlobal);
-    gsap.to(tooltipElementGlobal, {
-        opacity: 0,
-        duration: 0.2,
-        ease: 'power2.in',
-        onComplete: () => {
-            if (tooltipElementGlobal) {
-                gsap.set(tooltipElementGlobal, { visibility: 'hidden', y: 10 });
-                tooltipElementGlobal.classList.remove('tooltip-on-top');
-            }
-        }
-    });
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     characterGrid = document.getElementById('characterGrid');
     characterSearchInput = document.getElementById('characterSearch');
@@ -829,7 +719,7 @@ document.addEventListener('DOMContentLoaded', () => {
          simulationHpPercentageDisplay = simulationResultsDiv.querySelector('.hp-percentage-display');
     }
     totalHpDisplayArea = document.getElementById('totalHpDisplayArea');
-    maxTeamCostValueDisplay = document.getElementById('maxTeamCostValue');
+    // maxTeamCostValueDisplayはHTMLから削除されたため、ここでの参照も削除
     highestHpScenarioTitleSpan = document.getElementById('highestHpScenarioTitle');
     idealGainedHpSpan = document.getElementById('idealGainedHp');
     idealSequenceList = document.getElementById('idealSequenceList');
@@ -854,6 +744,13 @@ document.addEventListener('DOMContentLoaded', () => {
     damageDealtAwakeningBonusSelect = document.getElementById('damageDealtAwakeningBonusSelect');
     considerPartnerDownCheckbox = document.getElementById('considerPartnerDownCheckbox');
 
+    // 初期設定の関数呼び出し (アニメーションより先にデータを準備)
+    populateCharacterSelects();
+    populateRemainingCostSelect();
+    updateTeamCost(); // selectsがpopulateされた後に呼ぶ
+    updateSelectedCharactersDisplay(); // selectsがpopulateされた後に呼ぶ
+    resetSimulationResults(); // 初期表示をクリーンに保つ
+
     [ beforeShotdownAwakeningGaugeInput, beforeShotdownHpInput_damageTakenInput, damageDealtAwakeningBonusSelect, considerOwnDownCheckbox, considerPartnerDownCheckbox, considerDamageDealtCheckbox ].forEach(el => {
         if (el) {
             if (el.type === 'checkbox' || el.tagName === 'SELECT') el.addEventListener('change', calculateAndDisplayAwakeningGauge);
@@ -874,11 +771,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .from(".total-hp-display-area", { y: 50, duration: 0.8 }, "-=0.3")
         .from(".controls-container", { y: 50, duration: 0.7 }, "-=0.4")
         .add(initSearchIconPulseAnimation)
-        .add(populateCharacterSelects)
-        .add(populateRemainingCostSelect)
         .add(applyFiltersAndSearch)
-        .add(updateSortIcons, "+=0.1")
-        .add(initTooltips);
+        .add(updateSortIcons, "+=0.1");
+
 
     let isComposing = false; let searchTimeoutLocal;
     if(characterSearchInput) {
@@ -933,5 +828,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if(simulatePartnerRedeployBtn) simulatePartnerRedeployBtn.addEventListener('click', () => simulateRedeploy('partner'));
     if(playerCharSelect) playerCharSelect.addEventListener('change', (event) => { selectedPlayerChar = event.target.value ? characterData[parseInt(event.target.value)] : null; updateTeamCost(); updateSelectedCharactersDisplay(); });
     if(partnerCharSelect) partnerCharSelect.addEventListener('change', (event) => { selectedPartnerChar = event.target.value ? characterData[parseInt(event.target.value)] : null; updateTeamCost(); updateSelectedCharactersDisplay(); });
-    updateTeamCost(); updateSelectedCharactersDisplay(); resetSimulationResults();
 });

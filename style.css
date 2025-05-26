@@ -431,7 +431,6 @@ h1 {
     pointer-events: none;
     text-shadow: 0 0 8px rgba(0, 191, 255, 0.6);
     will-change: transform, opacity, text-shadow; /* will-changeを追加 */
-    cursor: help; /* ツールチップがあることを示す */
 }
 
 #characterSearch {
@@ -444,7 +443,6 @@ h1 {
     box-sizing: border-box;
     box-shadow: inset 0 1px 4px rgba(0,0,0,0.08); /* 通常時のshadow */
     will-change: border-color, box-shadow; /* will-changeを追加 */
-    cursor: help;
 }
 
     #characterSearch:focus {
@@ -528,7 +526,6 @@ h1 {
     display: flex;
     align-items: center;
     gap: 10px;
-    text-shadow: 0 0 5px rgba(0, 191, 255, 0.4);
 }
 
     .filter-label i {
@@ -536,7 +533,6 @@ h1 {
         font-size: 1.2em;
         animation: bounceIcon 1.5s ease-in-out infinite alternate;
         will-change: transform; /* will-changeを追加 */
-        cursor: help;
     }
 
     .filter-label:nth-of-type(2) i {
@@ -862,7 +858,6 @@ h1 {
     box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
     position: relative;
     border: 1px solid rgba(0,0,0,0.1);
-    cursor: help;
 }
 
 .hp-bar-fill {
@@ -949,7 +944,6 @@ h1 {
         border-bottom: 1px solid rgba(255,255,255,0.4);
         white-space: nowrap;
         font-family: 'Rajdhani', sans-serif; /* SFフォント適用 */
-        cursor: help;
     }
 
         .cost-table th:first-child {
@@ -1132,7 +1126,7 @@ footer {
         z-index: 1;
     }
     .simulation-container h2 i {
-        cursor: help;
+        /* No tooltip-specific cursor here, if the icon is not interactive */
     }
 
     .simulation-container .guide-intro {
@@ -1168,7 +1162,6 @@ footer {
         display: flex;
         align-items: center;
         gap: 10px;
-        cursor: help;
     }
 
         .select-wrapper label i {
@@ -1228,7 +1221,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     gap: 15px;
     will-change: transform, box-shadow;
     transition: all 0.3s ease;
-    cursor: help;
 }
 
     .team-cost-display:hover {
@@ -1366,7 +1358,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         display: flex;
         align-items: center;
         gap: 10px;
-        cursor: help;
     }
 
         .simulation-input-group label i {
@@ -1379,7 +1370,7 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     margin-bottom: 15px;
 }
  .awakening-simulation-area h4 i {
-     cursor: help;
+     /* No tooltip-specific cursor here, if the icon is not interactive */
  }
 
 .awakening-additional-options { /* Container for new checkbox groups */
@@ -1395,14 +1386,12 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     display: flex;
     align-items: center;
     gap: 8px;
-    cursor: help;
 }
 .awakening-additional-options .checkbox-group label {
     font-weight: normal;
     font-size: 1em;
     margin-bottom: 0;
     margin-left: 5px; /* Space between icon/checkbox and text */
-    cursor: help; /* Label itself is part of the tooltip target if group has tooltip */
 }
 .awakening-additional-options .checkbox-group input[type="checkbox"] {
     margin-right: 0; /* Remove default margin if icon is present */
@@ -1420,10 +1409,9 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
      margin-left: 30px; /* Indent dropdown if it's under a checkbox with icon */
      margin-top: 5px;
      display: none;
-     cursor: help;
 }
 .awakening-additional-options .select-dropdown-container .select-dropdown {
-    cursor: help;
+    /* No tooltip-specific cursor here, if the select is not interactive */
 }
 
 
@@ -1569,7 +1557,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     box-shadow: inset 0 1px 5px rgba(0,0,0,0.05);
     transition: background-color 0.3s ease;
     will-change: background-color;
-    cursor: help;
 }
 
     .redeploy-char-info:hover {
@@ -1612,7 +1599,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     border: 2px solid var(--primary-light); /* 強調 */
     box-shadow: 0 0 15px rgba(0, 191, 255, 0.5);
     height: 16px; /* 太く */
-    cursor: help;
 }
 
 .simulation-hp-percentage { /* シミュレーション結果の割合表示 */
@@ -1622,7 +1608,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     text-shadow: none; /* デフォルトの影を解除 */
     font-family: 'Orbitron', sans-serif; /* SFフォント */
     font-weight: 700;
-    cursor: help;
 }
 
 .simulation-note {
@@ -1665,7 +1650,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 
         .total-hp-display-area h3 i {
             color: var(--accent-orange);
-            cursor: help;
         }
 
 .total-hp-summary {
@@ -1739,7 +1723,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         align-items: center;
         justify-content: center;
         gap: 10px;
-        cursor: help;
     }
 
         .total-hp-scenario h4 i {
@@ -1750,7 +1733,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         background-color: #F0F8FF;
         margin-bottom: 10px;
         flex-shrink: 0;
-        cursor: help;
     }
 
         .total-hp-scenario .redeploy-char-info:last-of-type {
@@ -1902,45 +1884,4 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 .awakening-additional-options .checkbox-group label {
     font-weight: normal; /* Less emphasis for checkbox label */
     margin-left: 5px;
-}
-
-/* ----- ツールチップのスタイル ----- */
-.custom-tooltip {
-    position: absolute;
-    background-color: var(--primary-dark); /* ベースの背景色に合わせる */
-    color: var(--background-light); /* 明るいテキスト色 */
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 0.9em;
-    line-height: 1.5;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    z-index: 9999; /* 最前面に表示 */
-    pointer-events: none; /* ツールチップ自体がマウスイベントを邪魔しないように */
-    max-width: 300px; /* 幅が広くなりすぎないように制限 */
-    white-space: pre-wrap; /* data-tooltip内の\nを改行として認識させる */
-    border: 1px solid var(--primary-light); /* アクセントカラーの枠線 */
-    opacity: 0; /* 初期状態は非表示 */
-    visibility: hidden;
-    transform: translateY(10px); /* 初期位置を少し下にずらしてアニメーション用 */
-    font-family: 'Noto Sans JP', sans-serif;
-}
-
-.custom-tooltip::after { /* 矢印（オプション） */
-    content: '';
-    position: absolute;
-    bottom: 100%; /* 上向きの矢印 */
-    left: 50%;
-    margin-left: -8px;
-    border-width: 8px;
-    border-style: solid;
-    border-color: transparent transparent var(--primary-dark) transparent;
-}
-/* ツールチップが要素の上に表示される場合の矢印 */
-.custom-tooltip.tooltip-on-top::after {
-    top: 100%;
-    bottom: auto;
-    border-color: var(--primary-dark) transparent transparent transparent;
-}
-[data-tooltip] { /* 既存のカーソル指定がなければ、汎用的にhelpカーソルを適用 */
-    cursor: help;
 }
