@@ -668,7 +668,7 @@ function calculateAndDisplayAwakeningGauge() {
     } else if (currentlySimulatingCharType === 'partner' && selectedPartnerChar) {
         charForBonusCost = selectedPartnerChar;
     } else {
-        charForBonusCost = { cost: parseFloat(beforeShotdownHpInput_damageTakenInput.dataset.characterCost || "0") };
+        charForBonusCost = { cost: parseFloat(beforeShotdownHpInput_damageTakenInput.dataset.characterCost || "0"), name: '' }; // nameプロパティを追加
     }
 
     const originalCharActualMaxHp = parseFloat(beforeShotdownHpInput_damageTakenInput.dataset.originalCharacterHp);
@@ -691,6 +691,14 @@ function calculateAndDisplayAwakeningGauge() {
     let costBonusOnOwnDown = 0;
     if (considerOwnDownCheckbox.checked) {
         costBonusOnOwnDown = AWAKENING_BONUS_BY_COST[charForBonusCost.cost.toFixed(1)] || 0;
+
+        // ★スコーピオン特殊処理 - BEGIN★
+        // 対象キャラが「スコーピオン」の場合のみ「再出撃直後(最低保証値)のゲージ量にする」のゲージ増加量を+15に固定
+        // これは例外処理のため、今後修正される可能性があることに注意
+        if (charForBonusCost.name === "スコーピオン") {
+            costBonusOnOwnDown = 15;
+        }
+        // ★スコーピオン特殊処理 - END★
     }
     let additionalGaugeFromDamageDealt = 0;
     if (considerDamageDealtCheckbox.checked) additionalGaugeFromDamageDealt = parseInt(damageDealtAwakeningBonusSelect.value) || 0;
