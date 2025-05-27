@@ -1879,3 +1879,96 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     font-weight: normal; /* Less emphasis for checkbox label */
     margin-left: 5px;
 }
+
+/* ★ここからサブアコーディオン用のスタイル追加★ */
+.sub-accordion-container {
+    margin-top: 25px; /* 上の要素との間隔 */
+    margin-bottom: 25px;
+    border: 1px dashed var(--light-grey-border); /* 親より軽いボーダー */
+    border-radius: 8px;
+    background-color: #F8FCFF; /* 親より少し明るい背景色 */
+    box-shadow: inset 0 0 8px rgba(0, 191, 255, 0.05); /* 親より軽い影 */
+}
+
+    .sub-accordion-container .accordion-item {
+        border-bottom: 1px dashed rgba(0, 191, 255, 0.08); /* 親より軽いボーダー */
+    }
+        .sub-accordion-container .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+.sub-accordion-header {
+    background-color: #EBF7FF; /* 親より明るい背景色 */
+    padding: 12px 20px; /* 親より少し小さいパディング */
+    font-size: 1.05em; /* 親より少し小さいフォントサイズ */
+    font-weight: 600;
+    color: var(--primary-dark);
+    text-shadow: none;
+}
+
+    .sub-accordion-header:hover {
+        background-color: #D3EEFF;
+        color: var(--primary-light);
+        box-shadow: inset 0 0 10px rgba(0, 191, 255, 0.1);
+        border-color: rgba(0, 191, 255, 0.2);
+    }
+        .sub-accordion-header:hover::before {
+            box-shadow: 0 0 8px 2px rgba(0, 191, 255, 0.4);
+        }
+
+    .sub-accordion-header.active {
+        background-color: var(--primary-light); /* 親と同じアクティブカラー */
+        color: var(--card-background);
+        box-shadow: inset 0 0 15px rgba(0, 191, 255, 0.4);
+    }
+        .sub-accordion-header.active::before {
+            box-shadow: 0 0 12px 3px var(--neon-glow-strong);
+        }
+
+    .sub-accordion-header span {
+        gap: 10px; /* アイコンとテキストの間隔を調整 */
+    }
+
+    .sub-accordion-header i:first-child {
+        font-size: 1.2em; /* 親より少し小さいアイコンサイズ */
+        color: var(--accent-orange); /* 親と同じアイコン色 */
+    }
+        .sub-accordion-header.active i:first-child {
+            color: var(--card-background);
+        }
+
+.sub-accordion-content {
+    padding: 0 20px; /* 親より少し小さいパディング */
+    font-size: 0.95em; /* 親より少し小さいフォントサイズ */
+}
+    .sub-accordion-content.show {
+        padding: 20px; /* 開いた時のパディング */
+    }
+
+    .sub-accordion-content ul {
+        margin: 0;
+        padding-left: 20px;
+        list-style-type: disc;
+    }
+        .sub-accordion-content ul li {
+            margin-bottom: 8px;
+        }
+            .sub-accordion-content ul li:last-child {
+                margin-bottom: 0;
+            }
+
+    .sub-accordion-content .formula.small-formula {
+        padding: 10px 15px;
+        margin: 15px auto;
+        font-size: 1.1em;
+        max-width: 90%; /* 親より幅を狭める */
+        border-left: 4px solid var(--accent-orange);
+    }
+    .sub-accordion-content .tip {
+        margin-top: 15px;
+        font-size: 0.9em;
+        padding: 8px 15px;
+        border-radius: 6px;
+        max-width: 90%; /* 親より幅を狭める */
+    }
+/* ★ここまでサブアコーディオン用のスタイル追加★ */
