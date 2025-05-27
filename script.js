@@ -148,10 +148,11 @@ function applyFiltersAndSearch() {
     }
     switch (activeSortFilter) {
         case 'name': filteredCharacters.sort((a, b) => a.name.localeCompare(b.name, 'ja')); break;
-        case 'hp-desc': filteredCharacters.sort((a, b) => b.hp - a.hp || a.name.localeCompare(b.name, 'ja')); break;
-        case 'hp-asc': filteredCharacters.sort((a, b) => a.hp - b.hp || a.name.localeCompare(b.name, 'ja')); break;
-        case 'cost-desc': filteredCharacters.sort((a, b) => b.cost - a.cost || a.name.localeCompare(b.name, 'ja')); break;
-        case 'cost-asc': filteredCharacters.sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name, 'ja')); break;
+        // ユーザーの直感に合わせてソートロジックを調整
+        case 'hp-asc': filteredCharacters.sort((a, b) => a.hp - b.hp || a.name.localeCompare(b.name, 'ja')); break; // 耐久値 ↓ (低耐久値から)
+        case 'hp-desc': filteredCharacters.sort((a, b) => b.hp - a.hp || a.name.localeCompare(b.name, 'ja')); break; // 耐久値 ↑ (高耐久値から)
+        case 'cost-asc': filteredCharacters.sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name, 'ja')); break; // コスト ↓ (低コストから)
+        case 'cost-desc': filteredCharacters.sort((a, b) => b.cost - a.cost || a.name.localeCompare(b.name, 'ja')); break; // コスト ↑ (高コストから)
     }
     generateCharacterCards(filteredCharacters);
 }
@@ -200,20 +201,21 @@ function initSearchIconPulseAnimation() {
     if (searchIcon) searchIconPulseTl.to(searchIcon, { scale: 1.08, opacity: 1 });
 }
 
-function updateSortIcons() {
-     sortFilterButtons.forEach(button => {
-        const existingIcon = button.querySelector('i'); if (existingIcon) existingIcon.remove();
-        const sortType = button.dataset.sort; let iconClass = '';
-        if (sortType.includes('desc')) iconClass = 'fas fa-arrow-down';
-        else if (sortType.includes('asc')) iconClass = 'fas fa-arrow-up';
-        if (iconClass) {
-            const newIcon = document.createElement('i'); newIcon.className = iconClass;
-            if (button.classList.contains('active') && !button.hasAttribute('data-initial-sort-applied')) {
-                button.appendChild(newIcon); button.setAttribute('data-initial-sort-applied', 'true');
-            } else { button.appendChild(newIcon); }
-        }
-    });
-}
+// updateSortIcons 関数はHTMLで直接アイコンを記述するため削除します。
+// function updateSortIcons() {
+//      sortFilterButtons.forEach(button => {
+//         const existingIcon = button.querySelector('i'); if (existingIcon) existingIcon.remove();
+//         const sortType = button.dataset.sort; let iconClass = '';
+//         if (sortType.includes('desc')) iconClass = 'fas fa-arrow-down';
+//         else if (sortType.includes('asc')) iconClass = 'fas fa-arrow-up';
+//         if (iconClass) {
+//             const newIcon = document.createElement('i'); newIcon.className = iconClass;
+//             if (button.classList.contains('active') && !button.hasAttribute('data-initial-sort-applied')) {
+//                 button.appendChild(newIcon); button.setAttribute('data-initial-sort-applied', 'true');
+//             } else { button.appendChild(newIcon); }
+//         }
+//     });
+// }
 
 function populateCharacterSelects() {
     const defaultOption = '<option value="">-- 選択してください --</option>';
@@ -806,8 +808,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .from(".total-hp-display-area", { y: 50, duration: 0.8 }, "-=0.3")
         .from(".controls-container", { y: 50, duration: 0.7 }, "-=0.4")
         .add(initSearchIconPulseAnimation)
-        .add(applyFiltersAndSearch)
-        .add(updateSortIcons, "+=0.1");
+        .add(applyFiltersAndSearch); // updateSortIconsの呼び出しを削除
 
 
     let isComposing = false; let searchTimeoutLocal;
@@ -818,7 +819,7 @@ document.addEventListener('DOMContentLoaded', () => {
         characterSearchInput.addEventListener('blur', () => { if (!isComposing) { clearTimeout(searchTimeoutLocal); applyFiltersAndSearch(); }});
     }
     if(costFilterButtons) costFilterButtons.forEach(button => button.addEventListener('click', () => { costFilterButtons.forEach(btn => btn.classList.remove('active')); button.classList.add('active'); applyFiltersAndSearch(); }));
-    if(sortFilterButtons) sortFilterButtons.forEach(button => button.addEventListener('click', () => { sortFilterButtons.forEach(btn => btn.classList.remove('active')); button.classList.add('active'); updateSortIcons(); applyFiltersAndSearch(); }));
+    if(sortFilterButtons) sortFilterButtons.forEach(button => button.addEventListener('click', () => { sortFilterButtons.forEach(btn => btn.classList.remove('active')); button.classList.add('active'); applyFiltersAndSearch(); })); // updateSortIconsの呼び出しを削除
     if(accordionHeaders) {
         accordionHeaders.forEach(header => {
             header.addEventListener('click', function() {
