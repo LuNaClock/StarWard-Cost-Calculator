@@ -19,7 +19,7 @@
 
         <div class="usage-guide-container">
             <h2><i class="fas fa-question-circle"></i> ツールの使い方ガイド</h2>
-            <p class="guide-intro">このツールは、ゲーム「星の翼」でコストオーバーが起こって再出撃した際の耐久値を計算します。以下の手順でご利用ください。</p>
+            <p class="guide-intro">このツールは、ゲーム「星の翼」でコストオーバーが起こって再出撃した際の耐久値の計算に加え、チームの総耐久力予測、覚醒ゲージの予測が可能です。以下の手順でご利用ください。</p>
 
             <div class="accordion">
                 <div class="accordion-item">
@@ -34,36 +34,66 @@
 
                 <div class="accordion-item">
                     <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-calculator"></i> 2. 計算式と本来の耐久値を確認する</span>
+                        <span><i class="fas fa-calculator"></i> 2. 個別キャラクターの耐久値シミュレーション</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
                         <p>各キャラクターカードには、コストオーバー時の耐久値を計算するための基本情報が表示されます。計算式は以下の通りです。</p>
                         <p class="formula"><strong>再出撃時耐久値 = 本来の耐久値 × (残りコスト ÷ キャラクターのコスト)</strong></p>
                         <p>「本来の耐久値」はキャラクターカードのHPバーの上に大きく表示されています。</p>
+                        <p>各キャラクターカードのテーブル内にある「再出撃時耐久値」の数値をクリックすると、クリックされた数値が「本来の耐久値」に対してどれくらいの割合になるか、その上のHPバーで視覚的に確認できます。</p>
+                        <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: HPバーを100%の状態に戻したい場合は、キャラクターカードの「本来の耐久値」の数値をクリックしてください。</p>
                     </div>
                 </div>
 
                 <div class="accordion-item">
                     <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-chart-bar"></i> 3. HPバーの変動をシミュレーションする</span>
+                        <span><i class="fas fa-robot"></i> 3. チーム再出撃シミュレーション</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
-                        <p>各キャラクターカードのテーブル内にある**「再出撃時耐久値」のセルをクリック**してください。</p>
-                        <p>クリックされた数値が「本来の耐久値」に対してどれくらいの割合になるか、その上のHPバーで視覚的に確認できます。</p>
-                        <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: セルにカーソルを合わせると、クリック可能であることが強調表示される場合があります。</p>
+                        <p>ページ上部の「再出撃シミュレーション」セクションでは、より実践的なチーム編成での再出撃をシミュレーションできます。</p>
+                        <ul>
+                            <li>自機と相方を選択: ドロップダウンから現在のチームメンバーを選択します。選択された機体はミニカードで表示されます。</li>
+                            <li>チーム合計コスト: 選択された自機と相方の合計コストが自動で表示されます。</li>
+                            <li>指定キャラ撃墜後の残りコスト: チームの現在の残りコストを選択します。</li>
+                            <li>シミュレーション実行: 「自機が再出撃した場合」または「相方が再出撃した場合」ボタンをクリックすると、選択された残りコストでその機体が再出撃した場合の「再出撃時耐久値」が表示されます。</li>
+                        </ul>
                     </div>
                 </div>
 
                 <div class="accordion-item">
                     <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-sync-alt"></i> 4. HPバーをリセットする</span>
+                        <span><i class="fas fa-brain"></i> 4. 覚醒ゲージ予測</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
-                        <p>シミュレーションを終了してHPバーを100%の状態に戻したい場合は、**キャラクターカードの「本来の耐久値」の数値をクリック**してください。</p>
-                        <p>いつでも元の満タン状態に戻して、別の再出撃時耐久値を比較できます。</p>
+                        <p>「再出撃シミュレーション」の結果表示エリアの下にある「覚醒ゲージ予測」セクションでは、覚醒ゲージの変動を予測できます。再出撃シミュレーションを実行すると、このセクションが表示されます。</p>
+                        <ul>
+                            <li>覚醒が溜まるか調べたい覚醒ゲージ: 現在の覚醒ゲージ量を入力します。</li>
+                            <li>覚醒が溜まるか調べたい耐久値: 現在の耐久値を入力します。</li>
+                            <li>再出撃直後のゲージ量にする: チェックを入れると、撃墜によって増加する覚醒ゲージ（機体コストに応じたボーナス）を追加します。</li>
+                            <li>与ダメージ考慮: チェックを入れると、撃墜までに与えたダメージによる覚醒ゲージ増加分を追加します。</li>
+                            <li>相方撃墜考慮: チェックを入れると、相方が撃墜されたことによる覚醒ゲージ増加分を追加します。</li>
+                            <li>予測覚醒ゲージ/覚醒使用: これらすべての要素を考慮した最終的な予測覚醒ゲージ量と、覚醒が使用可能かどうかが表示されます。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span><i class="fas fa-medal"></i> 5. チーム合計耐久力予測の確認</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <p>自機と相方を選択すると表示される「チーム合計耐久力予測」セクションでは、様々な撃墜シナリオにおけるチームの総耐久力を提示します。</p>
+                        <ul>
+                            <li>チーム合計耐久値(最高): 高コスト機体から先に落ち、その後交互に効率良く再出撃を繰り返した場合の総耐久力。</li>
+                            <li>チーム合計耐久値(妥協): 低コスト機体から先に落ち、その後交互に効率良く再出撃を繰り返した場合の総耐久力。</li>
+                            <li>チーム合計耐久値(爆弾): 低コスト機体のみが連続で撃墜され続けた場合の総耐久力。</li>
+                            <li>チーム合計耐久値(最低): 自機または相方のどちらか一方に被弾が集中し、その機体のみが撃墜され続けた場合の総耐久力（最も非効率な落ち方）。</li>
+                        </ul>
+                        <p>各シナリオの下にある「撃墜順序と獲得HP」をクリックすると、それぞれのシミュレーションにおける詳細な撃墜シーケンスと、その際に獲得するHP値を確認できます。</p>
                     </div>
                 </div>
             </div>
