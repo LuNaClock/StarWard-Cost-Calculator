@@ -110,9 +110,21 @@ h1 {
 
 /* ----- H1タイトル SF演出 (初期ロード時のみ) ----- */
 .title-sf-effect {
-    animation: neonGlowInitial 1.5s ease-in-out forwards, glitchTextInitial 2s linear forwards;
+    /* IMPROVEMENT 7: タイトルのグリッチエフェクト強化 */
+    animation: neonGlowInitial 1.5s ease-in-out forwards, 
+               glitchTextInitial 2s linear forwards,
+               subtleGlitch 15s infinite alternate;
     will-change: transform, text-shadow, color; /* will-changeを追加 */
 }
+
+/* IMPROVEMENT 7: subtleGlitch keyframes */
+@keyframes subtleGlitch {
+  0%, 100% { transform: translate(0); }
+  97% { transform: translate(1px, -1px); }
+  98% { transform: translate(-1px, 1px); }
+  99% { transform: translate(0.5px, -0.5px); }
+}
+
 
 @keyframes neonGlowInitial {
     0% {
@@ -273,12 +285,17 @@ h1 {
     justify-content: space-between;
     font-size: 1.2em; /* さらに大きく */
     font-weight: 700;
-    transition: all var(--transition-speed);
+    transition: all var(--transition-speed), transform 0.1s ease-out; /* IMPROVEMENT 10: :activeでtransformを使うのでallにし、transform専用の短いtransitionを追加 */
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
-    will-change: background-color, color, box-shadow; /* will-changeを追加 */
+    will-change: background-color, color, box-shadow, transform; /* will-changeを追加, transform追加 for active state */
 }
+
+    /* IMPROVEMENT 10: インタラクティブな要素のフィードバック強化 */
+    .accordion-header:active {
+      transform: scale(0.98);
+    }
 
     .accordion-header::before { /* ホバー・アクティブ時の光るボーダー */
         content: '';
@@ -345,7 +362,12 @@ h1 {
     padding: 0 25px;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* IMPROVEMENT 3: アコーディオンの開閉アニメーション改善 */
+    transition: 
+      max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* paddingもイージング適用 */
     color: #555;
     font-size: 1.05em;
     opacity: 0;
@@ -355,7 +377,8 @@ h1 {
 }
 
     .accordion-content.show {
-        max-height: 500px; /* 十分な高さに設定 */
+        /* IMPROVEMENT 3: アコーディオンの開閉アニメーション改善 */
+        max-height: 1000px; /* 十分な高さに設定 (提案通り1000pxに) */
         padding: 25px;
         opacity: 1;
         transform: scaleY(1); /* 表示時に元のサイズに */
@@ -658,11 +681,13 @@ h1 {
     transform: translateY(-5px);
 }
 
+/* IMPROVEMENT 10: インタラクティブな要素のフィードバック強化 (filter-button:active の更新) */
 .filter-button:active {
-    transform: translateY(2px) scale(0.97); /* 押下感を強調 */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-    border-color: var(--primary-light);
+    transform: translateY(3px) scale(0.98);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) inset;
+    /* border-color: var(--primary-light); /* 既存のborder-colorを維持するかどうかはデザイン次第。今回は提案に合わせて削除 */
 }
+
 
 /* ----- キャラクターグリッドとカード ----- */
 .character-grid {
@@ -676,14 +701,14 @@ h1 {
     background-color: var(--card-background);
     border-radius: 15px; /* 角丸を大きく */
     box-shadow: var(--soft-shadow);
-    overflow: hidden;
+    overflow: hidden; /* ::afterがはみ出ないように */
     display: flex;
     flex-direction: column;
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed), filter var(--transition-speed); /* filterのtransition追加 */
     position: relative;
     border: 2px solid rgba(0, 191, 255, 0.1);
     background-image: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,245,249,0.9)); /* 薄いグラデーション */
-    will-change: transform, box-shadow, opacity; /* will-changeを追加 */
+    will-change: transform, box-shadow, opacity, filter; /* will-changeを追加, filter追加 */
 }
 
     .character-card::before { /* ボーダーに沿って光るエフェクト */
@@ -716,11 +741,38 @@ h1 {
     }
 }
 
+/* IMPROVEMENT 1: カードホバー時の高級感あるエフェクト強化 */
 .character-card:hover {
-    transform: translateY(-15px) scale(1.02) rotateZ(1deg); /* 浮遊感とわずかな拡大・回転 */
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    border-color: var(--primary-light);
+  transform: translateY(-15px) scale(1.02) rotateZ(1deg);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  border-color: var(--primary-light);
+  filter: drop-shadow(0 0 15px rgba(0, 191, 255, 0.6));
 }
+
+/* IMPROVEMENT 1: カードホバー時の光のストリーク効果 */
+.character-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1), 
+    transparent
+  );
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  transform: skewX(-25deg);
+  z-index: 0; /* コンテンツの下、背景の上。::before(-1) < ::after(0) < content(1) */
+  pointer-events: none; 
+}
+
+.character-card:hover::after {
+  left: 100%;
+}
+
 
 .character-header {
     background-color: var(--primary-dark);
@@ -733,6 +785,8 @@ h1 {
     border-bottom: 1px solid rgba(255,255,255,0.2);
     font-size: 1.2em;
     font-family: 'Rajdhani', sans-serif; /* SFフォント適用 */
+    position: relative; /* z-indexを有効にするため */
+    z-index: 1; /* ::after より手前に来るように */
 }
 
 .character-cost {
@@ -751,6 +805,8 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative; /* z-indexを有効にするため */
+    z-index: 1; /* ::after より手前に来るように */
 }
 
 .character-image {
@@ -863,28 +919,37 @@ h1 {
     border: 1px solid rgba(0,0,0,0.1);
 }
 
+/* IMPROVEMENT 2: HPバーのグラデーションと光沢効果の強化 */
 .hp-bar-fill {
     height: 100%;
-    background: linear-gradient(to right, var(--hp-low) 0%, var(--hp-medium) 50%, var(--hp-high) 100%), linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
-    background-size: 100% 100%, 50% 100%;
+    background: linear-gradient(
+      to right,
+      var(--hp-low) 0%,
+      var(--hp-medium) 50%,
+      var(--hp-high) 100%
+    ), 
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 100% 100%, 200% 100%;
     background-repeat: no-repeat;
-    background-position: left center, -50% center;
     transform-origin: left;
     position: relative;
     overflow: hidden;
     border-radius: 6px;
-    animation: hpShineBackground 2.5s linear infinite;
+    animation: hpShine 2.5s linear infinite; /* アニメーション名変更 */
     will-change: transform, background-position;
 }
 
-@keyframes hpShineBackground {
-    0% {
-        background-position: left center, -50% center;
-    }
-    100% {
-        background-position: left center, 150% center;
-    }
+/* IMPROVEMENT 2: @keyframes hpShine (既存のhpShineBackgroundを置き換え) */
+@keyframes hpShine {
+  0% { background-position: 0% 0%, -100% 0%; }
+  100% { background-position: 0% 0%, 100% 0%; }
 }
+
 .hp-bar-low-pulse {
     animation: hpPulse 1.2s ease-in-out infinite alternate;
     box-shadow: 0 0 15px 5px var(--hp-pulse-color);
@@ -1032,30 +1097,50 @@ h1 {
         visibility: visible;
     }
 
+/* IMPROVEMENT 5: ローディングスピナーの未来感アップグレード */
 .loading-spinner {
     width: 60px;
     height: 60px;
-    border: 5px solid rgba(255, 255, 255, 0.2);
-    border-top: 5px solid var(--loading-spinner-color);
+    border: 3px solid rgba(255, 255, 255, 0.1); 
+    border-top: 3px solid var(--loading-spinner-color); 
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite; 
     position: relative;
-    box-shadow: 0 0 15px var(--loading-spinner-color);
-    will-change: transform, box-shadow; /* will-changeを追加 */
+    box-shadow: 0 0 20px var(--loading-spinner-color); 
+    will-change: transform, box-shadow;
 }
 
-    .loading-spinner::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 15px;
-        height: 15px;
-        background-color: var(--loading-spinner-color);
-        border-radius: 50%;
-        box-shadow: 0 0 10px var(--loading-spinner-color);
-    }
+/* IMPROVEMENT 5: ::before のスタイル変更 */
+.loading-spinner::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid transparent;
+    border-top: 2px solid var(--neon-glow);
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite reverse; 
+    opacity: 0.7;
+}
+
+/* IMPROVEMENT 5: ::after の新規追加 */
+.loading-spinner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: var(--neon-glow);
+    border-radius: 50%;
+    box-shadow: 
+      0 0 10px var(--neon-glow),
+      0 0 20px var(--neon-glow);
+}
+
 
 @keyframes spin {
     0% {
@@ -1461,13 +1546,21 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     box-shadow: 0 5px 15px rgba(0, 191, 255, 0.5);
     position: relative;
     overflow: hidden;
-    will-change: transform, background-color, box-shadow;
+    will-change: transform, background-color, box-shadow, text-shadow; /* text-shadow追加 */
 }
 
+    /* IMPROVEMENT 6: ボタンの高級感あるホバーエフェクト */
     .simulation-button:hover {
-        background-color: #008DCC;
-        transform: translateY(-5px) scale(1.01);
-        box-shadow: 0 8px 20px rgba(0, 191, 255, 0.7);
+      background: linear-gradient(
+        45deg,
+        rgba(0, 191, 255, 0.9),
+        rgba(0, 150, 200, 0.9)
+      );
+      transform: translateY(-5px) scale(1.01); /* scale(1.01)も既存から維持 */
+      box-shadow: 
+        0 8px 20px rgba(0, 191, 255, 0.7),
+        0 0 15px rgba(0, 239, 255, 0.5);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
     }
 
     .simulation-button:active {
@@ -1501,15 +1594,30 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     text-align: center;
     opacity: 0; /* 初期非表示 */
     transform: translateY(20px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    /* IMPROVEMENT 4: transitionを削除し、animationに置き換える (下記 .active で) */
+    /* transition: opacity 0.4s ease, transform 0.4s ease; */
     will-change: opacity, transform;
     pointer-events: none; /* デフォルトでクリック不可に */
 }
 
+    /* IMPROVEMENT 4: シミュレーション結果の表示エフェクト */
     .simulation-results.active {
-        opacity: 1;
-        transform: translateY(0);
+        /* opacity: 1; */ /* animationで制御 */
+        /* transform: translateY(0); */ /* animationで制御 */
         pointer-events: auto; /* 表示時にクリック可能に */
+        animation: fadeInScale 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    /* IMPROVEMENT 4: fadeInScale keyframes */
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .simulation-results h3 {
@@ -2054,3 +2162,123 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         color: #8B0000;
     }
 /* ★ここまでサブアコーディオン用のスタイル追加★ */
+
+/* IMPROVEMENT 9: カスタムスクロールバー */
+::-webkit-scrollbar {
+  width: 8px;
+  background: rgba(26, 44, 62, 0.3); /* 背景色に合わせたスクロールバートラック */
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 4px;
+  border: 1px solid rgba(0, 191, 255, 0.5); 
+}
+::-webkit-scrollbar-thumb:hover { 
+    background: var(--neon-glow-strong);
+    box-shadow: 0 0 5px var(--neon-glow-strong);
+}
+
+
+/* IMPROVEMENT 8: レスポンシブデザインの改善 */
+@media (max-width: 768px) {
+  .character-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px; 
+  }
+  
+  /* .controls-container は既存でcolumnなので特に追加なし */
+  
+  .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px; 
+  }
+
+  .filter-buttons {
+      justify-content: flex-start;
+  }
+
+  h1 {
+      font-size: 2.5em; 
+  }
+  .usage-guide-container h2, .simulation-container h2 {
+      font-size: 1.8em; 
+  }
+  .character-header {
+      padding: 15px 20px;
+      font-size: 1.1em;
+  }
+  .character-body {
+      padding: 20px;
+  }
+  .character-image {
+      width: 100px;
+      height: 100px;
+      font-size: 50px;
+  }
+  .simulation-buttons {
+      flex-direction: column; 
+      align-items: center;
+  }
+  .simulation-button {
+      width: 80%;
+      max-width: 300px; 
+  }
+  .total-hp-grid {
+    grid-template-columns: 1fr; /* 768px以下では1列に */
+  }
+  .awakening-additional-options { 
+      flex-direction: column;
+      align-items: flex-start;
+  }
+  .awakening-additional-options .simulation-input-group.checkbox-group {
+      min-width: auto; 
+  }
+   .awakening-additional-options .simulation-input-group.has-dropdown .select-dropdown-container {
+         margin-left: 20px; 
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+    h1 {
+        font-size: 2em;
+    }
+     .usage-guide-container h2, .simulation-container h2 {
+      font-size: 1.5em;
+    }
+    .character-grid {
+        grid-template-columns: 1fr; /* 1列表示 */
+        gap: 25px;
+    }
+    .character-card:hover { /* スマホではホバーエフェクトを控えめに */
+        transform: translateY(-5px) scale(1.01);
+        filter: drop-shadow(0 0 10px rgba(0, 191, 255, 0.4));
+    }
+     .character-card:hover::after {
+        /* display: none; /* 光沢ストリークを非表示にする場合はコメント解除 */
+    }
+
+    .filter-buttons .filter-button {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+    .search-container {
+        margin-bottom: 15px;
+    }
+    .filter-container {
+        gap: 20px;
+    }
+    #characterSearch {
+        padding: 12px 15px 12px 50px;
+        font-size: 1em;
+    }
+    .search-icon {
+        font-size: 1.1em;
+        left: 15px;
+    }
+    /* 既存の .total-hp-display-area h3 などスマホ用スタイルは維持 (上のほうに既に定義あり) */
+}
