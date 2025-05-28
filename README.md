@@ -14,7 +14,9 @@
 ## 実行方法
 
 下記URLにて実装内容が確認いただけます。
+
 https://lunaclock.github.io/StarWard-Cost-Calculator/
+
 `index.html` ファイルをウェブブラウザで開くことでも動作しますが、完全な動作にはローカルウェブサーバーをたちあげる必要があります。
 例えばVisual Studio Codeであれば「Live Server」などの拡張機能を入れる事で実行可能です。
 
