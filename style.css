@@ -2258,9 +2258,7 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         transform: translateY(-5px) scale(1.01);
         filter: drop-shadow(0 0 10px rgba(0, 191, 255, 0.4));
     }
-     .character-card:hover::after {
-        /* display: none; /* 光沢ストリークを非表示にする場合はコメント解除 */
-    }
+    /* .character-card:hover::after ルールセットは空のため削除しました */
 
     .filter-buttons .filter-button {
         padding: 10px 15px;
