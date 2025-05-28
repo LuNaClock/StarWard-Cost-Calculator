@@ -198,7 +198,6 @@
         </div>
     </div>
 
-    <!-- ★★★ここから追加するHTML★★★ -->
     <div class="result-display-area" style="margin-top: 30px;">
         <div class="redeploy-char-info">
             <span class="info-label">予測覚醒ゲージ:</span>
@@ -209,7 +208,6 @@
             <span id="awakeningAvailability" class="info-value">--</span>
         </div>
     </div>
-    <!-- ★★★ここまで追加するHTML★★★ -->
 
     <div class="sub-accordion-container accordion">
         <div class="accordion-item">
@@ -355,12 +353,10 @@
                     <span class="filter-label"><i class="fas fa-sort"></i> 並び替え:</span>
                     <div class="filter-buttons" id="sortFilter">
                         <button class="filter-button active" data-sort="name">名前順</button>
-                        <!-- ここから変更 -->
                         <button class="filter-button" data-sort="cost-asc">コスト <i class="fas fa-arrow-down"></i></button>
                         <button class="filter-button" data-sort="cost-desc">コスト <i class="fas fa-arrow-up"></i></button>
                         <button class="filter-button" data-sort="hp-asc">耐久値 <i class="fas fa-arrow-down"></i></button>
                         <button class="filter-button" data-sort="hp-desc">耐久値 <i class="fas fa-arrow-up"></i></button>
-                        <!-- ここまで変更 -->
                     </div>
                 </div>
             </div>
@@ -374,8 +370,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <!-- 分離したJavaScriptファイルを読み込む (type="module" と defer を指定) -->
-    <script type="module" src="script.js" defer></script>
+    <script type="module" src="js/app.js" defer></script>
 </body>
 <footer>
     <p>© 2025 May 22, Lu:Na:Clock</p>
