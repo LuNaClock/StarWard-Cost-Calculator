@@ -8,6 +8,8 @@ import { MAX_TEAM_COST } from '../data.js';
 const BASE_URL = window.location.origin + window.location.pathname;
 
 export function generateShareUrlForRedeploy() {
+    const simCharType = State.getCurrentlySimulatingCharType();
+
     const params = new URLSearchParams();
     const playerChar = State.getSelectedPlayerChar();
     const partnerChar = State.getSelectedPartnerChar();
@@ -18,18 +20,47 @@ export function generateShareUrlForRedeploy() {
     
     params.set('rc', DOM.remainingTeamCostInput.value);
     
-    const simCharType = State.getCurrentlySimulatingCharType();
-    if (simCharType) params.set('sim', simCharType);
+    if (simCharType) {
+        params.set('sim', simCharType);
+    } else {
+        // This case should ideally not be reached if share buttons are enabled only after a simulation.
+        console.warn("generateShareUrlForRedeploy: currentlySimulatingCharType is null when trying to generate share URL.");
+    }
 
-    // Awakening params
-    if (DOM.beforeShotdownAwakeningGaugeInput.value !== "0") params.set('ag', DOM.beforeShotdownAwakeningGaugeInput.value);
-    if (DOM.beforeShotdownHpInput_damageTakenInput.value !== "0") params.set('ah', DOM.beforeShotdownHpInput_damageTakenInput.value);
-    if (DOM.considerOwnDownCheckbox.checked) params.set('od', '1');
+    let hasAwakeningParams = false;
+    if (DOM.beforeShotdownAwakeningGaugeInput.value !== "0") {
+        params.set('ag', DOM.beforeShotdownAwakeningGaugeInput.value);
+        hasAwakeningParams = true;
+    }
+    // Always include 'ah' if it's not "0", or if 'ag' is set (even if 'ah' is "0")
+    // This ensures that if a user intentionally sets 'ah' to 0 with other awakening params, it's preserved.
+    if (DOM.beforeShotdownHpInput_damageTakenInput.value !== "0") {
+        params.set('ah', DOM.beforeShotdownHpInput_damageTakenInput.value);
+        hasAwakeningParams = true;
+    } else if (hasAwakeningParams) { // If other awakening params are present, include ah=0 if it's 0
+         params.set('ah', "0");
+    }
+
+
+    if (DOM.considerOwnDownCheckbox.checked) {
+        params.set('od', '1');
+        hasAwakeningParams = true;
+    }
     if (DOM.considerDamageDealtCheckbox.checked) {
         params.set('dd', '1');
-        if (DOM.damageDealtAwakeningBonusSelect.value !== "0") params.set('ddb', DOM.damageDealtAwakeningBonusSelect.value);
+        hasAwakeningParams = true;
+        if (DOM.damageDealtAwakeningBonusSelect.value !== "0") {
+            params.set('ddb', DOM.damageDealtAwakeningBonusSelect.value);
+        }
     }
-    if (DOM.considerPartnerDownCheckbox.checked) params.set('pd', '1');
+    if (DOM.considerPartnerDownCheckbox.checked) {
+        params.set('pd', '1');
+        hasAwakeningParams = true;
+    }
+
+    if (hasAwakeningParams && simCharType) {
+        params.set('anchor', 'awakening');
+    }
     
     return `${BASE_URL}?${params.toString()}`;
 }
@@ -42,7 +73,9 @@ export function generateShareUrlForTotalHp() {
 
     if (playerChar) params.set('p', characters.findIndex(c => c.name === playerChar.name).toString());
     if (partnerChar) params.set('pt', characters.findIndex(c => c.name === partnerChar.name).toString());
-    params.set('view', 'totalhp'); // To distinguish this share type
+    params.set('view', 'totalhp'); 
+    params.set('anchor', 'totalhp_area');
+
 
     return `${BASE_URL}?${params.toString()}`;
 }
@@ -52,7 +85,7 @@ export function parseUrlAndRestoreState() {
     const characters = getCharacters(); 
 
     if (!characters || characters.length === 0) {
-        console.warn("Characters not loaded when parseUrlAndRestoreState was called. State restoration might be incomplete.");
+        // console.warn("Characters not loaded when parseUrlAndRestoreState was called. State restoration might be incomplete.");
         return;
     }
 
@@ -81,8 +114,17 @@ export function parseUrlAndRestoreState() {
         DOM.remainingTeamCostInput.value = params.get('rc');
     }
 
-    if (params.has('ag')) DOM.beforeShotdownAwakeningGaugeInput.value = params.get('ag');
-    if (params.has('ah')) DOM.beforeShotdownHpInput_damageTakenInput.value = params.get('ah');
+    if (params.has('ag')) {
+        DOM.beforeShotdownAwakeningGaugeInput.value = params.get('ag');
+    } else {
+        DOM.beforeShotdownAwakeningGaugeInput.value = "0";
+    }
+    
+    if (params.has('ah')) {
+        DOM.beforeShotdownHpInput_damageTakenInput.value = params.get('ah');
+    } else {
+        DOM.beforeShotdownHpInput_damageTakenInput.value = (DOM.beforeShotdownAwakeningGaugeInput.value === "0") ? "0" : "0"; 
+    }
     
     DOM.considerOwnDownCheckbox.checked = params.get('od') === '1';
     DOM.considerDamageDealtCheckbox.checked = params.get('dd') === '1';
@@ -91,26 +133,54 @@ export function parseUrlAndRestoreState() {
         if (params.has('ddb')) DOM.damageDealtAwakeningBonusSelect.value = params.get('ddb');
     } else {
         if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
+        DOM.damageDealtAwakeningBonusSelect.value = "0"; 
     }
     DOM.considerPartnerDownCheckbox.checked = params.get('pd') === '1';
 
     const playerChar = State.getSelectedPlayerChar();
     const partnerChar = State.getSelectedPartnerChar();
+    const simTypeFromUrl = params.get('sim');
+    const viewTypeFromUrl = params.get('view');
+    const anchorTo = params.get('anchor');
 
-    if (params.has('sim') && playerChar && partnerChar) {
-        const simType = params.get('sim');
-        // Ensure values are valid before processing
-        if (['player', 'partner'].includes(simType)) {
-            processSimulateRedeploy(simType); 
+    let simulationRan = false;
+
+    if (simTypeFromUrl && playerChar && partnerChar) {
+        if (['player', 'partner'].includes(simTypeFromUrl)) {
+            State.setCurrentlySimulatingCharType(simTypeFromUrl); 
+            processSimulateRedeploy(simTypeFromUrl);
+            simulationRan = true; 
+            if (anchorTo === 'awakening' && DOM.awakeningSimulationArea) {
+                setTimeout(() => {
+                    if (DOM.awakeningSimulationArea.offsetParent !== null) { // Check if visible
+                        DOM.awakeningSimulationArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 300); 
+            }
+        } else {
+            UI.resetSimulationResultsUI();
+            // console.warn(`Invalid 'sim' parameter in URL: ${simTypeFromUrl}`);
         }
-    } else if (params.get('view') === 'totalhp' && playerChar && partnerChar) {
+    } else if (viewTypeFromUrl === 'totalhp' && playerChar && partnerChar) {
         processTeamHpCombinations();
-        if (DOM.totalHpDisplayArea && DOM.totalHpDisplayArea.classList.contains('active')) {
-            setTimeout(() => DOM.totalHpDisplayArea.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        simulationRan = true;
+        if (anchorTo === 'totalhp_area' && DOM.totalHpDisplayArea && DOM.totalHpDisplayArea.classList.contains('active')) {
+            setTimeout(() => {
+                 if (DOM.totalHpDisplayArea.offsetParent !== null) { // Check if visible
+                    DOM.totalHpDisplayArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                 }
+            }, 100);
         }
     } else if (playerChar && partnerChar) { 
         processTeamHpCombinations();
-    } else {
+        simulationRan = true; // Team HP is a form of result display
+        if(params.has('ag') || params.has('ah') || params.has('od') || params.has('dd') || params.has('pd')) {
+            // console.warn("Awakening parameters found in URL, but 'sim' parameter is missing. Awakening simulation will not run automatically for specific character.");
+            // No explicit reset here, as team HP is shown. Individual sim results area is naturally not shown.
+        }
+    }
+    
+    if (!simulationRan) {
         UI.resetSimulationResultsUI();
         UI.displayTotalTeamHpResults(null); 
     }
@@ -123,11 +193,10 @@ export function parseUrlAndRestoreState() {
  */
 export async function copyUrlToClipboard(textToCopy, buttonElement) {
     if (!navigator.clipboard) {
-        // Fallback for older browsers or insecure contexts (http)
         try {
             const textArea = document.createElement("textarea");
             textArea.value = textToCopy;
-            textArea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+            textArea.style.position = "fixed";
             textArea.style.top = "0";
             textArea.style.left = "0";
             textArea.style.width = "2em";
@@ -152,11 +221,11 @@ export async function copyUrlToClipboard(textToCopy, buttonElement) {
                 }, 2000);
             } else {
                 alert('URLのコピーに失敗しました。手動でコピーしてください。');
-                console.error('Fallback: クリップボードへのコピーに失敗しました。');
+                // console.error('Fallback: クリップボードへのコピーに失敗しました。');
             }
         } catch (err) {
             alert('URLのコピーに失敗しました。手動でコピーしてください。');
-            console.error('Fallback: クリップボードへのコピー中にエラーが発生しました:', err);
+            // console.error('Fallback: クリップボードへのコピー中にエラーが発生しました:', err);
         }
         return;
     }
@@ -165,8 +234,6 @@ export async function copyUrlToClipboard(textToCopy, buttonElement) {
         await navigator.clipboard.writeText(textToCopy);
         if (buttonElement) {
             const originalText = buttonElement.innerHTML;
-            // It's good practice to store the original icon if it exists, to restore it.
-            // For now, we assume the icon is part of the originalText if it's an <i> tag.
             buttonElement.innerHTML = '<i class="fas fa-check"></i> コピー完了!';
             buttonElement.disabled = true;
             setTimeout(() => {
@@ -175,7 +242,7 @@ export async function copyUrlToClipboard(textToCopy, buttonElement) {
             }, 2000);
         }
     } catch (err) {
-        console.error('クリップボードへのコピーに失敗しました:', err);
+        // console.error('クリップボードへのコピーに失敗しました:', err);
         alert('URLのコピーに失敗しました。手動でコピーしてください。');
     }
 }

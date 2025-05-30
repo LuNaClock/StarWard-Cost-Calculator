@@ -5,7 +5,7 @@ import * as State from './state.js';
 import * as Calculator from './calculator.js';
 import * as UI from './ui.js';
 import * as EventHandlers from './eventHandlers.js';
-import * as Sharing from './sharing.js'; // Import sharing module
+import * as Sharing from './sharing.js';
 
 function initializeCharacterData() {
     const processedData = rawCharacterData.map(char => {
@@ -61,20 +61,29 @@ export function processTeamHpCombinations() {
 }
 
 export function processSimulateRedeploy(charType) {
+    State.setCurrentlySimulatingCharType(charType);
+
     const selectedPlayer = State.getSelectedPlayerChar();
     const selectedPartner = State.getSelectedPartnerChar();
 
     if (!selectedPlayer || !selectedPartner) {
-        alert("自機と相方の両方を選択してください。");
+        return;
+    }
+
+    const allocatedCostForThisRedeploy = parseFloat(DOM.remainingTeamCostInput.value);
+    const currentSimulatingCharType = State.getCurrentlySimulatingCharType();
+    let charToRedeploy;
+    if (currentSimulatingCharType === 'player') {
+        charToRedeploy = selectedPlayer;
+    } else if (currentSimulatingCharType === 'partner') {
+        charToRedeploy = selectedPartner;
+    } else {
+        console.error("processSimulateRedeploy: Invalid or unset currentlySimulatingCharType in state:", currentSimulatingCharType);
         UI.resetSimulationResultsUI();
         return;
     }
-    State.setCurrentlySimulatingCharType(charType);
 
-    const allocatedCostForThisRedeploy = parseFloat(DOM.remainingTeamCostInput.value);
-    let charToRedeploy = (charType === 'player') ? selectedPlayer : selectedPartner;
-
-    if (!charToRedeploy) { //念のためチェック
+    if (!charToRedeploy) { 
         UI.resetSimulationResultsUI();
         return;
     }
@@ -83,21 +92,18 @@ export function processSimulateRedeploy(charType) {
 
     UI.updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualCostConsumed);
 
-    // 覚醒ゲージ計算用のデータを設定
-    if (DOM.beforeShotdownAwakeningGaugeInput) {
+    if (DOM.beforeShotdownAwakeningGaugeInput && DOM.beforeShotdownHpInput_damageTakenInput) {
         DOM.beforeShotdownAwakeningGaugeInput.dataset.originalCharacterHp = String(charToRedeploy.hp);
         DOM.beforeShotdownAwakeningGaugeInput.dataset.characterCost = charToRedeploy.cost.toFixed(1);
         DOM.beforeShotdownAwakeningGaugeInput.dataset.characterName = charToRedeploy.name;
-    }
-    if (DOM.beforeShotdownHpInput_damageTakenInput) {
+        
         DOM.beforeShotdownHpInput_damageTakenInput.max = String(charToRedeploy.hp);
-        // Dataset for beforeShotdownHpInput is actually the same as for gaugeInput, for consistency
         DOM.beforeShotdownHpInput_damageTakenInput.dataset.originalCharacterHp = String(charToRedeploy.hp);
         DOM.beforeShotdownHpInput_damageTakenInput.dataset.characterCost = charToRedeploy.cost.toFixed(1);
         DOM.beforeShotdownHpInput_damageTakenInput.dataset.characterName = charToRedeploy.name;
     }
-
-    processAwakeningGaugeCalculation();
+    
+    processAwakeningGaugeCalculation(); 
 }
 
 export function processAwakeningGaugeCalculation() {
@@ -109,8 +115,6 @@ export function processAwakeningGaugeCalculation() {
     } else if (charType === 'partner' && State.getSelectedPartnerChar()) {
         charDataForAwakening = State.getSelectedPartnerChar();
     } else {
-        // フォールバック: 現在シミュレート中のキャラタイプが不明、またはキャラが選択されていない場合
-        // データセットから情報を取得しようと試みる
         const originalHpFromDataset = DOM.beforeShotdownHpInput_damageTakenInput?.dataset.originalCharacterHp;
         const costFromDataset = DOM.beforeShotdownHpInput_damageTakenInput?.dataset.characterCost;
         const nameFromDataset = DOM.beforeShotdownHpInput_damageTakenInput?.dataset.characterName;
@@ -126,18 +130,18 @@ export function processAwakeningGaugeCalculation() {
             return;
         }
     }
+    
      if (!charDataForAwakening || typeof charDataForAwakening.hp === 'undefined' || typeof charDataForAwakening.cost === 'undefined') {
         UI.updateAwakeningGaugeUI({ error: true, validatedDamageTaken: parseFloat(DOM.beforeShotdownHpInput_damageTakenInput?.value) || 0 });
         return;
     }
-
 
     const inputs = {
         gaugeBeforeShotdown: parseFloat(DOM.beforeShotdownAwakeningGaugeInput.value) || 0,
         damageTakenInputValue: parseFloat(DOM.beforeShotdownHpInput_damageTakenInput.value) || 0,
         originalCharActualMaxHp: charDataForAwakening.hp,
         charCost: charDataForAwakening.cost,
-        charName: charDataForAwakening.name, // スコーピオン特殊処理のため
+        charName: charDataForAwakening.name,
         considerOwnDown: DOM.considerOwnDownCheckbox.checked,
         considerDamageDealt: DOM.considerDamageDealtCheckbox.checked,
         damageDealtBonus: DOM.damageDealtAwakeningBonusSelect.value,
@@ -156,16 +160,14 @@ function initializePage() {
     UI.populateRemainingCostSelect(MAX_TEAM_COST);
     UI.setAwakeningDetailsConstants();
 
-    UI.updateTeamCostDisplay(MAX_TEAM_COST);
-    UI.updateSelectedCharactersDisplay();
-    UI.resetSimulationResultsUI();
-    // processTeamHpCombinations(); // Initial call moved to after URL parsing
+    UI.updateTeamCostDisplay(MAX_TEAM_COST); 
+    UI.updateSelectedCharactersDisplay();   
 
     EventHandlers.setupEventListeners();
-    Sharing.parseUrlAndRestoreState(); // Parse URL and restore state. This might trigger calculations.
+    Sharing.parseUrlAndRestoreState(); 
 
     UI.initPageAnimations();
-    applyFiltersAndSearch(); // Initial card display
+    applyFiltersAndSearch(); 
 }
 
 document.addEventListener('DOMContentLoaded', initializePage);

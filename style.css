@@ -1538,12 +1538,12 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 
 
 
-.simulation-buttons {
+.simulation-buttons { /* Container for simulation execution buttons AND share button groups */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 20px; /* Reduced from 40px to make space for share group if needed */
 }
 
 .simulation-button { /* This is a base class for simulation and share buttons */
@@ -1578,7 +1578,7 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 
 .simulation-button:active { /* General active state for all sim/share buttons */
     transform: translateY(2px) scale(0.98);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08) !important; /* Ensure active shadow overrides others */
 }
 
 .simulation-button::before { /* Gloss effect for all sim/share buttons */
@@ -1609,6 +1609,7 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     transform: translateY(20px);
     will-change: opacity, transform;
     pointer-events: none; /* デフォルトでクリック不可に */
+    margin-bottom: 0; /* Removed margin, share buttons group will handle spacing */
 }
 
     .simulation-results.active {
@@ -2176,32 +2177,45 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     flex-wrap: wrap;
     justify-content: center;
     gap: 15px; /* Space between buttons */
-    margin-top: 25px; /* Default top margin */
+    /* margin-top: 25px; Default top margin is handled by where this group is placed */
+    /* Example: .simulation-results .share-buttons-group or .total-hp-display-area .share-buttons-group */
 }
 
-.share-button { /* Specific X share button */
-    background-color: var(--twitter-blue) !important;
-    border-color: var(--twitter-blue) !important;
-    box-shadow: 0 5px 15px var(--twitter-blue-shadow) !important; /* Ensure override */
+.simulation-results .share-buttons-group {
+    margin-top: 25px; /* Spacing after awakening results */
+    margin-bottom: 0; /* No bottom margin from group, result div handles padding */
 }
-.share-button:hover {
+
+.total-hp-display-area .share-buttons-group {
+    margin-top: 30px;  /* Spacing after total HP grid */
+    margin-bottom: 10px; /* Spacing before end of total HP area */
+}
+
+
+/* Styles for the X (Twitter) share button */
+.share-button#shareRedeployResultBtn,
+.share-button#shareTotalHpResultBtn {
+    background-color: var(--twitter-blue) !important;
+    border: 2px solid var(--twitter-blue) !important;
+    box-shadow: 0 5px 15px var(--twitter-blue-shadow) !important;
+}
+.share-button#shareRedeployResultBtn:hover,
+.share-button#shareTotalHpResultBtn:hover {
     background: linear-gradient(45deg, #1a91da, #1f9cf0) !important;
-    box-shadow: 0 8px 20px var(--twitter-blue-hover-shadow), 0 0 15px var(--twitter-blue-hover-shadow) !important; /* Ensure override */
+    box-shadow: 0 8px 20px var(--twitter-blue-hover-shadow), 0 0 15px var(--twitter-blue-hover-shadow) !important;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.7) !important;
 }
-.share-button i { /* Icon within X share button */
-    font-size: 1.2em;
-}
 
-.copy-url-button { /* Specific URL copy button */
+/* Styles for the URL copy button */
+.copy-url-button {
     background-color: var(--copy-url-button-bg) !important;
-    border-color: var(--copy-url-button-border) !important;
-    box-shadow: 0 5px 15px var(--copy-url-button-shadow) !important; /* Ensure override */
+    border: 2px solid var(--copy-url-button-border) !important;
+    box-shadow: 0 5px 15px var(--copy-url-button-shadow) !important;
 }
 
 .copy-url-button:hover {
     background: var(--copy-url-button-hover-bg) !important;
-    box-shadow: 0 8px 20px var(--copy-url-button-hover-shadow), 0 0 15px var(--copy-url-button-hover-shadow) !important; /* Ensure override */
+    box-shadow: 0 8px 20px var(--copy-url-button-hover-shadow), 0 0 15px var(--copy-url-button-hover-shadow) !important;
 }
 .copy-url-button:disabled { /* Style for when URL is copied (success feedback) */
     background-color: var(--copy-success-bg) !important;
@@ -2214,7 +2228,8 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     background-color: var(--copy-success-bg) !important;
     box-shadow: 0 5px 15px var(--copy-success-shadow) !important;
 }
-.copy-url-button i { /* Icon within URL copy button */
+
+.simulation-button i { /* General icon style within any .simulation-button (share or primary) */
      font-size: 1.2em;
 }
 
