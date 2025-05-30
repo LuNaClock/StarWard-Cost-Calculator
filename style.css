@@ -23,6 +23,19 @@
     --glitch-color2: #00FFFF; /* シアン */
     --grid-line-color: rgba(0, 191, 255, 0.08); /* グリッド線の色 */
     --loading-spinner-color: #00BFFF;
+    /* X (Twitter) Blue for share buttons */
+    --twitter-blue: #1DA1F2;
+    --twitter-blue-shadow: rgba(29, 161, 242, 0.4);
+    --twitter-blue-hover-shadow: rgba(29, 161, 242, 0.6);
+    /* URL Copy Button Color */
+    --copy-url-button-bg: #6c757d; /* Bootstrap secondary color */
+    --copy-url-button-border: #6c757d;
+    --copy-url-button-hover-bg: #5a6268;
+    --copy-url-button-shadow: rgba(108, 117, 125, 0.4);
+    --copy-url-button-hover-shadow: rgba(108, 117, 125, 0.6);
+    --copy-success-bg: var(--hp-high); /* Green for success */
+    --copy-success-border: var(--hp-high);
+    --copy-success-shadow: rgba(40, 167, 69, 0.4);
 }
 
 /* ----- 基本スタイル ----- */
@@ -1533,58 +1546,58 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     margin-bottom: 40px;
 }
 
-.simulation-button {
-    background-color: var(--primary-light);
+.simulation-button { /* This is a base class for simulation and share buttons */
     color: var(--card-background);
-    border: 2px solid var(--primary-light);
     padding: 15px 30px;
     border-radius: 30px;
     font-size: 1.1em;
     font-weight: 700;
     cursor: crosshair;
     transition: all var(--transition-speed);
-    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.5);
     position: relative;
     overflow: hidden;
-    will-change: transform, background-color, box-shadow, text-shadow; /* text-shadow追加 */
+    will-change: transform, background-color, box-shadow, text-shadow;
+    display: flex; /* For icon alignment */
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between icon and text */
 }
 
-    /* IMPROVEMENT 6: ボタンの高級感あるホバーエフェクト */
-    .simulation-button:hover {
-      background: linear-gradient(
-        45deg,
-        rgba(0, 191, 255, 0.9),
-        rgba(0, 150, 200, 0.9)
-      );
-      transform: translateY(-5px) scale(1.01); /* scale(1.01)も既存から維持 */
-      box-shadow: 
-        0 8px 20px rgba(0, 191, 255, 0.7),
-        0 0 15px rgba(0, 239, 255, 0.5);
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-    }
+/* Specific styles for primary simulation buttons */
+#simulatePlayerRedeploy, #simulatePartnerRedeploy {
+    background-color: var(--primary-light);
+    border: 2px solid var(--primary-light);
+    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.5);
+}
+#simulatePlayerRedeploy:hover, #simulatePartnerRedeploy:hover {
+    background: linear-gradient(45deg, rgba(0, 191, 255, 0.9), rgba(0, 150, 200, 0.9));
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 191, 255, 0.7), 0 0 15px rgba(0, 239, 255, 0.5);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
 
-    .simulation-button:active {
-        transform: translateY(2px) scale(0.98);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-    }
+.simulation-button:active { /* General active state for all sim/share buttons */
+    transform: translateY(2px) scale(0.98);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
 
-    .simulation-button::before { /* 光沢アニメーション */
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transform: skewX(-20deg);
-        transition: all 0.5s ease;
-        z-index: 1;
-        will-change: transform, left;
-    }
+.simulation-button::before { /* Gloss effect for all sim/share buttons */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: skewX(-20deg);
+    transition: all 0.5s ease;
+    z-index: 1;
+    will-change: transform, left;
+}
+.simulation-button:hover::before {
+    left: 100%;
+}
 
-    .simulation-button:hover::before {
-        left: 100%;
-    }
 
 .simulation-results {
     background-color: #F8FCFF;
@@ -1594,21 +1607,15 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     text-align: center;
     opacity: 0; /* 初期非表示 */
     transform: translateY(20px);
-    /* IMPROVEMENT 4: transitionを削除し、animationに置き換える (下記 .active で) */
-    /* transition: opacity 0.4s ease, transform 0.4s ease; */
     will-change: opacity, transform;
     pointer-events: none; /* デフォルトでクリック不可に */
 }
 
-    /* IMPROVEMENT 4: シミュレーション結果の表示エフェクト */
     .simulation-results.active {
-        /* opacity: 1; */ /* animationで制御 */
-        /* transform: translateY(0); */ /* animationで制御 */
         pointer-events: auto; /* 表示時にクリック可能に */
         animation: fadeInScale 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    /* IMPROVEMENT 4: fadeInScale keyframes */
     @keyframes fadeInScale {
       0% {
         opacity: 0;
@@ -2163,6 +2170,55 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     }
 /* ★ここまでサブアコーディオン用のスタイル追加★ */
 
+/* Share Button Styles */
+.share-buttons-group { /* Container for share buttons */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px; /* Space between buttons */
+    margin-top: 25px; /* Default top margin */
+}
+
+.share-button { /* Specific X share button */
+    background-color: var(--twitter-blue) !important;
+    border-color: var(--twitter-blue) !important;
+    box-shadow: 0 5px 15px var(--twitter-blue-shadow) !important; /* Ensure override */
+}
+.share-button:hover {
+    background: linear-gradient(45deg, #1a91da, #1f9cf0) !important;
+    box-shadow: 0 8px 20px var(--twitter-blue-hover-shadow), 0 0 15px var(--twitter-blue-hover-shadow) !important; /* Ensure override */
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7) !important;
+}
+.share-button i { /* Icon within X share button */
+    font-size: 1.2em;
+}
+
+.copy-url-button { /* Specific URL copy button */
+    background-color: var(--copy-url-button-bg) !important;
+    border-color: var(--copy-url-button-border) !important;
+    box-shadow: 0 5px 15px var(--copy-url-button-shadow) !important; /* Ensure override */
+}
+
+.copy-url-button:hover {
+    background: var(--copy-url-button-hover-bg) !important;
+    box-shadow: 0 8px 20px var(--copy-url-button-hover-shadow), 0 0 15px var(--copy-url-button-hover-shadow) !important; /* Ensure override */
+}
+.copy-url-button:disabled { /* Style for when URL is copied (success feedback) */
+    background-color: var(--copy-success-bg) !important;
+    border-color: var(--copy-success-border) !important;
+    box-shadow: 0 5px 15px var(--copy-success-shadow) !important;
+    cursor: default !important;
+    opacity: 1 !important;
+}
+.copy-url-button:disabled:hover { /* Keep success style on hover when disabled */
+    background-color: var(--copy-success-bg) !important;
+    box-shadow: 0 5px 15px var(--copy-success-shadow) !important;
+}
+.copy-url-button i { /* Icon within URL copy button */
+     font-size: 1.2em;
+}
+
+
 /* IMPROVEMENT 9: カスタムスクロールバー */
 ::-webkit-scrollbar {
   width: 8px;
@@ -2186,8 +2242,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px; 
   }
-  
-  /* .controls-container は既存でcolumnなので特に追加なし */
   
   .filter-group {
     flex-direction: column;
@@ -2217,11 +2271,11 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
       height: 100px;
       font-size: 50px;
   }
-  .simulation-buttons {
+  .simulation-buttons { 
       flex-direction: column; 
       align-items: center;
   }
-  .simulation-button {
+  .simulation-button { /* This includes all buttons that use this base class */
       width: 80%;
       max-width: 300px; 
   }
@@ -2258,7 +2312,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         transform: translateY(-5px) scale(1.01);
         filter: drop-shadow(0 0 10px rgba(0, 191, 255, 0.4));
     }
-    /* .character-card:hover::after ルールセットは空のため削除しました */
 
     .filter-buttons .filter-button {
         padding: 10px 15px;
@@ -2278,5 +2331,9 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         font-size: 1.1em;
         left: 15px;
     }
-    /* 既存の .total-hp-display-area h3 などスマホ用スタイルは維持 (上のほうに既に定義あり) */
+    /* Ensure share buttons in groups also take up more width on small screens */
+    .share-buttons-group .simulation-button { 
+        width: 90%;
+        max-width: 320px;
+    }
 }

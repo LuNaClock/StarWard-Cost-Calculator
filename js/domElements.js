@@ -77,3 +77,11 @@ export const bombSequenceList = document.getElementById('bombSequenceList');
 export const lowestHpScenarioTitleSpan = document.getElementById('lowestHpScenarioTitle');
 export const lowestGainedHpSpan = document.getElementById('lowestGainedHp');
 export const lowestSequenceList = document.getElementById('lowestSequenceList');
+
+// Share Buttons
+export const shareRedeployResultBtn = document.getElementById('shareRedeployResultBtn');
+export const shareTotalHpResultBtn = document.getElementById('shareTotalHpResultBtn');
+
+// New URL Copy Buttons (IDs will be defined in HTML later)
+export const copyRedeployUrlBtn = document.getElementById('copyRedeployUrlBtn');
+export const copyTotalHpUrlBtn = document.getElementById('copyTotalHpUrlBtn');

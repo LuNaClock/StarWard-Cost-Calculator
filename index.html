@@ -77,6 +77,7 @@
                             <li>相方撃墜考慮: チェックを入れると、相方が撃墜されたことによる覚醒ゲージ増加分を考慮します。</li>
                             <li>予測覚醒ゲージ/覚醒使用: これらすべての要素を考慮した最終的な予測覚醒ゲージ量と、覚醒が使用可能かどうかが表示されます。</li>
                         </ul>
+                         <p class="tip"><i class="fas fa-share-alt"></i> ヒント: 再出撃シミュレーションの結果や覚醒予測は、結果表示エリアの下部にある共有ボタン（<i class="fab fa-x-twitter"></i> Xで共有 / <i class="fas fa-link"></i> URLコピー）から共有できます。</p>
                     </div>
                 </div>
 
@@ -94,6 +95,7 @@
                             <li>チーム合計耐久値(最低): 自機または相方のどちらか一方に被弾が集中し、その機体のみが撃墜され続けた場合の総耐久力（最も非効率な落ち方）。</li>
                             </ul>
                         <p>各シナリオの下にある「撃墜順序と獲得HP」アコーディオンをクリックすると、それぞれのシミュレーションにおける詳細な撃墜シーケンスと、その際に獲得するHP値を確認できます。</p>
+                        <p class="tip"><i class="fas fa-share-alt"></i> ヒント: チーム合計耐久力の予測結果は、エリアの下部にある共有ボタン（<i class="fab fa-x-twitter"></i> Xで共有 / <i class="fas fa-link"></i> URLコピー）から共有できます。</p>
                     </div>
                 </div>
             </div>
@@ -269,6 +271,15 @@
         </div>
     </div>
 </div>
+                <!-- Share Buttons for Redeploy Simulation -->
+                <div class="simulation-buttons share-buttons-group" style="margin-top: 25px;">
+                    <button id="shareRedeployResultBtn" class="simulation-button share-button" style="display: none;">
+                        <i class="fab fa-x-twitter"></i> Xで結果を共有
+                    </button>
+                    <button id="copyRedeployUrlBtn" class="simulation-button share-button copy-url-button" style="display: none;">
+                        <i class="fas fa-link"></i> URLをコピー
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -328,6 +339,15 @@
                     </button>
                     <ul id="lowestSequenceList" class="total-hp-accordion-content"></ul>
                 </div>
+            </div>
+            <!-- Share Buttons for Total HP Prediction -->
+            <div class="simulation-buttons share-buttons-group" style="margin-top: 30px; margin-bottom: 10px;">
+                <button id="shareTotalHpResultBtn" class="simulation-button share-button" style="display: none;">
+                    <i class="fab fa-x-twitter"></i> Xで予測を共有
+                </button>
+                <button id="copyTotalHpUrlBtn" class="simulation-button share-button copy-url-button" style="display: none;">
+                    <i class="fas fa-link"></i> URLをコピー
+                </button>
             </div>
         </div>
 

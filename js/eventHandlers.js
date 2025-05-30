@@ -4,6 +4,7 @@ import * as State from './state.js';
 import * as UI from './ui.js';
 import { applyFiltersAndSearch, processTeamHpCombinations, processSimulateRedeploy, processAwakeningGaugeCalculation } from './app.js';
 import { MAX_TEAM_COST } from '../data.js';
+import * as Sharing from './sharing.js'; // Import sharing module
 
 let isComposing = false;
 let searchTimeoutLocal;
@@ -96,6 +97,75 @@ function handleDamageDealtCheckboxChange(event) {
     processAwakeningGaugeCalculation();
 }
 
+function handleShareRedeployResult() {
+    const playerChar = State.getSelectedPlayerChar();
+    const partnerChar = State.getSelectedPartnerChar();
+    const redeployCharName = DOM.redeployCharNameSpan.textContent;
+    const redeployCalculatedHp = DOM.redeployCalculatedHpSpan.textContent;
+    const predictedAwakeningGauge = DOM.predictedAwakeningGaugeSpan.textContent;
+    const awakeningAvailability = DOM.awakeningAvailabilitySpan.textContent;
+
+    if (redeployCharName === '--' || !playerChar || !partnerChar) {
+        alert('共有するシミュレーション結果がありません。先にシミュレーションを実行してください。');
+        return;
+    }
+    
+    let summaryText = `【星の翼 耐久シミュ】\n自機: ${playerChar.name}(コスト${playerChar.cost.toFixed(1)})\n相方: ${partnerChar.name}(コスト${partnerChar.cost.toFixed(1)})\n`;
+    summaryText += `残りコスト${DOM.remainingTeamCostInput.value}で ${redeployCharName} が再出撃 → HP ${redeployCalculatedHp}！\n`;
+    if (predictedAwakeningGauge !== '--') {
+        summaryText += `覚醒予測: ${predictedAwakeningGauge}% (${awakeningAvailability})\n`;
+    }
+    summaryText += "\n詳細はこちらでチェック！";
+
+    const shareUrl = Sharing.generateShareUrlForRedeploy();
+    const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(summaryText)}&url=${encodeURIComponent(shareUrl)}&hashtags=${encodeURIComponent('星の翼,耐久シミュレーター')}`;
+    window.open(twitterIntentUrl, '_blank');
+}
+
+function handleShareTotalHpResult() {
+    const playerChar = State.getSelectedPlayerChar();
+    const partnerChar = State.getSelectedPartnerChar();
+
+    if (!playerChar || !partnerChar || DOM.idealGainedHpSpan.textContent === '--') {
+        alert('共有するチーム合計耐久予測がありません。自機と相方を選択してください。');
+        return;
+    }
+
+    let summaryText = `【星の翼 チーム耐久予測】\n自機: ${playerChar.name}(コスト${playerChar.cost.toFixed(1)})\n相方: ${partnerChar.name}(コスト${partnerChar.cost.toFixed(1)})\n\n`;
+    summaryText += `理想耐久: ${DOM.idealGainedHpSpan.textContent}\n`;
+    summaryText += `妥協耐久: ${DOM.minGainedHpHpSpan.textContent}\n`;
+    summaryText += `爆弾耐久: ${DOM.bombGainedHpSpan.textContent}\n`;
+    summaryText += `最低耐久: ${DOM.lowestGainedHpSpan.textContent}\n`;
+    summaryText += "\n詳細はこちらでチェック！";
+    
+    const shareUrl = Sharing.generateShareUrlForTotalHp();
+    const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(summaryText)}&url=${encodeURIComponent(shareUrl)}&hashtags=${encodeURIComponent('星の翼,耐久シミュレーター')}`;
+    window.open(twitterIntentUrl, '_blank');
+}
+
+// New handlers for copying URLs
+function handleCopyRedeployUrl(event) {
+    const playerChar = State.getSelectedPlayerChar();
+    const partnerChar = State.getSelectedPartnerChar();
+    if (DOM.redeployCharNameSpan.textContent === '--' || !playerChar || !partnerChar) {
+        alert('URLを生成するためのシミュレーション結果がありません。');
+        return;
+    }
+    const urlToCopy = Sharing.generateShareUrlForRedeploy();
+    Sharing.copyUrlToClipboard(urlToCopy, event.currentTarget); // Pass the clicked button itself
+}
+
+function handleCopyTotalHpUrl(event) {
+    const playerChar = State.getSelectedPlayerChar();
+    const partnerChar = State.getSelectedPartnerChar();
+    if (!playerChar || !partnerChar || DOM.idealGainedHpSpan.textContent === '--') {
+        alert('URLを生成するためのチーム合計耐久予測がありません。');
+        return;
+    }
+    const urlToCopy = Sharing.generateShareUrlForTotalHp();
+    Sharing.copyUrlToClipboard(urlToCopy, event.currentTarget); // Pass the clicked button itself
+}
+
 
 export function setupEventListeners() {
     // Search and Filters
@@ -137,4 +207,12 @@ export function setupEventListeners() {
         }
     });
     if (DOM.considerDamageDealtCheckbox) DOM.considerDamageDealtCheckbox.addEventListener('change', handleDamageDealtCheckboxChange);
+
+    // Share Buttons
+    if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.addEventListener('click', handleShareRedeployResult);
+    if (DOM.shareTotalHpResultBtn) DOM.shareTotalHpResultBtn.addEventListener('click', handleShareTotalHpResult);
+
+    // New URL Copy Button Event Listeners
+    if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.addEventListener('click', handleCopyRedeployUrl);
+    if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.addEventListener('click', handleCopyTotalHpUrl);
 }

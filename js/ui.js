@@ -233,6 +233,10 @@ export function resetSimulationResultsUI() {
             if (DOM.considerPartnerDownCheckbox) DOM.considerPartnerDownCheckbox.checked = false;
             if (DOM.predictedAwakeningGaugeSpan) DOM.predictedAwakeningGaugeSpan.textContent = '--';
             if (DOM.awakeningAvailabilitySpan) { DOM.awakeningAvailabilitySpan.textContent = '--'; DOM.awakeningAvailabilitySpan.className = 'info-value';}
+            
+            // Hide share buttons
+            if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.style.display = 'none';
+            if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.style.display = 'none';
         }
     });
 }
@@ -241,9 +245,9 @@ export function displayTotalTeamHpResults(scenarios) {
     const selectedPlayerChar = getSelectedPlayerChar();
     const selectedPartnerChar = getSelectedPartnerChar();
 
-    if (!scenarios) {
+    if (!scenarios || !selectedPlayerChar || !selectedPartnerChar) { 
          gsap.to(DOM.totalHpDisplayArea, { opacity: 0, y: 20, duration: 0.3, ease: "power2.in", onComplete: () => {
-            if(DOM.totalHpDisplayArea) DOM.totalHpDisplayArea.classList.remove('active'); // Hide it
+            if(DOM.totalHpDisplayArea) DOM.totalHpDisplayArea.classList.remove('active'); 
             if (DOM.highestHpScenarioTitleSpan) DOM.highestHpScenarioTitleSpan.textContent = 'チーム合計耐久値(最高)';
             if (DOM.idealGainedHpSpan) DOM.idealGainedHpSpan.textContent = '--';
             if (DOM.idealSequenceList) DOM.idealSequenceList.innerHTML = '';
@@ -256,6 +260,10 @@ export function displayTotalTeamHpResults(scenarios) {
             if (DOM.lowestHpScenarioTitleSpan) DOM.lowestHpScenarioTitleSpan.textContent = 'チーム合計耐久値(最低)';
             if (DOM.lowestGainedHpSpan) DOM.lowestGainedHpSpan.textContent = '--';
             if (DOM.lowestSequenceList) DOM.lowestSequenceList.innerHTML = '';
+            
+            // Hide share buttons
+            if (DOM.shareTotalHpResultBtn) DOM.shareTotalHpResultBtn.style.display = 'none';
+            if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.style.display = 'none';
         }});
         return;
     }
@@ -266,8 +274,11 @@ export function displayTotalTeamHpResults(scenarios) {
     if (DOM.selectedPartnerCharNameSummary && selectedPartnerChar) DOM.selectedPartnerCharNameSummary.textContent = selectedPartnerChar.name;
 
     if (DOM.totalHpDisplayArea) {
-        DOM.totalHpDisplayArea.classList.add('active'); // Make it visible for GSAP
+        DOM.totalHpDisplayArea.classList.add('active'); 
         gsap.to(DOM.totalHpDisplayArea, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
+        // Show share buttons
+        if (DOM.shareTotalHpResultBtn) DOM.shareTotalHpResultBtn.style.display = 'flex'; 
+        if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.style.display = 'flex';     
     } else return;
 
     const generateListItems = (sequence) => {
@@ -326,10 +337,13 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
 
     if (DOM.simulationHpPercentageDisplay) DOM.simulationHpPercentageDisplay.classList.add('show');
 
-    if (DOM.simulationResultsDiv) { // Ensure simulationResultsDiv is not null
-        DOM.simulationResultsDiv.classList.add('active'); // Make it visible for GSAP
+    if (DOM.simulationResultsDiv) { 
+        DOM.simulationResultsDiv.classList.add('active'); 
         gsap.fromTo(DOM.simulationResultsDiv, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", onComplete: () => {
             if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'block';
+            // Show share buttons
+            if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.style.display = 'flex'; 
+            if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.style.display = 'flex';     
         }});
     }
 }

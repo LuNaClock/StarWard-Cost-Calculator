@@ -5,6 +5,7 @@ import * as State from './state.js';
 import * as Calculator from './calculator.js';
 import * as UI from './ui.js';
 import * as EventHandlers from './eventHandlers.js';
+import * as Sharing from './sharing.js'; // Import sharing module
 
 function initializeCharacterData() {
     const processedData = rawCharacterData.map(char => {
@@ -158,9 +159,10 @@ function initializePage() {
     UI.updateTeamCostDisplay(MAX_TEAM_COST);
     UI.updateSelectedCharactersDisplay();
     UI.resetSimulationResultsUI();
-    processTeamHpCombinations(); // Call this to initialize total HP area (might be empty if no chars selected)
+    // processTeamHpCombinations(); // Initial call moved to after URL parsing
 
     EventHandlers.setupEventListeners();
+    Sharing.parseUrlAndRestoreState(); // Parse URL and restore state. This might trigger calculations.
 
     UI.initPageAnimations();
     applyFiltersAndSearch(); // Initial card display
