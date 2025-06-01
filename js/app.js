@@ -28,8 +28,18 @@ export function applyFiltersAndSearch() {
     const inputHiragana = Utils.toHiragana(inputRawLower);
     const inputKatakana = Utils.toKatakana(inputRawLower);
 
-    const activeCostFilter = document.querySelector('#costFilter .active').dataset.cost;
-    const activeSortFilter = document.querySelector('#sortFilter .active').dataset.sort;
+    const activeCostFilterEl = document.querySelector('#costFilter .active');
+    const activeSortFilterEl = document.querySelector('#sortFilter .active');
+
+    if (!activeCostFilterEl || !activeSortFilterEl) {
+        // console.warn("Filter buttons not found, skipping filter application.");
+        UI.generateCharacterCards(State.getCharacters()); // Show all if filters are missing
+        return;
+    }
+
+    const activeCostFilter = activeCostFilterEl.dataset.cost;
+    const activeSortFilter = activeSortFilterEl.dataset.sort;
+
     let filteredCharacters = [...State.getCharacters()];
 
     if (searchTermInputVal) {
@@ -67,10 +77,18 @@ export function processSimulateRedeploy(charType) {
     const selectedPartner = State.getSelectedPartnerChar();
 
     if (!selectedPlayer || !selectedPartner) {
+        // console.warn("Player or partner not selected for redeploy simulation.");
+        UI.resetSimulationResultsUI();
         return;
     }
 
     const allocatedCostForThisRedeploy = parseFloat(DOM.remainingTeamCostInput.value);
+    if (isNaN(allocatedCostForThisRedeploy)) {
+        // console.warn("Invalid remaining team cost input for redeploy simulation.");
+        UI.resetSimulationResultsUI();
+        return;
+    }
+
     const currentSimulatingCharType = State.getCurrentlySimulatingCharType();
     let charToRedeploy;
     if (currentSimulatingCharType === 'player') {
@@ -78,12 +96,13 @@ export function processSimulateRedeploy(charType) {
     } else if (currentSimulatingCharType === 'partner') {
         charToRedeploy = selectedPartner;
     } else {
-        console.error("processSimulateRedeploy: Invalid or unset currentlySimulatingCharType in state:", currentSimulatingCharType);
+        // console.error("processSimulateRedeploy: Invalid or unset currentlySimulatingCharType in state:", currentSimulatingCharType);
         UI.resetSimulationResultsUI();
         return;
     }
 
     if (!charToRedeploy) { 
+        // console.warn("Character to redeploy not found.");
         UI.resetSimulationResultsUI();
         return;
     }
@@ -126,12 +145,14 @@ export function processAwakeningGaugeCalculation() {
                 name: nameFromDataset
             };
         } else {
+            // console.warn("Awakening calculation skipped: Character data not available from dataset.");
             UI.updateAwakeningGaugeUI({ error: true, validatedDamageTaken: parseFloat(DOM.beforeShotdownHpInput_damageTakenInput?.value) || 0 });
             return;
         }
     }
     
      if (!charDataForAwakening || typeof charDataForAwakening.hp === 'undefined' || typeof charDataForAwakening.cost === 'undefined') {
+        // console.warn("Awakening calculation skipped: Invalid character data.");
         UI.updateAwakeningGaugeUI({ error: true, validatedDamageTaken: parseFloat(DOM.beforeShotdownHpInput_damageTakenInput?.value) || 0 });
         return;
     }
@@ -147,6 +168,17 @@ export function processAwakeningGaugeCalculation() {
         damageDealtBonus: DOM.damageDealtAwakeningBonusSelect.value,
         considerPartnerDown: DOM.considerPartnerDownCheckbox.checked
     };
+
+    // Basic validation for gaugeBeforeShotdown and damageTakenInputValue
+    if (isNaN(inputs.gaugeBeforeShotdown) || inputs.gaugeBeforeShotdown < 0 || inputs.gaugeBeforeShotdown > 100) {
+        // console.warn("Invalid gaugeBeforeShotdown value for awakening calculation.");
+        inputs.gaugeBeforeShotdown = 0; // Fallback or handle error
+    }
+    if (isNaN(inputs.damageTakenInputValue) || inputs.damageTakenInputValue < 0) {
+        // console.warn("Invalid damageTakenInputValue for awakening calculation.");
+        inputs.damageTakenInputValue = 0; // Fallback or handle error
+    }
+
 
     const result = Calculator.calculateAwakeningGauge(inputs);
     UI.updateAwakeningGaugeUI(result);

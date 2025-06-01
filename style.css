@@ -698,7 +698,6 @@ h1 {
 .filter-button:active {
     transform: translateY(3px) scale(0.98);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) inset;
-    /* border-color: var(--primary-light); /* 既存のborder-colorを維持するかどうかはデザイン次第。今回は提案に合わせて削除 */
 }
 
 
@@ -851,13 +850,13 @@ h1 {
         height: 100%;
         object-fit: cover;
         border-radius: 50%;
-        display: block;
+        display: block; /* default, overridden by JS if image fails/not present */
     }
 
     .character-image span.initial {
         width: 100%;
         height: 100%;
-        display: flex; /* 初期は表示 (画像がない場合や読み込み失敗時) */
+        display: flex; /* Initially flex to show, JS will hide if img loads */
         justify-content: center;
         align-items: center;
         font-size: 60px;
@@ -2177,8 +2176,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     flex-wrap: wrap;
     justify-content: center;
     gap: 15px; /* Space between buttons */
-    /* margin-top: 25px; Default top margin is handled by where this group is placed */
-    /* Example: .simulation-results .share-buttons-group or .total-hp-display-area .share-buttons-group */
 }
 
 .simulation-results .share-buttons-group {
