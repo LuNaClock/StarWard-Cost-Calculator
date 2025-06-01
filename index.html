@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Content Security Policy (CSP) -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' https://cdnjs.cloudflare.com;
+                   style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+                   style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+                   font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+                   img-src 'self' data: assets:;
+                   connect-src 'none';
+                   form-action 'none';">
     <title>星の翼 総合耐久・覚醒シミュレーター</title>
     <!-- Google Fonts - Noto Sans JP (標準用) をインポート -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
     <!-- Google Fonts - SF的なフォントをインポート -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
-    <!-- Font Awesome (アイコン用) をインポート -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <!-- Font Awesome (アイコン用) をインポート - SRI追加 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+          integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- 分離したCSSファイルを読み込む -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -354,7 +366,7 @@
         <div class="controls-container">
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" id="characterSearch" placeholder="キャラクター名で検索...">
+                <input type="text" id="characterSearch" placeholder="キャラクター名で検索..." autocomplete="off">
             </div>
 
             <div class="filter-container">
@@ -389,10 +401,13 @@
         <div class="loading-spinner"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <!-- GSAP - integrityの値をエラーメッセージから取得した正しいものに置き換えてください -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
+            integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="module" src="js/app.js" defer></script>
 </body>
 <footer>
-    <p>© 2025 May 29, Lu:Na:Clock</p>
+    <p>© 2025 May 29, Lu:Na:Clock</p> <!-- 年は適宜更新してください -->
 </footer>
 </html>

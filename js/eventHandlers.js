@@ -1,10 +1,9 @@
 import * as DOM from './domElements.js';
 import * as State from './state.js';
-// import * as Calculator from './calculator.js'; // Not directly used in handlers, app.js calls calculator
 import * as UI from './ui.js';
 import { applyFiltersAndSearch, processTeamHpCombinations, processSimulateRedeploy, processAwakeningGaugeCalculation } from './app.js';
 import { MAX_TEAM_COST } from '../data.js';
-import * as Sharing from './sharing.js'; // Import sharing module
+import * as Sharing from './sharing.js'; 
 
 let isComposing = false;
 let searchTimeoutLocal;
@@ -20,7 +19,7 @@ function handleCharacterSearchComposition(event) {
     isComposing = event.type === 'compositionstart';
     if (event.type === 'compositionend') {
         clearTimeout(searchTimeoutLocal);
-        applyFiltersAndSearch(); // Apply search after composition ends
+        applyFiltersAndSearch(); 
     }
 }
 function handleCharacterSearchBlur() {
@@ -44,6 +43,10 @@ function handleFilterButtonClick(event, filterType) {
 function handleAccordionToggle(event, isSubAccordion = false, isTotalHpAccordion = false) {
     const header = event.currentTarget;
     const content = header.nextElementSibling;
+    if (!content) { // Safety check
+        // console.warn("Accordion content not found for header:", header);
+        return;
+    }
     if (isTotalHpAccordion) {
         UI.toggleTotalHpAccordion(header, content);
     } else {
@@ -60,7 +63,7 @@ function handleCharacterCardClick(event) {
     const originalHp = parseFloat(card.dataset.originalHp);
     const clickedRedeployCell = clickedElement.closest('.cost-table td[data-redeploy-hp]');
 
-    if (clickedRedeployCell) {
+    if (clickedRedeployCell && clickedRedeployCell.dataset.redeployHp) {
         UI.animateHpDisplayOnCard(card, parseFloat(clickedRedeployCell.dataset.redeployHp));
     } else if (clickedElement.classList.contains('character-hp')) {
         UI.animateHpDisplayOnCard(card, originalHp);
@@ -68,19 +71,19 @@ function handleCharacterCardClick(event) {
 }
 
 function handlePlayerCharSelectChange(event) {
-    State.setSelectedPlayerChar(event.target.value); // Pass index or ""
+    State.setSelectedPlayerChar(event.target.value); 
     UI.updateTeamCostDisplay(MAX_TEAM_COST);
     UI.updateSelectedCharactersDisplay();
     UI.resetSimulationResultsUI();
-    processTeamHpCombinations(); // This will call UI.displayTotalTeamHpResults
+    processTeamHpCombinations(); 
 }
 
 function handlePartnerCharSelectChange(event) {
-    State.setSelectedPartnerChar(event.target.value); // Pass index or ""
+    State.setSelectedPartnerChar(event.target.value); 
     UI.updateTeamCostDisplay(MAX_TEAM_COST);
     UI.updateSelectedCharactersDisplay();
     UI.resetSimulationResultsUI();
-    processTeamHpCombinations(); // This will call UI.displayTotalTeamHpResults
+    processTeamHpCombinations(); 
 }
 
 function handleAwakeningInputChange() {
@@ -143,7 +146,6 @@ function handleShareTotalHpResult() {
     window.open(twitterIntentUrl, '_blank');
 }
 
-// New handlers for copying URLs
 function handleCopyRedeployUrl(event) {
     const playerChar = State.getSelectedPlayerChar();
     const partnerChar = State.getSelectedPartnerChar();
@@ -152,7 +154,7 @@ function handleCopyRedeployUrl(event) {
         return;
     }
     const urlToCopy = Sharing.generateShareUrlForRedeploy();
-    Sharing.copyUrlToClipboard(urlToCopy, event.currentTarget); // Pass the clicked button itself
+    Sharing.copyUrlToClipboard(urlToCopy, event.currentTarget); 
 }
 
 function handleCopyTotalHpUrl(event) {
@@ -163,7 +165,7 @@ function handleCopyTotalHpUrl(event) {
         return;
     }
     const urlToCopy = Sharing.generateShareUrlForTotalHp();
-    Sharing.copyUrlToClipboard(urlToCopy, event.currentTarget); // Pass the clicked button itself
+    Sharing.copyUrlToClipboard(urlToCopy, event.currentTarget); 
 }
 
 
@@ -212,7 +214,6 @@ export function setupEventListeners() {
     if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.addEventListener('click', handleShareRedeployResult);
     if (DOM.shareTotalHpResultBtn) DOM.shareTotalHpResultBtn.addEventListener('click', handleShareTotalHpResult);
 
-    // New URL Copy Button Event Listeners
     if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.addEventListener('click', handleCopyRedeployUrl);
     if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.addEventListener('click', handleCopyTotalHpUrl);
 }

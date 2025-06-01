@@ -1,4 +1,3 @@
-// characterDataは rawCharacterData をもとに app.js で加工されてからセットされる想定
 const appState = {
     selectedPlayerChar: null,
     selectedPartnerChar: null,
@@ -10,16 +9,30 @@ export function getSelectedPlayerChar() {
     return appState.selectedPlayerChar;
 }
 
-export function setSelectedPlayerChar(charIndex) {
-    appState.selectedPlayerChar = charIndex !== null && charIndex !== "" ? appState.characters[parseInt(charIndex)] : null;
+export function setSelectedPlayerChar(charIndexStr) { // Renamed param for clarity
+    if (charIndexStr !== null && charIndexStr !== "") {
+        const index = parseInt(charIndexStr, 10);
+        if (!isNaN(index) && index >= 0 && index < appState.characters.length) {
+            appState.selectedPlayerChar = appState.characters[index];
+            return;
+        }
+    }
+    appState.selectedPlayerChar = null;
 }
 
 export function getSelectedPartnerChar() {
     return appState.selectedPartnerChar;
 }
 
-export function setSelectedPartnerChar(charIndex) {
-    appState.selectedPartnerChar = charIndex !== null && charIndex !== "" ? appState.characters[parseInt(charIndex)] : null;
+export function setSelectedPartnerChar(charIndexStr) { // Renamed param for clarity
+    if (charIndexStr !== null && charIndexStr !== "") {
+        const index = parseInt(charIndexStr, 10);
+        if (!isNaN(index) && index >= 0 && index < appState.characters.length) {
+            appState.selectedPartnerChar = appState.characters[index];
+            return;
+        }
+    }
+    appState.selectedPartnerChar = null;
 }
 
 export function getCurrentlySimulatingCharType() {
@@ -27,14 +40,23 @@ export function getCurrentlySimulatingCharType() {
 }
 
 export function setCurrentlySimulatingCharType(type) {
-    appState.currentlySimulatingCharType = type;
+    if (type === 'player' || type === 'partner' || type === null) {
+        appState.currentlySimulatingCharType = type;
+    } else {
+        // console.warn("Invalid type for currentlySimulatingCharType:", type);
+        appState.currentlySimulatingCharType = null; // Fallback
+    }
 }
 
 export function getCharacters() {
     return appState.characters;
 }
 
-// 初期キャラクターデータをステートに設定する関数 (app.js で呼び出す)
 export function initializeCharacterData(processedData) {
-    appState.characters = processedData;
+    if (Array.isArray(processedData)) {
+        appState.characters = processedData;
+    } else {
+        // console.error("Invalid data provided to initializeCharacterData. Expected an array.");
+        appState.characters = [];
+    }
 }

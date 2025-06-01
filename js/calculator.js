@@ -8,6 +8,14 @@ import {
 import { getSelectedPlayerChar, getSelectedPartnerChar } from './state.js';
 
 export function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeamCostRemaining, currentRedeployCount, isTeamHpScenario = false) {
+    // Validate inputs
+    if (!charToRedeploy || typeof charToRedeploy.cost !== 'number' || typeof charToRedeploy.hp !== 'number' ||
+        typeof currentTeamCostRemaining !== 'number' || typeof currentRedeployCount !== 'number') {
+        // console.error("Invalid arguments for calculateRedeployEffect", {charToRedeploy, currentTeamCostRemaining, currentRedeployCount});
+        return { hpGained: 0, costConsumed: 0, note: "計算エラー", remainingCostAfterConsumption: currentTeamCostRemaining };
+    }
+
+
     const charFullCost = charToRedeploy.cost;
     const originalHp = charToRedeploy.hp;
     let calculatedHpGained = 0;
@@ -16,7 +24,6 @@ export function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeam
     let teamCostAfterConsumption = currentTeamCostRemaining;
     let initialNotePart = "";
 
-    // チーム残りコストがほぼ0の場合、出撃不可としてHP0、消費コスト0で処理
     if (currentTeamCostRemaining < 0.001) {
         calculatedHpGained = 0;
         costActuallyConsumed = 0;
@@ -24,76 +31,46 @@ export function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeam
         return { hpGained: calculatedHpGained, costConsumed: costActuallyConsumed, note: finalNote, remainingCostAfterConsumption: currentTeamCostRemaining };
     }
 
-    // --- HP計算ロジック ---
-    // HP計算の基準となるコスト (costUsedForHpCalculationBase) を決定する。
-    // この値は、その機体が出撃することで得られるHPを計算する際の「参照するべきチームの残りコスト」の概念。
     let costUsedForHpCalculationBase;
 
     if (isTeamHpScenario) {
-        // チームシナリオの場合の特殊なHP計算ルール:
-        // その機体のフルコストを消費した「後」のチーム残りコストをHP計算のベースとする。
-        // これにより、チームコストが十分にあっても、自身の消費でコストが厳しくなる場合、獲得HPが減る（コストオーバー扱いになる）。
         let hypotheticalRemainingCostAfterOwnFullCostConsumption = currentTeamCostRemaining - charFullCost;
         costUsedForHpCalculationBase = Math.max(0, hypotheticalRemainingCostAfterOwnFullCostConsumption);
-        // ただし、このHP計算ベースコストが、機体のフルコストを超えることはない (HPは最大でもフルコスト分まで)。
         costUsedForHpCalculationBase = Math.min(costUsedForHpCalculationBase, charFullCost);
     } else {
-        // 個別シミュレーションの場合:
-        // 「指定されたチーム残りコスト」をそのままHP計算のベースとする。
         costUsedForHpCalculationBase = currentTeamCostRemaining;
     }
 
-    // 実際にHP計算式の分子として使用するコスト。
-    // 上記で決定した costUsedForHpCalculationBase と、機体のフルコストのうち小さい方。
-    // (例: ベースコストが0.5、機体コスト2.5なら、0.5が使われる)
     let effectiveCostForHpCalculation = Math.min(costUsedForHpCalculationBase, charFullCost);
-    if (effectiveCostForHpCalculation < 0) effectiveCostForHpCalculation = 0; // 念のためマイナスにならないように
+    if (effectiveCostForHpCalculation < 0) effectiveCostForHpCalculation = 0; 
 
-    // 獲得HPの計算
-    if (charFullCost <= 0) { // 機体コストが0以下は通常ありえない
+    if (charFullCost <= 0) { 
         calculatedHpGained = 0;
     } else {
         calculatedHpGained = Math.round(originalHp * (effectiveCostForHpCalculation / charFullCost));
     }
-    // --- HP計算ロジックここまで ---
-
-    // --- 実際にチームから消費されるコストと、それに基づく注釈の生成 ---
-    // これはHP計算とは独立して、純粋に「現在のチーム残りコスト」と「機体のフルコスト」で判断する。
+    
     if (currentTeamCostRemaining >= charFullCost) {
-        // チーム残りコストが機体のフルコスト以上ある場合
-        costActuallyConsumed = charFullCost; // 機体のフルコストを消費
-
-        // 注釈の決定：HP計算がコストオーバー扱いだったか、フル換算だったかで分岐
+        costActuallyConsumed = charFullCost; 
         if (effectiveCostForHpCalculation < charFullCost && effectiveCostForHpCalculation >= 0) {
-            // HP計算はコストオーバーだったが、実際の消費はフルコストだった場合
-            // (例: チームコスト3.0、機体コスト2.5。HP計算ベースは0.5、獲得HPは0.5コスト分。実際の消費は2.5)
             initialNotePart = `コストオーバー (${effectiveCostForHpCalculation.toFixed(1)}コスト換算)`;
         } else {
-            // HP計算もフルコスト換算 (effectiveCostForHpCalculation が charFullCost と同じはず)
             initialNotePart = `(${charFullCost.toFixed(1)}コスト換算)`;
         }
     } else {
-        // チーム残りコストが機体のフルコスト未満の場合 (最初からコストオーバー)
-        costActuallyConsumed = currentTeamCostRemaining; // 残りコストを全て消費
-        // この場合の effectiveCostForHpCalculation は、
-        // isTeamHpScenario=true なら (currentTeamCostRemaining - charFullCost) がベースなので0に近い値、
-        // isTeamHpScenario=false なら currentTeamCostRemaining となる。
-        // 注釈は「現在のチーム残りコスト」での換算を示す。
+        costActuallyConsumed = currentTeamCostRemaining; 
         initialNotePart = `コストオーバー (${currentTeamCostRemaining.toFixed(1)}コスト換算)`;
     }
-    teamCostAfterConsumption = Math.max(0.0, currentTeamCostRemaining - costActuallyConsumed); // 実際のチーム残りコスト更新
-    // --- 消費コストと注釈ここまで ---
+    teamCostAfterConsumption = Math.max(0.0, currentTeamCostRemaining - costActuallyConsumed); 
 
     finalNote = initialNotePart;
 
-    // チームシナリオで、実際にフルコストを消費でき、かつ消費後に次の機体がコストオーバーになる場合の補足注釈
     if (isTeamHpScenario && currentTeamCostRemaining >= charFullCost && costActuallyConsumed === charFullCost && teamCostAfterConsumption < charFullCost && teamCostAfterConsumption > 0.0001) {
-        if (!finalNote.includes("コストオーバー")) { // finalNote がまだコストオーバー表記でなければ
+        if (!finalNote.includes("コストオーバー")) { 
              finalNote += `, 消費後実質コストオーバー(${teamCostAfterConsumption.toFixed(1)}換算)`;
         }
     }
 
-    // 最終的な残りコストが0になった場合の注釈
     if (teamCostAfterConsumption < 0.001) {
         if (finalNote && !finalNote.endsWith(", ") && finalNote.length > 0 && !finalNote.endsWith(" ")) {
              finalNote += ", ";
@@ -104,8 +81,7 @@ export function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeam
              finalNote += "最終残りコスト0のためHP0";
         }
     }
-
-    // 関数の冒頭でチェック済みだが、念のため。
+    
     if (currentTeamCostRemaining < 0.001 && costActuallyConsumed == 0 && finalNote !== "チームコスト0のため出撃不可") {
          finalNote = "チームコスト0のため出撃不可";
          calculatedHpGained = 0;
@@ -308,19 +284,23 @@ export function calculateTeamHpScenarios() {
 
 export function calculateAwakeningGauge(inputs) {
     const {
-        gaugeBeforeShotdown,
-        damageTakenInputValue,
-        originalCharActualMaxHp,
-        charCost,
-        charName,
-        considerOwnDown,
-        considerDamageDealt,
-        damageDealtBonus,
-        considerPartnerDown
+        gaugeBeforeShotdown, // Should be number 0-100
+        damageTakenInputValue, // Should be number >= 0
+        originalCharActualMaxHp, // Should be number > 0
+        charCost, // Should be number
+        charName, // Should be string
+        considerOwnDown, // boolean
+        considerDamageDealt, // boolean
+        damageDealtBonus, // string representing a number
+        considerPartnerDown // boolean
     } = inputs;
 
-    if (isNaN(originalCharActualMaxHp) || isNaN(charCost) ||
-        isNaN(gaugeBeforeShotdown) || isNaN(damageTakenInputValue) || originalCharActualMaxHp <= 0) {
+    // Input validation
+    if (typeof originalCharActualMaxHp !== 'number' || originalCharActualMaxHp <= 0 ||
+        typeof charCost !== 'number' ||
+        typeof gaugeBeforeShotdown !== 'number' || gaugeBeforeShotdown < 0 || gaugeBeforeShotdown > 100 ||
+        typeof damageTakenInputValue !== 'number' || damageTakenInputValue < 0) {
+        // console.error("Invalid input for calculateAwakeningGauge:", inputs);
         return { finalPredictedGauge: 0, isThresholdMet: false, error: true, validatedDamageTaken: damageTakenInputValue };
     }
 
@@ -332,14 +312,17 @@ export function calculateAwakeningGauge(inputs) {
     let costBonusOnOwnDown = 0;
     if (considerOwnDown) {
         costBonusOnOwnDown = AWAKENING_BONUS_BY_COST[charCost.toFixed(1)] || 0;
-        if (charName === "スコーピオン") {
+        if (charName === "スコーピオン") { // Specific character override
             costBonusOnOwnDown = 15;
         }
     }
 
     let additionalGaugeFromDamageDealt = 0;
     if (considerDamageDealt) {
-        additionalGaugeFromDamageDealt = parseInt(damageDealtBonus) || 0;
+        const bonus = parseInt(damageDealtBonus, 10);
+        if (!isNaN(bonus) && bonus >=0) { // Assuming bonus values are positive
+            additionalGaugeFromDamageDealt = bonus;
+        }
     }
 
     let additionalGaugeFromPartnerDown = 0;
@@ -359,6 +342,13 @@ export function calculateAwakeningGauge(inputs) {
 }
 
 export function calculateSingleRedeployHp(charToRedeploy, allocatedCostForThisRedeploy) {
+    // Validate inputs
+    if (!charToRedeploy || typeof charToRedeploy.cost !== 'number' || typeof charToRedeploy.hp !== 'number' ||
+        typeof allocatedCostForThisRedeploy !== 'number' || allocatedCostForThisRedeploy < 0) {
+        // console.error("Invalid arguments for calculateSingleRedeployHp", {charToRedeploy, allocatedCostForThisRedeploy});
+        return { calculatedHp: 0, actualCostConsumed: 0 };
+    }
+
     let calculatedHp;
     let actualCostConsumed = 0;
     const originalCharHp = charToRedeploy.hp;
@@ -368,7 +358,6 @@ export function calculateSingleRedeployHp(charToRedeploy, allocatedCostForThisRe
         calculatedHp = 0;
         actualCostConsumed = 0;
     } else {
-        // HP計算に使用する実効コストは、割り当てられたコストと機体のフルコストのうち小さい方。
         let effectiveCostForHpCalc = Math.min(allocatedCostForThisRedeploy, charFullCost);
 
         if (charFullCost <= 0) {
@@ -377,7 +366,6 @@ export function calculateSingleRedeployHp(charToRedeploy, allocatedCostForThisRe
             calculatedHp = Math.round(originalCharHp * (effectiveCostForHpCalc / charFullCost));
         }
 
-        // 実際に消費されるコストは、割り当てられたコストがフルコスト以上ならフルコスト、未満なら割り当てコストそのもの。
         if (allocatedCostForThisRedeploy >= charFullCost) {
             actualCostConsumed = charFullCost;
         } else {
