@@ -129,4 +129,4 @@ https://lunaclock.github.io/StarWard-Cost-Calculator/
     *   (注: 本ツールの覚醒ゲージ計算は「星の翼」の仕様に基づいていますが、上記記事の検証アプローチを参考にさせていただきました。)
 
 ---
-© 2024 Lu:Na:Clock
+© 2025 Lu:Na:Clock
