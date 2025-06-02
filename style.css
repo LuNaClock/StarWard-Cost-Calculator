@@ -274,6 +274,7 @@ h1 {
     overflow: hidden;
     background-color: #F8FCFF;
     box-shadow: inset 0 0 15px rgba(0, 191, 255, 0.1);
+    will-change: opacity, visibility, backdrop-filter; /* will-changeを追加 */
 }
 
 .accordion-item {
@@ -1897,8 +1898,8 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                     opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                     padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                    margin-top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                    border-width 0.4s ease;
+                    margin-top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                    /* border-width 0.4s ease; */ /* 問題の可能性があった行をコメントアウトまたは削除 */
     }
     .total-hp-accordion-content.show {
         max-height: 300px;
@@ -2055,9 +2056,15 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 .sub-accordion-content {
     padding: 0 20px; /* 親より少し小さいパディング */
     font-size: 0.95em; /* 親より少し小さいフォントサイズ */
+    /* transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), margin-top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-width 0.4s ease; */ /* この行全体をコメントアウトまたは削除 */
 }
     .sub-accordion-content.show {
         padding: 20px; /* 開いた時のパディング */
+        max-height: 3000px; /* サブアコーディオンの最大高さ (デバッグ前の値に戻す) */
+        /* overflow: visible !important; */ /* デバッグ用スタイルを削除 */
+        /* background-color: lime !important; */ /* デバッグ用スタイルを削除 */
+        /* border: 5px solid red !important; */ /* デバッグ用スタイルを削除 */
+        /* z-index: 9999 !important; */ /* デバッグ用スタイルを削除 */
     }
 
     /* 以下が新規/変更されたスタイル */
@@ -2348,4 +2355,236 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         width: 90%;
         max-width: 320px;
     }
+}
+
+/* ----- 新規追加: メインセクション用アコーディオンのスタイル ----- */
+.main-section-accordion {
+    margin-bottom: 30px; /* 各メインセクション間のマージン */
+    border: 1px solid rgba(0, 191, 255, 0.3); /* 通常のアコーディオンより少し目立つボーダー */
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--card-background);
+    box-shadow: var(--soft-shadow);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.main-section-accordion:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-color: var(--primary-light);
+}
+
+.main-section-accordion-header {
+    background-color: #EBF7FF; /* 通常のヘッダーより少し明るく */
+    padding: 20px 30px; /* パディングを広めに */
+    font-size: 1.5em; /* フォントサイズを大きく */
+    font-weight: 700;
+    color: var(--primary-dark);
+    cursor: pointer; /* カーソルをポインターに */
+}
+
+.main-section-accordion-header:hover {
+    background-color: #D3EEFF;
+    color: var(--primary-light);
+}
+
+.main-section-accordion-header.active {
+    background-color: var(--primary-light);
+    color: var(--card-background);
+}
+
+.main-section-accordion-header .accordion-icon {
+    font-size: 1em; /* アイコンサイズ調整 */
+}
+
+.main-section-accordion-content {
+    background-color: var(--card-background);
+    padding: 0; /* コンテンツ内の simulation-container や total-hp-display-area が自身のパディングを持つため */
+    max-height: none; /* 初期表示で開いている場合は制限なし */
+    opacity: 1;
+    transform: scaleY(1);
+    /* 開閉アニメーションは既存の .accordion-content と同様にJSで制御 */
+}
+
+.main-section-accordion-content.show {
+    padding: 0; /* showクラスでも同様 */
+    max-height: 6000px; /* 親アコーディオンの最大高さ (デバッグ前の値に戻す) */
+    /* overflow: visible !important; */ /* デバッグ用スタイルを削除 */
+}
+
+/* simulation-container と total-hp-display-area のマージンとボーダーを調整 */
+.main-section-accordion-content .simulation-container,
+.main-section-accordion-content .total-hp-display-area {
+    margin-bottom: 0; /* アコーディオンコンテントが最後のマージンを持つため不要に */
+    border: none; /* アコーディオン自体がボーダーを持つため不要に */
+    box-shadow: none; /* アコーディオン自体が影を持つため不要に */
+    border-radius: 0; /* 親のアコーディオンの角丸に合わせる */
+}
+
+.main-section-accordion-content .simulation-container:hover,
+.main-section-accordion-content .total-hp-display-area:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    transform: translateY(-3px);
+}
+
+/* ===== NEW STYLES FOR DETAILS IN USAGE GUIDE ===== */
+.accordion-content details[open] {
+    overflow: visible; /* detailsが開いたときに内容が隠れないように */
+    padding-bottom: 10px; /* 内容の下に少し余白を追加 */
+}
+
+.accordion-content details[open] summary {
+    margin-bottom: 10px; /* summaryと内容の間に余白を追加 */
+}
+
+/* 
+  .accordion-content はデフォルトで overflow: hidden; のままです。
+  .accordion-content.show の時に overflow: visible; にすることで、
+  展開された <details> の内容が表示されるようにします。
+  特に .usage-guide-container 内のアコーディオンに適用します。
+*/
+.usage-guide-container .accordion-content.show {
+    overflow: visible !important; /* Ensure content isn't clipped when details open */
+}
+
+.guide-details { /* detailsタグ自体へのスタイル */
+    background-color: #f8f9fa; /* 少し明るい背景色 */
+    border: 1px solid #dee2e6;
+    border-radius: .25rem; /* 4px */
+    padding: 1rem; /* 15px or 16px depending on root font-size */
+    margin-top: 1rem;
+    color: var(--text-color); 
+}
+
+.guide-details summary {
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--primary-dark);
+    padding: 0.5rem 0; /* summaryにも少しパディング */
+    position: relative; /* For custom marker or pseudo-elements if needed */
+}
+
+.guide-details summary:hover {
+    color: var(--primary-light);
+}
+
+/* 
+  デフォルトのdetailsマーカー（通常は三角形）はブラウザによってスタイル制御が難しい場合があります。
+  もしマーカーの色も変えたい場合は、list-style: none; にしてカスタムアイコンを擬似要素で追加するなどの対応も考えられます。
+  ここでは、summaryのテキスト色に連動することを期待します。
+  もしマーカーの色が追従しない場合、 .guide-details summary::marker { color: var(--primary-dark); } などを試します。
+*/
+.guide-details summary::marker {
+    color: var(--primary-dark); /* Trying to style the marker */
+}
+.guide-details summary:hover::marker {
+    color: var(--primary-light); /* Trying to style the marker on hover */
+}
+
+
+.usage-guide-container .accordion-item .accordion-content details p,
+.usage-guide-container .accordion-item .accordion-content details ul {
+    margin-bottom: 0.75rem; /* details内の段落やリストの下に余白 */
+    color: var(--text-color);
+    font-size: 0.95em; /* 少し小さくして本文と区別 */
+    line-height: 1.6;
+}
+
+.usage-guide-container .accordion-item .accordion-content details ul {
+    padding-left: 20px; /* list items indent */
+    list-style-type: disc; /* Ensure list style is visible */
+}
+.usage-guide-container .accordion-item .accordion-content details ul li {
+    margin-bottom: 0.5rem; /* Space between list items */
+}
+
+
+.usage-guide-container .accordion-item .accordion-content details p:last-child,
+.usage-guide-container .accordion-item .accordion-content details ul:last-child {
+    margin-bottom: 0; /* Last element in details has no bottom margin */
+}
+
+/* ===== NEW STYLES FOR DETAILS IN USAGE GUIDE (REVISED ATTEMPT 2) ===== */
+.usage-guide-container .accordion-item .accordion-content.show {
+    /* Attempt to remove max-height constraint to see if content appears */
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;  /* Crucial for <details> content */
+    /* opacity and transform are handled by the general .accordion-content.show */
+    /* Padding might still be needed if removed by other rules */
+    padding-top: 25px !important; /* Ensure padding is applied from .accordion-content.show */
+    padding-bottom: 25px !important; /* Ensure padding is applied from .accordion-content.show */
+}
+
+/* Resetting styles on the parent accordion content that might conflict */
+/* This selector targets the accordion content within the usage guide specifically */
+.usage-guide-container > .accordion > .accordion-item > .accordion-content {
+    /* Try to reset transform and opacity if they are causing issues with details visibility */
+    /* transform: none !important; */ /* Might break opening animation, test carefully */
+    /* opacity: 1 !important; */     /* Might break opening animation, test carefully */
+}
+
+.usage-guide-container > .accordion > .accordion-item > .accordion-content.show {
+    /* Re-apply desired open state for this specific accordion, overriding general ones if needed */
+    max-height: none !important; /* Let content define height */
+    height: auto !important;
+    opacity: 1 !important;
+    transform: scaleY(1) !important;
+    overflow: visible !important;
+    padding: 25px !important; /* Original padding for .accordion-content.show */
+}
+
+/* Ensure the details element itself is not being clipped or limited */
+.guide-details {
+    max-height: none !important; /* Remove any potential max-height limit */
+    overflow: visible !important; /* Ensure its own content is visible */
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    color: var(--text-color);
+}
+
+.guide-details[open] {
+    /* Styles for when details is open */
+    /* overflow: visible; /* Already set by the rule above */
+}
+
+.guide-details summary {
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--primary-dark);
+    padding: 0.5rem 0;
+    position: relative;
+}
+.guide-details summary:hover {
+    color: var(--primary-light);
+}
+.guide-details summary::marker {
+    color: var(--primary-dark);
+}
+.guide-details summary:hover::marker {
+    color: var(--primary-light);
+}
+
+.usage-guide-container .accordion-item .accordion-content details p,
+.usage-guide-container .accordion-item .accordion-content details ul {
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+    font-size: 0.95em;
+    line-height: 1.6;
+}
+
+.usage-guide-container .accordion-item .accordion-content details ul {
+    padding-left: 20px;
+    list-style-type: disc;
+}
+.usage-guide-container .accordion-item .accordion-content details ul li {
+    margin-bottom: 0.5rem;
+}
+
+.usage-guide-container .accordion-item .accordion-content details p:last-child,
+.usage-guide-container .accordion-item .accordion-content details ul:last-child {
+    margin-bottom: 0;
 }

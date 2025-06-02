@@ -31,335 +31,343 @@
 
         <div class="usage-guide-container">
             <h2><i class="fas fa-question-circle"></i> ツールの使い方ガイド</h2>
-            <p class="guide-intro">このツールは、ゲーム「星の翼」でコストオーバーが起こって再出撃した際の耐久値の計算に加え、チームの総耐久力予測、覚醒ゲージの予測が可能です。以下の手順でご利用ください。</p>
+            <p class="guide-intro">このツールは、コストオーバーが起こって再出撃した際の耐久値の計算に加え、チームの総耐久力予測、覚醒ゲージの予測が可能です。この使い方ガイド自体はクリックで内容を開閉できます。主要な機能である「再出撃シミュレーション」と「チーム合計耐久力予測」も開閉が出来、初期状態では開いています。以下のポイントをチェックして、本ツールを使いこなそう！</p>
 
             <div class="accordion">
                 <div class="accordion-item">
                     <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-search"></i> 1. キャラクターを検索・絞り込む</span>
+                        <span><i class="fas fa-search-dollar"></i> 1. 🚀 目当てのキャラ発見＆ピンチ度チェック！</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
-                        <p>上部の検索ボックスにキャラクター名を入力するか、コストフィルターや並び替えオプションを使って目的のキャラクターを素早く見つけられます。</p>
+                        <p>ページ下部の検索・フィルターで、お目当てのキャラを瞬時に発見！🔍 表示されたキャラカードでHP・コストをチェックし、再出撃時の耐久値も一目でわかります。💪</p>
+                        <p>カード内の「再出撃時耐久値」をクリックするとHPバーが連動！残りHPのヤバさが視覚的に分かります。📉</p>
+                        <details class="guide-details">
+                            <summary>💡 詳細な操作方法と計算式を見る</summary>
+                            <p><strong>検索・フィルタリング:</strong> ページ下部にある「キャラクター名検索」ボックス、コスト別「フィルター」ボタン、表示順「並び替え」ボタンで、キャラクターグリッドの表示をカスタマイズできます。</p>
+                            <p><strong>個別耐久値の確認:</strong> 各キャラクターカードには、基本情報（HP、コスト）と、コストオーバー時の「再出撃時耐久値」が表示されています。</p>
+                            <p class="formula"><strong>計算式:</strong> 再出撃時耐久値 = 本来の耐久値 × (残りコスト ÷ キャラクターのコスト)</p>
+                            <p><strong>HPバーリセット:</strong> HPバー表示を100%に戻したい場合は、キャラクターカードの「本来の耐久値」の数値部分をクリックしてください。</p>
+                        </details>
                     </div>
                 </div>
 
                 <div class="accordion-item">
                     <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-calculator"></i> 2. 個別キャラクターの耐久値シミュレーション</span>
+                        <span><i class="fas fa-cogs"></i> 2. 🔥 最強タッグで再出撃＆覚醒を狙え！</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
-                        <p>各キャラクターカードには、コストオーバー時の耐久値を計算するための基本情報が表示されます。計算式は以下の通りです。</p>
-                        <p class="formula"><strong>再出撃時耐久値 = 本来の耐久値 × (残りコスト ÷ キャラクターのコスト)</strong></p>
-                        <p>「本来の耐久値」はキャラクターカードのHPバーの上に大きく表示されています。</p>
-                        <p>各キャラクターカード内にある「再出撃時耐久値」のセルをクリックすると、クリックされた数値が「本来の耐久値」に対してどれくらいの割合になるか、その上のHPバーで視覚的に確認できます。</p>
-                        <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: シミュレーションを終了してHPバーを100%の状態に戻したい場合は、キャラクターカードの「本来の耐久値」の数値をクリックしてください。</p>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-robot"></i> 3. チーム再出撃シミュレーション</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-content">
-                        <p>ページ上部の「再出撃シミュレーション」セクションでは、より実践的なチーム編成での再出撃をシミュレーションできます。</p>
-                        <ul>
-                            <li>自機と相方を選択: ドロップダウンから現在のチームメンバーを選択します。選択された機体はミニカードで表示されます。</li>
-                            <li>チーム合計コスト: 選択された自機と相方の合計コストが自動で表示されます。</li>
-                            <li>指定キャラ撃墜後の残りコスト: チームの現在の残りコストを選択します。</li>
-                            <li>シミュレーション実行: 「自機が再出撃した場合」または「相方が再出撃した場合」ボタンをクリックすると、選択された残りコストでその機体が再出撃した場合の「再出撃時耐久値」が表示されます。</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-brain"></i> 4. 覚醒ゲージ予測</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-content">
-                        <p>「再出撃シミュレーション」の結果表示エリアの下にある「覚醒ゲージ予測」セクションでは、再出撃後の覚醒ゲージの変動を予測できます。再出撃シミュレーションを実行すると、このセクションが表示されます。</p>
-                        <ul>
-                            <li>覚醒が溜まるか調べたい覚醒ゲージ: 撃墜される直前の、現在の覚醒ゲージ量を入力します。</li>
-                            <li>覚醒が溜まるか調べたい耐久値: 撃墜される直前の、現在の耐久値（被ダメージ量）を入力します。</li>
-                            <li>再出撃直後のゲージ量にする: チェックを入れると、撃墜によって増加する覚醒ゲージ（機体コストに応じたボーナス）を考慮します。</li>
-                            <li>与ダメージ考慮: チェックを入れると、撃墜までに与えたダメージによる覚醒ゲージ増加分を考慮します。ドロップダウンで与ダメージの量を大まかに選択できます。</li>
-                            <li>相方撃墜考慮: チェックを入れると、相方が撃墜されたことによる覚醒ゲージ増加分を考慮します。</li>
-                            <li>予測覚醒ゲージ/覚醒使用: これらすべての要素を考慮した最終的な予測覚醒ゲージ量と、覚醒が使用可能かどうかが表示されます。</li>
-                        </ul>
-                         <p class="tip"><i class="fas fa-share-alt"></i> ヒント: 再出撃シミュレーションの結果や覚醒予測は、結果表示エリアの下部にある共有ボタン（<i class="fab fa-x-twitter"></i> Xで共有 / <i class="fas fa-link"></i> URLコピー）から共有できます。</p>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-medal"></i> 5. チーム合計耐久力予測の確認</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-content">
-                        <p>自機と相方を選択すると表示される「チーム合計耐久力予測」セクションでは、様々な撃墜シナリオにおけるチームの総耐久力を提示します。</p>
-                        <ul>
-                            <li>チーム合計耐久値(最高): 高コスト機体から先に落ち、その後交互に効率良く再出撃を繰り返した場合の総耐久力。</li>
-                            <li>チーム合計耐久値(妥協): 低コスト機体から先に落ち、その後交互に効率良く再出撃を繰り返した場合の総耐久力。</li>
-                            <li>チーム合計耐久値(爆弾): 低コスト機体のみが連続で撃墜され続けた場合の総耐久力（最も避けたいシナリオの一つ）。</li>
-                            <li>チーム合計耐久値(最低): 自機または相方のどちらか一方に被弾が集中し、その機体のみが撃墜され続けた場合の総耐久力（最も非効率な落ち方）。</li>
+                        <p>ページ中ほどの「再出撃シミュレーション」で、自機＆相方を選んでチームを編成！🤝 残りコストを指定しボタンを押せば、再出撃後のHPをズバリ予測！✨</p>
+                        <p>さらに「覚醒ゲージ予測」で、撃墜後の覚醒チャンスも逃さない！⚡️ 計算詳細は同セクション内で確認可能。結果はXやURLでシェアしよう！<i class="fas fa-share-alt"></i></p>
+                        <details class="guide-details">
+                            <summary>💡 シミュレーションと予測の詳細手順を見る</summary>
+                            <p><strong>チーム再出撃シミュレーション手順:</strong></p>
+                            <ul>
+                                <li><strong>自機と相方を選択:</strong> ドロップダウンからチームメンバーを選択。選択機体はミニカード表示、チーム合計コストも自動計算されます。</li>
+                                <li><strong>指定キャラ撃墜後の残りコスト:</strong> チームの残り総力コストを選択します。</li>
+                                <li><strong>シミュレーション実行:</strong> 「自機が再出撃した場合」または「相方が再出撃した場合」ボタンで結果表示。再出撃機体の情報とHPバーを確認できます。</li>
                             </ul>
-                        <p>各シナリオの下にある「撃墜順序と獲得HP」アコーディオンをクリックすると、それぞれのシミュレーションにおける詳細な撃墜シーケンスと、その際に獲得するHP値を確認できます。</p>
-                        <p class="tip"><i class="fas fa-share-alt"></i> ヒント: チーム合計耐久力の予測結果は、エリアの下部にある共有ボタン（<i class="fab fa-x-twitter"></i> Xで共有 / <i class="fas fa-link"></i> URLコピー）から共有できます。</p>
+                            <p><strong>覚醒ゲージ予測手順:</strong></p>
+                            <ul>
+                                <li>「再出撃シミュレーション」結果表示エリアの下にある「覚醒ゲージ予測」セクションで行います。</li>
+                                <li><strong>撃墜直前の状況入力:</strong> 「覚醒が溜まるか調べたい覚醒ゲージ」と「覚醒が溜まるか調べたい耐久値」（残りHP）を入力します。</li>
+                                <li><strong>各種ボーナス考慮:</strong> 「再出撃直後のゲージ量にする」「与ダメージ考慮」「相方撃墜考慮」のチェックボックスとドロップダウンで条件を設定。</li>
+                                <li><strong>結果確認:</strong> 「予測覚醒ゲージ」と「覚醒使用可否」が表示されます。「覚醒ゲージ計算の詳細」では計算の内訳も確認可能です。</li>
+                            </ul>
+                        </details>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- 新規追加: 再出撃シミュレーションセクション -->
-        <div class="simulation-container">
-            <h2><i class="fas fa-robot"></i> 再出撃シミュレーション</h2>
-            <p class="guide-intro">自機と相方を選択し、現在のチーム残りコストを入力することで、どちらかの機体が再出撃した場合の耐久値をシミュレーションできます。</p>
-
-            <div class="character-select-group">
-                <div class="select-wrapper">
-                    <label for="playerCharSelect"><i class="fas fa-user-astronaut"></i> 自機:</label>
-                    <select id="playerCharSelect" class="select-dropdown"></select>
-                </div>
-                <div class="select-wrapper">
-                    <label for="partnerCharSelect"><i class="fas fa-user-friends"></i> 相方:</label>
-                    <select id="partnerCharSelect" class="select-dropdown"></select>
-                </div>
-            </div>
-
-            <div class="team-cost-display">
-                <span class="cost-label"><i class="fas fa-users-cog"></i> チーム合計コスト:</span>
-                <span id="totalTeamCost" class="cost-value">0.0</span>
-            </div>
-
-            <div class="selected-characters-display" id="selectedCharsDisplay">
-                <!-- 選択された自機と相方のミニカードがここに表示される -->
-            </div>
-
-            <div class="simulation-input-group">
-                <label for="remainingTeamCostInput"><i class="fas fa-coins"></i> 指定キャラ撃墜後の残りコスト:</label>
-                <select id="remainingTeamCostInput" class="select-dropdown"></select>
-            </div>
-
-            <div class="simulation-buttons">
-                <button id="simulatePlayerRedeploy" class="simulation-button">自機が再出撃した場合</button>
-                <button id="simulatePartnerRedeploy" class="simulation-button">相方が再出撃した場合</button>
-            </div>
-
-            <div class="simulation-results" id="simulationResults">
-                <h3><i class="fas fa-bolt"></i> 再出撃予測結果</h3>
-                <div class="result-display-area">
-                    <div class="redeploy-char-info">
-                        <span class="info-label">再出撃機体:</span> <span id="redeployCharName" class="info-value">--</span>
-                    </div>
-                    <div class="redeploy-char-info">
-                        <span class="info-label">機体コスト:</span> <span id="redeployCharCost" class="info-value">--</span>
-                    </div>
-                    <div class="redeploy-char-info">
-                        <span class="info-label">本来の耐久値:</span> <span id="redeployOriginalHp" class="info-value">--</span>
-                    </div>
-                    <div class="redeploy-char-info">
-                        <span class="info-label">再出撃時コスト消費:</span> <span id="redeployCostConsumed" class="info-value">--</span>
-                    </div>
-                    <div class="redeploy-char-info">
-                        <span class="info-label">再出撃時耐久値:</span> <span id="redeployCalculatedHp" class="info-value">--</span>
-                    </div>
-                </div>
-                <div class="hp-bar-container simulation-hp-bar">
-                    <div class="hp-bar-fill"></div>
-                </div>
-                <div class="hp-percentage-display simulation-hp-percentage"></div>
-
-                <!-- Awakening Simulation Area with new features -->
-                <div class="awakening-simulation-area">
-    <h4><i class="fas fa-brain"></i> 覚醒ゲージ予測</h4>
-    <div class="simulation-input-group">
-        <label for="beforeShotdownAwakeningGaugeInput"><i class="fas fa-meteor"></i> 覚醒が溜まるか調べたい覚醒ゲージ:</label>
-        <input type="number" id="beforeShotdownAwakeningGaugeInput" class="select-dropdown" min="0" max="100" step="1" value="0">
-    </div>
-    <div class="simulation-input-group">
-        <label for="beforeShotdownHpInput"><i class="fas fa-heart-broken"></i> 覚醒が溜まるか調べたい耐久値:</label>
-        <input type="number" id="beforeShotdownHpInput" class="select-dropdown" min="0" step="1" value="0">
-    </div>
-
-    <div class="awakening-additional-options">
-        <div class="simulation-input-group checkbox-group">
-            <i class="fas fa-crosshairs"></i>
-            <input type="checkbox" id="considerOwnDownCheckbox">
-            <label for="considerOwnDownCheckbox">再出撃直後(最低保証値)のゲージ量にする</label>
-        </div>
-
-        <div class="simulation-input-group checkbox-group has-dropdown">
-            <i class="fas fa-fist-raised"></i>
-            <input type="checkbox" id="considerDamageDealtCheckbox">
-            <label for="considerDamageDealtCheckbox">与ダメージ考慮</label>
-            <div class="select-dropdown-container" id="damageDealtOptionsContainer">
-                <select id="damageDealtAwakeningBonusSelect" class="select-dropdown">
-                    <option value="0">選択なし</option>
-                    <option value="3">覚醒ゲージ+3 (ズンダ約1回分)</option>
-                    <option value="6">覚醒ゲージ+6 (ズンダ約2回分)</option>
-                    <option value="9">覚醒ゲージ+9 (ズンダ約3回分)</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="simulation-input-group checkbox-group">
-             <i class="fas fa-user-slash"></i>
-             <input type="checkbox" id="considerPartnerDownCheckbox">
-             <label for="considerPartnerDownCheckbox">相方撃墜考慮</label>
-        </div>
-    </div>
-
-    <div class="result-display-area" style="margin-top: 30px;">
-        <div class="redeploy-char-info">
-            <span class="info-label">予測覚醒ゲージ:</span>
-            <span id="predictedAwakeningGauge" class="info-value">--</span>
-        </div>
-        <div class="redeploy-char-info">
-            <span class="info-label">覚醒使用:</span>
-            <span id="awakeningAvailability" class="info-value">--</span>
-        </div>
-    </div>
-
-    <div class="sub-accordion-container accordion">
-        <div class="accordion-item">
-            <button class="accordion-header sub-accordion-header" aria-expanded="false">
-                <span><i class="fas fa-info-circle"></i> 覚醒ゲージ計算の詳細</span>
-                <i class="fas fa-chevron-down accordion-icon"></i>
-            </button>
-            <div class="accordion-content sub-accordion-content">
-                <p>覚醒ゲージは以下の要素に基づいて計算されます:</p>
-
-                <div class="gauge-section">
-                    <h5><i class="fas fa-heartbeat"></i> 基礎増加（被ダメージ）</h5>
-                    <p>受けたダメージ量に応じて増加します。本来の耐久値に対するダメージ割合が重要です。</p>
-                    <p class="formula small-formula"><strong>増加量 = (被ダメージ量 / 本来の耐久値) × 100 × 約<span id="avgGaugeCoeffValue"></span></strong></p>
-                    <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: 例として、耐久値3000の機体が1500ダメージ受けて撃墜された場合、(1500/3000)*100*約<span id="avgGaugeCoeffExampleValue"></span> = 約29.9% 増加します。</p>
-                </div>
-
-                <div class="gauge-section">
-                    <h5><i class="fas fa-rocket"></i> 再出撃直後のゲージ量（最低保証値）</h5>
-                    <p>「再出撃直後のゲージ量にする」にチェックを入れると、撃墜によって増加する覚醒ゲージが加算されます。このボーナスは自機のコストによって異なり、ツール内では計測した範囲での最低保証値を適用しています。撃墜された際に耐久値以上のダメージを受けるとその分も加算される為、実際には誤差が発生しやすいです。</p>
-                    <ul>
-                        <li>コスト3.0 / 2.5: +約<span id="ownDownBonus30"></span>%</li>
-                        <li>コスト2.0: +約<span id="ownDownBonus20"></span>%</li>
-                        <li>コスト1.5: +約<span id="ownDownBonus15"></span>%</li>
-                    </ul>
-                </div>
-
-                <div class="gauge-section">
-                    <h5><i class="fas fa-fist-raised"></i> 与ダメージ考慮</h5>
-                    <p>「与ダメージ考慮」にチェックを入れ、ドロップダウンで与ダメージ量に応じたボーナスを選択すると、その分が加算されます。これは撃墜までに与えたダメージの量を模擬したものです。</p>
-                </div>
-
-                <div class="gauge-section">
-                    <h5><i class="fas fa-user-slash"></i> 相方撃墜考慮</h5>
-                    <p>「相方撃墜考慮」にチェックを入れると、相方が撃墜されたことによる覚醒ゲージ増加分が加算されます。このボーナスも自機のコストによって異なります。</p>
-                    <ul>
-                        <li>コスト3.0: +約<span id="partnerDownBonus30"></span>%</li>
-                        <li>コスト2.5: +約<span id="partnerDownBonus25"></span>%</li>
-                        <li>コスト2.0: +約<span id="partnerDownBonus20"></span>%</li>
-                        <li>コスト1.5: +約<span id="partnerDownBonus15"></span>%</li>
-                    </ul>
-                </div>
-
-                <p>最終的な覚醒ゲージが<span id="awakeningThresholdValue"></span>%以上で覚醒が使用可能となります。計算結果は常に0%から100%の範囲に収まります。</p>
-
-                <div class="tip additional-note-block">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div>
-                        <h4>注意点:</h4>
-                        <ul>
-                            <li>被ダメージによる覚醒ゲージ増加率の係数は、各キャラクターによって異なります。このツールでは誤差を最小限にする為、自身で計測した平均的な係数を使用しています。</li>
-                            <li>再出撃直後のゲージ量は基本的に自機コストに依存しますが、一部のキャラクター（例: スコーピオンは約+15%など）では異なる数値が設定されている場合があります。</li>
-                            <li>覚醒ゲージは小数点以下まで計算されていると推測されるため、ゲーム内の表示と多少の誤差が生じる可能性があります。</li>
-                        </ul>
-                        以上のことから、本ツールの計算結果はあくまで目安としてご利用ください。
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-                <!-- Share Buttons for Redeploy Simulation -->
-                <div class="simulation-buttons share-buttons-group">
-                    <button id="shareRedeployResultBtn" class="simulation-button share-button" style="display: none;">
-                        <i class="fab fa-x-twitter"></i> Xで結果を共有
-                    </button>
-                    <button id="copyRedeployUrlBtn" class="simulation-button copy-url-button" style="display: none;">
-                        <i class="fas fa-link"></i> URLをコピー
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 新規追加: 合計耐久力表示エリア -->
-        <div class="total-hp-display-area" id="totalHpDisplayArea">
-            <h3><i class="fas fa-medal"></i> チーム合計耐久力予測</h3>
-            <p class="total-hp-summary">
-                選択された<span class="cost-value-small" id="selectedPlayerCharNameSummary">自機</span>と<span class="cost-value-small" id="selectedPartnerCharNameSummary">相方</span>の組み合わせで、
-                高コストから落ちた場合(理想)、低コストから落ちた場合(妥協)、低コストのみ落ちた場合(爆弾)、最も非効率的な落ち方をした場合の合計耐久力を予測します。
-            </p>
-
-            <div class="total-hp-grid">
-                <div class="total-hp-scenario">
-                    <h4 id="highestHpScenarioTitleParent"><i class="fas fa-chart-line"></i> <span id="highestHpScenarioTitle">チーム合計耐久値(最高)</span></h4>
-                    <div class="redeploy-char-info">
-                        <span class="info-label">合計獲得耐久値:</span> <span id="idealGainedHp" class="info-value">--</span>
-                    </div>
-                    <button class="total-hp-accordion-header" aria-expanded="false">
-                        <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span><i class="fas fa-users"></i> 3. 🛡️ チームの粘り強さ、徹底解剖！</span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
-                    <ul id="idealSequenceList" class="total-hp-accordion-content"></ul>
-                </div>
-
-                <div class="total-hp-scenario">
-                    <h4 id="compromiseHpScenarioTitleParent"><i class="fas fa-chart-area"></i> <span id="compromiseHpScenarioTitle">チーム合計耐久値(妥協)</span></h4>
-                    <div class="redeploy-char-info">
-                        <span class="info-label">合計獲得耐久値:</span> <span id="minGainedHpHpSpan" class="info-value">--</span>
+                    <div class="accordion-content">
+                        <p>「再出撃シミュレーション」でチームを組むと、その下の「チーム合計耐久力予測」セクション（初期表示で展開）が自動更新！📈 様々な撃墜シナリオでのチーム総耐久力を丸裸にします。</p>
+                        <p>理想的な落ち方から最悪パターンまで、チームの限界を把握！💪💔 詳細な撃墜順序も確認可能。結果はXやURLでシェア！<i class="fas fa-share-alt"></i></p>
+                        <details class="guide-details">
+                            <summary>💡 予測シナリオと詳細確認方法を見る</summary>
+                            <p><strong>予測シナリオの概要:</strong></p>
+                            <ul>
+                                <li><strong>チーム合計耐久値(最高):</strong> 高コスト機から落ちる大よそ理想的なケース。</li>
+                                <li><strong>チーム合計耐久値(妥協):</strong> 低コスト機から落ちるケース。</li>
+                                <li><strong>チーム合計耐久値(爆弾):</strong> 低コスト機のみが連続撃墜されるケース。</li>
+                                <li><strong>チーム合計耐久値(最低):</strong> 一方の機体のみが連続撃墜される最も非効率なケース。</li>
+                            </ul>
+                            <p><strong>詳細確認:</strong> 各シナリオの下にある「撃墜順序と獲得HP」と書かれたアコーディオンヘッダー（▼マークの部分）をクリックすると、そのシナリオにおける詳細な撃墜の進行と、各段階での獲得HP、残りチームコストの内訳を確認できます。</p>
+                        </details>
                     </div>
-                    <button class="total-hp-accordion-header" aria-expanded="false">
-                        <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <ul id="minSequenceList" class="total-hp-accordion-content"></ul>
-                </div>
-
-                <div class="total-hp-scenario"> <!-- チーム合計耐久値(爆弾) -->
-                    <h4 id="bombHpScenarioTitleParent"><i class="fas fa-bomb"></i> <span id="bombHpScenarioTitle">チーム合計耐久値(爆弾)</span></h4>
-                    <div class="redeploy-char-info">
-                        <span class="info-label">合計獲得耐久値:</span> <span id="bombGainedHp" class="info-value">--</span>
-                    </div>
-                    <button class="total-hp-accordion-header" aria-expanded="false">
-                        <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <ul id="bombSequenceList" class="total-hp-accordion-content"></ul>
-                </div>
-
-                <div class="total-hp-scenario"> <!-- チーム合計耐久値(最低) -->
-                    <h4 id="lowestHpScenarioTitleParent"><i class="fas fa-arrow-down"></i> <span id="lowestHpScenarioTitle">チーム合計耐久値(最低)</span></h4>
-                    <div class="redeploy-char-info">
-                        <span class="info-label">合計獲得耐久値:</span> <span id="lowestGainedHp" class="info-value">--</span>
-                    </div>
-                    <button class="total-hp-accordion-header" aria-expanded="false">
-                        <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <ul id="lowestSequenceList" class="total-hp-accordion-content"></ul>
                 </div>
             </div>
-            <!-- Share Buttons for Total HP Prediction -->
-            <div class="simulation-buttons share-buttons-group">
-                <button id="shareTotalHpResultBtn" class="simulation-button share-button" style="display: none;">
-                    <i class="fab fa-x-twitter"></i> Xで予測を共有
+        </div>
+
+        <!-- 再出撃シミュレーションセクションをアコーディオン化 -->
+        <div class="main-section-accordion">
+            <div class="accordion-item">
+                <button class="accordion-header main-section-accordion-header" aria-expanded="true">
+                    <span><i class="fas fa-robot"></i> 再出撃シミュレーション</span>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
                 </button>
-                <button id="copyTotalHpUrlBtn" class="simulation-button copy-url-button" style="display: none;">
-                    <i class="fas fa-link"></i> URLをコピー
+                <div class="accordion-content main-section-accordion-content">
+                    <div class="simulation-container">
+                        <p class="guide-intro">自機と相方を選択し、現在のチーム残りコストを入力することで、どちらかの機体が再出撃した場合の耐久値をシミュレーションできます。</p>
+
+                        <div class="character-select-group">
+                            <div class="select-wrapper">
+                                <label for="playerCharSelect"><i class="fas fa-user-astronaut"></i> 自機:</label>
+                                <select id="playerCharSelect" class="select-dropdown"></select>
+                            </div>
+                            <div class="select-wrapper">
+                                <label for="partnerCharSelect"><i class="fas fa-user-friends"></i> 相方:</label>
+                                <select id="partnerCharSelect" class="select-dropdown"></select>
+                            </div>
+                        </div>
+
+                        <div class="team-cost-display">
+                            <span class="cost-label"><i class="fas fa-users-cog"></i> チーム合計コスト:</span>
+                            <span id="totalTeamCost" class="cost-value">0.0</span>
+                        </div>
+
+                        <div class="selected-characters-display" id="selectedCharsDisplay">
+                            <!-- 選択された自機と相方のミニカードがここに表示される -->
+                        </div>
+
+                        <div class="simulation-input-group">
+                            <label for="remainingTeamCostInput"><i class="fas fa-coins"></i> 指定キャラ撃墜後の残りコスト:</label>
+                            <select id="remainingTeamCostInput" class="select-dropdown"></select>
+                        </div>
+
+                        <div class="simulation-buttons">
+                            <button id="simulatePlayerRedeploy" class="simulation-button">自機が再出撃した場合</button>
+                            <button id="simulatePartnerRedeploy" class="simulation-button">相方が再出撃した場合</button>
+                        </div>
+
+                        <div class="simulation-results" id="simulationResults">
+                            <h3><i class="fas fa-bolt"></i> 再出撃予測結果</h3>
+                            <div class="result-display-area">
+                                <div class="redeploy-char-info">
+                                    <span class="info-label">再出撃機体:</span> <span id="redeployCharName" class="info-value">--</span>
+                                </div>
+                                <div class="redeploy-char-info">
+                                    <span class="info-label">機体コスト:</span> <span id="redeployCharCost" class="info-value">--</span>
+                                </div>
+                                <div class="redeploy-char-info">
+                                    <span class="info-label">本来の耐久値:</span> <span id="redeployOriginalHp" class="info-value">--</span>
+                                </div>
+                                <div class="redeploy-char-info">
+                                    <span class="info-label">再出撃時コスト消費:</span> <span id="redeployCostConsumed" class="info-value">--</span>
+                                </div>
+                                <div class="redeploy-char-info">
+                                    <span class="info-label">再出撃時耐久値:</span> <span id="redeployCalculatedHp" class="info-value">--</span>
+                                </div>
+                            </div>
+                            <div class="hp-bar-container simulation-hp-bar">
+                                <div class="hp-bar-fill"></div>
+                            </div>
+                            <div class="hp-percentage-display simulation-hp-percentage"></div>
+
+                            <!-- Awakening Simulation Area with new features -->
+                            <div class="awakening-simulation-area">
+                                <h4><i class="fas fa-brain"></i> 覚醒ゲージ予測</h4>
+                                <div class="simulation-input-group">
+                                    <label for="beforeShotdownAwakeningGaugeInput"><i class="fas fa-meteor"></i> 覚醒が溜まるか調べたい覚醒ゲージ:</label>
+                                    <input type="number" id="beforeShotdownAwakeningGaugeInput" class="select-dropdown" min="0" max="100" step="1" value="0">
+                                </div>
+                                <div class="simulation-input-group">
+                                    <label for="beforeShotdownHpInput"><i class="fas fa-heart-broken"></i> 覚醒が溜まるか調べたい耐久値:</label>
+                                    <input type="number" id="beforeShotdownHpInput" class="select-dropdown" min="0" step="1" value="0">
+                                </div>
+
+                                <div class="awakening-additional-options">
+                                    <div class="simulation-input-group checkbox-group">
+                                        <i class="fas fa-crosshairs"></i>
+                                        <input type="checkbox" id="considerOwnDownCheckbox">
+                                        <label for="considerOwnDownCheckbox">再出撃直後(最低保証値)のゲージ量にする</label>
+                                    </div>
+
+                                    <div class="simulation-input-group checkbox-group has-dropdown">
+                                        <i class="fas fa-fist-raised"></i>
+                                        <input type="checkbox" id="considerDamageDealtCheckbox">
+                                        <label for="considerDamageDealtCheckbox">与ダメージ考慮</label>
+                                        <div class="select-dropdown-container" id="damageDealtOptionsContainer">
+                                            <select id="damageDealtAwakeningBonusSelect" class="select-dropdown">
+                                                <option value="0">選択なし</option>
+                                                <option value="3">覚醒ゲージ+3 (ズンダ約1回分)</option>
+                                                <option value="6">覚醒ゲージ+6 (ズンダ約2回分)</option>
+                                                <option value="9">覚醒ゲージ+9 (ズンダ約3回分)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="simulation-input-group checkbox-group">
+                                         <i class="fas fa-user-slash"></i>
+                                         <input type="checkbox" id="considerPartnerDownCheckbox">
+                                         <label for="considerPartnerDownCheckbox">相方撃墜考慮</label>
+                                    </div>
+                                </div>
+
+                                <div class="result-display-area" style="margin-top: 30px;">
+                                    <div class="redeploy-char-info">
+                                        <span class="info-label">予測覚醒ゲージ:</span>
+                                        <span id="predictedAwakeningGauge" class="info-value">--</span>
+                                    </div>
+                                    <div class="redeploy-char-info">
+                                        <span class="info-label">覚醒使用:</span>
+                                        <span id="awakeningAvailability" class="info-value">--</span>
+                                    </div>
+                                </div>
+
+                                <div class="sub-accordion-container accordion">
+                                    <div class="accordion-item">
+                                        <button class="accordion-header sub-accordion-header" aria-expanded="false">
+                                            <span><i class="fas fa-info-circle"></i> 覚醒ゲージ計算の詳細</span>
+                                            <i class="fas fa-chevron-down accordion-icon"></i>
+                                        </button>
+                                        <div class="accordion-content sub-accordion-content">
+                                            <p>覚醒ゲージは以下の要素に基づいて計算されます:</p>
+
+                                            <div class="gauge-section">
+                                                <h5><i class="fas fa-heartbeat"></i> 基礎増加（被ダメージ）</h5>
+                                                <p>受けたダメージ量に応じて増加します。本来の耐久値に対するダメージ割合が重要です。</p>
+                                                <p class="formula small-formula"><strong>増加量 = (被ダメージ量 / 本来の耐久値) × 100 × 約<span id="avgGaugeCoeffValue"></span></strong></p>
+                                                <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: 例として、耐久値3000の機体が1500ダメージ受けて撃墜された場合、(1500/3000)*100*約<span id="avgGaugeCoeffExampleValue"></span> = 約29.9% 増加します。</p>
+                                            </div>
+
+                                            <div class="gauge-section">
+                                                <h5><i class="fas fa-rocket"></i> 再出撃直後のゲージ量（最低保証値）</h5>
+                                                <p>「再出撃直後のゲージ量にする」にチェックを入れると、撃墜によって増加する覚醒ゲージが加算されます。このボーナスは自機のコストによって異なり、ツール内では計測した範囲での最低保証値を適用しています。撃墜された際に耐久値以上のダメージを受けるとその分も加算される為、実際には誤差が発生しやすいです。</p>
+                                                <ul>
+                                                    <li>コスト3.0 / 2.5: +約<span id="ownDownBonus30"></span>%</li>
+                                                    <li>コスト2.0: +約<span id="ownDownBonus20"></span>%</li>
+                                                    <li>コスト1.5: +約<span id="ownDownBonus15"></span>%</li>
+                                                </ul>
+                                            </div>
+
+                                            <div class="gauge-section">
+                                                <h5><i class="fas fa-fist-raised"></i> 与ダメージ考慮</h5>
+                                                <p>「与ダメージ考慮」にチェックを入れ、ドロップダウンで与ダメージ量に応じたボーナスを選択すると、その分が加算されます。これは撃墜までに与えたダメージの量を模擬したものです。</p>
+                                            </div>
+
+                                            <div class="gauge-section">
+                                                <h5><i class="fas fa-user-slash"></i> 相方撃墜考慮</h5>
+                                                <p>「相方撃墜考慮」にチェックを入れると、相方が撃墜されたことによる覚醒ゲージ増加分が加算されます。このボーナスも自機のコストによって異なります。</p>
+                                                <ul>
+                                                    <li>コスト3.0: +約<span id="partnerDownBonus30"></span>%</li>
+                                                    <li>コスト2.5: +約<span id="partnerDownBonus25"></span>%</li>
+                                                    <li>コスト2.0: +約<span id="partnerDownBonus20"></span>%</li>
+                                                    <li>コスト1.5: +約<span id="partnerDownBonus15"></span>%</li>
+                                                </ul>
+                                            </div>
+
+                                            <p>最終的な覚醒ゲージが<span id="awakeningThresholdValue"></span>%以上で覚醒が使用可能となります。計算結果は常に0%から100%の範囲に収まります。</p>
+
+                                            <div class="tip additional-note-block">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                                <div>
+                                                    <h4>注意点:</h4>
+                                                    <ul>
+                                                        <li>被ダメージによる覚醒ゲージ増加率の係数は、各キャラクターによって異なります。このツールでは誤差を最小限にする為、自身で計測した平均的な係数を使用しています。</li>
+                                                        <li>再出撃直後のゲージ量は基本的に自機コストに依存しますが、一部のキャラクター（例: スコーピオンは約+15%など）では異なる数値が設定されている場合があります。</li>
+                                                        <li>覚醒ゲージは小数点以下まで計算されていると推測されるため、ゲーム内の表示と多少の誤差が生じる可能性があります。</li>
+                                                    </ul>
+                                                    以上のことから、本ツールの計算結果はあくまで目安としてご利用ください。
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Share Buttons for Redeploy Simulation -->
+                            <div class="simulation-buttons share-buttons-group">
+                                <button id="shareRedeployResultBtn" class="simulation-button share-button" style="display: none;">
+                                    <i class="fab fa-x-twitter"></i> Xで結果を共有
+                                </button>
+                                <button id="copyRedeployUrlBtn" class="simulation-button copy-url-button" style="display: none;">
+                                    <i class="fas fa-link"></i> URLをコピー
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- チーム合計耐久力予測セクションをアコーディオン化 -->
+        <div class="main-section-accordion" id="total-hp-accordion">
+            <div class="accordion-item">
+                <button class="accordion-header main-section-accordion-header" aria-expanded="true">
+                    <span><i class="fas fa-medal"></i> チーム合計耐久力予測</span>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
                 </button>
+                <div class="accordion-content main-section-accordion-content show">
+                    <div class="total-hp-display-area" id="totalHpDisplayArea">
+                        <p class="total-hp-summary">
+                            選択された<span class="cost-value-small" id="selectedPlayerCharNameSummary">自機</span>と<span class="cost-value-small" id="selectedPartnerCharNameSummary">相方</span>の組み合わせで、
+                            高コストから落ちた場合(理想)、低コストから落ちた場合(妥協)、低コストのみ落ちた場合(爆弾)、最も非効率的な落ち方をした場合の合計耐久力を予測します。
+                        </p>
+
+                        <div class="total-hp-grid">
+                            <div class="total-hp-scenario">
+                                <h4 id="highestHpScenarioTitleParent"><i class="fas fa-chart-line"></i> <span id="highestHpScenarioTitle">チーム合計耐久値(最高)</span></h4>
+                                <div class="redeploy-char-info">
+                                    <span class="info-label">合計獲得耐久値:</span> <span id="idealGainedHp" class="info-value">--</span>
+                                </div>
+                                <button class="total-hp-accordion-header" aria-expanded="false">
+                                    <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                                    <i class="fas fa-chevron-down accordion-icon"></i>
+                                </button>
+                                <ul id="idealSequenceList" class="total-hp-accordion-content"></ul>
+                            </div>
+
+                            <div class="total-hp-scenario">
+                                <h4 id="compromiseHpScenarioTitleParent"><i class="fas fa-chart-area"></i> <span id="compromiseHpScenarioTitle">チーム合計耐久値(妥協)</span></h4>
+                                <div class="redeploy-char-info">
+                                    <span class="info-label">合計獲得耐久値:</span> <span id="minGainedHpHpSpan" class="info-value">--</span>
+                                </div>
+                                <button class="total-hp-accordion-header" aria-expanded="false">
+                                    <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                                    <i class="fas fa-chevron-down accordion-icon"></i>
+                                </button>
+                                <ul id="minSequenceList" class="total-hp-accordion-content"></ul>
+                            </div>
+
+                            <div class="total-hp-scenario"> <!-- チーム合計耐久値(爆弾) -->
+                                <h4 id="bombHpScenarioTitleParent"><i class="fas fa-bomb"></i> <span id="bombHpScenarioTitle">チーム合計耐久値(爆弾)</span></h4>
+                                <div class="redeploy-char-info">
+                                    <span class="info-label">合計獲得耐久値:</span> <span id="bombGainedHp" class="info-value">--</span>
+                                </div>
+                                <button class="total-hp-accordion-header" aria-expanded="false">
+                                    <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                                    <i class="fas fa-chevron-down accordion-icon"></i>
+                                </button>
+                                <ul id="bombSequenceList" class="total-hp-accordion-content"></ul>
+                            </div>
+
+                            <div class="total-hp-scenario"> <!-- チーム合計耐久値(最低) -->
+                                <h4 id="lowestHpScenarioTitleParent"><i class="fas fa-arrow-down"></i> <span id="lowestHpScenarioTitle">チーム合計耐久値(最低)</span></h4>
+                                <div class="redeploy-char-info">
+                                    <span class="info-label">合計獲得耐久値:</span> <span id="lowestGainedHp" class="info-value">--</span>
+                                </div>
+                                <button class="total-hp-accordion-header" aria-expanded="false">
+                                    <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                                    <i class="fas fa-chevron-down accordion-icon"></i>
+                                </button>
+                                <ul id="lowestSequenceList" class="total-hp-accordion-content"></ul>
+                            </div>
+                        </div>
+                        <!-- Share Buttons for Total HP Prediction -->
+                        <div class="simulation-buttons share-buttons-group">
+                            <button id="shareTotalHpResultBtn" class="simulation-button share-button" style="display: none;">
+                                <i class="fab fa-x-twitter"></i> Xで予測を共有
+                            </button>
+                            <button id="copyTotalHpUrlBtn" class="simulation-button copy-url-button" style="display: none;">
+                                <i class="fas fa-link"></i> URLをコピー
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -408,6 +416,6 @@
     <script type="module" src="js/app.js" defer></script>
 </body>
 <footer>
-    <p>© 2025 May 29, Lu:Na:Clock</p> <!-- 年は適宜更新してください -->
+    <p>© 2024 Lu:Na:Clock</p> <!-- 年は適宜更新してください -->
 </footer>
 </html>
