@@ -136,7 +136,7 @@ function handleShareTotalHpResult() {
 
     let summaryText = `【星の翼 チーム耐久予測】\n自機: ${playerChar.name}(コスト${playerChar.cost.toFixed(1)})\n相方: ${partnerChar.name}(コスト${partnerChar.cost.toFixed(1)})\n\n`;
     summaryText += `理想耐久: ${DOM.idealGainedHpSpan.textContent}\n`;
-    summaryText += `妥協耐久: ${DOM.minGainedHpHpSpan.textContent}\n`;
+    summaryText += `妥協耐久: ${DOM.minGainedHpSpan.textContent}\n`;
     summaryText += `爆弾耐久: ${DOM.bombGainedHpSpan.textContent}\n`;
     summaryText += `最低耐久: ${DOM.lowestGainedHpSpan.textContent}\n`;
     summaryText += "\n詳細はこちらでチェック！";

@@ -67,7 +67,7 @@ export const idealGainedHpSpan = document.getElementById('idealGainedHp');
 export const idealSequenceList = document.getElementById('idealSequenceList');
 
 export const compromiseHpScenarioTitleSpan = document.getElementById('compromiseHpScenarioTitle');
-export const minGainedHpHpSpan = document.getElementById('minGainedHpHpSpan');
+export const minGainedHpSpan = document.getElementById('minGainedHpSpan');
 export const minSequenceList = document.getElementById('minSequenceList');
 
 export const bombHpScenarioTitleSpan = document.getElementById('bombHpScenarioTitle');
