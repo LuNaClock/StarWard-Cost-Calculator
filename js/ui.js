@@ -325,7 +325,7 @@ export function displayTotalTeamHpResults(scenarios) {
             if (DOM.idealGainedHpSpan) DOM.idealGainedHpSpan.textContent = '--';
             if (DOM.idealSequenceList) DOM.idealSequenceList.innerHTML = '';
             if (DOM.compromiseHpScenarioTitleSpan) DOM.compromiseHpScenarioTitleSpan.textContent = 'チーム合計耐久値(妥協)';
-            if (DOM.minGainedHpHpSpan) DOM.minGainedHpHpSpan.textContent = '--';
+            if (DOM.minGainedHpSpan) DOM.minGainedHpSpan.textContent = '--';
             if (DOM.minSequenceList) DOM.minSequenceList.innerHTML = '';
             if (DOM.bombHpScenarioTitleSpan) DOM.bombHpScenarioTitleSpan.textContent = 'チーム合計耐久値(爆弾)';
             if (DOM.bombGainedHpSpan) DOM.bombGainedHpSpan.textContent = '--';
@@ -372,7 +372,7 @@ export function displayTotalTeamHpResults(scenarios) {
     if(DOM.idealSequenceList) { DOM.idealSequenceList.innerHTML = ''; DOM.idealSequenceList.appendChild(generateListItems(idealScenario.sequence));}
 
     if(DOM.compromiseHpScenarioTitleSpan) DOM.compromiseHpScenarioTitleSpan.textContent = compromiseScenario.name;
-    if(DOM.minGainedHpHpSpan) DOM.minGainedHpHpSpan.textContent = compromiseScenario.totalHp?.toLocaleString() || '--';
+    if(DOM.minGainedHpSpan) DOM.minGainedHpSpan.textContent = compromiseScenario.totalHp?.toLocaleString() || '--';
     if(DOM.minSequenceList) { DOM.minSequenceList.innerHTML = ''; DOM.minSequenceList.appendChild(generateListItems(compromiseScenario.sequence));}
 
     if(DOM.bombHpScenarioTitleSpan) DOM.bombHpScenarioTitleSpan.textContent = bombScenario.name;
