@@ -464,16 +464,25 @@ export function toggleAccordion(headerElement, contentElement, isSubAccordion = 
     contentElement.classList.toggle('show');
 
     const padding = isSubAccordion ? "20px" : "25px";
+    const baseDuration = 0.4;
+    const baseEase = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
 
     if (!isExpanded) { // Opening
+        const targetMaxHeight = isSubAccordion ? "1200px" : "2500px"; // Increased max-height
+
         gsap.to(contentElement, {
-            maxHeight: contentElement.scrollHeight + "px",
+            maxHeight: targetMaxHeight,
             paddingTop: padding,
             paddingBottom: padding,
             opacity: 1,
-            scaleY: 1,
-            duration: 0.4,
-            ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+            duration: baseDuration,
+            ease: baseEase,
+            onStart: () => {
+                contentElement.style.overflow = 'hidden';
+            },
+            onComplete: () => {
+                contentElement.style.overflowY = 'auto'; // Allow scrolling if content exceeds maxHeight
+            }
         });
     } else { // Closing
         gsap.to(contentElement, {
@@ -481,9 +490,14 @@ export function toggleAccordion(headerElement, contentElement, isSubAccordion = 
             paddingTop: 0,
             paddingBottom: 0,
             opacity: 0,
-            scaleY: 0.8,
-            duration: 0.4,
-            ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+            duration: baseDuration,
+            ease: baseEase,
+            onStart: () => {
+                contentElement.style.overflow = 'hidden';
+            },
+            onComplete: () => {
+                contentElement.style.overflow = ''; // Reset overflow after closing
+            }
         });
     }
 }
