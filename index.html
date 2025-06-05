@@ -6,10 +6,10 @@
     <!-- Content Security Policy (CSP) -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
-                   script-src 'self' https://cdnjs.cloudflare.com;
-                   style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
-                   style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
-                   font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+                   script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js;
+                   style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css 'unsafe-inline';
+                   style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css;
+                   font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/webfonts/;
                    img-src 'self' data: assets:;
                    connect-src 'none';
                    form-action 'none';">
@@ -410,9 +410,10 @@
     </div>
 
     <!-- GSAP - integrityの値をエラーメッセージから取得した正しいものに置き換えてください -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
-            integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+            integrity="sha384-EXAMPLE_SRI_HASH_PLACEHOLDER"
+            crossorigin="anonymous"></script>
+    <script src="js/data.js"></script>
     <script type="module" src="js/app.js" defer></script>
 </body>
 <footer>

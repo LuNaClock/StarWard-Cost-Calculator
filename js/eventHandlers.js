@@ -184,6 +184,7 @@ export function setupEventListeners() {
     if (DOM.mainAccordionHeaders) DOM.mainAccordionHeaders.forEach(header => header.addEventListener('click', (e) => handleAccordionToggle(e, false, false)));
     if (DOM.subAccordionHeaders) DOM.subAccordionHeaders.forEach(header => header.addEventListener('click', (e) => handleAccordionToggle(e, true, false)));
     if (DOM.totalHpAccordionHeaders) DOM.totalHpAccordionHeaders.forEach(header => header.addEventListener('click', (e) => handleAccordionToggle(e, false, true)));
+    if (DOM.projectOverviewAccordionHeaders) DOM.projectOverviewAccordionHeaders.forEach(header => header.addEventListener('click', (e) => handleAccordionToggle(e, false, false)));
 
     // Character Grid
     if (DOM.characterGrid) DOM.characterGrid.addEventListener('click', handleCharacterCardClick);

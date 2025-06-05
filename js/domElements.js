@@ -6,9 +6,10 @@ export const costFilterButtons = document.querySelectorAll('#costFilter .filter-
 export const sortFilterButtons = document.querySelectorAll('#sortFilter .filter-button');
 
 // Accordions
-export const mainAccordionHeaders = document.querySelectorAll('.accordion-header:not(.sub-accordion-header)');
+export const mainAccordionHeaders = document.querySelectorAll('.accordion-header:not(.sub-accordion-header):not(.main-section-accordion-header)');
 export const subAccordionHeaders = document.querySelectorAll('.sub-accordion-header');
 export const totalHpAccordionHeaders = document.querySelectorAll('.total-hp-accordion-header');
+export const projectOverviewAccordionHeaders = document.querySelectorAll('.main-section-accordion-header');
 
 // Loading Overlay
 export const loadingOverlay = document.getElementById('loadingOverlay');
