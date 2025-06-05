@@ -5,7 +5,6 @@ import { applyFiltersAndSearch, processTeamHpCombinations, processSimulateRedepl
 import { MAX_TEAM_COST } from '../data.js';
 import * as Sharing from './sharing.js'; 
 
-import { runAnimationTest } from "./animationTester.js";
 let isComposing = false;
 let searchTimeoutLocal;
 
@@ -216,6 +215,5 @@ export function setupEventListeners() {
     if (DOM.shareTotalHpResultBtn) DOM.shareTotalHpResultBtn.addEventListener('click', handleShareTotalHpResult);
 
     if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.addEventListener('click', handleCopyRedeployUrl);
-    if (DOM.runAnimationTestBtn) DOM.runAnimationTestBtn.addEventListener("click", runAnimationTest);
     if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.addEventListener('click', handleCopyTotalHpUrl);
 }

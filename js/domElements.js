@@ -84,7 +84,4 @@ export const shareTotalHpResultBtn = document.getElementById('shareTotalHpResult
 
 // New URL Copy Buttons (IDs will be defined in HTML later)
 export const copyRedeployUrlBtn = document.getElementById('copyRedeployUrlBtn');
-
 export const copyTotalHpUrlBtn = document.getElementById('copyTotalHpUrlBtn');
-export const runAnimationTestBtn = document.getElementById('runAnimationTestBtn');
-
