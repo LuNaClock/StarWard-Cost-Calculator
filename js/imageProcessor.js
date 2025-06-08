@@ -5,24 +5,36 @@ let paddleOcr = null;
 const STATUS_ELEMENT = DOM.imageUploadStatus; // DOMからステータス表示用のp要素を取得
 
 // --- PaddleOCR の初期化 ---
-async function initializeOcr() {
-    if (paddleOcr) return; // 既に初期化済み
+let initializationPromise = null;
+
+ async function initializeOcr() {
+    if (paddleOcr) return paddleOcr; // 既に初期化済み
     
-    if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
+    // 初期化が進行中の場合は、既存のPromiseを返す
+    if (initializationPromise) return initializationPromise;
+     
+     if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
+     
+    initializationPromise = (async () => {
+        try {
+paddleOcr = await PaddleocrBrowser.create({
+   det: "db_lite",        // or "db" / "db_mv3" for higher accuracy
+    rec: "en_number_v2.0",  // English number model
+    cls: false,             // text direction classification not needed
+});
+            if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジン準備完了。画像を選択してください。';
+            return paddleOcr;
+        } catch (error) {
+            console.error("PaddleOCRの初期化に失敗しました:", error);
+            if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'エラー: OCRエンジンの初期化に失敗しました。';
+            paddleOcr = null; // 初期化失敗を明示
+            initializationPromise = null; // 再試行を可能にする
+            throw error;
+        }
+    })();
     
-    try {
-        paddleOcr = await PaddleocrBrowser.create({
-            det: "ch_PP-OCRv4_det",
-            rec: "en_number_v2.0",
-            cls: false, // For text direction classification, not needed for numbers
-        });
-        if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジン準備完了。画像を選択してください。';
-    } catch (error) {
-        console.error("PaddleOCRの初期化に失敗しました:", error);
-        if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'エラー: OCRエンジンの初期化に失敗しました。';
-        paddleOcr = null; // 初期化失敗を明示
-    }
-}
+    return initializationPromise;
+ }
 
 // --- メインの画像処理関数 ---
 export async function processImageFromFile(file) {
@@ -96,21 +108,29 @@ export async function processImageFromFile(file) {
 // --- ヘルパー関数群 ---
 
 /**
- * PaddleOCRの実行結果からテキストを抽出する
- * @param {Array} ocrResult - paddleOcr.ocr()の実行結果
- * @returns {string} - 抽出されたテキスト
- */
-function extractTextFromOcrResult(ocrResult) {
-    if (!ocrResult || ocrResult.length === 0) {
+  * PaddleOCRの実行結果からテキストを抽出する
+  * @param {Array} ocrResult - paddleOcr.ocr()の実行結果
+  * @returns {string} - 抽出されたテキスト
+  */
+ function extractTextFromOcrResult(ocrResult) {
+    if (!Array.isArray(ocrResult) || ocrResult.length === 0) {
+         return '';
+     }
+    
+    try {
+        // 信頼度の高い順にソートし、テキストを結合する
+        return ocrResult
+            .filter(line => line?.text && Array.isArray(line.text)) // データ構造を検証
+            .flatMap(line => line.text)
+            .filter(item => Array.isArray(item) && item.length >= 2) // [text, confidence]の形式を確認
+            .sort((a, b) => b[1] - a[1]) // 信頼度（confidence）で降順ソート
+            .map(item => item[0]) // テキスト部分のみ抽出
+            .join('');
+    } catch (error) {
+        console.error('OCR結果の解析中にエラー:', error);
         return '';
     }
-    // 信頼度の高い順にソートし、テキストを結合する
-    return ocrResult
-        .flatMap(line => line.text)
-        .sort((a, b) => b[1] - a[1]) // 信頼度（confidence）で降順ソート
-        .map(item => item[0]) // テキスト部分のみ抽出
-        .join('');
-}
+ }
 
 /**
  * オレンジ枠のUI領域を検出する

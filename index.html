@@ -6,7 +6,7 @@
     <!-- Content Security Policy (CSP) -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
-                   script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-inline' blob: 'unsafe-eval';
+                   script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline' blob: 'unsafe-eval';
                    style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
                    style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
                    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
@@ -431,7 +431,9 @@
     
     <!-- OCRライブラリの読み込み -->
     <!-- <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js' defer></script> -->
-    <script src="https://unpkg.com/paddleocr-browser@1.0.0/dist/paddleocr.umd.js" defer></script>
+    <script src="https://unpkg.com/paddleocr-browser@1.0.0/dist/paddleocr.umd.js" 
+        integrity="sha384-[HASH_HERE]"
+        crossorigin="anonymous" defer></script>
 
     <!-- モジュールとしてJavaScriptファイルを読み込む -->
     <script type="module" src="js/app.js"></script>
