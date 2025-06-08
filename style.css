@@ -2588,3 +2588,401 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 .usage-guide-container .accordion-item .accordion-content details ul:last-child {
     margin-bottom: 0;
 }
+
+@keyframes card-entry {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* OCR Modal Styles */
+.ocr-modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ocr-modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 1200px;
+    border-radius: 15px;
+    position: relative;
+    background: linear-gradient(135deg, #1f2937, #111827);
+    color: #f3f4f6;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.ocr-modal-content .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0; /* Adjusted for modal */
+}
+
+/* Header */
+.ocr-modal-content header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.ocr-modal-content header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.ocr-modal-content header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Upload section */
+.ocr-modal-content .upload-section {
+    margin-bottom: 30px;
+}
+
+.ocr-modal-content .upload-area {
+    border: 3px dashed #fff;
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.ocr-modal-content .upload-area:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #ffd700;
+}
+
+.ocr-modal-content .upload-area.dragover {
+    background: rgba(255, 215, 0, 0.2);
+    border-color: #ffd700;
+}
+
+.ocr-modal-content .upload-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 20px;
+    stroke-width: 2;
+}
+
+.ocr-modal-content .upload-content p {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.ocr-modal-content .file-info {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Image section */
+.ocr-modal-content .image-section {
+    background: #1f2937; /* Darker background */
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.ocr-modal-content .image-container {
+    position: relative;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #111827; /* Even darker for canvas parent */
+}
+
+.ocr-modal-content #imageCanvas {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.ocr-modal-content .region-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.ocr-modal-content .region {
+    position: absolute;
+    border: 3px solid;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(2px);
+    pointer-events: auto;
+    cursor: move;
+}
+
+.ocr-modal-content .resizer {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: transparent;
+    border: 2px solid #fff;
+    z-index: 10;
+}
+
+.ocr-modal-content .resizer.ne { top: -5px; right: -5px; cursor: nesw-resize; }
+.ocr-modal-content .resizer.nw { top: -5px; left: -5px; cursor: nwse-resize; }
+.ocr-modal-content .resizer.se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+.ocr-modal-content .resizer.sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+
+.ocr-modal-content .durability-region {
+    border-color: #ff6b35; /* Orange */
+}
+
+.ocr-modal-content .awakening-region {
+    border-color: #4ecdc4; /* Teal */
+}
+
+.ocr-modal-content .region-label {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* Controls */
+.ocr-modal-content .controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.ocr-modal-content .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ocr-modal-content .btn-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+}
+
+.ocr-modal-content .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.ocr-modal-content .btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.ocr-modal-content .btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.ocr-modal-content .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Results section */
+.ocr-modal-content .results-section {
+    background: #1f2937;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.ocr-modal-content .result-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+    color: #cbd5e0;
+    border-bottom: 2px solid #4a5568;
+    padding-bottom: 10px;
+}
+
+.ocr-modal-content .result-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.ocr-modal-content .result-item-header {
+    border-bottom: 1px solid #4a5568;
+    padding-bottom: 8px;
+    margin-top: 15px;
+}
+
+.ocr-modal-content .result-item-header h4 {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 1.2em;
+}
+
+.ocr-modal-content .result-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #2d3748;
+    padding: 15px;
+    border-radius: 6px;
+}
+
+.ocr-modal-content .result-item label {
+    font-weight: 600;
+    color: #cbd5e0;
+    min-width: 80px;
+}
+
+.ocr-modal-content .result-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #9f7aea;
+    min-width: 60px;
+}
+
+.ocr-modal-content .confidence {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-left: auto;
+}
+
+.ocr-modal-content .preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background-color: #2d3748;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 5px;
+}
+
+.ocr-modal-content .preview-container canvas {
+    border: 1px solid #4a5568;
+    background-color: #1a202c;
+    border-radius: 4px;
+}
+
+.ocr-modal-content .preview-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-size: 0.9em;
+    width: 100%;
+}
+
+.ocr-modal-content .preview-controls label {
+    color: #a0aec0;
+}
+
+.ocr-modal-content .preview-controls input[type="range"] {
+    width: 100px;
+}
+
+/* Progress section */
+.ocr-modal-content .progress-section {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.ocr-modal-content .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #4a5568;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.ocr-modal-content .progress-fill {
+    height: 100%;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.ocr-modal-content #progressText {
+    color: #cbd5e0;
+    font-weight: 500;
+}
+
+.ocr-modal-content .ocr-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+/* Animation classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}

@@ -6,6 +6,7 @@ import * as Calculator from './calculator.js';
 import * as UI from './ui.js';
 import * as EventHandlers from './eventHandlers.js';
 import * as Sharing from './sharing.js';
+import { GameOCR } from './imageProcessor.js';
 
 function initializeCharacterData() {
     const processedData = rawCharacterData.map(char => {
@@ -184,7 +185,6 @@ export function processAwakeningGaugeCalculation() {
     UI.updateAwakeningGaugeUI(result);
 }
 
-
 function initializePage() {
     initializeCharacterData();
 
@@ -200,6 +200,108 @@ function initializePage() {
 
     UI.initPageAnimations();
     applyFiltersAndSearch(); 
+
+    // 初期キャラクター情報をカードに設定
+    const player = State.getSelectedPlayerChar();
+    const partner = State.getSelectedPartnerChar();
+    if (player) UI.updateCharacterCard('player', player);
+    if (partner) UI.updateCharacterCard('partner', partner);
+
+    handleTeamChange();
+    setupInitialEventListeners();
+    initializeOcrModal();
+}
+
+function setupInitialEventListeners() {
+    domElements.copyTotalHpUrlBtn.addEventListener('click', () => Sharing.copyToClipboard(Sharing.generateShareUrl('totalHp')));
+}
+
+function initializeOcrModal() {
+    const ocrModal = document.getElementById('ocrModal');
+    const openOcrBtn = document.querySelector('label[for="gameImageUpload"]');
+    const closeOcrBtn = document.getElementById('closeOcrModal');
+    const applyOcrResultBtn = document.getElementById('applyOcrResultBtn');
+    let gameOcrInstance = null;
+
+    const openModal = () => {
+        ocrModal.style.display = 'flex';
+        if (!gameOcrInstance) {
+            gameOcrInstance = new GameOCR({
+                onOcrComplete: (results) => {
+                    console.log('OCR完了:', results);
+                }
+            });
+        }
+    };
+
+    const closeModal = () => {
+        ocrModal.style.display = 'none';
+    };
+
+    const applyResults = () => {
+        if (gameOcrInstance && gameOcrInstance.lastOcrResult) {
+            const { durability, awakening } = gameOcrInstance.lastOcrResult;
+            if (durability && durability.value) {
+                domElements.beforeShotdownHpInput.value = durability.value;
+            }
+            if (awakening && awakening.value) {
+                domElements.beforeShotdownAwakeningGaugeInput.value = awakening.value;
+            }
+            handleAwakeningInputChange(); //手動で入力した場合と同じように更新
+            closeModal();
+        } else {
+            alert('適用するOCR結果がありません。');
+        }
+    };
+
+    openOcrBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent file input trigger
+        openModal();
+    });
+
+    // Also trigger by clicking the file input itself
+    domElements.gameImageUpload.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal();
+    });
+
+    closeOcrBtn.addEventListener('click', closeModal);
+    applyOcrResultBtn.addEventListener('click', applyResults);
+
+    window.addEventListener('click', (event) => {
+        if (event.target == ocrModal) {
+            closeModal();
+        }
+    });
+}
+
+function handleTeamChange() {
+    const { playerChar, partnerChar } = State.getState();
+    UI.updateTeamCost(playerChar, partnerChar);
+    UI.updateSelectedCharactersDisplay(playerChar, partnerChar);
+    UI.updateRemainingCostOptions(playerChar, partnerChar);
+
+    if (playerChar && partnerChar) {
+        handleTotalHpCalculation();
+        UI.updateShareButtons('totalHp', true);
+    } else {
+        // チームが不完全な場合、合計耐久力表示をリセット
+        const initialScenario = {
+            gainedHp: 0,
+            sequence: [],
+            totalHp: 0
+        };
+        UI.updateTotalHpResult('highest', initialScenario, null, null);
+        UI.updateTotalHpResult('compromise', initialScenario, null, null);
+        UI.updateTotalHpResult('bomb', initialScenario, null, null);
+        UI.updateTotalHpResult('lowest', initialScenario, null, null);
+        UI.updateShareButtons('totalHp', false);
+    }
+}
+
+function handleTotalHpCalculation() {
+    const scenarios = Calculator.calculateTeamHpScenarios();
+    UI.displayTotalTeamHpResults(scenarios);
 }
 
 document.addEventListener('DOMContentLoaded', initializePage);
