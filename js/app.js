@@ -259,12 +259,6 @@ function initializeOcrModal() {
         openModal();
     });
 
-    // Also trigger by clicking the file input itself
-    domElements.gameImageUpload.addEventListener('click', (e) => {
-        e.preventDefault();
-        openModal();
-    });
-
     closeOcrBtn.addEventListener('click', closeModal);
     applyOcrResultBtn.addEventListener('click', applyResults);
 

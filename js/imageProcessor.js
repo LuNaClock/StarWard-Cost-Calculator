@@ -7,21 +7,21 @@ const STATUS_ELEMENT = DOM.imageUploadStatus; // DOMからステータス表示�
 // --- PaddleOCR の初期化 ---
 let initializationPromise = null;
 
- async function initializeOcr() {
+async function initializeOcr() {
     if (paddleOcr) return paddleOcr; // 既に初期化済み
     
     // 初期化が進行中の場合は、既存のPromiseを返す
     if (initializationPromise) return initializationPromise;
      
-     if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
+    if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
      
     initializationPromise = (async () => {
         try {
-paddleOcr = await PaddleocrBrowser.create({
-   det: "db_lite",        // or "db" / "db_mv3" for higher accuracy
-    rec: "en_number_v2.0",  // English number model
-    cls: false,             // text direction classification not needed
-});
+            paddleOcr = await PaddleocrBrowser.create({
+                det: "db_lite",        // or "db" / "db_mv3" for higher accuracy
+                rec: "en_number_v2.0",  // English number model
+                cls: false,             // text direction classification not needed
+            });
             if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジン準備完了。画像を選択してください。';
             return paddleOcr;
         } catch (error) {
@@ -34,7 +34,7 @@ paddleOcr = await PaddleocrBrowser.create({
     })();
     
     return initializationPromise;
- }
+}
 
 // --- メインの画像処理関数 ---
 export async function processImageFromFile(file) {
@@ -112,10 +112,10 @@ export async function processImageFromFile(file) {
   * @param {Array} ocrResult - paddleOcr.ocr()の実行結果
   * @returns {string} - 抽出されたテキスト
   */
- function extractTextFromOcrResult(ocrResult) {
+function extractTextFromOcrResult(ocrResult) {
     if (!Array.isArray(ocrResult) || ocrResult.length === 0) {
-         return '';
-     }
+        return '';
+    }
     
     try {
         // 信頼度の高い順にソートし、テキストを結合する
@@ -130,7 +130,7 @@ export async function processImageFromFile(file) {
         console.error('OCR結果の解析中にエラー:', error);
         return '';
     }
- }
+}
 
 /**
  * オレンジ枠のUI領域を検出する
@@ -204,14 +204,14 @@ function postProcessHp(rawText) {
     
     // Remove non-digits after character replacements
     text = text.replace(/\D/g, '');
-     if (text.length === 0) return null;
+    if (text.length === 0) return null;
  
-     let hpValue = parseInt(text, 10);
+    let hpValue = parseInt(text, 10);
     if (isNaN(hpValue)) return null;
     
     // パターン補正: 耐久値は最大4桁で、1桁目は「1」か「2」になることが多い
     if (text.length === 4 && !['1', '2'].includes(text[0])) {
-         // 例えば、先頭が '7' なら '1' に補正するなど
+        // 例えば、先頭が '7' なら '1' に補正するなど
         if (text[0] === '7') {
             text = '1' + text.substring(1);
             hpValue = parseInt(text, 10);
@@ -235,9 +235,9 @@ function postProcessGauge(rawText) {
     
     // Remove non-digits after character replacements
     text = text.replace(/\D/g, '');
-     if (text.length === 0) return null;
+    if (text.length === 0) return null;
  
-     let gaugeValue = parseInt(text, 10);
+    let gaugeValue = parseInt(text, 10);
     if (isNaN(gaugeValue)) return null;
 
     // パターン補正: 覚醒ゲージは1から100まで
@@ -335,6 +335,105 @@ function applyMonochrome(data, threshold) {
     }
 }
 
+function processImageForOCR(file, progressCallback) {
+    return new Promise(async (resolve, reject) => {
+        if (!file) {
+            return reject('ファイルが選択されていません。');
+        }
+
+        const imageBitmap = await createImageBitmap(file);
+        const canvas = document.createElement('canvas');
+        canvas.width = imageBitmap.width;
+        canvas.height = imageBitmap.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(imageBitmap, 0, 0);
+
+        try {
+            const worker = new Tesseract.TesseractWorker();
+            
+            const processAndRecognize = (region, lang, options) => {
+                return new Promise((res, rej) => {
+                    const tempCanvas = document.createElement('canvas');
+                    const tempCtx = tempCanvas.getContext('2d');
+                    tempCanvas.width = region.width;
+                    tempCanvas.height = region.height;
+            
+                    const imageData = ctx.getImageData(region.x, region.y, region.width, region.height);
+                    const processedData = preprocessForTesseract(imageData);
+                    tempCtx.putImageData(processedData, 0, 0);
+
+                    worker.recognize(tempCanvas, lang, options)
+                        .progress(p => {
+                            if (progressCallback) {
+                                progressCallback(p);
+                            }
+                        })
+                        .then(result => res(result.text.trim()))
+                        .catch(err => rej(err));
+                });
+            };
+
+            const hpPromise = processAndRecognize(
+                { x: canvas.width * 0.05, y: canvas.height * 0.2, width: canvas.width * 0.1, height: canvas.height * 0.05 },
+                'eng',
+                { 'tessedit_char_whitelist': '0123456789' }
+            );
+
+            const awakeningPromise = processAndRecognize(
+                 { x: canvas.width * 0.4, y: canvas.height * 0.85, width: canvas.width * 0.05, height: canvas.height * 0.05 },
+                'eng',
+                { 'tessedit_char_whitelist': '0123456789' }
+            );
+
+            const [hp, awakening] = await Promise.all([hpPromise, awakeningPromise]);
+            
+            worker.terminate();
+            resolve({ hp, awakening });
+
+        } catch (error) {
+            console.error("OCR処理中にエラーが発生しました:", error);
+            reject(error);
+        }
+    });
+}
+
+function preprocessForTesseract(imageData) {
+    const data = imageData.data;
+    applyGrayscale(data);
+    // You can add more preprocessing steps here if needed
+    // e.g., applyContrast(data, 50);
+    // applyMonochrome(data, 128); 
+    return imageData;
+}
+
+function applyGrayscale(data) {
+    for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        data[i] = avg; 
+        data[i + 1] = avg;
+        data[i + 2] = avg;
+    }
+}
+
+function applyContrast(data, contrast) {
+    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+    for (let i = 0; i < data.length; i += 4) {
+        data[i] = factor * (data[i] - 128) + 128;
+        data[i+1] = factor * (data[i+1] - 128) + 128;
+        data[i+2] = factor * (data[i+2] - 128) + 128;
+    }
+}
+
+function applyMonochrome(data, threshold) {
+    for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        const color = avg > threshold ? 255 : 0;
+        data[i] = color;
+        data[i+1] = color;
+        data[i+2] = color;
+    }
+}
+
 class GameOCR {
     constructor(callbacks) {
         this.callbacks = callbacks; // { onOcrComplete: function(results) }
@@ -354,21 +453,17 @@ class GameOCR {
 
     async initializeOCR() {
         try {
-            // Wait for opencv.js to be ready
-const checkOpenCV = (timeoutMs = 10000) =>
-  new Promise((resolve, reject) => {
-    const start = Date.now();
-    const id = setInterval(() => {
-      if (window.cv) { clearInterval(id); resolve(); }
-      if (Date.now() - start > timeoutMs) {
-        clearInterval(id);
-        reject(new Error('OpenCV failed to load within timeout'));
-      }
-    }, 100);
-  });
-                    }, 100);
-                });
-            };
+            const checkOpenCV = (timeoutMs = 10000) =>
+              new Promise((resolve, reject) => {
+                const start = Date.now();
+                const id = setInterval(() => {
+                  if (window.cv) { clearInterval(id); resolve(); }
+                  if (Date.now() - start > timeoutMs) {
+                    clearInterval(id);
+                    reject(new Error('OpenCV failed to load within timeout'));
+                  }
+                }, 100);
+              });
 
             console.log('OpenCVのロードを待っています...');
             await checkOpenCV();
@@ -405,21 +500,17 @@ const checkOpenCV = (timeoutMs = 10000) =>
         this.analyzeBtn = document.getElementById('analyzeBtn');
         this.resetBtn = document.getElementById('resetBtn');
         
-        // Result elements
         this.durabilityValue = document.getElementById('durabilityValue');
         this.durabilityConfidence = document.getElementById('durabilityConfidence');
         this.awakeningValue = document.getElementById('awakeningValue');
         this.awakeningConfidence = document.getElementById('awakeningConfidence');
         
-        // Progress elements
         this.progressFill = document.getElementById('progressFill');
         this.progressText = document.getElementById('progressText');
         
-        // Region elements
         this.durabilityRegion = document.getElementById('durabilityRegion');
         this.awakeningRegion = document.getElementById('awakeningRegion');
 
-        // Preview and preprocessing elements
         this.durabilityPreview = document.getElementById('durabilityPreview');
         this.awakeningPreview = document.getElementById('awakeningPreview');
         this.durabilityContrast = document.getElementById('durabilityContrast');
@@ -427,7 +518,6 @@ const checkOpenCV = (timeoutMs = 10000) =>
         this.awakeningContrast = document.getElementById('awakeningContrast');
         this.awakeningZoom = document.getElementById('awakeningZoom');
 
-        // Initial state
         this.analyzeBtn.disabled = true;
     }
 
@@ -637,8 +727,6 @@ const checkOpenCV = (timeoutMs = 10000) =>
     }
 
     detectActivePlayer() {
-        // This is a placeholder for a more complex detection logic.
-        // For now, it sets a default position.
         this.durabilityRegion.style.top = '28%';
         this.durabilityRegion.style.left = '10%';
         this.durabilityRegion.style.width = '4%';
@@ -790,7 +878,7 @@ const checkOpenCV = (timeoutMs = 10000) =>
         this.awakeningValue.textContent = '-';
         this.awakeningConfidence.textContent = '';
         this.fileInput.value = '';
-        this.detectActivePlayer(); // Reset region positions to default
+        this.detectActivePlayer();
         this.updateAllPreviews();
         this.lastOcrResult = null;
     }
@@ -827,16 +915,6 @@ const checkOpenCV = (timeoutMs = 10000) =>
         previewCtx.drawImage(processedCanvas, 0, 0, processedCanvas.width, processedCanvas.height,
             centerShiftX, centerShiftY, processedCanvas.width * ratio, processedCanvas.height * ratio);
     }
-}
-
-function processImageForOCR(file, progressCallback) {
-    // This function is kept for compatibility or future use, but the main logic is now in GameOCR class.
-    // You might want to remove it if it's completely unused.
-    console.log("processImageForOCR is called, but the primary OCR logic has moved to the GameOCR class.");
-    return Promise.resolve({
-        hp: 'N/A',
-        awakening: 'N/A'
-    });
 }
 
 export { processImageForOCR, GameOCR }; 
