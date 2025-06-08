@@ -13,9 +13,12 @@
 
 ## 実行方法
 
-下記URLにて実装内容が確認いただけます。
+下記URLにて現在の実装内容を確認いただけます。
 
 https://lunaclock.github.io/StarWard-Cost-Calculator/
+
+ツールを利用するだけであれば下記URLで公開しているので、Githubの更新を随時反映させています。
+https://starward-calculator.ai-lifebook.com/
 
 `index.html` ファイルをウェブブラウザで開くことでも動作しますが、完全な動作にはローカルウェブサーバーをたちあげる必要があります。
 例えばVisual Studio Codeであれば「Live Server」などの拡張機能を入れる事で実行可能です。
