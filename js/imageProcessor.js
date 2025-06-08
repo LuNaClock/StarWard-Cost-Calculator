@@ -1,29 +1,12 @@
 import * as DOM from './domElements.js';
 
 // --- グローバル変数と設定 ---
-let tesseractWorker = null;
-const STATUS_ELEMENT = DOM.imageUploadStatus; // DOMからステータス表示用のp要素を取得
-
-// --- Tesseract.js ワーカーの初期化 ---
-async function initializeWorker() {
-    if (tesseractWorker) return; // 既に初期化済み
-    
-    if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
-
-    tesseractWorker = await Tesseract.createWorker('eng');
-
-    await tesseractWorker.setParameters({
-        tessedit_char_whitelist: '0123456789', // 認識対象を数字のみに限定し、精度を向上
-        tessedit_pageseg_mode: '8', // 画像を単語として扱うよう設定
-    });
-    if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジン準備完了。画像を選択してください。';
-}
+const STATUS_ELEMENT = DOM.imageUploadStatus;
 
 // --- メインの画像処理関数 ---
 export async function processImageFromFile(file) {
     if (!file) return;
-    await initializeWorker(); // ワーカーが準備できていることを確認
-
+    
     const imageUrl = URL.createObjectURL(file);
     const img = new Image();
 
@@ -260,7 +243,7 @@ async function readHpFromRoi(ctx, roi) {
     };
 
     // OCR精度向上のため、対象領域を拡大し、前処理を行う
-    const scaleFactor = 3;
+    const scaleFactor = 2;
     const hpCanvas = document.createElement('canvas');
     hpCanvas.width = hpRoi.width * scaleFactor;
     hpCanvas.height = hpRoi.height * scaleFactor;
@@ -284,7 +267,7 @@ async function readHpFromRoi(ctx, roi) {
     hpCtx.putImageData(imageData, 0, 0);
 
     // Tesseractで認識実行
-    const { data: { text } } = await tesseractWorker.recognize(hpCanvas);
+    const text = await gutenye.process(hpCtx.getImageData(0, 0, hpCanvas.width, hpCanvas.height));
     
     // 後処理とパターン補正
     const hpValue = postProcessHp(text);
@@ -310,7 +293,7 @@ async function readGaugeFromRoi(ctx, roi) { // roi is unused
     };
 
     // OCR用のキャンバスを作成し、前処理を行う
-    const scaleFactor = 3;
+    const scaleFactor = 2;
     const awakeningCanvas = document.createElement('canvas');
     awakeningCanvas.width = awakeningValueRoi.width * scaleFactor;
     awakeningCanvas.height = awakeningValueRoi.height * scaleFactor;
@@ -333,7 +316,7 @@ async function readGaugeFromRoi(ctx, roi) { // roi is unused
     awakeningCtx.putImageData(imageData, 0, 0);
 
     // Tesseractで認識実行
-    const { data: { text } } = await tesseractWorker.recognize(awakeningCanvas);
+    const text = await gutenye.process(awakeningCtx.getImageData(0, 0, awakeningCanvas.width, awakeningCanvas.height));
 
     // 後処理とパターン補正
     const awakeningValue = postProcessGauge(text);
