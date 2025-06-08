@@ -1,12 +1,38 @@
 import * as DOM from './domElements.js';
 
 // --- グローバル変数と設定 ---
-const STATUS_ELEMENT = DOM.imageUploadStatus;
+let paddleOcr = null;
+const STATUS_ELEMENT = DOM.imageUploadStatus; // DOMからステータス表示用のp要素を取得
+
+// --- PaddleOCR の初期化 ---
+async function initializeOcr() {
+    if (paddleOcr) return; // 既に初期化済み
+    
+    if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
+    
+    try {
+        paddleOcr = await PaddleocrBrowser.create({
+            det: "ch_PP-OCRv4_det",
+            rec: "en_number_v2.0",
+            cls: false, // For text direction classification, not needed for numbers
+        });
+        if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジン準備完了。画像を選択してください。';
+    } catch (error) {
+        console.error("PaddleOCRの初期化に失敗しました:", error);
+        if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'エラー: OCRエンジンの初期化に失敗しました。';
+        paddleOcr = null; // 初期化失敗を明示
+    }
+}
 
 // --- メインの画像処理関数 ---
 export async function processImageFromFile(file) {
     if (!file) return;
-    
+    await initializeOcr(); // OCRが準備できていることを確認
+    if (!paddleOcr) {
+        alert("OCRエンジンが利用できません。ページをリロードして再度お試しください。");
+        return;
+    }
+
     const imageUrl = URL.createObjectURL(file);
     const img = new Image();
 
@@ -26,11 +52,6 @@ export async function processImageFromFile(file) {
                 alert('操作中のプレイヤー(オレンジ枠)が見つかりませんでした。\n解像度やUIサイズが異なると認識できない場合があります。');
                 return;
             }
-            // デバッグ用に検出領域を赤枠で描画
-            // ctx.strokeStyle = 'red';
-            // ctx.lineWidth = 3;
-            // ctx.strokeRect(roi.x, roi.y, roi.width, roi.height);
-            // document.body.appendChild(canvas); // 画面に表示して確認
 
             // 2. HPとゲージを並行して読み取る
             STATUS_ELEMENT.textContent = 'HPとゲージの値を読み取り中...';
@@ -73,6 +94,23 @@ export async function processImageFromFile(file) {
 }
 
 // --- ヘルパー関数群 ---
+
+/**
+ * PaddleOCRの実行結果からテキストを抽出する
+ * @param {Array} ocrResult - paddleOcr.ocr()の実行結果
+ * @returns {string} - 抽出されたテキスト
+ */
+function extractTextFromOcrResult(ocrResult) {
+    if (!ocrResult || ocrResult.length === 0) {
+        return '';
+    }
+    // 信頼度の高い順にソートし、テキストを結合する
+    return ocrResult
+        .flatMap(line => line.text)
+        .sort((a, b) => b[1] - a[1]) // 信頼度（confidence）で降順ソート
+        .map(item => item[0]) // テキスト部分のみ抽出
+        .join('');
+}
 
 /**
  * オレンジ枠のUI領域を検出する
@@ -133,39 +171,6 @@ function isOrange(r, g, b) {
     // オレンジ色・黄色系の色を認識できるよう、判定をより緩やかにする
     // 赤が強く、緑が中程度、青が弱いことをチェック
     return r > 180 && g > 90 && b < 120;
-}
-
-/**
- * 明るさとコントラストを自動調整する
- * @param {CanvasRenderingContext2D} ctx - キャンバスコンテキスト
- * @param {number} width - キャンバスの幅
- * @param {number} height - キャンバスの高さ
- */
-function autoAdjustBrightnessContrast(ctx, width, height) {
-    const imageData = ctx.getImageData(0, 0, width, height);
-    const data = imageData.data;
-    let min = 255, max = 0;
-
-    // 全ピクセルの輝度を計算し、最小値と最大値を見つける
-    for (let i = 0; i < data.length; i += 4) {
-        const r = data[i];
-        const g = data[i + 1];
-        const b = data[i + 2];
-        const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
-        if (brightness < min) min = brightness;
-        if (brightness > max) max = brightness;
-    }
-
-    const range = max - min;
-    if (range === 0) return; // 画像が単色の場合など
-
-    // コントラストストレッチングを適用
-    for (let i = 0; i < data.length; i += 4) {
-        data[i]     = 255 * (data[i] - min) / range;     // Red
-        data[i + 1] = 255 * (data[i + 1] - min) / range; // Green
-        data[i + 2] = 255 * (data[i + 2] - min) / range; // Blue
-    }
-    ctx.putImageData(imageData, 0, 0);
 }
 
 /**
@@ -243,7 +248,7 @@ async function readHpFromRoi(ctx, roi) {
     };
 
     // OCR精度向上のため、対象領域を拡大し、前処理を行う
-    const scaleFactor = 2;
+    const scaleFactor = 3;
     const hpCanvas = document.createElement('canvas');
     hpCanvas.width = hpRoi.width * scaleFactor;
     hpCanvas.height = hpRoi.height * scaleFactor;
@@ -253,21 +258,9 @@ async function readHpFromRoi(ctx, roi) {
     hpCtx.imageSmoothingEnabled = false; 
     hpCtx.drawImage(ctx.canvas, hpRoi.x, hpRoi.y, hpRoi.width, hpRoi.height, 0, 0, hpCanvas.width, hpCanvas.height);
     
-    // 明るさ・コントラストを自動調整
-    autoAdjustBrightnessContrast(hpCtx, hpCanvas.width, hpCanvas.height);
-
-    const imageData = hpCtx.getImageData(0, 0, hpCanvas.width, hpCanvas.height);
-    const data = imageData.data;
-    for (let i = 0; i < data.length; i += 4) {
-        // 白に近い色(数値)を黒に、それ以外を白に変換する
-        const isWhiteIsh = data[i] > 200 && data[i + 1] > 200 && data[i + 2] > 200;
-        const color = isWhiteIsh ? 0 : 255;
-        data[i] = data[i + 1] = data[i + 2] = color;
-    }
-    hpCtx.putImageData(imageData, 0, 0);
-
-    // Tesseractで認識実行
-    const text = await gutenye.process(hpCtx.getImageData(0, 0, hpCanvas.width, hpCanvas.height));
+    // PaddleOCRで認識実行
+    const result = await paddleOcr.ocr(hpCanvas);
+    const text = extractTextFromOcrResult(result);
     
     // 後処理とパターン補正
     const hpValue = postProcessHp(text);
@@ -275,12 +268,12 @@ async function readHpFromRoi(ctx, roi) {
 }
 
 /**
- * ROIから覚醒ゲージの割合をピクセル解析で読み取る
+ * ROIから覚醒ゲージの割合をOCRで読み取る
  * @param {CanvasRenderingContext2D} ctx - 元画像のコンテキスト
  * @param {object} roi - プレイヤーUIの領域 (この関数では未使用)
  * @returns {Promise<number|null>} - ゲージの割合(%) or null
  */
-async function readGaugeFromRoi(ctx, roi) { // roi is unused
+async function readGaugeFromRoi(ctx, roi) { 
     const width = ctx.canvas.width;
     const scale = width / 1920;
 
@@ -293,7 +286,7 @@ async function readGaugeFromRoi(ctx, roi) { // roi is unused
     };
 
     // OCR用のキャンバスを作成し、前処理を行う
-    const scaleFactor = 2;
+    const scaleFactor = 3;
     const awakeningCanvas = document.createElement('canvas');
     awakeningCanvas.width = awakeningValueRoi.width * scaleFactor;
     awakeningCanvas.height = awakeningValueRoi.height * scaleFactor;
@@ -302,21 +295,9 @@ async function readGaugeFromRoi(ctx, roi) { // roi is unused
     awakeningCtx.imageSmoothingEnabled = false;
     awakeningCtx.drawImage(ctx.canvas, awakeningValueRoi.x, awakeningValueRoi.y, awakeningValueRoi.width, awakeningValueRoi.height, 0, 0, awakeningCanvas.width, awakeningCanvas.height);
 
-    // 明るさ・コントラストを自動調整
-    autoAdjustBrightnessContrast(awakeningCtx, awakeningCanvas.width, awakeningCanvas.height);
-
-    const imageData = awakeningCtx.getImageData(0, 0, awakeningCanvas.width, awakeningCanvas.height);
-    const data = imageData.data;
-    for (let i = 0; i < data.length; i += 4) {
-        // 白に近い色(数値)を黒に、それ以外を白に変換する
-        const isWhiteIsh = data[i] > 200 && data[i + 1] > 200 && data[i + 2] > 200;
-        const color = isWhiteIsh ? 0 : 255;
-        data[i] = data[i + 1] = data[i + 2] = color;
-    }
-    awakeningCtx.putImageData(imageData, 0, 0);
-
-    // Tesseractで認識実行
-    const text = await gutenye.process(awakeningCtx.getImageData(0, 0, awakeningCanvas.width, awakeningCanvas.height));
+    // PaddleOCRで認識実行
+    const result = await paddleOcr.ocr(awakeningCanvas);
+    const text = extractTextFromOcrResult(result);
 
     // 後処理とパターン補正
     const awakeningValue = postProcessGauge(text);
