@@ -35,7 +35,7 @@ export const simulationHpPercentageDisplay = simulationResultsDiv?.querySelector
 // Awakening Gauge Prediction
 export const awakeningSimulationArea = document.querySelector('.awakening-simulation-area');
 export const beforeShotdownAwakeningGaugeInput = document.getElementById('beforeShotdownAwakeningGaugeInput');
-export const beforeShotdownHpInput_damageTakenInput = document.getElementById('beforeShotdownHpInput');
+export const beforeShotdownHpInput = document.getElementById('beforeShotdownHpInput');
 export const considerOwnDownCheckbox = document.getElementById('considerOwnDownCheckbox');
 export const considerDamageDealtCheckbox = document.getElementById('considerDamageDealtCheckbox');
 export const damageDealtOptionsContainer = document.getElementById('damageDealtOptionsContainer');

@@ -8,9 +8,12 @@ const STATUS_ELEMENT = DOM.imageUploadStatus; // DOMからステータス表示�
 async function initializeWorker() {
     if (tesseractWorker) return; // 既に初期化済み
     
-    STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
-    tesseractWorker = await Tesseract.createWorker('eng', 1, {
-        logger: m => console.log(m), // デバッグ用にコンソールにログを出力
+if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
+
+// Safer, spec-compliant initialisation
+tesseractWorker = await Tesseract.createWorker({ logger: m => console.log(m) });
+await tesseractWorker.loadLanguage('eng');
+await tesseractWorker.initialize('eng');
     });
     await tesseractWorker.setParameters({
         tessedit_char_whitelist: '0123456789', // 認識対象を数字のみに限定し、精度を向上
