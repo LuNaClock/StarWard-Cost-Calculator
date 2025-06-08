@@ -171,6 +171,15 @@
                             <!-- Awakening Simulation Area with new features -->
                             <div class="awakening-simulation-area">
                                 <h4><i class="fas fa-brain"></i> 覚醒ゲージ予測</h4>
+
+                                <div class="image-upload-section" style="margin-bottom: 20px; text-align: center;">
+                                    <label for="gameImageUpload" class="simulation-button upload-button" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-camera"></i> ゲーム画面から自動入力
+                                    </label>
+                                    <input type="file" id="gameImageUpload" accept="image/*" style="display: none;">
+                                    <p id="imageUploadStatus" class="upload-status" style="margin-top: 10px; font-size: 0.9em; color: var(--accent-color); min-height: 1.2em;"></p>
+                                </div>
+
                                 <div class="simulation-input-group">
                                     <label for="beforeShotdownAwakeningGaugeInput"><i class="fas fa-meteor"></i> 覚醒が溜まるか調べたい覚醒ゲージ:</label>
                                     <input type="number" id="beforeShotdownAwakeningGaugeInput" class="select-dropdown" min="0" max="100" step="1" value="0">
@@ -402,20 +411,28 @@
             </div>
         </div>
 
-        <div class="character-grid" id="characterGrid"></div>
+        <div id="characterGrid" class="character-grid">
+            <!-- キャラクターカードがここに挿入されます -->
+        </div>
     </main>
 
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
     </div>
 
-    <!-- GSAP - integrityの値をエラーメッセージから取得した正しいものに置き換えてください -->
+    <footer class="footer">
+        <p>© 2025 Lu:Na:Clock</p> <!-- 年は適宜更新してください -->
+    </footer>
+
+    <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
             integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script type="module" src="js/app.js" defer></script>
+    
+    <!-- OCRライブラリの読み込みを追加 -->
+    <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js' defer></script>
+
+    <!-- モジュールとしてJavaScriptファイルを読み込む -->
+    <script type="module" src="js/app.js"></script>
 </body>
-<footer>
-    <p>© 2025 Lu:Na:Clock</p> <!-- 年は適宜更新してください -->
-</footer>
 </html>
