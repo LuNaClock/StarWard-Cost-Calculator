@@ -355,13 +355,17 @@ class GameOCR {
     async initializeOCR() {
         try {
             // Wait for opencv.js to be ready
-            const checkOpenCV = () => {
-                return new Promise(resolve => {
-                    const interval = setInterval(() => {
-                        if (window.cv) {
-                            clearInterval(interval);
-                            resolve();
-                        }
+const checkOpenCV = (timeoutMs = 10000) =>
+  new Promise((resolve, reject) => {
+    const start = Date.now();
+    const id = setInterval(() => {
+      if (window.cv) { clearInterval(id); resolve(); }
+      if (Date.now() - start > timeoutMs) {
+        clearInterval(id);
+        reject(new Error('OpenCV failed to load within timeout'));
+      }
+    }, 100);
+  });
                     }, 100);
                 });
             };
@@ -825,4 +829,4 @@ class GameOCR {
     }
 }
 
-export { processImageForOCR, GameOCR }; 
+export { processImageFromFile, GameOCR }; 
