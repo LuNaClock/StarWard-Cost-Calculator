@@ -191,14 +191,14 @@ function autoAdjustBrightnessContrast(ctx, width, height) {
  * @returns {number|null} - 補正後のHP値 or null
  */
 function postProcessHp(rawText) {
-    let text = rawText.replace(/\D/g, '');
-    if (text.length === 0) return null;
-
     // 典型的な誤認識を補正（例: '7' -> '1', 'B' -> '8'など）
-    // この部分は実際の誤認識パターンに合わせて調整が必要
-    text = text.replace(/Z/g, '2').replace(/S/g, '5').replace(/B/g, '8');
-
-    let hpValue = parseInt(text, 10);
+    let text = rawText.replace(/Z/g, '2').replace(/S/g, '5').replace(/B/g, '8');
+    
+    // Remove non-digits after character replacements
+    text = text.replace(/\D/g, '');
+     if (text.length === 0) return null;
+ 
+     let hpValue = parseInt(text, 10);
     if (isNaN(hpValue)) return null;
     
     // パターン補正: 耐久値は最大4桁で、1桁目は「1」か「2」になることが多い
@@ -222,13 +222,14 @@ function postProcessHp(rawText) {
  * @returns {number|null} - 補正後のゲージ値 or null
  */
 function postProcessGauge(rawText) {
-    let text = rawText.replace(/\D/g, '');
-    if (text.length === 0) return null;
-
     // 典型的な誤認識を補正
-    text = text.replace(/O/g, '0').replace(/I/g, '1').replace(/S/g, '5');
-
-    let gaugeValue = parseInt(text, 10);
+    let text = rawText.replace(/O/g, '0').replace(/I/g, '1').replace(/S/g, '5');
+    
+    // Remove non-digits after character replacements
+    text = text.replace(/\D/g, '');
+     if (text.length === 0) return null;
+ 
+     let gaugeValue = parseInt(text, 10);
     if (isNaN(gaugeValue)) return null;
 
     // パターン補正: 覚醒ゲージは1から100まで
