@@ -167,18 +167,23 @@ async function readHpFromRoi(ctx, roi) {
         height: roi.height * 0.5
     };
 
+    // OCR精度向上のため、対象領域を拡大し、白黒反転・二値化する前処理
+    const scaleFactor = 2;
     const hpCanvas = document.createElement('canvas');
+    hpCanvas.width = hpRoi.width * scaleFactor;
+    hpCanvas.height = hpRoi.height * scaleFactor;
     const hpCtx = hpCanvas.getContext('2d');
-    hpCanvas.width = hpRoi.width;
-    hpCanvas.height = hpRoi.height;
-
-    // OCR精度向上のため、対象領域を白黒反転・二値化する前処理
-    const imageData = ctx.getImageData(hpRoi.x, hpRoi.y, hpRoi.width, hpRoi.height);
+    
+    // Nearest-neighbor scaling to avoid anti-aliasing and keep pixels sharp
+    hpCtx.imageSmoothingEnabled = false; 
+    hpCtx.drawImage(ctx.canvas, hpRoi.x, hpRoi.y, hpRoi.width, hpRoi.height, 0, 0, hpCanvas.width, hpCanvas.height);
+    
+    const imageData = hpCtx.getImageData(0, 0, hpCanvas.width, hpCanvas.height);
     const data = imageData.data;
     for (let i = 0; i < data.length; i += 4) {
         const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        // 輝度が高い(白っぽい)ピクセルを黒、それ以外を白にする
-        const color = brightness > 180 ? 0 : 255;
+        // 輝度が高い(白っぽい)ピクセルを黒、それ以外を白にする。閾値を微調整。
+        const color = brightness > 170 ? 0 : 255;
         data[i] = data[i + 1] = data[i + 2] = color;
     }
     hpCtx.putImageData(imageData, 0, 0);
@@ -210,10 +215,12 @@ async function readGaugeFromRoi(ctx, roi) {
 
     for (let i = 0; i < imageData.length; i += 4) {
         const r = imageData[i], g = imageData[i + 1], b = imageData[i + 2];
-        // ゲージの色（緑系）か、背景色（暗い色）か判定
-        if (g > r && g > b && g > 80) { // 緑っぽい色
+        const brightness = (r + g + b) / 3;
+
+        // ゲージの色（白=高輝度）か、背景色（暗い色）かを明るさで判定する
+        if (brightness > 150) { // 明るいピクセル (ゲージ)
             gaugePixels++;
-        } else if ((r + g + b) / 3 < 60) { // 暗い色
+        } else if (brightness < 80) { // 暗いピクセル (背景)
             backgroundPixels++;
         }
     }
