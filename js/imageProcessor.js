@@ -8,17 +8,17 @@ const STATUS_ELEMENT = DOM.imageUploadStatus; // DOMからステータス表示�
 async function initializeWorker() {
     if (tesseractWorker) return; // 既に初期化済み
     
-if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
+    if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
 
-// Safer, spec-compliant initialisation
-tesseractWorker = await Tesseract.createWorker({ logger: m => console.log(m) });
-await tesseractWorker.loadLanguage('eng');
-await tesseractWorker.initialize('eng');
-    });
+    // Safer, spec-compliant initialisation
+    tesseractWorker = await Tesseract.createWorker({ logger: m => console.log(m) });
+    await tesseractWorker.loadLanguage('eng');
+    await tesseractWorker.initialize('eng');
+
     await tesseractWorker.setParameters({
         tessedit_char_whitelist: '0123456789', // 認識対象を数字のみに限定し、精度を向上
     });
-    STATUS_ELEMENT.textContent = 'OCRエンジン準備完了。画像を選択してください。';
+    if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジン準備完了。画像を選択してください。';
 }
 
 // --- メインの画像処理関数 ---
