@@ -111,15 +111,15 @@ export function processSimulateRedeploy(charType) {
 
     UI.updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualCostConsumed);
 
-    if (DOM.beforeShotdownAwakeningGaugeInput && DOM.beforeShotdownHpInput_damageTakenInput) {
+    if (DOM.beforeShotdownAwakeningGaugeInput && DOM.beforeShotdownHpInput) {
         DOM.beforeShotdownAwakeningGaugeInput.dataset.originalCharacterHp = String(charToRedeploy.hp);
         DOM.beforeShotdownAwakeningGaugeInput.dataset.characterCost = charToRedeploy.cost.toFixed(1);
         DOM.beforeShotdownAwakeningGaugeInput.dataset.characterName = charToRedeploy.name;
         
-        DOM.beforeShotdownHpInput_damageTakenInput.max = String(charToRedeploy.hp);
-        DOM.beforeShotdownHpInput_damageTakenInput.dataset.originalCharacterHp = String(charToRedeploy.hp);
-        DOM.beforeShotdownHpInput_damageTakenInput.dataset.characterCost = charToRedeploy.cost.toFixed(1);
-        DOM.beforeShotdownHpInput_damageTakenInput.dataset.characterName = charToRedeploy.name;
+        DOM.beforeShotdownHpInput.max = String(charToRedeploy.hp);
+        DOM.beforeShotdownHpInput.dataset.originalCharacterHp = String(charToRedeploy.hp);
+        DOM.beforeShotdownHpInput.dataset.characterCost = charToRedeploy.cost.toFixed(1);
+        DOM.beforeShotdownHpInput.dataset.characterName = charToRedeploy.name;
     }
     
     processAwakeningGaugeCalculation(); 
@@ -134,9 +134,9 @@ export function processAwakeningGaugeCalculation() {
     } else if (charType === 'partner' && State.getSelectedPartnerChar()) {
         charDataForAwakening = State.getSelectedPartnerChar();
     } else {
-        const originalHpFromDataset = DOM.beforeShotdownHpInput_damageTakenInput?.dataset.originalCharacterHp;
-        const costFromDataset = DOM.beforeShotdownHpInput_damageTakenInput?.dataset.characterCost;
-        const nameFromDataset = DOM.beforeShotdownHpInput_damageTakenInput?.dataset.characterName;
+        const originalHpFromDataset = DOM.beforeShotdownHpInput?.dataset.originalCharacterHp;
+        const costFromDataset = DOM.beforeShotdownHpInput?.dataset.characterCost;
+        const nameFromDataset = DOM.beforeShotdownHpInput?.dataset.characterName;
 
         if (originalHpFromDataset && costFromDataset && nameFromDataset) {
             charDataForAwakening = {
@@ -146,27 +146,27 @@ export function processAwakeningGaugeCalculation() {
             };
         } else {
             // console.warn("Awakening calculation skipped: Character data not available from dataset.");
-            UI.updateAwakeningGaugeUI({ error: true, validatedDamageTaken: parseFloat(DOM.beforeShotdownHpInput_damageTakenInput?.value) || 0 });
+            UI.updateAwakeningGaugeUI({ error: true, validatedDamageTaken: parseFloat(DOM.beforeShotdownHpInput?.value) || 0 });
             return;
         }
     }
     
      if (!charDataForAwakening || typeof charDataForAwakening.hp === 'undefined' || typeof charDataForAwakening.cost === 'undefined') {
         // console.warn("Awakening calculation skipped: Invalid character data.");
-        UI.updateAwakeningGaugeUI({ error: true, validatedDamageTaken: parseFloat(DOM.beforeShotdownHpInput_damageTakenInput?.value) || 0 });
+        UI.updateAwakeningGaugeUI({ error: true, validatedDamageTaken: parseFloat(DOM.beforeShotdownHpInput?.value) || 0 });
         return;
     }
 
     const inputs = {
-        gaugeBeforeShotdown: parseFloat(DOM.beforeShotdownAwakeningGaugeInput.value) || 0,
-        damageTakenInputValue: parseFloat(DOM.beforeShotdownHpInput_damageTakenInput.value) || 0,
+        gaugeBeforeShotdown: (DOM.beforeShotdownAwakeningGaugeInput && parseFloat(DOM.beforeShotdownAwakeningGaugeInput.value)) || 0,
+        damageTakenInputValue: (DOM.beforeShotdownHpInput && parseFloat(DOM.beforeShotdownHpInput.value)) || 0,
         originalCharActualMaxHp: charDataForAwakening.hp,
         charCost: charDataForAwakening.cost,
         charName: charDataForAwakening.name,
-        considerOwnDown: DOM.considerOwnDownCheckbox.checked,
-        considerDamageDealt: DOM.considerDamageDealtCheckbox.checked,
-        damageDealtBonus: DOM.damageDealtAwakeningBonusSelect.value,
-        considerPartnerDown: DOM.considerPartnerDownCheckbox.checked
+        considerOwnDown: DOM.considerOwnDownCheckbox && DOM.considerOwnDownCheckbox.checked,
+        considerDamageDealt: DOM.considerDamageDealtCheckbox && DOM.considerDamageDealtCheckbox.checked,
+        damageDealtBonus: (DOM.damageDealtAwakeningBonusSelect && DOM.damageDealtAwakeningBonusSelect.value) || "0",
+        considerPartnerDown: DOM.considerPartnerDownCheckbox && DOM.considerPartnerDownCheckbox.checked
     };
 
     // Basic validation for gaugeBeforeShotdown and damageTakenInputValue

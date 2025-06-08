@@ -11,7 +11,7 @@ async function initializeWorker() {
     if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
 
     // Safer, spec-compliant initialisation
-    tesseractWorker = await Tesseract.createWorker({ logger: m => console.log(m) });
+    tesseractWorker = await Tesseract.createWorker();
     await tesseractWorker.loadLanguage('eng');
     await tesseractWorker.initialize('eng');
 
