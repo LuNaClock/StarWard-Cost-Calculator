@@ -10,11 +10,11 @@ async function initializeWorker() {
     
     if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
 
-    // Safer, spec-compliant initialisation
     tesseractWorker = await Tesseract.createWorker('eng');
 
     await tesseractWorker.setParameters({
         tessedit_char_whitelist: '0123456789', // 認識対象を数字のみに限定し、精度を向上
+        tessedit_pageseg_mode: '7', // 画像を一行のテキストとして扱うよう設定
     });
     if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジン準備完了。画像を選択してください。';
 }
@@ -181,9 +181,9 @@ async function readHpFromRoi(ctx, roi) {
     const imageData = hpCtx.getImageData(0, 0, hpCanvas.width, hpCanvas.height);
     const data = imageData.data;
     for (let i = 0; i < data.length; i += 4) {
-        const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        // 輝度が高い(白っぽい)ピクセルを黒、それ以外を白にする。閾値を微調整。
-        const color = brightness > 170 ? 0 : 255;
+        // 白に近い色(数値)を黒に、それ以外を白に変換する
+        const isWhiteIsh = data[i] > 200 && data[i + 1] > 200 && data[i + 2] > 200;
+        const color = isWhiteIsh ? 0 : 255;
         data[i] = data[i + 1] = data[i + 2] = color;
     }
     hpCtx.putImageData(imageData, 0, 0);
@@ -197,37 +197,44 @@ async function readHpFromRoi(ctx, roi) {
 /**
  * ROIから覚醒ゲージの割合をピクセル解析で読み取る
  * @param {CanvasRenderingContext2D} ctx - 元画像のコンテキスト
- * @param {object} roi - プレイヤーUIの領域
+ * @param {object} roi - プレイヤーUIの領域 (この関数では未使用)
  * @returns {Promise<number|null>} - ゲージの割合(%) or null
  */
-async function readGaugeFromRoi(ctx, roi) {
-    // 覚醒ゲージのバーがある領域をROIからさらに絞り込む
-    const gaugeRoi = {
-        x: roi.x + roi.width * 0.25,
-        y: roi.y + roi.height * 0.65,
-        width: roi.width * 0.7,
-        height: roi.height * 0.2
+async function readGaugeFromRoi(ctx, roi) { // roi is unused
+    const width = ctx.canvas.width;
+    const scale = width / 1920;
+
+    // 覚醒値(中央下の数字)の領域を定義
+    const awakeningValueRoi = {
+        x: Math.round(930 * scale),
+        y: Math.round(875 * scale),
+        width: Math.round(60 * scale),
+        height: Math.round(50 * scale)
     };
 
-    const imageData = ctx.getImageData(gaugeRoi.x, gaugeRoi.y, gaugeRoi.width, gaugeRoi.height).data;
-    let gaugePixels = 0;
-    let backgroundPixels = 0;
+    // OCR用のキャンバスを作成し、前処理を行う
+    const scaleFactor = 2;
+    const awakeningCanvas = document.createElement('canvas');
+    awakeningCanvas.width = awakeningValueRoi.width * scaleFactor;
+    awakeningCanvas.height = awakeningValueRoi.height * scaleFactor;
+    const awakeningCtx = awakeningCanvas.getContext('2d');
 
-    for (let i = 0; i < imageData.length; i += 4) {
-        const r = imageData[i], g = imageData[i + 1], b = imageData[i + 2];
-        const brightness = (r + g + b) / 3;
+    awakeningCtx.imageSmoothingEnabled = false;
+    awakeningCtx.drawImage(ctx.canvas, awakeningValueRoi.x, awakeningValueRoi.y, awakeningValueRoi.width, awakeningValueRoi.height, 0, 0, awakeningCanvas.width, awakeningCanvas.height);
 
-        // ゲージの色（白=高輝度）か、背景色（暗い色）かを明るさで判定する
-        if (brightness > 150) { // 明るいピクセル (ゲージ)
-            gaugePixels++;
-        } else if (brightness < 80) { // 暗いピクセル (背景)
-            backgroundPixels++;
-        }
+    const imageData = awakeningCtx.getImageData(0, 0, awakeningCanvas.width, awakeningCanvas.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        // 白に近い色(数値)を黒に、それ以外を白に変換する
+        const isWhiteIsh = data[i] > 200 && data[i + 1] > 200 && data[i + 2] > 200;
+        const color = isWhiteIsh ? 0 : 255;
+        data[i] = data[i + 1] = data[i + 2] = color;
     }
+    awakeningCtx.putImageData(imageData, 0, 0);
 
-    const totalPixels = gaugePixels + backgroundPixels;
-    if (totalPixels < 10) return null; // ゲージがほとんど見つからない場合
-
-    const percentage = Math.round((gaugePixels / totalPixels) * 100);
-    return Math.max(0, Math.min(100, percentage));
+    // Tesseractで認識実行
+    const { data: { text } } = await tesseractWorker.recognize(awakeningCanvas);
+    const awakeningValue = parseInt(text.replace(/\D/g, ''), 10);
+    
+    return isNaN(awakeningValue) ? null : awakeningValue;
 } 
