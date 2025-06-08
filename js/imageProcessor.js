@@ -14,7 +14,7 @@ async function initializeWorker() {
 
     await tesseractWorker.setParameters({
         tessedit_char_whitelist: '0123456789', // 認識対象を数字のみに限定し、精度を向上
-        tessedit_pageseg_mode: '7', // 画像を一行のテキストとして扱うよう設定
+        tessedit_pageseg_mode: '8', // 画像を単語として扱うよう設定
     });
     if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジン準備完了。画像を選択してください。';
 }
@@ -153,6 +153,97 @@ function isOrange(r, g, b) {
 }
 
 /**
+ * 明るさとコントラストを自動調整する
+ * @param {CanvasRenderingContext2D} ctx - キャンバスコンテキスト
+ * @param {number} width - キャンバスの幅
+ * @param {number} height - キャンバスの高さ
+ */
+function autoAdjustBrightnessContrast(ctx, width, height) {
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    let min = 255, max = 0;
+
+    // 全ピクセルの輝度を計算し、最小値と最大値を見つける
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+        if (brightness < min) min = brightness;
+        if (brightness > max) max = brightness;
+    }
+
+    const range = max - min;
+    if (range === 0) return; // 画像が単色の場合など
+
+    // コントラストストレッチングを適用
+    for (let i = 0; i < data.length; i += 4) {
+        data[i]     = 255 * (data[i] - min) / range;     // Red
+        data[i + 1] = 255 * (data[i + 1] - min) / range; // Green
+        data[i + 2] = 255 * (data[i + 2] - min) / range; // Blue
+    }
+    ctx.putImageData(imageData, 0, 0);
+}
+
+/**
+ * 認識されたHPの値を後処理で補正する
+ * @param {string} rawText - OCRで認識された生のテキスト
+ * @returns {number|null} - 補正後のHP値 or null
+ */
+function postProcessHp(rawText) {
+    let text = rawText.replace(/\D/g, '');
+    if (text.length === 0) return null;
+
+    // 典型的な誤認識を補正（例: '7' -> '1', 'B' -> '8'など）
+    // この部分は実際の誤認識パターンに合わせて調整が必要
+    text = text.replace(/Z/g, '2').replace(/S/g, '5').replace(/B/g, '8');
+
+    let hpValue = parseInt(text, 10);
+    if (isNaN(hpValue)) return null;
+    
+    // パターン補正: 耐久値は最大4桁で、1桁目は「1」か「2」になることが多い
+    if (text.length === 4 && !['1', '2'].includes(text[0])) {
+         // 例えば、先頭が '7' なら '1' に補正するなど
+        if (text[0] === '7') {
+            text = '1' + text.substring(1);
+            hpValue = parseInt(text, 10);
+        }
+    }
+    
+    // 値が非現実的な場合はnullを返す（例: 3000以上など）
+    if (hpValue > 3000) return null;
+
+    return hpValue;
+}
+
+/**
+ * 認識された覚醒ゲージの値を後処理で補正する
+ * @param {string} rawText - OCRで認識された生のテキスト
+ * @returns {number|null} - 補正後のゲージ値 or null
+ */
+function postProcessGauge(rawText) {
+    let text = rawText.replace(/\D/g, '');
+    if (text.length === 0) return null;
+
+    // 典型的な誤認識を補正
+    text = text.replace(/O/g, '0').replace(/I/g, '1').replace(/S/g, '5');
+
+    let gaugeValue = parseInt(text, 10);
+    if (isNaN(gaugeValue)) return null;
+
+    // パターン補正: 覚醒ゲージは1から100まで
+    if (gaugeValue > 100) {
+        // '100'を'108'などと誤認識するケースを考慮
+        if (text.startsWith('10') && text.length === 3) {
+            return 100;
+        }
+        return null; // 100を超える値は無効とする
+    }
+    
+    return gaugeValue;
+}
+
+/**
  * ROIからHP数値をOCRで読み取る
  * @param {CanvasRenderingContext2D} ctx - 元画像のコンテキスト
  * @param {object} roi - プレイヤーUIの領域
@@ -167,8 +258,8 @@ async function readHpFromRoi(ctx, roi) {
         height: roi.height * 0.5
     };
 
-    // OCR精度向上のため、対象領域を拡大し、白黒反転・二値化する前処理
-    const scaleFactor = 2;
+    // OCR精度向上のため、対象領域を拡大し、前処理を行う
+    const scaleFactor = 3;
     const hpCanvas = document.createElement('canvas');
     hpCanvas.width = hpRoi.width * scaleFactor;
     hpCanvas.height = hpRoi.height * scaleFactor;
@@ -178,6 +269,9 @@ async function readHpFromRoi(ctx, roi) {
     hpCtx.imageSmoothingEnabled = false; 
     hpCtx.drawImage(ctx.canvas, hpRoi.x, hpRoi.y, hpRoi.width, hpRoi.height, 0, 0, hpCanvas.width, hpCanvas.height);
     
+    // 明るさ・コントラストを自動調整
+    autoAdjustBrightnessContrast(hpCtx, hpCanvas.width, hpCanvas.height);
+
     const imageData = hpCtx.getImageData(0, 0, hpCanvas.width, hpCanvas.height);
     const data = imageData.data;
     for (let i = 0; i < data.length; i += 4) {
@@ -190,8 +284,10 @@ async function readHpFromRoi(ctx, roi) {
 
     // Tesseractで認識実行
     const { data: { text } } = await tesseractWorker.recognize(hpCanvas);
-    const hpValue = parseInt(text.replace(/\D/g, ''), 10);
-    return isNaN(hpValue) ? null : hpValue;
+    
+    // 後処理とパターン補正
+    const hpValue = postProcessHp(text);
+    return hpValue;
 }
 
 /**
@@ -213,7 +309,7 @@ async function readGaugeFromRoi(ctx, roi) { // roi is unused
     };
 
     // OCR用のキャンバスを作成し、前処理を行う
-    const scaleFactor = 2;
+    const scaleFactor = 3;
     const awakeningCanvas = document.createElement('canvas');
     awakeningCanvas.width = awakeningValueRoi.width * scaleFactor;
     awakeningCanvas.height = awakeningValueRoi.height * scaleFactor;
@@ -221,6 +317,9 @@ async function readGaugeFromRoi(ctx, roi) { // roi is unused
 
     awakeningCtx.imageSmoothingEnabled = false;
     awakeningCtx.drawImage(ctx.canvas, awakeningValueRoi.x, awakeningValueRoi.y, awakeningValueRoi.width, awakeningValueRoi.height, 0, 0, awakeningCanvas.width, awakeningCanvas.height);
+
+    // 明るさ・コントラストを自動調整
+    autoAdjustBrightnessContrast(awakeningCtx, awakeningCanvas.width, awakeningCanvas.height);
 
     const imageData = awakeningCtx.getImageData(0, 0, awakeningCanvas.width, awakeningCanvas.height);
     const data = imageData.data;
@@ -234,7 +333,9 @@ async function readGaugeFromRoi(ctx, roi) { // roi is unused
 
     // Tesseractで認識実行
     const { data: { text } } = await tesseractWorker.recognize(awakeningCanvas);
-    const awakeningValue = parseInt(text.replace(/\D/g, ''), 10);
+
+    // 後処理とパターン補正
+    const awakeningValue = postProcessGauge(text);
     
-    return isNaN(awakeningValue) ? null : awakeningValue;
+    return awakeningValue;
 } 
