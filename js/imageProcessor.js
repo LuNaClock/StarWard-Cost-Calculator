@@ -11,9 +11,7 @@ async function initializeWorker() {
     if (STATUS_ELEMENT) STATUS_ELEMENT.textContent = 'OCRエンジンを初期化中...';
 
     // Safer, spec-compliant initialisation
-    tesseractWorker = await Tesseract.createWorker();
-    await tesseractWorker.loadLanguage('eng');
-    await tesseractWorker.initialize('eng');
+    tesseractWorker = await Tesseract.createWorker('eng');
 
     await tesseractWorker.setParameters({
         tessedit_char_whitelist: '0123456789', // 認識対象を数字のみに限定し、精度を向上
@@ -131,8 +129,9 @@ function findActivePlayerRegion(ctx, width, height) {
 }
 
 function isOrange(r, g, b) {
-    // オレンジ色の判定 (RGB値で。照明変化に強いHSV/HSLがより望ましい)
-    return r > 200 && g > 80 && g < 160 && b < 80;
+    // オレンジ色の判定をより緩やかにする
+    // Rが高く、Gが中間、Bが低い、という条件で判定
+    return r > 200 && g > 80 && g < 180 && b < 100;
 }
 
 /**
