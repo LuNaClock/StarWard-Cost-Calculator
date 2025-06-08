@@ -99,39 +99,57 @@ export async function processImageFromFile(file) {
  * @returns {object|null} - {x, y, width, height} のオブジェクト or null
  */
 function findActivePlayerRegion(ctx, width, height) {
-    // 添付画像を基準 (FHD 1920x1080) にUIのおおよその位置とサイズを定義
     const scale = width / 1920;
-    const expectedRoi = {
-        x: Math.round(45 * scale),
-        y: Math.round(105 * scale),
-        width: Math.round(310 * scale),
-        height: Math.round(90 * scale)
-    };
 
-    // 領域の上辺と左辺のピクセルを調べてオレンジ色(枠)があるか確認
-    const imageData = ctx.getImageData(expectedRoi.x, expectedRoi.y, expectedRoi.width, expectedRoi.height).data;
-    let orangePixelCount = 0;
-    // 上辺をチェック
-    for (let i = 0; i < expectedRoi.width * 4; i += 4) {
-        if (isOrange(imageData[i], imageData[i + 1], imageData[i + 2])) orangePixelCount++;
-    }
-    // 左辺をチェック
-    for (let y = 0; y < expectedRoi.height; y++) {
-        let i = (y * expectedRoi.width) * 4;
-        if (isOrange(imageData[i], imageData[i + 1], imageData[i + 2])) orangePixelCount++;
+    // 1920x1080レイアウトを基準に、4つのプレイヤーUIカードの候補領域を定義
+    const potentialRois = [
+        { x: 45, y: 105, width: 310, height: 90 }, // 左上
+        { x: 45, y: 200, width: 310, height: 90 }, // 左下
+        { x: 1565, y: 105, width: 310, height: 90 }, // 右上
+        { x: 1565, y: 200, width: 310, height: 90 }  // 右下
+    ];
+
+    for (const roi of potentialRois) {
+        const scaledRoi = {
+            x: Math.round(roi.x * scale),
+            y: Math.round(roi.y * scale),
+            width: Math.round(roi.width * scale),
+            height: Math.round(roi.height * scale)
+        };
+
+        // ROIがキャンバスの範囲外に出ていないかチェック
+        if (scaledRoi.x < 0 || scaledRoi.y < 0 || scaledRoi.x + scaledRoi.width > width || scaledRoi.y + scaledRoi.height > height) {
+            continue;
+        }
+
+        const imageData = ctx.getImageData(scaledRoi.x, scaledRoi.y, scaledRoi.width, scaledRoi.height).data;
+        let orangePixelCount = 0;
+
+        // 各候補領域の5px幅の縁をスキャンしてオレンジ色のピクセルを探す
+        for (let y = 0; y < scaledRoi.height; y++) {
+            for (let x = 0; x < scaledRoi.width; x++) {
+                if (x < 5 || x >= scaledRoi.width - 5 || y < 5 || y >= scaledRoi.height - 5) {
+                    const i = (y * scaledRoi.width + x) * 4;
+                    if (isOrange(imageData[i], imageData[i + 1], imageData[i + 2])) {
+                        orangePixelCount++;
+                    }
+                }
+            }
+        }
+
+        // オレンジ色のピクセルが一定数以上見つかれば、アクティブなプレイヤー領域だと判断
+        if (orangePixelCount > 50) {
+            return scaledRoi;
+        }
     }
 
-    // 枠線のピクセルが一定以上見つかれば、その領域を返す
-    if (orangePixelCount > (expectedRoi.width + expectedRoi.height) * 0.1) {
-        return expectedRoi;
-    }
-    return null; // 見つからなかった
+    return null; // アクティブな領域が見つからなかった
 }
 
 function isOrange(r, g, b) {
-    // オレンジ色の判定をより緩やかにする
-    // Rが高く、Gが中間、Bが低い、という条件で判定
-    return r > 200 && g > 80 && g < 180 && b < 100;
+    // オレンジ色・黄色系の色を認識できるよう、判定をより緩やかにする
+    // 赤が強く、緑が中程度、青が弱いことをチェック
+    return r > 180 && g > 90 && b < 120;
 }
 
 /**
