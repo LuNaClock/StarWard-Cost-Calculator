@@ -36,7 +36,7 @@ export function generateShareUrlForRedeploy() {
 
     let hasAwakeningParams = false;
     const agValue = DOM.beforeShotdownAwakeningGaugeInput.value;
-    const ahValue = DOM.beforeShotdownHpInput_damageTakenInput.value;
+    const ahValue = DOM.beforeShotdownHpInput.value;
 
     if (agValue !== "0") {
         params.set('ag', agValue);
@@ -161,13 +161,13 @@ export function parseUrlAndRestoreState() {
 
     if (params.has('ag')) {
         const agValue = params.get('ag');
-        if (isValidGaugeValue(agValue)) {
+        if (isValidGaugeValue(agValue) && DOM.beforeShotdownAwakeningGaugeInput) {
             DOM.beforeShotdownAwakeningGaugeInput.value = agValue;
         } else {
-            // console.warn("Invalid 'ag' (awakening gauge) parameter from URL:", agValue);
-            DOM.beforeShotdownAwakeningGaugeInput.value = "0";
+            // console.warn("Invalid 'ag' (awakening gauge) parameter from URL or element not found:", agValue);
+            if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = "0";
         }
-    } else {
+    } else if (DOM.beforeShotdownAwakeningGaugeInput) {
         DOM.beforeShotdownAwakeningGaugeInput.value = "0";
     }
     
@@ -181,38 +181,44 @@ export function parseUrlAndRestoreState() {
 
     if (params.has('ah')) {
         const ahValue = params.get('ah');
-        if (isValidHpValue(ahValue, maxHpForAhValidation)) {
-            DOM.beforeShotdownHpInput_damageTakenInput.value = ahValue;
+        if (isValidHpValue(ahValue, maxHpForAhValidation) && DOM.beforeShotdownHpInput) {
+            DOM.beforeShotdownHpInput.value = ahValue;
         } else {
-            // console.warn("Invalid 'ah' (awakening HP/damage taken) parameter from URL:", ahValue);
-            DOM.beforeShotdownHpInput_damageTakenInput.value = "0";
+            // console.warn("Invalid 'ah' (awakening HP/damage taken) parameter from URL or element not found:", ahValue);
+            if (DOM.beforeShotdownHpInput) DOM.beforeShotdownHpInput.value = "0";
         }
-    } else {
-        DOM.beforeShotdownHpInput_damageTakenInput.value = "0";
+    } else if (DOM.beforeShotdownHpInput) {
+        DOM.beforeShotdownHpInput.value = "0";
     }
     
-    DOM.considerOwnDownCheckbox.checked = params.get('od') === '1';
+    if (DOM.considerOwnDownCheckbox) {
+        DOM.considerOwnDownCheckbox.checked = params.get('od') === '1';
+    }
 
     const ddParam = params.get('dd');
-    DOM.considerDamageDealtCheckbox.checked = ddParam === '1';
-    if (DOM.considerDamageDealtCheckbox.checked) {
-        if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'block';
-        if (params.has('ddb')) {
-            const ddbValue = params.get('ddb');
-            // Validate ddbValue against select options if necessary, or trust it for now
-            const isValidDdb = Array.from(DOM.damageDealtAwakeningBonusSelect.options).some(opt => opt.value === ddbValue);
-            if (isValidDdb) {
-                 DOM.damageDealtAwakeningBonusSelect.value = ddbValue;
-            } else {
-                // console.warn("Invalid 'ddb' (damage dealt bonus) parameter from URL:", ddbValue);
-                DOM.damageDealtAwakeningBonusSelect.value = "0";
+    if (DOM.considerDamageDealtCheckbox) {
+        DOM.considerDamageDealtCheckbox.checked = ddParam === '1';
+        if (DOM.considerDamageDealtCheckbox.checked) {
+            if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'block';
+            if (params.has('ddb') && DOM.damageDealtAwakeningBonusSelect) {
+                const ddbValue = params.get('ddb');
+                const isValidDdb = Array.from(DOM.damageDealtAwakeningBonusSelect.options).some(opt => opt.value === ddbValue);
+                if (isValidDdb) {
+                     DOM.damageDealtAwakeningBonusSelect.value = ddbValue;
+                } else {
+                    // console.warn("Invalid 'ddb' (damage dealt bonus) parameter from URL:", ddbValue);
+                    DOM.damageDealtAwakeningBonusSelect.value = "0";
+                }
             }
+        } else {
+            if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
+            if (DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0"; 
         }
-    } else {
-        if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
-        DOM.damageDealtAwakeningBonusSelect.value = "0"; 
     }
-    DOM.considerPartnerDownCheckbox.checked = params.get('pd') === '1';
+    
+    if (DOM.considerPartnerDownCheckbox) {
+        DOM.considerPartnerDownCheckbox.checked = params.get('pd') === '1';
+    }
 
     const simTypeFromUrl = params.get('sim');
     const viewTypeFromUrl = params.get('view');
