@@ -6,7 +6,7 @@ import * as Calculator from './calculator.js';
 import * as UI from './ui.js';
 import * as EventHandlers from './eventHandlers.js';
 import * as Sharing from './sharing.js';
-import GameOCR from './imageProcessor.js';
+import { GameOCR } from './imageProcessor.js';
 
 function initializeCharacterData() {
     const processedData = rawCharacterData.map(char => {

@@ -829,4 +829,14 @@ const checkOpenCV = (timeoutMs = 10000) =>
     }
 }
 
-export { processImageFromFile, GameOCR }; 
+function processImageForOCR(file, progressCallback) {
+    // This function is kept for compatibility or future use, but the main logic is now in GameOCR class.
+    // You might want to remove it if it's completely unused.
+    console.log("processImageForOCR is called, but the primary OCR logic has moved to the GameOCR class.");
+    return Promise.resolve({
+        hp: 'N/A',
+        awakening: 'N/A'
+    });
+}
+
+export { processImageForOCR, GameOCR }; 
