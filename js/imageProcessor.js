@@ -1,4 +1,5 @@
 import * as DOM from './domElements.js';
+// import { getState, updateState, setCharacters } from './state.js';
 
 // --- グローバル変数と設定 ---
 let paddleOcr = null;
@@ -325,13 +326,12 @@ async function readGaugeFromRoi(ctx, roi) {
     return awakeningValue;
 }
 
-function applyMonochrome(data, threshold) {
+function applyContrast(data, contrast) {
+    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
     for (let i = 0; i < data.length; i += 4) {
-        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        const color = avg > threshold ? 255 : 0;
-        data[i] = color;
-        data[i+1] = color;
-        data[i+2] = color;
+        data[i] = factor * (data[i] - 128) + 128;
+        data[i+1] = factor * (data[i+1] - 128) + 128;
+        data[i+2] = factor * (data[i+2] - 128) + 128;
     }
 }
 
@@ -415,15 +415,6 @@ function applyGrayscale(data) {
     }
 }
 
-function applyContrast(data, contrast) {
-    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
-    for (let i = 0; i < data.length; i += 4) {
-        data[i] = factor * (data[i] - 128) + 128;
-        data[i+1] = factor * (data[i+1] - 128) + 128;
-        data[i+2] = factor * (data[i+2] - 128) + 128;
-    }
-}
-
 function applyMonochrome(data, threshold) {
     for (let i = 0; i < data.length; i += 4) {
         const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
@@ -453,28 +444,40 @@ class GameOCR {
 
     async initializeOCR() {
         try {
-            const checkOpenCV = (timeoutMs = 10000) =>
-              new Promise((resolve, reject) => {
-                const start = Date.now();
-                const id = setInterval(() => {
-                  if (window.cv) { clearInterval(id); resolve(); }
-                  if (Date.now() - start > timeoutMs) {
-                    clearInterval(id);
-                    reject(new Error('OpenCV failed to load within timeout'));
-                  }
+            // Wait for opencv.js to be ready
+            const checkOpenCV = () => new Promise(resolve => {
+                const interval = setInterval(() => {
+                    if (window.cv) {
+                        console.log('OpenCV is ready.');
+                        clearInterval(interval);
+                        resolve();
+                    }
                 }, 100);
-              });
+            });
 
-            console.log('OpenCVのロードを待っています...');
+            console.log('Waiting for OpenCV to load...');
             await checkOpenCV();
-            console.log('OpenCVのロードが完了しました。');
             
-            console.log('PaddleOCRモデルを初期化しています...');
+            // Wait for paddle to be ready (it's loaded via module script)
+            const checkPaddle = () => new Promise(resolve => {
+                 const interval = setInterval(() => {
+                    if (window.paddle) {
+                        console.log('Paddle module is ready.');
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 100);
+            });
+            
+            console.log('Waiting for Paddle module to load...');
+            await checkPaddle();
+
+            console.log('Initializing PaddleOCR model...');
             const assetsPath = "https://cdn.jsdelivr.net/npm/paddleocr-browser/dist/";
             const res = await fetch(assetsPath + "ppocr_keys_v1.txt");
             const dic = await res.text();
 
-            await window.Paddle.init({
+            await window.paddle.init({
                 detPath: assetsPath + "ppocr_det.onnx",
                 recPath: assetsPath + "ppocr_rec.onnx",
                 dic: dic,
@@ -483,11 +486,12 @@ class GameOCR {
             });
             
             this.ocrReady = true;
-            console.log('PaddleOCRの初期化が完了しました。');
-            this.analyzeBtn.disabled = false; // Enable button once ready
+            console.log('PaddleOCR initialization complete.');
+            if (this.analyzeBtn) this.analyzeBtn.disabled = false;
+
         } catch (error) {
-            console.error('PaddleOCRの初期化に失敗しました:', error);
-            alert('OCRエンジンの初期化に失敗しました。ページをリロードしてください。');
+            console.error('Failed to initialize PaddleOCR:', error);
+            alert('OCR engine failed to initialize. Please reload the page.');
         }
     }
 
@@ -692,8 +696,8 @@ class GameOCR {
             const img = new Image();
             img.onload = () => {
                 this.currentImage = img;
-                this.displayImage(img);
                 this.showImageSection();
+                this.displayImage(img);
                 this.detectActivePlayer();
                 this.updateAllPreviews();
             };
@@ -826,21 +830,27 @@ class GameOCR {
 
     async performOCR(canvas, type) {
         if (!this.ocrReady) {
-            alert('OCRエンジンがまだ準備できていません。少し待ってから再試行してください。');
+            alert('OCR engine is not ready. Please wait a moment and try again.');
             throw new Error('OCR not initialized');
         }
         try {
-            const results = await window.Paddle.ocr(canvas);
+            // The result format from esearch-ocr is { src: [{text, mean, box}, ...] }
+            const results = await window.paddle.ocr(canvas);
             let value = '';
             let highestConfidence = 0;
+
             if (results && results.src && results.src.length > 0) {
-                 const numbers = results.src.map(item => item.text.replace(/\D/g, '')).join('');
+                 const numbers = results.src
+                     .map(item => item.text.replace(/\D/g, '')) // Get only digits
+                     .join('');
                  value = numbers;
+                 // 'mean' is the confidence score (0-1) in this library
                  highestConfidence = Math.max(...results.src.map(item => item.mean));
             }
             return { value, confidence: Math.round(highestConfidence * 100) };
+            
         } catch (error) {
-            console.error(`OCR処理エラー (${type}):`, error);
+            console.error(`OCR processing error (${type}):`, error);
             return { value: '', confidence: 0 };
         }
     }

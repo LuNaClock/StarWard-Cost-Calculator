@@ -218,17 +218,23 @@ function setupInitialEventListeners() {
 
 function initializeOcrModal() {
     const ocrModal = document.getElementById('ocrModal');
-    const openOcrBtn = document.querySelector('label[for="gameImageUpload"]');
+    const openOcrBtn = document.querySelector('.upload-button');
     const closeOcrBtn = document.getElementById('closeOcrModal');
     const applyOcrResultBtn = document.getElementById('applyOcrResultBtn');
     let gameOcrInstance = null;
 
-    const openModal = () => {
+    if (openOcrBtn) {
+        openOcrBtn.removeAttribute('for');
+    }
+
+    const openModal = (e) => {
+        e.preventDefault();
         ocrModal.style.display = 'flex';
         if (!gameOcrInstance) {
             gameOcrInstance = new GameOCR({
                 onOcrComplete: (results) => {
                     console.log('OCR完了:', results);
+                    if (applyOcrResultBtn) applyOcrResultBtn.disabled = false;
                 }
             });
         }
@@ -242,55 +248,36 @@ function initializeOcrModal() {
         if (gameOcrInstance && gameOcrInstance.lastOcrResult) {
             const { durability, awakening } = gameOcrInstance.lastOcrResult;
             if (durability && durability.value) {
-                domElements.beforeShotdownHpInput.value = durability.value;
+                DOM.beforeShotdownHpInput.value = durability.value;
             }
             if (awakening && awakening.value) {
-                domElements.beforeShotdownAwakeningGaugeInput.value = awakening.value;
+                DOM.beforeShotdownAwakeningGaugeInput.value = awakening.value;
             }
-            handleAwakeningInputChange(); //手動で入力した場合と同じように更新
+            // Manually trigger input events to ensure other parts of the app update
+            DOM.beforeShotdownHpInput.dispatchEvent(new Event('input', { bubbles: true }));
+            DOM.beforeShotdownAwakeningGaugeInput.dispatchEvent(new Event('input', { bubbles: true }));
             closeModal();
         } else {
             alert('適用するOCR結果がありません。');
         }
     };
 
-    openOcrBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevent file input trigger
-        openModal();
-    });
-
-    closeOcrBtn.addEventListener('click', closeModal);
-    applyOcrResultBtn.addEventListener('click', applyResults);
-
-    window.addEventListener('click', (event) => {
-        if (event.target == ocrModal) {
-            closeModal();
-        }
-    });
+    if (openOcrBtn) {
+        openOcrBtn.addEventListener('click', openModal);
+    }
+    if (closeOcrBtn) {
+        closeOcrBtn.addEventListener('click', closeModal);
+    }
+    if (applyOcrResultBtn) {
+        applyOcrResultBtn.addEventListener('click', applyResults);
+        applyOcrResultBtn.disabled = true;
+    }
 }
 
 function handleTeamChange() {
-    const { playerChar, partnerChar } = State.getState();
-    UI.updateTeamCost(playerChar, partnerChar);
-    UI.updateSelectedCharactersDisplay(playerChar, partnerChar);
-    UI.updateRemainingCostOptions(playerChar, partnerChar);
-
-    if (playerChar && partnerChar) {
-        handleTotalHpCalculation();
-        UI.updateShareButtons('totalHp', true);
-    } else {
-        // チームが不完全な場合、合計耐久力表示をリセット
-        const initialScenario = {
-            gainedHp: 0,
-            sequence: [],
-            totalHp: 0
-        };
-        UI.updateTotalHpResult('highest', initialScenario, null, null);
-        UI.updateTotalHpResult('compromise', initialScenario, null, null);
-        UI.updateTotalHpResult('bomb', initialScenario, null, null);
-        UI.updateTotalHpResult('lowest', initialScenario, null, null);
-        UI.updateShareButtons('totalHp', false);
-    }
+    UI.updateTeamCostDisplay();
+    UI.updateSelectedCharactersDisplay();
+    processTeamHpCombinations(); // チーム変更時に合計耐久力も再計算・表示
 }
 
 function handleTotalHpCalculation() {

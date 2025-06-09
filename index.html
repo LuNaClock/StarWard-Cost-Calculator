@@ -6,11 +6,11 @@
     <!-- Content Security Policy (CSP) -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
-                   script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://docs.opencv.org 'unsafe-inline' blob: 'unsafe-eval';
+                   script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://docs.opencv.org *.googletagmanager.com 'unsafe-inline' blob: 'unsafe-eval';
                    style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
                    style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://docs.opencv.org;
                    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-                   connect-src 'self' https://paddlejs.bj.bcebos.com https://cdn.jsdelivr.net https://docs.opencv.org data:;
+                   connect-src 'self' https://paddlejs.bj.bcebos.com https://cdn.jsdelivr.net https://docs.opencv.org data: *.google-analytics.com *.googletagmanager.com;
                    img-src 'self' data: blob: assets:;
                    form-action 'none';">
     <meta name="description" content="Starward Cost Calculator">
@@ -536,20 +536,18 @@
         <p>© 2025 Lu:Na:Clock</p> <!-- 年は適宜更新してください -->
     </footer>
 
-    <!-- GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
-            integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
     <!-- OCR Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
     <script async src="https://docs.opencv.org/4.8.0/opencv.js" type="text/javascript"></script>
     <script type="module">
         import * as Paddle from "https://cdn.jsdelivr.net/npm/esearch-ocr@5.1.5/dist/esearch-ocr.js";
-        window.Paddle = Paddle;
+        window.paddle = Paddle; // use window.paddle to be consistent
     </script>
-
-    <!-- モジュールとしてJavaScriptファイルを読み込む -->
+    
+    <!-- Your application scripts -->
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
