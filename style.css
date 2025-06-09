@@ -2831,9 +2831,10 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 }
 
 .ocr-modal-content .btn:disabled {
-    opacity: 0.6;
+    background-color: #555;
     cursor: not-allowed;
     transform: none;
+    box-shadow: none;
 }
 
 /* Results section */
@@ -2985,4 +2986,66 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
+}
+
+.upload-button {
+    color: #ffffff !important; /* 文字色を白に */
+    background-color: var(--primary-light) !important; /* 背景色をアクセントカラーに */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.upload-button:hover {
+    background-color: var(--neon-glow-strong) !important;
+    transform: translateY(-2px);
+}
+
+.ocr-warning {
+    font-size: 0.8em;
+    color: var(--medium-grey);
+    margin-top: 10px;
+    text-align: center;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+}
+
+.ocr-instructions-box {
+    margin: 20px auto;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-left: 4px solid var(--primary-light);
+    border-radius: 4px;
+    max-width: 90%;
+    color: var(--background-light);
+}
+
+.ocr-instructions-box h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.ocr-instructions-box ol {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.ocr-instructions-box ol li {
+    margin-bottom: 5px;
+}
+
+.ocr-instructions-box ol li:last-child {
+    margin-bottom: 0;
+}
+
+.ocr-modal-content .results-section {
+    padding: 20px;
+    margin-top: 20px;
 }

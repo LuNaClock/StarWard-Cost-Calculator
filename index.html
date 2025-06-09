@@ -73,6 +73,15 @@
                             </div>
                         </div>
                         
+                        <div id="ocr-instructions" class="ocr-instructions-box">
+                            <h4><i class="fas fa-info-circle"></i> 操作手順</h4>
+                            <ol>
+                                <li>「耐久値」と「覚醒ゲージ」の枠をドラッグ＆リサイズして、数字を正確に囲ってください。</li>
+                                <li>「OCR解析開始」ボタンを押して、数値を認識します。</li>
+                                <li>認識結果が正しくない場合は、プレビュー下の「ズーム」を調整し、再度解析してください。</li>
+                            </ol>
+                        </div>
+
                         <div class="controls">
                             <button id="analyzeBtn" class="btn btn-primary">OCR解析開始</button>
                             <button id="resetBtn" class="btn btn-secondary">リセット</button>
@@ -117,7 +126,7 @@
                                          <label for="awakeningContrast">コントラスト:</label>
                                          <input type="range" id="awakeningContrast" min="1" max="5" step="0.1" value="1">
                                          <label for="awakeningZoom">ズーム:</label>
-                                         <input type="range" id="awakeningZoom" min="1" max="4" step="0.2" value="2">
+                                         <input type="range" id="awakeningZoom" min="1" max="4" step="0.2" value="3.6">
                                      </div>
                                 </div>
                             </div>
@@ -285,10 +294,13 @@
                                 <h4><i class="fas fa-brain"></i> 覚醒ゲージ予測</h4>
 
                                 <div class="image-upload-section" style="margin-bottom: 20px; text-align: center;">
-                                    <label for="gameImageUpload" class="simulation-button upload-button" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                                    <label class="simulation-button upload-button" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
                                         <i class="fas fa-camera"></i> ゲーム画面から自動入力
                                     </label>
                                     <input type="file" id="gameImageUpload" accept="image/*" style="display: none;">
+                                    <p class="ocr-warning">
+                                        ※この機能は試験的な運用です。精度が保証できない為、認識された数値が正しいかを確認し、必要に応じて手動で修正してください。
+                                    </p>
                                     <p id="imageUploadStatus" class="upload-status" style="margin-top: 10px; font-size: 0.9em; color: var(--accent-color); min-height: 1.2em;"></p>
                                 </div>
 
