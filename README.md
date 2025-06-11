@@ -4,8 +4,6 @@
 
 ゲーム「星の翼」の対戦において、複雑な状況下での耐久値や覚醒ゲージを瞬時に計算・シミュレーションし、戦略立案を支援するウェブアプリケーションです。
 
-<br>
-
 **▼ Webアプリケーションはこちら**
 *   **公開URL:** [https://starward-calculator.ai-lifebook.com/](https://starward-calculator.ai-lifebook.com/)
 *   **GitHub Pages:** [https://lunaclock.github.io/StarWard-Cost-Calculator/](https://lunaclock.github.io/StarWard-Cost-Calculator/)
