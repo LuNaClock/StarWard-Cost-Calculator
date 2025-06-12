@@ -1,8 +1,0 @@
-PROJECT_OVERVIEW.md
-node_modules
-.gitignore
-.eslintrc.json
-eslint.config.cjs
-package.json
-package-lock.json
-.stylelintrc.json
