@@ -155,7 +155,7 @@ function handleCopyRedeployUrl(event) {
         return;
     }
     const urlToCopy = Sharing.generateShareUrlForRedeploy();
-    Sharing.copyUrlToClipboard(urlToCopy, event.currentTarget); 
+    Sharing.copyToClipboard(urlToCopy, event.currentTarget); 
 }
 
 function handleCopyTotalHpUrl(event) {
@@ -166,7 +166,7 @@ function handleCopyTotalHpUrl(event) {
         return;
     }
     const urlToCopy = Sharing.generateShareUrlForTotalHp();
-    Sharing.copyUrlToClipboard(urlToCopy, event.currentTarget); 
+    Sharing.copyToClipboard(urlToCopy, event.currentTarget); 
 }
 
 function handleImageUpload(event) {
@@ -206,7 +206,7 @@ export function setupEventListeners() {
     // Awakening Gauge Inputs
     const awakeningInputs = [
         DOM.beforeShotdownAwakeningGaugeInput,
-        DOM.beforeShotdownHpInput_damageTakenInput,
+        DOM.beforeShotdownHpInput,
         DOM.damageDealtAwakeningBonusSelect,
         DOM.considerOwnDownCheckbox,
         DOM.considerPartnerDownCheckbox

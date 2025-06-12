@@ -102,7 +102,7 @@ export function processSimulateRedeploy(charType) {
         return;
     }
 
-    if (!charToRedeploy) { 
+    if (!charToRedeploy) {
         // console.warn("Character to redeploy not found.");
         UI.resetSimulationResultsUI();
         return;
@@ -123,7 +123,7 @@ export function processSimulateRedeploy(charType) {
         DOM.beforeShotdownHpInput.dataset.characterName = charToRedeploy.name;
     }
     
-    processAwakeningGaugeCalculation(); 
+    processAwakeningGaugeCalculation();
 }
 
 export function processAwakeningGaugeCalculation() {
@@ -180,7 +180,6 @@ export function processAwakeningGaugeCalculation() {
         inputs.damageTakenInputValue = 0; // Fallback or handle error
     }
 
-
     const result = Calculator.calculateAwakeningGauge(inputs);
     UI.updateAwakeningGaugeUI(result);
 }
@@ -192,14 +191,14 @@ function initializePage() {
     UI.populateRemainingCostSelect(MAX_TEAM_COST);
     UI.setAwakeningDetailsConstants();
 
-    UI.updateTeamCostDisplay(MAX_TEAM_COST); 
-    UI.updateSelectedCharactersDisplay();   
+    UI.updateTeamCostDisplay(MAX_TEAM_COST);
+    UI.updateSelectedCharactersDisplay();
 
     EventHandlers.setupEventListeners();
-    Sharing.parseUrlAndRestoreState(); 
+    Sharing.parseUrlAndRestoreState();
 
     UI.initPageAnimations();
-    applyFiltersAndSearch(); 
+    applyFiltersAndSearch();
 
     // 初期キャラクター情報をカードに設定
     const player = State.getSelectedPlayerChar();
@@ -207,13 +206,18 @@ function initializePage() {
     if (player) UI.updateCharacterCard('player', player);
     if (partner) UI.updateCharacterCard('partner', partner);
 
-    handleTeamChange();
     setupInitialEventListeners();
     initializeOcrModal();
 }
 
 function setupInitialEventListeners() {
-    DOM.copyTotalHpUrlBtn.addEventListener('click', () => Sharing.copyToClipboard(Sharing.generateShareUrl('totalHp')));
+    // Note: The main event listeners are set up in eventHandlers.js.
+    // This function is for additional or specific initial bindings.
+    // The original duplicate `if` statement has been cleaned up.
+    if (DOM.copyTotalHpUrlBtn) {
+        DOM.copyTotalHpUrlBtn.addEventListener('click', () =>
+            Sharing.copyToClipboard(Sharing.generateShareUrl('totalHp')));
+    }
 }
 
 function initializeOcrModal() {
@@ -274,15 +278,4 @@ function initializeOcrModal() {
     }
 }
 
-function handleTeamChange() {
-    UI.updateTeamCostDisplay();
-    UI.updateSelectedCharactersDisplay();
-    processTeamHpCombinations(); // チーム変更時に合計耐久力も再計算・表示
-}
-
-function handleTotalHpCalculation() {
-    const scenarios = Calculator.calculateTeamHpScenarios();
-    UI.displayTotalTeamHpResults(scenarios);
-}
-
-document.addEventListener('DOMContentLoaded', initializePage);
+window.addEventListener('DOMContentLoaded', initializePage);
