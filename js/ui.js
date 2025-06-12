@@ -297,7 +297,7 @@ export function resetSimulationResultsUI() {
 
             if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'none';
             if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = "0";
-            if (DOM.beforeShotdownHpInput) { DOM.beforeShotdownHpInput.value = "0"; DOM.beforeShotdownHpInput.style.borderColor = '';}
+            if (DOM.beforeShotdownHpInput_damageTakenInput) { DOM.beforeShotdownHpInput_damageTakenInput.value = "0"; DOM.beforeShotdownHpInput_damageTakenInput.style.borderColor = '';}
             if(DOM.considerOwnDownCheckbox) DOM.considerOwnDownCheckbox.checked = false;
             if (DOM.considerDamageDealtCheckbox) {
                 DOM.considerDamageDealtCheckbox.checked = false;
@@ -427,28 +427,31 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
 }
 
 export function updateAwakeningGaugeUI(gaugeResult) {
-    const predictedAwakeningGauge = gaugeResult.predictedGauge.toFixed(1);
-    const awakeningAvailability = gaugeResult.isAwakeningPossible ? '可能' : '不可能';
-
-    if (DOM.predictedAwakeningGaugeSpan) DOM.predictedAwakeningGaugeSpan.textContent = `${predictedAwakeningGauge}%`;
-    if (DOM.awakeningAvailabilitySpan) {
-        DOM.awakeningAvailabilitySpan.textContent = awakeningAvailability;
-        DOM.awakeningAvailabilitySpan.className = gaugeResult.isAwakeningPossible ? 'text-green' : 'text-red';
-    }
+    if (!gaugeResult || !DOM.predictedAwakeningGaugeSpan || !DOM.awakeningAvailabilitySpan) return;
 
     if (gaugeResult.error) {
         DOM.predictedAwakeningGaugeSpan.textContent = '---';
         DOM.awakeningAvailabilitySpan.textContent = '--';
         DOM.awakeningAvailabilitySpan.className = 'info-value';
-        if(DOM.beforeShotdownHpInput) DOM.beforeShotdownHpInput.style.borderColor = 'red';
+        if(DOM.beforeShotdownHpInput_damageTakenInput) DOM.beforeShotdownHpInput_damageTakenInput.style.borderColor = 'red';
         return;
     }
 
-    if(DOM.beforeShotdownHpInput) {
-        DOM.beforeShotdownHpInput.style.borderColor = '';
-        if (DOM.beforeShotdownHpInput.value !== gaugeResult.validatedDamageTaken.toString()) {
-             DOM.beforeShotdownHpInput.value = gaugeResult.validatedDamageTaken;
+    if(DOM.beforeShotdownHpInput_damageTakenInput) {
+        DOM.beforeShotdownHpInput_damageTakenInput.style.borderColor = '';
+        if (DOM.beforeShotdownHpInput_damageTakenInput.value !== gaugeResult.validatedDamageTaken.toString()) {
+             DOM.beforeShotdownHpInput_damageTakenInput.value = gaugeResult.validatedDamageTaken;
         }
+    }
+
+    DOM.predictedAwakeningGaugeSpan.textContent = gaugeResult.finalPredictedGauge;
+    DOM.awakeningAvailabilitySpan.classList.remove('awakening-possible', 'awakening-not-possible');
+    if (gaugeResult.isThresholdMet) {
+        DOM.awakeningAvailabilitySpan.textContent = '使用可能';
+        DOM.awakeningAvailabilitySpan.classList.add('awakening-possible');
+    } else {
+        DOM.awakeningAvailabilitySpan.textContent = '使用不可';
+        DOM.awakeningAvailabilitySpan.classList.add('awakening-not-possible');
     }
 }
 
@@ -519,49 +522,4 @@ export function setAwakeningDetailsConstants() {
     if (DOM.partnerDownBonus20Span) DOM.partnerDownBonus20Span.textContent = PARTNER_DOWN_AWAKENING_BONUS["2.0"].toString();
     if (DOM.partnerDownBonus15Span) DOM.partnerDownBonus15Span.textContent = PARTNER_DOWN_AWAKENING_BONUS["1.5"].toString();
     if (DOM.awakeningThresholdValueSpan) DOM.awakeningThresholdValueSpan.textContent = AWAKENING_THRESHOLD.toString();
-}
-
-export function updateCharacterCard(charType, character) {
-    const cardElement = document.getElementById(`${charType}CharacterCard`);
-    if (!cardElement) {
-        console.warn(`Card element for ${charType} not found.`);
-        return;
-    }
-
-    // Update character name and cost
-    cardElement.querySelector('.selected-char-name').textContent = character.name;
-    cardElement.querySelector('.selected-char-cost').textContent = `コスト: ${character.cost.toFixed(1)}`;
-    cardElement.querySelector('.selected-char-hp').textContent = character.hp.toLocaleString();
-
-    // Update image
-    const charImageContainer = cardElement.querySelector('.char-image-container');
-    const imgElement = charImageContainer.querySelector('.selected-char-img');
-    const initialSpan = charImageContainer.querySelector('.initial');
-
-    if (character.image) {
-        imgElement.onload = () => { imgElement.style.display = 'block'; initialSpan.style.display = 'none'; };
-        imgElement.onerror = () => { imgElement.style.display = 'none'; initialSpan.style.display = 'flex'; };
-        imgElement.src = character.image;
-        if (imgElement.complete && imgElement.naturalWidth > 0) { // Cached
-            imgElement.style.display = 'block'; initialSpan.style.display = 'none';
-        } else if (!imgElement.complete) { // Not cached, not loaded yet
-            imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
-        }
-    } else {
-        imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
-    }
-
-    // Update HP bar
-    const hpBarFill = cardElement.querySelector('.hp-bar-fill');
-    const hpPercentageDisplay = cardElement.querySelector('.hp-percentage-display');
-    gsap.to(hpBarFill, { scaleX: 1, duration: 0.5, ease: "power2.out", transformOrigin: 'left center', overwrite: true });
-    hpPercentageDisplay.textContent = '100%';
-    hpPercentageDisplay.classList.add('show');
-    hpBarFill.classList.remove('hp-bar-low-pulse');
-
-    // Update the data-original-hp attribute on the card
-    cardElement.dataset.originalHp = character.hp;
-
-    // Show the card if it was hidden
-    cardElement.classList.add('active');
 }
