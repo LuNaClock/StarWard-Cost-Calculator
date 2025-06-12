@@ -207,7 +207,6 @@ function initializePage() {
     if (player) UI.updateCharacterCard('player', player);
     if (partner) UI.updateCharacterCard('partner', partner);
 
-    handleTeamChange();
     setupInitialEventListeners();
     initializeOcrModal();
 }
@@ -266,23 +265,12 @@ function initializeOcrModal() {
         openOcrBtn.addEventListener('click', openModal);
     }
     if (closeOcrBtn) {
-        closeOcrBtn.addEventListener('click', closeModal);
+    closeOcrBtn.addEventListener('click', closeModal);
     }
     if (applyOcrResultBtn) {
-        applyOcrResultBtn.addEventListener('click', applyResults);
+    applyOcrResultBtn.addEventListener('click', applyResults);
         applyOcrResultBtn.disabled = true;
-    }
+        }
 }
 
-function handleTeamChange() {
-    UI.updateTeamCostDisplay();
-    UI.updateSelectedCharactersDisplay();
-    processTeamHpCombinations(); // チーム変更時に合計耐久力も再計算・表示
-}
-
-function handleTotalHpCalculation() {
-    const scenarios = Calculator.calculateTeamHpScenarios();
-    UI.displayTotalTeamHpResults(scenarios);
-}
-
-document.addEventListener('DOMContentLoaded', initializePage);
+window.addEventListener('DOMContentLoaded', initializePage);

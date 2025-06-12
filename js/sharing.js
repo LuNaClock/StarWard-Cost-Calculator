@@ -1,7 +1,7 @@
 import * as State from './state.js';
 import * as DOM from './domElements.js';
 import { getCharacters } from './state.js';
-import { processSimulateRedeploy, processAwakeningGaugeCalculation, processTeamHpCombinations } from './app.js';
+import { processSimulateRedeploy, processTeamHpCombinations } from './app.js';
 import * as UI from './ui.js';
 import { MAX_TEAM_COST } from '../data.js';
 
@@ -266,7 +266,16 @@ export function parseUrlAndRestoreState() {
     }
 }
 
-export async function copyUrlToClipboard(textToCopy, buttonElement) {
+export function generateShareUrl(type) {
+    if (type === 'totalHp') {
+        return generateShareUrlForTotalHp();
+    } else if (type === 'redeploy') {
+        return generateShareUrlForRedeploy();
+    }
+    return BASE_URL; // Default fallback
+}
+
+export async function copyToClipboard(textToCopy, buttonElement) {
     if (!navigator.clipboard) {
         try {
             const textArea = document.createElement("textarea");
@@ -292,7 +301,7 @@ export async function copyUrlToClipboard(textToCopy, buttonElement) {
                 alert('URLのコピーに失敗しました。手動でコピーしてください。');
                 // console.error('Fallback: クリップボードへのコピーに失敗しました。');
             }
-        } catch (err) {
+        } catch {
             alert('URLのコピーに失敗しました。手動でコピーしてください。');
             // console.error('Fallback: クリップボードへのコピー中にエラーが発生しました:', err);
         }
@@ -310,7 +319,7 @@ export async function copyUrlToClipboard(textToCopy, buttonElement) {
                 buttonElement.disabled = false;
             }, 2000);
         }
-    } catch (err) {
+    } catch {
         // console.error('クリップボードへのコピーに失敗しました:', err);
         alert('URLのコピーに失敗しました。手動でコピーしてください。');
     }

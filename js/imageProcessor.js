@@ -70,7 +70,7 @@ export async function processImageFromFile(file) {
             STATUS_ELEMENT.textContent = 'HPとゲージの値を読み取り中...';
             const [hp, gauge] = await Promise.all([
                 readHpFromRoi(ctx, roi),
-                readGaugeFromRoi(ctx, roi)
+                readGaugeFromRoi(ctx)
             ]);
 
             // 3. 結果をUIに反映
@@ -291,10 +291,9 @@ async function readHpFromRoi(ctx, roi) {
 /**
  * ROIから覚醒ゲージの割合をOCRで読み取る
  * @param {CanvasRenderingContext2D} ctx - 元画像のコンテキスト
- * @param {object} roi - プレイヤーUIの領域 (この関数では未使用)
  * @returns {Promise<number|null>} - ゲージの割合(%) or null
  */
-async function readGaugeFromRoi(ctx, roi) { 
+async function readGaugeFromRoi(ctx) { 
     const width = ctx.canvas.width;
     const scale = width / 1920;
 
@@ -324,15 +323,6 @@ async function readGaugeFromRoi(ctx, roi) {
     const awakeningValue = postProcessGauge(text);
     
     return awakeningValue;
-}
-
-function applyContrast(data, contrast) {
-    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
-    for (let i = 0; i < data.length; i += 4) {
-        data[i] = factor * (data[i] - 128) + 128;
-        data[i+1] = factor * (data[i+1] - 128) + 128;
-        data[i+2] = factor * (data[i+2] - 128) + 128;
-    }
 }
 
 function processImageForOCR(file, progressCallback) {
@@ -415,16 +405,6 @@ function applyGrayscale(data) {
     }
 }
 
-function applyMonochrome(data, threshold) {
-    for (let i = 0; i < data.length; i += 4) {
-        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        const color = avg > threshold ? 255 : 0;
-        data[i] = color;
-        data[i+1] = color;
-        data[i+2] = color;
-    }
-}
-
 class GameOCR {
     constructor(callbacks) {
         this.callbacks = callbacks; // { onOcrComplete: function(results) }
@@ -450,10 +430,10 @@ class GameOCR {
                     if (window.cv) {
                         console.log('OpenCV is ready.');
                         clearInterval(interval);
-                        resolve();
-                    }
-                }, 100);
-            });
+                            resolve();
+                        }
+                    }, 100);
+                });
 
             console.log('Waiting for OpenCV to load...');
             await checkOpenCV();
@@ -468,7 +448,7 @@ class GameOCR {
                     }
                 }, 100);
             });
-            
+
             console.log('Waiting for Paddle module to load...');
             await checkPaddle();
 
@@ -518,9 +498,17 @@ class GameOCR {
         this.durabilityPreview = document.getElementById('durabilityPreview');
         this.awakeningPreview = document.getElementById('awakeningPreview');
         this.durabilityContrast = document.getElementById('durabilityContrast');
+        this.durabilityContrastValue = document.getElementById('durabilityContrastValue');
         this.durabilityZoom = document.getElementById('durabilityZoom');
+        this.durabilityZoomValue = document.getElementById('durabilityZoomValue');
+        this.durabilityErosion = document.getElementById('durabilityErosion');
+        this.durabilityErosionValue = document.getElementById('durabilityErosionValue');
         this.awakeningContrast = document.getElementById('awakeningContrast');
+        this.awakeningContrastValue = document.getElementById('awakeningContrastValue');
         this.awakeningZoom = document.getElementById('awakeningZoom');
+        this.awakeningZoomValue = document.getElementById('awakeningZoomValue');
+        this.awakeningErosion = document.getElementById('awakeningErosion');
+        this.awakeningErosionValue = document.getElementById('awakeningErosionValue');
 
         this.analyzeBtn.disabled = true;
     }
@@ -538,8 +526,10 @@ class GameOCR {
 
         this.durabilityContrast.addEventListener('input', () => this.updatePreview('durability'));
         this.durabilityZoom.addEventListener('input', () => this.updatePreview('durability'));
+        this.durabilityErosion.addEventListener('input', () => this.updatePreview('durability'));
         this.awakeningContrast.addEventListener('input', () => this.updatePreview('awakening'));
         this.awakeningZoom.addEventListener('input', () => this.updatePreview('awakening'));
+        this.awakeningErosion.addEventListener('input', () => this.updatePreview('awakening'));
     }
 
     setupRegionInteraction(element, regionName) {
@@ -752,7 +742,8 @@ class GameOCR {
             const durabilityCanvas = this.preprocessRegion({
                 regionElement: this.durabilityRegion,
                 contrast: this.durabilityContrast.value,
-                zoom: this.durabilityZoom.value
+                zoom: this.durabilityZoom.value,
+                erosion: this.durabilityErosion.value
             });
             this.updateProgress(20, '耐久値を認識中...');
             const durabilityResult = await this.performOCR(durabilityCanvas, '耐久値');
@@ -761,7 +752,8 @@ class GameOCR {
             const awakeningCanvas = this.preprocessRegion({
                 regionElement: this.awakeningRegion,
                 contrast: this.awakeningContrast.value,
-                zoom: this.awakeningZoom.value
+                zoom: this.awakeningZoom.value,
+                erosion: this.awakeningErosion.value
             });
             this.updateProgress(60, '覚醒ゲージを認識中...');
             const awakeningResult = await this.performOCR(awakeningCanvas, '覚醒ゲージ');
@@ -786,7 +778,7 @@ class GameOCR {
 
     preprocessRegion(params) {
         const extractedCanvas = this.extractRegion(params.regionElement);
-        return this.preprocessImage(extractedCanvas, params.contrast, params.zoom);
+        return this.preprocessImage(extractedCanvas, params.contrast, params.zoom, params.erosion);
     }
 
     extractRegion(regionElement) {
@@ -804,27 +796,52 @@ class GameOCR {
         return tempCanvas;
     }
 
-    preprocessImage(canvas, contrast, zoom) {
+    preprocessImage(canvas, contrast, zoom, numOpening) {
         if (!window.cv || !this.currentImage) return canvas;
         const numContrast = parseFloat(contrast);
         const numZoom = parseFloat(zoom);
+        const numOpeningValue = parseInt(numOpening, 10); // スライダーの値を取得
+
         const dsize = new cv.Size(canvas.width * numZoom, canvas.height * numZoom);
-        const src = cv.imread(canvas);
-        const dst = new cv.Mat();
+        let src = cv.imread(canvas);
+        let dst = new cv.Mat();
+        
+        // 元の処理
         cv.resize(src, dst, dsize, 0, 0, cv.INTER_CUBIC);
         cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY, 0);
-        const noiseReduced = new cv.Mat();
+        
+        let noiseReduced = new cv.Mat();
         cv.medianBlur(dst, noiseReduced, 3);
-        const contrasted = new cv.Mat();
-        noiseReduced.convertTo(contrasted, -1, numContrast, 0); 
-        const binarized = new cv.Mat();
+        
+        let contrasted = new cv.Mat();
+        noiseReduced.convertTo(contrasted, -1, numContrast, 0);
+        
+        let binarized = new cv.Mat();
         cv.adaptiveThreshold(contrasted, binarized, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 11, 2);
-        cv.imshow(canvas, binarized);
+
+        let imageToDisplay = new cv.Mat();
+
+        if (numOpeningValue > 0) {
+            // Opening処理（cv.MORPH_OPEN）を実行
+            // カーネルサイズをスライダーの値に基づいて動的に設定
+            let kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(numOpeningValue + 1, numOpeningValue + 1));
+            cv.morphologyEx(binarized, imageToDisplay, cv.MORPH_OPEN, kernel);
+            kernel.delete(); // カーネルはここで解放
+        } else {
+            // スライダーが0の場合は二値化された画像をそのまま表示
+            binarized.copyTo(imageToDisplay);
+        }
+
+        cv.imshow(canvas, imageToDisplay); // 最終的に表示するのはOpening後の画像
+
+        // メモリ解放
         src.delete();
         dst.delete();
         noiseReduced.delete();
         binarized.delete();
         contrasted.delete();
+        imageToDisplay.delete();
+
         return canvas;
     }
 
@@ -901,20 +918,30 @@ class GameOCR {
 
     updatePreview(regionName) {
         if (!this.currentImage) return;
-        let regionElement, previewCanvas, contrast, zoom;
+        let regionElement, previewCanvas, contrast, zoom, erosion;
         if (regionName === 'durability') {
             regionElement = this.durabilityRegion;
             previewCanvas = this.durabilityPreview;
             contrast = this.durabilityContrast.value;
             zoom = this.durabilityZoom.value;
+            erosion = this.durabilityErosion.value;
+            
+            this.durabilityContrastValue.textContent = parseFloat(contrast).toFixed(1);
+            this.durabilityZoomValue.textContent = parseFloat(zoom).toFixed(1);
+            this.durabilityErosionValue.textContent = erosion;
         } else {
             regionElement = this.awakeningRegion;
             previewCanvas = this.awakeningPreview;
             contrast = this.awakeningContrast.value;
             zoom = this.awakeningZoom.value;
+            erosion = this.awakeningErosion.value;
+            
+            this.awakeningContrastValue.textContent = parseFloat(contrast).toFixed(1);
+            this.awakeningZoomValue.textContent = parseFloat(zoom).toFixed(1);
+            this.awakeningErosionValue.textContent = erosion;
         }
         const extractedCanvas = this.extractRegion(regionElement);
-        const processedCanvas = this.preprocessImage(extractedCanvas, contrast, zoom);
+        const processedCanvas = this.preprocessImage(extractedCanvas, contrast, zoom, erosion);
         const previewCtx = previewCanvas.getContext('2d');
         previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         const hRatio = previewCanvas.width / processedCanvas.width;
