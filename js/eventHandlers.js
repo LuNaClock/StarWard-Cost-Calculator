@@ -197,6 +197,9 @@ export function setupEventListeners() {
     // Character Grid
     if (DOM.characterGrid) DOM.characterGrid.addEventListener('click', handleCharacterCardClick);
 
+    // New: Redeploy Simulation Selected Characters Grid
+    if (DOM.redeploySimulationSelectedCharactersGrid) DOM.redeploySimulationSelectedCharactersGrid.addEventListener('click', handleCharacterCardClick);
+
     // Redeploy Simulation
     if (DOM.playerCharSelect) DOM.playerCharSelect.addEventListener('change', handlePlayerCharSelectChange);
     if (DOM.partnerCharSelect) DOM.partnerCharSelect.addEventListener('change', handlePartnerCharSelectChange);

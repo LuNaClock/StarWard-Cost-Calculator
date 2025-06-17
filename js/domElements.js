@@ -32,6 +32,9 @@ export const redeployCalculatedHpSpan = document.getElementById('redeployCalcula
 export const simulationHpBarFill = simulationResultsDiv?.querySelector('.hp-bar-fill');
 export const simulationHpPercentageDisplay = simulationResultsDiv?.querySelector('.hp-percentage-display');
 
+// New element for full character cards in Redeploy Simulation
+export const redeploySimulationSelectedCharactersGrid = document.getElementById('redeploySimulationSelectedCharactersGrid');
+
 // Awakening Gauge Prediction
 export const awakeningSimulationArea = document.querySelector('.awakening-simulation-area');
 export const beforeShotdownAwakeningGaugeInput = document.getElementById('beforeShotdownAwakeningGaugeInput');

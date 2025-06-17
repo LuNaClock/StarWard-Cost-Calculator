@@ -123,7 +123,6 @@ export function generateCharacterCards(charactersToDisplay) {
 
                 card.appendChild(body);
                 DOM.characterGrid.appendChild(card);
-                gsap.from(card, { opacity: 0, y: 80, scale: 0.8, rotateZ: gsap.utils.random(-5, 5), duration: 0.4, ease: "power3.out", delay: index * 0.02, overwrite: true });
             });
             hideLoading();
         }
@@ -209,6 +208,119 @@ export function populateRemainingCostSelect(maxTeamCost) {
     }
 }
 
+export function generateSelectedCharacterCards() {
+    const playerChar = getSelectedPlayerChar();
+    const partnerChar = getSelectedPartnerChar();
+    DOM.redeploySimulationSelectedCharactersGrid.innerHTML = ''; // Clear previous cards
+
+    const charactersToDisplay = [];
+    if (playerChar) charactersToDisplay.push(playerChar);
+    if (partnerChar) charactersToDisplay.push(partnerChar);
+
+    if (charactersToDisplay.length === 0) {
+        // No characters selected, display a message or leave empty
+        DOM.redeploySimulationSelectedCharactersGrid.innerHTML = '<p class="no-results-message">選択されたキャラクターがいません</p>';
+        return;
+    }
+
+    charactersToDisplay.forEach(character => {
+        const card = document.createElement('div');
+        card.className = 'character-card'; // Use existing character-card style
+        card.dataset.originalHp = character.hp;
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'character-header';
+        const nameSpan = createTextElement('span', '', character.name);
+        const costSpan = createTextElement('span', 'character-cost', `コスト: ${character.cost.toFixed(1)}`);
+        header.appendChild(nameSpan);
+        header.appendChild(costSpan);
+        card.appendChild(header);
+
+        // Body
+        const body = document.createElement('div');
+        body.className = 'character-body';
+
+        // Image
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'character-image';
+        const imgElement = document.createElement('img');
+        imgElement.alt = character.name;
+        imgElement.className = 'character-icon-img';
+        const initialSpan = createTextElement('span', 'initial', character.name.charAt(0));
+        
+        if (character.image) {
+            imgElement.onload = () => { imgElement.style.display = 'block'; initialSpan.style.display = 'none'; };
+            imgElement.onerror = () => { imgElement.style.display = 'none'; initialSpan.style.display = 'flex'; };
+            imgElement.src = character.image;
+            if (imgElement.complete && imgElement.naturalWidth > 0) {
+                imgElement.style.display = 'block'; initialSpan.style.display = 'none';
+            } else if (!imgElement.complete) { // if not cached, default to initial until loaded
+                 imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
+            }
+        } else {
+            imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
+        }
+        imageContainer.appendChild(imgElement);
+        imageContainer.appendChild(initialSpan);
+        body.appendChild(imageContainer);
+
+        // Stats
+        const stats = document.createElement('div');
+        stats.className = 'character-stats';
+        stats.appendChild(createTextElement('span', '', '本来の耐久値:'));
+        stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
+        body.appendChild(stats);
+
+        // HP Bar
+        const hpBarContainer = document.createElement('div');
+        hpBarContainer.className = 'hp-bar-container';
+        const hpBarFill = document.createElement('div');
+        hpBarFill.className = 'hp-bar-fill';
+        hpBarContainer.appendChild(hpBarFill);
+        body.appendChild(hpBarContainer);
+        body.appendChild(createTextElement('div', 'hp-percentage-display', ''));
+
+        // Cost Table
+        const table = document.createElement('table');
+        table.className = 'cost-table';
+        const applicableRemainingCosts = costRemainingMap[character.cost.toFixed(1)] || [];
+        const costOverHPs = applicableRemainingCosts.map(remainingCost => {
+            let calculatedHpForDisplay;
+            if (character.cost <= 0) calculatedHpForDisplay = 0;
+            else if (remainingCost >= character.cost) calculatedHpForDisplay = character.hp;
+            else if (remainingCost > 0) calculatedHpForDisplay = Math.round(character.hp * (remainingCost / character.cost));
+            else calculatedHpForDisplay = 0;
+            return calculatedHpForDisplay;
+        });
+
+        const thead = document.createElement('thead');
+        const trHead = document.createElement('tr');
+        trHead.appendChild(createTextElement('th', '', '残りコスト'));
+        applicableRemainingCosts.forEach(cost => trHead.appendChild(createTextElement('th', '', cost.toFixed(1))));
+        thead.appendChild(trHead);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        const trBody = document.createElement('tr');
+        trBody.appendChild(createTextElement('td', '', '再出撃時耐久値'));
+        costOverHPs.forEach(hp => {
+            const td = createTextElement('td', '', hp.toLocaleString());
+            td.dataset.redeployHp = hp;
+            trBody.appendChild(td);
+        });
+        tbody.appendChild(trBody);
+        table.appendChild(tbody);
+        body.appendChild(table);
+
+        card.appendChild(body);
+        DOM.redeploySimulationSelectedCharactersGrid.appendChild(card);
+
+        // Apply HP bar animation on load (initially 100%)
+        animateHpDisplayOnCard(card, character.hp);
+    });
+}
+
 export function updateSelectedCharactersDisplay() {
     const selectedPlayerChar = getSelectedPlayerChar();
     const selectedPartnerChar = getSelectedPartnerChar();
@@ -260,6 +372,9 @@ export function updateSelectedCharactersDisplay() {
     } else {
         gsap.set(DOM.selectedCharsDisplay, { minHeight: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' });
     }
+
+    // Call the new function to generate full character cards
+    generateSelectedCharacterCards();
 }
 
 export function updateTeamCostDisplay(maxTeamCost) {
