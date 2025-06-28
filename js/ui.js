@@ -462,7 +462,7 @@ export function displayTotalTeamHpResults(scenarios) {
 
     if (DOM.totalHpDisplayArea) {
         DOM.totalHpDisplayArea.classList.add('active'); 
-        gsap.to(DOM.totalHpDisplayArea, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
+        gsap.fromTo(DOM.totalHpDisplayArea, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
         if (DOM.shareTotalHpResultBtn) DOM.shareTotalHpResultBtn.style.display = 'flex'; 
         if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.style.display = 'flex';     
     } else return;
@@ -603,19 +603,67 @@ export function toggleAccordion(headerElement, contentElement, isSubAccordion = 
     }
 }
 
+// === ここから修正箇所 ===
 export function toggleTotalHpAccordion(headerElement, contentElement) {
     if (!headerElement || !contentElement) return;
-    headerElement.classList.toggle('active');
-    headerElement.setAttribute('aria-expanded', String(headerElement.classList.contains('active')));
-    const isShown = contentElement.classList.toggle('show');
 
-    if (isShown) {
-        gsap.to(contentElement, { maxHeight: "300px", opacity: 1, paddingTop: "8px", paddingBottom: "8px", marginTop: "10px", borderWidth: "1px", duration: 0.4, ease: "power2.out" });
-    } else {
-        gsap.to(contentElement, { maxHeight: 0, opacity: 0, paddingTop: 0, paddingBottom: 0, marginTop: 0, borderWidth: "0px", duration: 0.4, ease: "power2.in" });
-    }
+    // JavaScriptでクラスを付け外しするだけにする
+    headerElement.classList.toggle('active');
+    contentElement.classList.toggle('show');
+    headerElement.setAttribute('aria-expanded', contentElement.classList.contains('show'));
+}
+// === ここまで修正箇所 ===
+
+
+// 新規追加: ページロード時に指定のアコーディオンを確実に閉じる関数
+export function ensureAccordionsClosedAtStart() {
+    const accordionsToClose = [
+        { header: DOM.totalHpMainAccordionHeader, content: DOM.totalHpMainAccordionContent },
+        { header: DOM.selectedCharactersFullCardAccordionHeader, content: DOM.selectedCharactersFullCardAccordionContent }
+    ];
+
+    accordionsToClose.forEach(({ header, content }) => {
+        if (header && content) {
+            // 状態がexpandedまたはactiveであれば閉じる
+            if (header.getAttribute('aria-expanded') === 'true' || header.classList.contains('active') || content.classList.contains('show')) {
+                header.setAttribute('aria-expanded', 'false');
+                header.classList.remove('active');
+                content.classList.remove('show');
+                gsap.set(content, { maxHeight: 0, opacity: 0, paddingTop: 0, paddingBottom: 0, marginTop: 0, borderWidth: "0px" });
+            }
+        }
+    });
 }
 
+// 新規追加: 指定のアコーディオンをアニメーション付きで開く関数
+export function openAccordionWithAnimation(headerElement, contentElement, isTotalHp = false, onCompleteCallback = null) {
+    if (!headerElement || !contentElement) return;
+
+    const isExpanded = headerElement.getAttribute('aria-expanded') === 'true';
+    if (!isExpanded) { // 現在閉じている場合のみ開く
+        headerElement.setAttribute('aria-expanded', 'true');
+        headerElement.classList.add('active');
+        contentElement.classList.add('show');
+
+        if (isTotalHp) {
+             // This branch is now also handled by CSS transitions, but we keep the structure
+             if (onCompleteCallback) {
+                 setTimeout(onCompleteCallback, 400); // Match CSS transition duration
+             }
+        } else {
+            gsap.to(contentElement, {
+                maxHeight: contentElement.scrollHeight + "px", // scrollHeightで適切な高さを設定
+                paddingTop: "25px", // メインアコーディオンのデフォルトパディング
+                paddingBottom: "25px",
+                opacity: 1,
+                scaleY: 1,
+                duration: 0.4,
+                ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                onComplete: onCompleteCallback // コールバックを渡す
+            });
+        }
+    }
+}
 
 export function initPageAnimations() {
     const tl = gsap.timeline({ defaults: { opacity: 0, ease: "power3.out", overwrite: true } });

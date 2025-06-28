@@ -456,7 +456,7 @@ h1 {
     align-items: center;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     border-radius: 10px;
-    margin-top: 20px; /* 追加: 検索欄の上のスペース */
+    margin-top: 0px; /* 追加: 検索欄の上のスペース */
     margin-bottom: 20px; /* 追加: 検索欄の下のスペース */
 }
 
@@ -707,7 +707,7 @@ h1 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* さらに大きく */
     gap: 35px; /* 間隔を広げる */
-    margin-top: 50px;
+    margin-top: 0px;
 }
 
 .character-card {
@@ -1728,13 +1728,10 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 
 /* ----- 新規追加: 合計耐久力表示エリア ----- */
 .total-hp-display-area {
-    margin-top: 40px;
+    margin-top: 50px;
     padding: 30px;
     border-top: 1px dashed var(--light-grey-border);
     text-align: center;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
     will-change: opacity, transform;
     background-color: #F8FCFF;
     border-radius: 12px;
@@ -1782,34 +1779,38 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         margin-right: 5px;
     }
 
+/* === ここから修正箇所 === */
 .total-hp-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 25px;
     margin-bottom: 25px;
-    text-align: left;
+    align-items: flex-start;
+    justify-content: center;
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
 }
-@media (max-width: 1200px) {
-     .total-hp-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+
+.total-hp-grid > .total-hp-scenario {
+    flex: 1 1 400px;
+    max-width: calc(50% - 12.5px);
+    min-width: 0;
+    box-sizing: border-box;
 }
+
 @media (max-width: 920px) {
-    .total-hp-grid {
-        grid-template-columns: repeat(2, 1fr);
-         max-width: 700px;
-    }
-}
-@media (max-width: 650px) {
-    .total-hp-grid {
-        grid-template-columns: 1fr;
-        max-width: 400px;
+    .total-hp-grid > .total-hp-scenario {
+        flex-basis: 300px;
     }
 }
 
+@media (max-width: 680px) {
+    .total-hp-grid > .total-hp-scenario {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+}
 
 .total-hp-scenario {
     background-color: #E6EEF4;
@@ -1821,7 +1822,9 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     text-align: center;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
+/* === ここまで修正箇所 === */
 
     .total-hp-scenario h4 {
         color: var(--primary-dark);
@@ -1848,98 +1851,91 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
         .total-hp-scenario .redeploy-char-info:last-of-type {
             margin-bottom: 0;
         }
-    /* NEW: Total HP Accordion Styles */
-    .total-hp-accordion-header {
-        background-color: transparent;
-        border: none;
-        border-bottom: 1px dashed rgba(0,0,0,0.1);
-        padding: 10px 0 8px 0;
-        width: 100%;
-        text-align: left;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 15px;
-        margin-bottom: 0;
-        outline: none;
-        transition: background-color 0.3s ease;
-    }
-    .total-hp-accordion-header:hover {
-        background-color: rgba(0, 191, 255, 0.05);
-    }
-    .total-hp-accordion-title {
-        color: var(--primary-dark);
-        font-size: 1.1em;
-        font-weight: 600;
-    }
-    .total-hp-accordion-header .accordion-icon {
-        font-size: 1em;
-        color: var(--primary-dark);
-    }
 
-    .total-hp-accordion-content {
-        list-style: none;
-        font-size: 0.95em;
-        color: var(--text-color);
-        text-align: left;
-        overflow-y: auto;
-        max-height: 0; /* Closed by default */
-        border-style: solid;
-        border-color: var(--light-grey-border);
-        border-width: 0px; /* Closed by default */
-        border-radius: 5px;
-        background-color: var(--card-background);
-        scrollbar-width: thin;
-        scrollbar-color: var(--primary-light) #f1f1f1;
-        opacity: 0; /* Closed by default */
-        padding: 0; /* Closed by default */
-        margin: 0; /* Closed by default */
-        transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                    opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                    padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                    margin-top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                    /* border-width 0.4s ease; */ /* 問題の可能性があった行をコメントアウトまたは削除 */
-    }
-    .total-hp-accordion-content.show {
-        max-height: 300px;
-        opacity: 1;
-        padding: 8px;
-        margin-top: 10px;
-        border-width: 1px;
-    }
+.total-hp-accordion-header {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px dashed rgba(0,0,0,0.1);
+    padding: 10px 0 8px 0;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+    margin-bottom: 0;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+.total-hp-accordion-header:hover {
+    background-color: rgba(0, 191, 255, 0.05);
+}
+.total-hp-accordion-title {
+    color: var(--primary-dark);
+    font-size: 1.1em;
+    font-weight: 600;
+}
+.total-hp-accordion-header .accordion-icon {
+    font-size: 1em;
+    color: var(--primary-dark);
+}
 
-    .total-hp-accordion-content::-webkit-scrollbar { width: 10px; }
-    .total-hp-accordion-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-    .total-hp-accordion-content::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 10px; }
-    .total-hp-accordion-content::-webkit-scrollbar-thumb:hover { background: #008DCC; }
+/* === ここから修正箇所 === */
+.total-hp-accordion-content {
+    list-style: none; /* This is the container for the <ul> */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out, border-width 0.4s ease-in-out, margin-top 0.4s ease-in-out;
+    background-color: var(--card-background);
+    border-style: solid;
+    border-color: var(--light-grey-border);
+    border-width: 0px;
+    border-radius: 5px;
+    padding: 0 8px;
+    margin-top: 0;
+}
 
-    .total-hp-accordion-content li {
-        background-color: var(--card-background);
-        padding: 6px 10px;
-        border-radius: 5px;
-        margin-bottom: 5px;
-        border: 1px solid var(--light-grey-border);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        white-space: normal;
-        word-break: break-word;
-    }
-    .total-hp-accordion-content li:last-child {
-        margin-bottom: 0;
-    }
-    .total-hp-accordion-content li:hover {
-        transform: translateX(5px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
+.total-hp-accordion-content.show {
+    max-height: 300px; /* 適切な高さに設定 */
+    overflow-y: auto; /* コンテンツが多ければスクロール */
+    padding: 8px;
+    margin-top: 10px;
+    border-width: 1px;
+}
+/* === ここまで修正箇所 === */
 
-    .total-hp-scenario .info-label {
-        font-size: 0.85em;
-    }
+.total-hp-accordion-content::-webkit-scrollbar { width: 10px; }
+.total-hp-accordion-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+.total-hp-accordion-content::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 10px; }
+.total-hp-accordion-content::-webkit-scrollbar-thumb:hover { background: #008DCC; }
 
-    .total-hp-scenario .info-value {
-        font-size: 1.3em;
-    }
+.total-hp-accordion-content li {
+    background-color: var(--card-background);
+    padding: 6px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    border: 1px solid var(--light-grey-border);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    white-space: normal;
+    word-break: break-word;
+}
+.total-hp-accordion-content li:last-child {
+    margin-bottom: 0;
+}
+.total-hp-accordion-content li:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.total-hp-scenario .info-label {
+    font-size: 0.85em;
+}
+
+.total-hp-scenario .info-value {
+    font-size: 1.3em;
+}
 
 @media (max-width: 480px) {
     .total-hp-display-area h3 {
@@ -2298,9 +2294,9 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
       width: 80%;
       max-width: 300px; 
   }
-  .total-hp-grid {
-    grid-template-columns: 1fr; /* 768px以下では1列に */
-  }
+  .total-hp-scenario {
+        max-width: 100%; /* 画面が狭いときは1列にする */
+    }
   .awakening-additional-options { 
       flex-direction: column;
       align-items: flex-start;
@@ -2359,7 +2355,7 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 
 /* ----- 新規追加: メインセクション用アコーディオンのスタイル ----- */
 .main-section-accordion {
-    margin-bottom: 30px; /* 各メインセクション間のマージン */
+    margin-bottom: 20px; /* 各メインセクション間のマージン */
     border: 1px solid rgba(0, 191, 255, 0.3); /* 通常のアコーディオンより少し目立つボーダー */
     border-radius: 12px;
     overflow: hidden;
@@ -2400,16 +2396,35 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 .main-section-accordion-content {
     background-color: var(--card-background);
     padding: 0; /* コンテンツ内の simulation-container や total-hp-display-area が自身のパディングを持つため */
-    max-height: none; /* 初期表示で開いている場合は制限なし */
-    opacity: 1;
-    transform: scaleY(1);
-    /* 開閉アニメーションは既存の .accordion-content と同様にJSで制御 */
+    max-height: 0; /* 初期表示で閉じているように変更 */
+    opacity: 0;    /* 初期表示で閉じているように変更 */
+    transform: scaleY(0.8); /* 初期表示で閉じているように変更 */
+    transform-origin: top;
+    overflow: hidden; /* Contents should be hidden when closed */
+    transition: 
+      max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+      padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* paddingもイージング適用 */
+    will-change: max-height, padding, opacity, transform; /* will-changeを追加 */
 }
 
 .main-section-accordion-content.show {
-    padding: 0; /* showクラスでも同様 */
-    max-height: 6000px; /* 親アコーディオンの最大高さ (デバッグ前の値に戻す) */
-    /* overflow: visible !important; */ /* デバッグ用スタイルを削除 */
+    padding: 25px; /* showクラスでパディングを適用 */
+    max-height: 6000px; /* 親アコーディオンの最大高さ */
+    opacity: 1;
+    transform: scaleY(1); /* 表示時に元のサイズに */
+    overflow: visible; /* 開いたときにコンテンツが表示されるように */
+}
+
+/* 新規追加: 「再出撃シミュレーション」のコンテンツを常に開く */
+#redeploy-simulation-content {
+    max-height: 6000px !important; /* 常に開くための十分な高さ */
+    opacity: 1 !important;
+    transform: scaleY(1) !important;
+    overflow: visible !important;
+    padding-top: 0px !important; /* デフォルトのパディングを適用 */
+    padding-bottom: 25px !important; /* デフォルトのパディングを適用 */
 }
 
 /* simulation-container と total-hp-display-area のマージンとボーダーを調整 */
@@ -2516,14 +2531,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     padding-bottom: 25px !important; /* Ensure padding is applied from .accordion-content.show */
 }
 
-/* Resetting styles on the parent accordion content that might conflict */
-/* This selector targets the accordion content within the usage guide specifically */
-.usage-guide-container > .accordion > .accordion-item > .accordion-content {
-    /* Try to reset transform and opacity if they are causing issues with details visibility */
-    /* transform: none !important; */ /* Might break opening animation, test carefully */
-    /* opacity: 1 !important; */     /* Might break opening animation, test carefully */
-}
-
 .usage-guide-container > .accordion > .accordion-item > .accordion-content.show {
     /* Re-apply desired open state for this specific accordion, overriding general ones if needed */
     max-height: none !important; /* Let content define height */
@@ -2544,11 +2551,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     padding: 1rem;
     margin-top: 1rem;
     color: var(--text-color);
-}
-
-.guide-details[open] {
-    /* Styles for when details is open */
-    /* overflow: visible; /* Already set by the rule above */
 }
 
 .guide-details summary {
@@ -3048,4 +3050,10 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 .ocr-modal-content .results-section {
     padding: 20px;
     margin-top: 20px;
+}
+
+/* #redeploy-simulation-section にセクション間のマージンを追加 */
+#redeploy-simulation-section {
+    margin-top: 70px;
+    margin-bottom: 20px;
 }

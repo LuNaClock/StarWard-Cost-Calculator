@@ -7,12 +7,13 @@ export const rawCharacterData = [
     { name: "ロタ", hp: 2892, cost: 3, image: "assets/character_icons/rota.webp" },
     { name: "ヒカリ", hp: 2886, cost: 3, image: "assets/character_icons/hikari.webp" },
     { name: "シュウウ", hp: 2886, cost: 3, image: "assets/character_icons/qiuyu.webp" },
+    { name: "鈴蘭", hp: 2723, cost: 3, image: "assets/character_icons/convallaria.webp" },
     { name: "イーザー", hp: 2886, cost: 3, image: "assets/character_icons/ether.webp" },
     { name: "ライン", hp: 2850, cost: 3, image: "assets/character_icons/rhine.webp" },
     { name: "エルフィン", hp: 2808, cost: 3, image: "assets/character_icons/elfin.webp" },
+    { name: "秋雲", hp: 2886, cost: 3.0, image: "assets/character_icons/akigumo.webp" },
     { name: "シャオリン", hp: 2772, cost: 2.5, image: "assets/character_icons/xiaoling.webp" },
     { name: "アリス", hp: 2772, cost: 2.5, image: "assets/character_icons/aliz.webp" },
-    { name: "スズラン", hp: 2723, cost: 3, image: "assets/character_icons/convallaria.webp" },
     { name: "轟雷改", hp: 2669, cost: 2.5, image: "assets/character_icons/gourai-kai.webp" },
     { name: "フリード", hp: 2664, cost: 2.5, image: "assets/character_icons/ffreedo.webp" },
     { name: "スカイセーバー", hp: 2664, cost: 2.5, image: "assets/character_icons/skysaber.webp" },
@@ -39,6 +40,7 @@ export const rawCharacterData = [
     { name: "ヒビキ", hp: 2168, cost: 2, image: "assets/character_icons/hibiki.webp" },
     { name: "ダークスター", hp: 2155, cost: 2, image: "assets/character_icons/darkstar.webp" },
     { name: "スティレット", hp: 2340, cost: 2, image: "assets/character_icons/stylet.webp" },
+    { name: "ボルゾイ", hp: 2210, cost: 2.0, image: "assets/character_icons/borzoi.webp" },
     { name: "ローランド", hp: 2088, cost: 1.5, image: "assets/character_icons/roland.webp" },
     { name: "カタリナ", hp: 2080, cost: 1.5, image: "assets/character_icons/katerina.webp" },
     { name: "オーキッド", hp: 1980, cost: 1.5, image: "assets/character_icons/orchid.webp" },
@@ -51,7 +53,9 @@ export const kanjiNameReadings = {
     "轟雷改": { hiragana: "ごうらいかい", katakana: "ゴウライカイ" },
     "十八号": { hiragana: "じゅうはちごう", katakana: "ジュウハチゴウ" },
     "稲": { hiragana: "いね", katakana: "イネ" },
-    "咲迦": { hiragana: "えみか", katakana: "エミカ" }
+    "咲迦": { hiragana: "えみか", katakana: "エミカ" },
+    "鈴蘭": { hiragana: "すずらん", katakana: "スズラン" },
+    "秋雲": { hiragana: "あきぐも", katakana: "アキグモ" }
 };
 
 export const costRemainingMap = {

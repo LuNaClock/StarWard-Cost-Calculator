@@ -10,6 +10,16 @@ export const mainAccordionHeaders = document.querySelectorAll('.accordion-header
 export const subAccordionHeaders = document.querySelectorAll('.sub-accordion-header');
 export const totalHpAccordionHeaders = document.querySelectorAll('.total-hp-accordion-header');
 
+// New: Main section accordion headers and contents
+export const totalHpMainAccordionHeader = document.querySelector('#total-hp-accordion .accordion-header');
+export const totalHpMainAccordionContent = document.querySelector('#total-hp-accordion .accordion-content');
+export const selectedCharactersFullCardAccordionHeader = document.querySelector('#selected-characters-full-card-accordion .accordion-header');
+export const selectedCharactersFullCardAccordionContent = document.querySelector('#selected-characters-full-card-accordion .accordion-content');
+
+// New: Redeploy Simulation Section
+export const redeploySimulationSection = document.getElementById('redeploy-simulation-section');
+export const redeploySimulationContent = document.getElementById('redeploy-simulation-content');
+
 // Loading Overlay
 export const loadingOverlay = document.getElementById('loadingOverlay');
 

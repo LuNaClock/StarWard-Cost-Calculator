@@ -225,13 +225,13 @@
         </div>
 
         <!-- 再出撃シミュレーションセクションをアコーディオン化 -->
-        <div class="main-section-accordion">
+        <div id="redeploy-simulation-section">
             <div class="accordion-item">
                 <button class="accordion-header main-section-accordion-header" aria-expanded="true">
                     <span><i class="fas fa-robot"></i> 再出撃シミュレーション</span>
                     <i class="fas fa-chevron-down accordion-icon"></i>
                 </button>
-                <div class="accordion-content main-section-accordion-content">
+                <div class="accordion-content" id="redeploy-simulation-content">
                     <div class="simulation-container">
                         <p class="guide-intro">自機と相方を選択し、現在のチーム残りコストを入力することで、どちらかの機体が再出撃した場合の耐久値をシミュレーションできます。</p>
 
@@ -430,11 +430,11 @@
         <!-- チーム合計耐久力予測セクションをアコーディオン化 -->
         <div class="main-section-accordion" id="total-hp-accordion">
             <div class="accordion-item">
-                <button class="accordion-header main-section-accordion-header" aria-expanded="true">
+                <button class="accordion-header main-section-accordion-header" aria-expanded="false">
                     <span><i class="fas fa-medal"></i> チーム合計耐久力予測</span>
                     <i class="fas fa-chevron-down accordion-icon"></i>
                 </button>
-                <div class="accordion-content main-section-accordion-content show">
+                <div class="accordion-content main-section-accordion-content">
                     <div class="total-hp-display-area" id="totalHpDisplayArea">
                         <p class="total-hp-summary">
                             選択された<span class="cost-value-small" id="selectedPlayerCharNameSummary">自機</span>と<span class="cost-value-small" id="selectedPartnerCharNameSummary">相方</span>の組み合わせで、
@@ -506,11 +506,11 @@
 
         <div class="main-section-accordion" id="selected-characters-full-card-accordion">
             <div class="accordion-item">
-                <button class="accordion-header main-section-accordion-header" aria-expanded="true">
+                <button class="accordion-header main-section-accordion-header" aria-expanded="false">
                     <span><i class="fas fa-user-friends"></i> 選択キャラクター詳細</span>
                     <i class="fas fa-chevron-down accordion-icon"></i>
                 </button>
-                <div class="accordion-content main-section-accordion-content show">
+                <div class="accordion-content main-section-accordion-content">
                     <div id="redeploySimulationSelectedCharactersGrid" class="character-grid">
                         <!-- 自機と相方のキャラクターカードがここに挿入されます -->
                     </div>

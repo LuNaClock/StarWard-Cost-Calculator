@@ -124,6 +124,17 @@ export function processSimulateRedeploy(charType) {
     }
     
     processAwakeningGaugeCalculation(); 
+
+    // シミュレーション実行後、関連するアコーディオンを開く
+    UI.openAccordionWithAnimation(DOM.totalHpMainAccordionHeader, DOM.totalHpMainAccordionContent, true, () => {
+        // 「チーム合計耐久力予測」のアコーディオンが完全に開いた後に更新
+        UI.updateTeamCostDisplay(MAX_TEAM_COST); // シミュレーション結果を元に更新
+        processTeamHpCombinations(); // シミュレーション結果を元に更新
+    });
+    UI.openAccordionWithAnimation(DOM.selectedCharactersFullCardAccordionHeader, DOM.selectedCharactersFullCardAccordionContent, false, () => {
+        // 「選択キャラクター詳細」のアコーディオンが完全に開いた後に更新
+        UI.updateSelectedCharactersDisplay();   // シミュレーション結果を元に更新
+    });
 }
 
 export function processAwakeningGaugeCalculation() {
@@ -192,8 +203,8 @@ function initializePage() {
     UI.populateRemainingCostSelect(MAX_TEAM_COST);
     UI.setAwakeningDetailsConstants();
 
-    UI.updateTeamCostDisplay(MAX_TEAM_COST); 
-    UI.updateSelectedCharactersDisplay();   
+    // UI.updateTeamCostDisplay(MAX_TEAM_COST); // シミュレーション実行後に更新するためコメントアウト
+    // UI.updateSelectedCharactersDisplay();   // シミュレーション実行後に更新するためコメントアウト
 
     EventHandlers.setupEventListeners();
     Sharing.parseUrlAndRestoreState(); 
@@ -207,9 +218,12 @@ function initializePage() {
     if (player) UI.updateCharacterCard('player', player);
     if (partner) UI.updateCharacterCard('partner', partner);
 
-    handleTeamChange();
+    // handleTeamChange(); // 初期ロード時にアコーディオンが開いてしまうためコメントアウト
     setupInitialEventListeners();
     initializeOcrModal();
+
+    // ページロード時に指定のアコーディオンを確実に閉じる
+    UI.ensureAccordionsClosedAtStart();
 }
 
 function setupInitialEventListeners() {
