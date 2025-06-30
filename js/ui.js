@@ -629,7 +629,7 @@ export function ensureAccordionsClosedAtStart() {
                 header.setAttribute('aria-expanded', 'false');
                 header.classList.remove('active');
                 content.classList.remove('show');
-                gsap.set(content, { maxHeight: 0, opacity: 0, paddingTop: 0, paddingBottom: 0, marginTop: 0, borderWidth: "0px" });
+                gsap.set(content, { maxHeight: 0, opacity: 0, paddingTop: 0, paddingBottom: 0, marginTop: 0, borderWidth: "0px", overflow: 'hidden', scaleY: 0.8 });
             }
         }
     });
@@ -645,23 +645,16 @@ export function openAccordionWithAnimation(headerElement, contentElement, isTota
         headerElement.classList.add('active');
         contentElement.classList.add('show');
 
-        if (isTotalHp) {
-             // This branch is now also handled by CSS transitions, but we keep the structure
-             if (onCompleteCallback) {
-                 setTimeout(onCompleteCallback, 400); // Match CSS transition duration
-             }
-        } else {
-            gsap.to(contentElement, {
-                maxHeight: contentElement.scrollHeight + "px", // scrollHeightで適切な高さを設定
-                paddingTop: "25px", // メインアコーディオンのデフォルトパディング
-                paddingBottom: "25px",
-                opacity: 1,
-                scaleY: 1,
-                duration: 0.4,
-                ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                onComplete: onCompleteCallback // コールバックを渡す
-            });
-        }
+        gsap.to(contentElement, {
+            maxHeight: contentElement.scrollHeight + "px",
+            paddingTop: isTotalHp ? "0px" : "25px",
+            paddingBottom: "25px",
+            opacity: 1,
+            scaleY: 1,
+            duration: 0.4,
+            ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            onComplete: onCompleteCallback
+        });
     }
 }
 

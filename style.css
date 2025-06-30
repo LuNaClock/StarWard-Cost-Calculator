@@ -2410,21 +2410,23 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 }
 
 .main-section-accordion-content.show {
-    padding: 25px; /* showクラスでパディングを適用 */
-    max-height: 6000px; /* 親アコーディオンの最大高さ */
+    max-height: 6000px; /* 常に開くための十分な高さ */
     opacity: 1;
-    transform: scaleY(1); /* 表示時に元のサイズに */
-    overflow: visible; /* 開いたときにコンテンツが表示されるように */
+    transform: scaleY(1);
+    overflow: visible;
+    padding-top: 0px; /* デフォルトのパディングを適用 */
+    padding-bottom: 25px; /* デフォルトのパディングを適用 */
+    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out, transform 0.4s ease-in-out, padding 0.4s ease-in-out;
 }
 
 /* 新規追加: 「再出撃シミュレーション」のコンテンツを常に開く */
 #redeploy-simulation-content {
-    max-height: 6000px !important; /* 常に開くための十分な高さ */
-    opacity: 1 !important;
-    transform: scaleY(1) !important;
-    overflow: visible !important;
-    padding-top: 0px !important; /* デフォルトのパディングを適用 */
-    padding-bottom: 25px !important; /* デフォルトのパディングを適用 */
+    max-height: 6000px; /* 常に開くための十分な高さ */
+    opacity: 1;
+    transform: scaleY(1);
+    overflow: visible;
+    padding-top: 0px; /* デフォルトのパディングを適用 */
+    padding-bottom: 25px; /* デフォルトのパディングを適用 */
 }
 
 /* simulation-container と total-hp-display-area のマージンとボーダーを調整 */
