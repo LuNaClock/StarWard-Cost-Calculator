@@ -27,6 +27,7 @@ export const rawCharacterData = [
     { name: "シグナス", hp: 2492, cost: 2.5, image: "assets/character_icons/cygnus.webp" },
     { name: "バーゼラルド", hp: 2556, cost: 2.5, image: "assets/character_icons/baselard.webp" },
     { name: "ノーラ", hp: 2772, cost: 2.5, image: "assets/character_icons/nora.webp" },
+    { name: "サンダーボルト・OTOME", hp: 2500, cost: 2.5, image: "assets/character_icons/thunderbolt・OTOME.webp" },
     { name: "パラス", hp: 2448, cost: 2, image: "assets/character_icons/pallas.webp" },
     { name: "ヴァーチェ", hp: 2348, cost: 2, image: "assets/character_icons/virtue.webp" },
     { name: "ベータ", hp: 2340, cost: 2, image: "assets/character_icons/beta.webp" },
