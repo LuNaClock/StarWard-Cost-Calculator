@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星の翼 夏イベント特設ページ</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+          integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- ★既存のCSSファイルを読み込む★ -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- event.html 専用のスタイル --- */
+        /* 背景関連のスタイルはここに残します */
+        body {
+            /* style.css の背景設定をイベントページ用に上書き */
+            background: #e0f7fa; /* 明るい水色をベースに */
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* 泡のエフェクト */
+            background: 
+                radial-gradient(circle at 10% 90%, rgba(173, 216, 230, 0.4) 1px, transparent 1%) 0 0,
+                radial-gradient(circle at 30% 70%, rgba(173, 216, 230, 0.4) 1px, transparent 1%) 20px 20px,
+                radial-gradient(circle at 50% 50%, rgba(173, 216, 230, 0.4) 1px, transparent 1%) 40px 40px,
+                radial-gradient(circle at 70% 30%, rgba(173, 216, 230, 0.4) 1px, transparent 1%) 60px 60px,
+                radial-gradient(circle at 90% 10%, rgba(173, 216, 230, 0.4) 1px, transparent 1%) 80px 80px;
+            background-size: 100px 100px;
+            animation: bubbleEffect 15s linear infinite;
+            z-index: -1;
+        }
+
+        /* style.cssのグリッドやノイズを無効化 */
+        body::after {
+            display: none;
+        }
+
+        @keyframes bubbleEffect {
+            from { background-position: 0 0; }
+            to { background-position: 1000px 1000px; }
+        }
+
+        /* コンテンツエリアのスタイル */
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+        }
+
+        .event-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .event-header h1 {
+            color: #007bff; /* イベント専用のタイトル色 */
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-section {
+            margin-bottom: 40px;
+        }
+        .event-section > h2 {
+            color: #0056b3;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* アコーディオンボタンのデザインをイベント用に少し調整 */
+        .accordion-header {
+            background-color: #007bff;
+            color: white;
+        }
+        .accordion-header:hover {
+            background-color: #0056b3;
+        }
+        .accordion-header.active {
+            background-color: #0056b3;
+        }
+
+        /* ドリンクカードのデザイン */
+        .drink-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .drink-card {
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            text-align: center;
+        }
+        .drink-card h3 { color: #333; margin-bottom: 10px; }
+        .drink-card p { color: #666; font-size: 0.9em; }
+        
+        /* 戻るボタン */
+        .back-to-main { display: block; margin: 30px auto 0; text-align: center; }
+        .back-to-main a {
+            display: inline-block; background-color: #007bff; color: white;
+            padding: 10px 20px; border-radius: 5px; text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .back-to-main a:hover { background-color: #0056b3; }
+
+    </style>
+</head>
+<body>
+    <!-- 修正: style.cssの仕様に合わせてHTMLのクラス名を変更 -->
+    <div class="container">
+        <header class="event-header">
+            <h1>星の翼 夏イベント特設ページ</h1>
+            <p>期間限定イベント「ビーチパーティー」開催中！</p>
+        </header>
+
+        <section class="event-section">
+            <div class="accordion"> <!-- accordionでラップ -->
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        イベント概要 <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <p>今年の夏は「ビーチパーティー」で盛り上がろう！限定ドリンクを調合して、豪華報酬をゲットしよう！</p>
+                        <img src="assets/event/event.webp" alt="ビーチパーティーイベント画像" style="max-width: 100%; height: auto; display: block; margin: 15px auto;">
+                        <p>イベント期間: 6.26 - 8.28</p>
+                        <p>対戦での獲得上限: ベース 0/6, トッピング 0/12</p>
+                        <p>※24日での上限が解放されます。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="event-section">
+            <div class="accordion"> <!-- accordionでラップ -->
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        ドリンク調合方法 <i class="fas fa-chevron-down accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <p>ドリンクはベース1種とトッピング2種を組み合わせて調合します。正しい組み合わせで、美味しいドリンクを作りましょう！</p>
+                        <img src="assets/event/event_drink.webp" alt="ドリンク調合材料画像" style="max-width: 100%; height: auto; display: block; margin: 15px auto;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="event-section">
+            <h2>全ドリンクレシピ</h2>
+            <div class="drink-grid"></div>
+        </section>
+
+        <div class="back-to-main">
+            <a href="index.html">メインページに戻る</a>
+        </div>
+    </div>
+
+    <script>
+        const drinksData = [
+            { name: "スノーストーム", type: "ソーダ", ingredient1: "ヨーグルト", ingredient2: "アイスクリーム", note: "" }, { name: "シーブリーズ", type: "ソーダ", ingredient1: "ミント", ingredient2: "レモン", note: "確率でレアに" }, { name: "ベリーハニティ", type: "ティー", ingredient1: "いちごジャム", ingredient2: "ハチミツ", note: "" }, { name: "アルケミー", type: "ティー", ingredient1: "ミント", ingredient2: "練乳", note: "確率でレアに" }, { name: "シャカフロ", type: "ジュース", ingredient1: "レモン", ingredient2: "ヨーグルト", note: "" }, { name: "トワイライト", type: "ジュース", ingredient1: "キャラメル", ingredient2: "ハチミツ", note: "確率でレアに" }, { name: "魔女のキス", type: "ミルク", ingredient1: "いちごジャム", ingredient2: "練乳", note: "" }, { name: "スノーゴールド", type: "ミルク", ingredient1: "キャラメル", ingredient2: "アイスクリーム", note: "確率でレアに" }, { name: "ゴーストシップ", type: "ソーダ", ingredient1: "誤素材", ingredient2: "誤素材", note: "" }, { name: "怨念のスープ", type: "ティー", ingredient1: "誤素材", ingredient2: "誤素材", note: "" }, { name: "禁断の果実", type: "ジュース", ingredient1: "誤素材", ingredient2: "誤素材", note: "" }, { name: "ナゾファーム", type: "ミルク", ingredient1: "誤素材", ingredient2: "誤素材", note: "" }, { name: "真夏メモリー", type: "ソーダ", ingredient1: "ミント", ingredient2: "レモン", note: "レア枠" }, { name: "ヒスイ盃", type: "ティー", ingredient1: "ミント", ingredient2: "練乳", note: "レア枠" }, { name: "コハク", type: "ジュース", ingredient1: "キャラメル", ingredient2: "ハチミツ", note: "レア枠" }, { name: "午後のひととき", type: "ミルク", ingredient1: "キャラメル", ingredient2: "アイスクリーム", note: "レア枠" }, { name: "カオスミックス", type: "ミルク", ingredient1: "誤素材", ingredient2: "誤素材", note: "" }];
+        const drinkGrid = document.querySelector('.drink-grid');
+        if (drinkGrid) {
+            drinksData.forEach(drink => {
+                const drinkCard = document.createElement('div');
+                drinkCard.classList.add('drink-card');
+                drinkCard.innerHTML = `<h3>${drink.name}</h3><p>タイプ: ${drink.type}</p><p>素材1: ${drink.ingredient1}</p><p>素材2: ${drink.ingredient2}</p>${drink.note ? `<p>備考: ${drink.note}</p>` : ''}`;
+                drinkGrid.appendChild(drinkCard);
+            });
+        }
+
+        function setEventBackground() {
+            const hour = new Date().getHours();
+            let backgroundImage = (hour >= 6 && hour < 18) ? 'url("assets/event/day.webp")' : 'url("assets/event/night.webp")';
+            // イベントページではbodyのスタイルを直接変更
+            document.body.style.backgroundImage = backgroundImage;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            document.body.style.backgroundAttachment = 'fixed';
+        }
+        setEventBackground();
+        setInterval(setEventBackground, 3600000);
+
+        // ★★★ 修正後のアコーディオン用JavaScript ★★★
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                // ボタン自体に 'active' クラスをトグル
+                this.classList.toggle('active');
+                
+                // 対応するコンテンツ要素を取得
+                const content = this.nextElementSibling;
+                
+                if (content && content.classList.contains('accordion-content')) {
+                    // ★★★ is-open の代わりに .show クラスをトグルする ★★★
+                    content.classList.toggle('show');
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

@@ -412,7 +412,7 @@ export function resetSimulationResultsUI() {
 
             if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'none';
             if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = "0";
-            if (DOM.beforeShotdownHpInput_damageTakenInput) { DOM.beforeShotdownHpInput_damageTakenInput.value = "0"; DOM.beforeShotdownHpInput_damageTakenInput.style.borderColor = '';}
+            if (DOM.beforeShotdownHpInput) { DOM.beforeShotdownHpInput.value = "0"; DOM.beforeShotdownHpInput.style.borderColor = '';}
             if(DOM.considerOwnDownCheckbox) DOM.considerOwnDownCheckbox.checked = false;
             if (DOM.considerDamageDealtCheckbox) {
                 DOM.considerDamageDealtCheckbox.checked = false;
@@ -548,14 +548,14 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         DOM.predictedAwakeningGaugeSpan.textContent = '---';
         DOM.awakeningAvailabilitySpan.textContent = '--';
         DOM.awakeningAvailabilitySpan.className = 'info-value';
-        if(DOM.beforeShotdownHpInput_damageTakenInput) DOM.beforeShotdownHpInput_damageTakenInput.style.borderColor = 'red';
+        if(DOM.beforeShotdownHpInput) DOM.beforeShotdownHpInput.style.borderColor = 'red';
         return;
     }
 
-    if(DOM.beforeShotdownHpInput_damageTakenInput) {
-        DOM.beforeShotdownHpInput_damageTakenInput.style.borderColor = '';
-        if (DOM.beforeShotdownHpInput_damageTakenInput.value !== gaugeResult.validatedDamageTaken.toString()) {
-             DOM.beforeShotdownHpInput_damageTakenInput.value = gaugeResult.validatedDamageTaken;
+    if(DOM.beforeShotdownHpInput) {
+        DOM.beforeShotdownHpInput.style.borderColor = '';
+        if (DOM.beforeShotdownHpInput.value !== gaugeResult.validatedDamageTaken.toString()) {
+             DOM.beforeShotdownHpInput.value = gaugeResult.validatedDamageTaken;
         }
     }
 

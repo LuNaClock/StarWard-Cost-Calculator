@@ -209,7 +209,7 @@ export function setupEventListeners() {
     // Awakening Gauge Inputs
     const awakeningInputs = [
         DOM.beforeShotdownAwakeningGaugeInput,
-        DOM.beforeShotdownHpInput_damageTakenInput,
+        DOM.beforeShotdownHpInput,
         DOM.damageDealtAwakeningBonusSelect,
         DOM.considerOwnDownCheckbox,
         DOM.considerPartnerDownCheckbox
