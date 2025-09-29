@@ -1,0 +1,24 @@
+/* フッターセクション */
+
+footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+    color: var(--medium-grey);
+    font-size: 0.9em;
+    border-top: 1px solid var(--light-grey-border);
+    background-color: var(--card-background);
+    border-radius: 10px;
+    box-shadow: var(--soft-shadow);
+}
+
+footer a {
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: var(--transition-speed);
+}
+
+footer a:hover {
+    color: var(--accent-orange);
+    text-shadow: 0 0 5px var(--accent-orange);
+} 

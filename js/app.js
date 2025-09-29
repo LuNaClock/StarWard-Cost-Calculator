@@ -7,6 +7,7 @@ import * as UI from './ui.js';
 import * as EventHandlers from './eventHandlers.js';
 import * as Sharing from './sharing.js';
 import { GameOCR } from './imageProcessor.js';
+import { initAccordions, accordionManager } from './accordion.js';
 
 function initializeCharacterData() {
     const processedData = rawCharacterData.map(char => {
@@ -126,15 +127,28 @@ export function processSimulateRedeploy(charType) {
     processAwakeningGaugeCalculation(); 
 
     // シミュレーション実行後、関連するアコーディオンを開く
-    UI.openAccordionWithAnimation(DOM.totalHpMainAccordionHeader, DOM.totalHpMainAccordionContent, true, () => {
+    if (DOM.totalHpMainAccordionHeader && DOM.totalHpMainAccordionContent) {
+        accordionManager.openAccordion(DOM.totalHpMainAccordionHeader);
         // 「チーム合計耐久力予測」のアコーディオンが完全に開いた後に更新
         UI.updateTeamCostDisplay(MAX_TEAM_COST); // シミュレーション結果を元に更新
         processTeamHpCombinations(); // シミュレーション結果を元に更新
-    });
-    UI.openAccordionWithAnimation(DOM.selectedCharactersFullCardAccordionHeader, DOM.selectedCharactersFullCardAccordionContent, false, () => {
+        
+        // 再出撃予測結果にスクロール
+        setTimeout(() => {
+            if (DOM.redeployPredictionResultsSection) {
+                DOM.redeployPredictionResultsSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                });
+            }
+        }, 300);
+    }
+    if (DOM.selectedCharactersFullCardAccordionHeader && DOM.selectedCharactersFullCardAccordionContent) {
+        accordionManager.openAccordion(DOM.selectedCharactersFullCardAccordionHeader);
         // 「選択キャラクター詳細」のアコーディオンが完全に開いた後に更新
         UI.updateSelectedCharactersDisplay();   // シミュレーション結果を元に更新
-    });
+    }
 }
 
 export function processAwakeningGaugeCalculation() {
@@ -197,19 +211,19 @@ export function processAwakeningGaugeCalculation() {
 }
 
 function initializePage() {
+    // アコーディオンを最初に初期化
+    initAccordions();
+    
     initializeCharacterData();
-
     UI.populateCharacterSelects();
     UI.populateRemainingCostSelect(MAX_TEAM_COST);
     UI.setAwakeningDetailsConstants();
 
-    // UI.updateTeamCostDisplay(MAX_TEAM_COST); // シミュレーション実行後に更新するためコメントアウト
-    // UI.updateSelectedCharactersDisplay();   // シミュレーション実行後に更新するためコメントアウト
-
     EventHandlers.setupEventListeners();
     Sharing.parseUrlAndRestoreState(); 
 
-    UI.initPageAnimations();
+    // ページアニメーションは無効化したまま
+    // UI.initPageAnimations();
     applyFiltersAndSearch(); 
 
     // 初期キャラクター情報をカードに設定
@@ -218,12 +232,20 @@ function initializePage() {
     if (player) UI.updateCharacterCard('player', player);
     if (partner) UI.updateCharacterCard('partner', partner);
 
-    // handleTeamChange(); // 初期ロード時にアコーディオンが開いてしまうためコメントアウト
+    // 初期表示を更新
+    UI.updateSelectedCharactersDisplay();
+    UI.updateTeamCostDisplay(MAX_TEAM_COST);
+
+    // 再出撃シミュレーションのアコーディオンを確実に開く
+    setTimeout(() => {
+        const redeploySimulationHeader = document.querySelector('#redeploy-simulation-section .accordion-header');
+        if (redeploySimulationHeader && redeploySimulationHeader.getAttribute('aria-expanded') === 'true') {
+            accordionManager.openAccordion(redeploySimulationHeader);
+        }
+    }, 100);
+
     setupInitialEventListeners();
     initializeOcrModal();
-
-    // ページロード時に指定のアコーディオンを確実に閉じる
-    UI.ensureAccordionsClosedAtStart();
 }
 
 function setupInitialEventListeners() {
@@ -298,5 +320,14 @@ function handleTotalHpCalculation() {
     const scenarios = Calculator.calculateTeamHpScenarios();
     UI.displayTotalTeamHpResults(scenarios);
 }
+
+// デバッグ用: グローバル関数を追加
+window.debugState = {
+    getSelectedPlayerChar: () => State.getSelectedPlayerChar(),
+    getSelectedPartnerChar: () => State.getSelectedPartnerChar(),
+    getCharacters: () => State.getCharacters(),
+    updateSelectedCharactersDisplay: () => UI.updateSelectedCharactersDisplay(),
+    updateTeamCostDisplay: () => UI.updateTeamCostDisplay(MAX_TEAM_COST)
+};
 
 document.addEventListener('DOMContentLoaded', initializePage);

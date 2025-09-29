@@ -1,0 +1,293 @@
+/* フォームコンポーネント */
+
+/* 検索・フィルタリング・ソート */
+.controls-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 50px;
+}
+
+.search-container {
+    position: relative;
+    margin-bottom: 25px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--medium-grey);
+    font-size: 1.2em;
+    pointer-events: none;
+    transition: color var(--transition-speed);
+}
+
+#characterSearch {
+    width: 100%;
+    padding: 15px 15px 15px 50px;
+    border: 2px solid var(--light-grey-border);
+    border-radius: 30px;
+    font-size: 1.1em;
+    background-color: var(--card-background);
+    transition: all var(--transition-speed);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    will-change: border-color, box-shadow, transform;
+}
+
+#characterSearch:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 6px 20px rgba(0, 191, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.no-results-message {
+    text-align: center;
+    color: var(--medium-grey);
+    font-size: 1.1em;
+    margin: 30px 0;
+    padding: 20px;
+    background-color: var(--card-background);
+    border-radius: 10px;
+    box-shadow: var(--soft-shadow);
+    animation: glitchDisplay 0.5s ease-in-out;
+}
+
+.filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.filter-label {
+    color: var(--primary-dark);
+    font-weight: 700;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.filter-label i {
+    color: var(--accent-orange);
+    font-size: 1.2em;
+    animation: bounceIcon 2s ease-in-out infinite;
+}
+
+.filter-label:nth-of-type(2) i {
+    animation-delay: 0.5s;
+}
+
+/* セレクトドロップダウン */
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+    min-width: 200px;
+}
+
+.select-wrapper label {
+    display: block;
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+.select-wrapper label i {
+    color: var(--accent-orange);
+    margin-right: 8px;
+}
+
+.select-dropdown {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--light-grey-border);
+    border-radius: 25px;
+    background-color: var(--card-background);
+    font-size: 1em;
+    color: var(--text-color);
+    cursor: crosshair;
+    transition: all var(--transition-speed);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    will-change: border-color, box-shadow, transform;
+}
+
+.select-dropdown:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+input[type="number"].select-dropdown {
+    text-align: center;
+}
+
+input[type="number"].select-dropdown::-webkit-outer-spin-button,
+input[type="number"].select-dropdown::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* チームコスト表示 */
+.team-cost-display {
+    background-color: var(--card-background);
+    border: 2px solid var(--primary-light);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2);
+    transition: all var(--transition-speed);
+    will-change: transform, box-shadow;
+}
+
+.team-cost-display:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 191, 255, 0.3);
+}
+
+.team-cost-display .cost-label {
+    color: var(--primary-dark);
+    font-weight: 700;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.team-cost-display .cost-label i {
+    color: var(--accent-orange);
+    font-size: 1.2em;
+}
+
+.team-cost-display .cost-value {
+    color: var(--primary-light);
+    font-size: 2em;
+    font-weight: 700;
+    font-family: 'Rajdhani', sans-serif;
+    text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+}
+
+/* 選択されたキャラクター表示 */
+.selected-characters-display {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+/* シミュレーション入力グループ */
+.simulation-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.simulation-input-group label {
+    color: var(--primary-dark);
+    font-weight: 600;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.simulation-input-group label i {
+    color: var(--accent-orange);
+    font-size: 1.1em;
+}
+
+/* 覚醒シミュレーションエリア */
+.awakening-simulation-area .simulation-input-group {
+    margin-bottom: 15px;
+}
+
+.awakening-additional-options { /* Container for new checkbox groups */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(0, 191, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 191, 255, 0.2);
+}
+
+.awakening-additional-options .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.awakening-additional-options .checkbox-group label {
+    color: var(--primary-dark);
+    font-weight: 600;
+    font-size: 1em;
+    cursor: crosshair;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.awakening-additional-options .checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-light);
+    cursor: crosshair;
+}
+
+.awakening-additional-options .checkbox-group > i {
+    color: var(--accent-orange);
+    font-size: 1.1em;
+    margin-right: 5px;
+}
+
+.awakening-additional-options .select-dropdown-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* レスポンシブ対応 */
+@media (min-width: 768px) { /* Apply for wider screens */
+    .awakening-additional-options {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .awakening-additional-options .simulation-input-group.checkbox-group {
+        flex: 0 0 auto;
+        min-width: 200px;
+    }
+
+    .awakening-additional-options .select-dropdown-container {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .awakening-additional-options .simulation-input-group.has-dropdown {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .awakening-additional-options .simulation-input-group.has-dropdown .select-dropdown-container {
+        flex: 1;
+    }
+} 

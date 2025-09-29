@@ -1,0 +1,319 @@
+/* ボタンコンポーネント */
+
+/* フィルターボタン */
+.filter-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filter-button {
+    background-color: var(--light-grey-border);
+    border: 2px solid var(--light-grey-border);
+    padding: 12px 20px; /* パディングを増やす */
+    border-radius: 30px; /* 角丸を大きく */
+    cursor: crosshair; /* SFカーソル */
+    transition: all var(--transition-speed);
+    font-size: 1em;
+    color: var(--text-color);
+    white-space: nowrap;
+    min-width: 80px; /* 最小幅を確保 */
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12); /* 影を強調 */
+    position: relative;
+    overflow: hidden;
+    will-change: transform, background-color, box-shadow, color; /* will-changeを追加 */
+}
+
+.filter-button i { /* 動的に追加されるアイコンのスタイル */
+    margin-left: 8px; /* テキストとアイコンの間隔 */
+    font-size: 0.9em; /* テキストに合わせたサイズ */
+    color: var(--text-color); /* デフォルト色 */
+    transition: color 0.3s ease;
+}
+
+.filter-button.active i {
+    color: var(--card-background); /* アクティブ時の色 */
+}
+
+.filter-button::after { /* 波紋エフェクト */
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+    z-index: 1;
+    will-change: transform, opacity; /* will-changeを追加 */
+}
+
+.filter-button:active::after {
+    transform: translate(-50%, -50%) scale(20);
+    opacity: 1;
+    transition: 0s; /* クリック時に即時表示 */
+}
+
+.filter-button::before { /* 光沢アニメーション */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: skewX(-20deg);
+    transition: all 0.5s ease;
+    z-index: 1;
+    will-change: transform, left;
+}
+
+.filter-button:hover::before {
+    left: 100%;
+}
+
+.filter-button.active {
+    background-color: var(--primary-light);
+    color: var(--card-background);
+    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.5); /* アクティブ時の影を強調 */
+    border-color: var(--primary-light);
+    font-weight: bold;
+    background-image: linear-gradient(45deg, rgba(0, 191, 255, 0.8) 0%, rgba(0, 150, 200, 0.8) 100%);
+    background-size: 200% 200%;
+    animation: activeButtonGlow 4s ease-in-out infinite alternate;
+    will-change: background-position, box-shadow; /* will-changeを追加 */
+}
+
+.filter-button:hover:not(.active) {
+    background-color: #E6EEF4;
+    transform: translateY(-5px); /* 浮遊感を強調 */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    border-color: var(--medium-grey);
+}
+
+.filter-button.active:hover {
+    background-color: #008DCC;
+    transform: translateY(-5px);
+}
+
+/* IMPROVEMENT 10: インタラクティブな要素のフィードバック強化 (filter-button:active の更新) */
+.filter-button:active {
+    transform: translateY(3px) scale(0.98);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) inset;
+}
+
+/* シミュレーションボタン */
+.simulation-buttons { /* Container for simulation execution buttons AND share button groups */
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.simulation-button { /* This is a base class for simulation and share buttons */
+    background-color: var(--primary-light);
+    color: var(--card-background);
+    border: 2px solid var(--primary-light);
+    padding: 15px 25px;
+    border-radius: 30px;
+    cursor: crosshair;
+    font-size: 1.1em;
+    font-weight: 700;
+    transition: all var(--transition-speed);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    will-change: transform, background-color, box-shadow;
+}
+
+#simulatePlayerRedeploy, #simulatePartnerRedeploy {
+    background-color: var(--accent-orange);
+    border-color: var(--accent-orange);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+}
+
+#simulatePlayerRedeploy:hover, #simulatePartnerRedeploy:hover {
+    background-color: #FFC107;
+    border-color: #FFC107;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.6);
+}
+
+.simulation-button:active { /* General active state for all sim/share buttons */
+    transform: translateY(2px) scale(0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+}
+
+.simulation-button::before { /* Gloss effect for all sim/share buttons */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: skewX(-20deg);
+    transition: all 0.5s ease;
+    z-index: 1;
+    will-change: transform, left;
+}
+
+.simulation-button:hover::before {
+    left: 100%;
+}
+
+/* シェアボタン */
+.share-buttons-group { /* Container for share buttons */
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.simulation-results .share-buttons-group {
+    margin-top: 20px;
+}
+
+.total-hp-display-area .share-buttons-group {
+    margin-top: 15px;
+}
+
+.share-button#shareRedeployResultBtn,
+.share-button#shareTotalHpResultBtn {
+    background-color: var(--twitter-blue);
+    border-color: var(--twitter-blue);
+    box-shadow: 0 5px 15px var(--twitter-blue-shadow);
+}
+
+.share-button#shareRedeployResultBtn:hover,
+.share-button#shareTotalHpResultBtn:hover {
+    background-color: #0D8BD9;
+    border-color: #0D8BD9;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px var(--twitter-blue-hover-shadow);
+}
+
+.copy-url-button {
+    background-color: var(--copy-url-button-bg);
+    border-color: var(--copy-url-button-border);
+    box-shadow: 0 5px 15px var(--copy-url-button-shadow);
+}
+
+.copy-url-button:hover {
+    background-color: var(--copy-url-button-hover-bg);
+    border-color: var(--copy-url-button-hover-bg);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px var(--copy-url-button-hover-shadow);
+}
+
+.copy-url-button:disabled { /* Style for when URL is copied (success feedback) */
+    background-color: var(--copy-success-bg);
+    border-color: var(--copy-success-border);
+    color: var(--card-background);
+    box-shadow: 0 5px 15px var(--copy-success-shadow);
+    cursor: default;
+}
+
+.copy-url-button:disabled:hover { /* Keep success style on hover when disabled */
+    background-color: var(--copy-success-bg);
+    border-color: var(--copy-success-border);
+    transform: none;
+    box-shadow: 0 5px 15px var(--copy-success-shadow);
+}
+
+.simulation-button i { /* General icon style within any .simulation-button (share or primary) */
+    font-size: 1.2em;
+    transition: transform var(--transition-speed);
+    will-change: transform;
+}
+
+/* アップロードボタン */
+.upload-button {
+    background-color: var(--primary-light);
+    color: var(--card-background);
+    border: 2px solid var(--primary-light);
+    padding: 12px 20px;
+    border-radius: 25px;
+    cursor: crosshair;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all var(--transition-speed);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 191, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    will-change: transform, background-color, box-shadow;
+}
+
+.upload-button:hover {
+    background-color: #008DCC;
+    border-color: #008DCC;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 191, 255, 0.4);
+}
+
+/* OCRモーダル内のボタン */
+.ocr-modal-content .btn {
+    background-color: var(--primary-light);
+    color: var(--card-background);
+    border: 2px solid var(--primary-light);
+    padding: 12px 20px;
+    border-radius: 25px;
+    cursor: crosshair;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all var(--transition-speed);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 191, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    will-change: transform, background-color, box-shadow;
+}
+
+.ocr-modal-content .btn-primary {
+    background-color: var(--primary-light);
+    border-color: var(--primary-light);
+}
+
+.ocr-modal-content .btn-primary:hover {
+    background-color: #008DCC;
+    border-color: #008DCC;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 191, 255, 0.4);
+}
+
+.ocr-modal-content .btn-secondary {
+    background-color: var(--medium-grey);
+    border-color: var(--medium-grey);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.ocr-modal-content .btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(108, 117, 125, 0.4);
+}
+
+.ocr-modal-content .btn:disabled {
+    background-color: var(--light-grey-border);
+    border-color: var(--light-grey-border);
+    color: var(--medium-grey);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+} 

@@ -1,0 +1,33 @@
+/* キャラクターグリッドセクション */
+
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* 幅を調整 */
+    gap: 30px; /* 間隔を調整 */
+    margin-top: 0px;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* キャラクター選択グループ */
+.character-select-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .character-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .character-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+} 

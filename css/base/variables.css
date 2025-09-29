@@ -1,0 +1,44 @@
+/* CSS変数定義 - カラーパレットとトランジション設定 */
+
+:root {
+    /* SF感を意識したカラーパレット */
+    --primary-dark: #1A2C3E; /* 濃いネイビー/チャコール */
+    --primary-light: #00BFFF; /* 明るいスカイブルー (アクセント) */
+    --accent-orange: #FFD700; /* ゴールドっぽいイエロー (アクセント) */
+    --background-light: #F0F5F9; /* ごく薄いライトブルーグレー */
+    --card-background: #FFFFFF;
+    --text-color: #333333;
+    --light-grey-border: #CED4DA; /* 明るいグレー */
+    --medium-grey: #6C757D; /* 中間グレー */
+    --soft-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* 影を強調 */
+    --transition-speed: 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* よりSF的なイージング */
+    
+    /* HPバーの色 (グラデーション用) */
+    --hp-low: #dc3545; /* 赤 */
+    --hp-medium: #ffc107; /* 黄 */
+    --hp-high: #28a745; /* 緑 */
+    --hp-pulse-color: rgba(220, 53, 69, 0.6); /* 低HP時の脈動色 */
+    
+    /* SF演出用追加カラー */
+    --neon-glow: #00EFFF; /* ネオンブルー */
+    --neon-glow-strong: #00BFFF; /* より強いネオンブルー */
+    --glitch-color1: #FF00FF; /* マゼンタ */
+    --glitch-color2: #00FFFF; /* シアン */
+    --grid-line-color: rgba(0, 191, 255, 0.08); /* グリッド線の色 */
+    --loading-spinner-color: #00BFFF;
+    
+    /* X (Twitter) Blue for share buttons */
+    --twitter-blue: #1DA1F2;
+    --twitter-blue-shadow: rgba(29, 161, 242, 0.4);
+    --twitter-blue-hover-shadow: rgba(29, 161, 242, 0.6);
+    
+    /* URL Copy Button Color */
+    --copy-url-button-bg: #6c757d; /* Bootstrap secondary color */
+    --copy-url-button-border: #6c757d;
+    --copy-url-button-hover-bg: #5a6268;
+    --copy-url-button-shadow: rgba(108, 117, 125, 0.4);
+    --copy-url-button-hover-shadow: rgba(108, 117, 125, 0.6);
+    --copy-success-bg: var(--hp-high); /* Green for success */
+    --copy-success-border: var(--hp-high);
+    --copy-success-shadow: rgba(40, 167, 69, 0.4);
+} 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -14,17 +14,17 @@
                    img-src 'self' data: blob: assets:;
                    form-action 'none';">
     <meta name="description" content="Starward Cost Calculator">
-    <title>星の翼 総合耐久・覚醒シミュレーター</title>
-    <!-- Google Fonts - Noto Sans JP (標準用) をインポート -->
+    <title>譏溘・鄙ｼ 邱丞粋閠蝉ｹ・・隕夐・繧ｷ繝溘Η繝ｬ繝ｼ繧ｿ繝ｼ</title>
+    <!-- Google Fonts - Noto Sans JP (讓呎ｺ也畑) 繧偵う繝ｳ繝昴・繝・-->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
-    <!-- Google Fonts - SF的なフォントをインポート -->
+    <!-- Google Fonts - SF逧・↑繝輔か繝ｳ繝医ｒ繧､繝ｳ繝昴・繝・-->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet" crossorigin="anonymous">
-    <!-- Font Awesome (アイコン用) をインポート - SRI追加 -->
+    <!-- Font Awesome (繧｢繧､繧ｳ繝ｳ逕ｨ) 繧偵う繝ｳ繝昴・繝・- SRI霑ｽ蜉 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
           integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- 分離したCSSファイルを読み込む -->
-    <link rel="stylesheet" href="style.css">
+    <!-- 蛻・屬縺励◆CSS繝輔ぃ繧､繝ｫ繧定ｪｭ縺ｿ霎ｼ繧 -->
+    <link rel="stylesheet" href="css/main.css?v=1.3">
 </head>
 <body>
     <div id="ocrModal" class="ocr-modal" style="display: none;">
@@ -32,8 +32,8 @@
             <button id="closeOcrModal" class="close-button">&times;</button>
             <div class="container">
                 <header>
-                    <h1>ゲーム画面OCR</h1>
-                    <p>ゲーム画面から耐久値と覚醒ゲージを自動認識します</p>
+                    <h1>繧ｲ繝ｼ繝逕ｻ髱｢OCR</h1>
+                    <p>繧ｲ繝ｼ繝逕ｻ髱｢縺九ｉ閠蝉ｹ・､縺ｨ隕夐・繧ｲ繝ｼ繧ｸ繧定・蜍戊ｪ崎ｭ倥＠縺ｾ縺・/p>
                 </header>
 
                 <main>
@@ -45,8 +45,8 @@
                                     <polyline points="7,10 12,15 17,10"></polyline>
                                     <line x1="12" y1="15" x2="12" y2="3"></line>
                                 </svg>
-                                <p>画像をドラッグ&ドロップまたはクリックして選択</p>
-                                <p class="file-info">対応形式: PNG, JPG, JPEG</p>
+                                <p>逕ｻ蜒上ｒ繝峨Λ繝・げ&繝峨Ο繝・・縺ｾ縺溘・繧ｯ繝ｪ繝・け縺励※驕ｸ謚・/p>
+                                <p class="file-info">蟇ｾ蠢懷ｽ｢蠑・ PNG, JPG, JPEG</p>
                             </div>
                             <input type="file" id="fileInput" accept="image/*" hidden>
                         </div>
@@ -57,14 +57,14 @@
                             <canvas id="imageCanvas"></canvas>
                             <div class="region-overlay">
                                 <div class="region durability-region" id="durabilityRegion">
-                                    <span class="region-label">耐久値</span>
+                                    <span class="region-label">閠蝉ｹ・､</span>
                                     <div class="resizer ne"></div>
                                     <div class="resizer nw"></div>
                                     <div class="resizer se"></div>
                                     <div class="resizer sw"></div>
                                 </div>
                                 <div class="region awakening-region" id="awakeningRegion">
-                                    <span class="region-label">覚醒ゲージ</span>
+                                    <span class="region-label">隕夐・繧ｲ繝ｼ繧ｸ</span>
                                     <div class="resizer ne"></div>
                                     <div class="resizer nw"></div>
                                     <div class="resizer se"></div>
@@ -74,58 +74,58 @@
                         </div>
                         
                         <div id="ocr-instructions" class="ocr-instructions-box">
-                            <h4><i class="fas fa-info-circle"></i> 操作手順</h4>
+                            <h4><i class="fas fa-info-circle"></i> 謫堺ｽ懈焔鬆・/h4>
                             <ol>
-                                <li>「耐久値」と「覚醒ゲージ」の枠をドラッグ＆リサイズして、数字を正確に囲ってください。</li>
-                                <li>「OCR解析開始」ボタンを押して、数値を認識します。</li>
-                                <li>認識結果が正しくない場合は、プレビュー下の「ズーム」を調整し、再度解析してください。</li>
+                                <li>縲瑚蝉ｹ・､縲阪→縲瑚ｦ夐・繧ｲ繝ｼ繧ｸ縲阪・譫繧偵ラ繝ｩ繝・げ・・Μ繧ｵ繧､繧ｺ縺励※縲∵焚蟄励ｒ豁｣遒ｺ縺ｫ蝗ｲ縺｣縺ｦ縺上□縺輔＞縲・/li>
+                                <li>縲薫CR隗｣譫宣幕蟋九阪・繧ｿ繝ｳ繧呈款縺励※縲∵焚蛟､繧定ｪ崎ｭ倥＠縺ｾ縺吶・/li>
+                                <li>隱崎ｭ倡ｵ先棡縺梧ｭ｣縺励￥縺ｪ縺・ｴ蜷医・縲√・繝ｬ繝薙Η繝ｼ荳九・縲後ぜ繝ｼ繝縲阪ｒ隱ｿ謨ｴ縺励∝・蠎ｦ隗｣譫舌＠縺ｦ縺上□縺輔＞縲・/li>
                             </ol>
                         </div>
 
                         <div class="controls">
-                            <button id="analyzeBtn" class="btn btn-primary">OCR解析開始</button>
-                            <button id="resetBtn" class="btn btn-secondary">リセット</button>
+                            <button id="analyzeBtn" class="btn btn-primary">OCR隗｣譫宣幕蟋・/button>
+                            <button id="resetBtn" class="btn btn-secondary">繝ｪ繧ｻ繝・ヨ</button>
                         </div>
                     </div>
 
                     <div class="results-section" id="resultsSection" style="display: none;">
                         <div class="result-card">
-                            <h3>認識結果 & プレビュー</h3>
+                            <h3>隱崎ｭ倡ｵ先棡 & 繝励Ξ繝薙Η繝ｼ</h3>
                             <div class="result-grid">
-                                <!-- 耐久値 -->
+                                <!-- 閠蝉ｹ・､ -->
                                 <div class="result-item-header">
-                                    <h4>耐久値</h4>
+                                    <h4>閠蝉ｹ・､</h4>
                                 </div>
                                 <div class="result-item">
-                                    <label>認識結果:</label>
+                                    <label>隱崎ｭ倡ｵ先棡:</label>
                                     <span id="durabilityValue" class="result-value">-</span>
                                     <span id="durabilityConfidence" class="confidence"></span>
                                 </div>
                                 <div class="preview-container">
                                     <canvas id="durabilityPreview" width="200" height="50"></canvas>
                                     <div class="preview-controls">
-                                        <label for="durabilityContrast">コントラスト:</label>
+                                        <label for="durabilityContrast">繧ｳ繝ｳ繝医Λ繧ｹ繝・</label>
                                         <input type="range" id="durabilityContrast" min="1" max="5" step="0.1" value="1">
-                                        <label for="durabilityZoom">ズーム:</label>
+                                        <label for="durabilityZoom">繧ｺ繝ｼ繝:</label>
                                         <input type="range" id="durabilityZoom" min="1" max="4" step="0.2" value="4">
                                     </div>
                                 </div>
 
-                                <!-- 覚醒ゲージ -->
+                                <!-- 隕夐・繧ｲ繝ｼ繧ｸ -->
                                 <div class="result-item-header">
-                                    <h4>覚醒ゲージ</h4>
+                                    <h4>隕夐・繧ｲ繝ｼ繧ｸ</h4>
                                 </div>
                                 <div class="result-item">
-                                    <label>認識結果:</label>
+                                    <label>隱崎ｭ倡ｵ先棡:</label>
                                     <span id="awakeningValue" class="result-value">-</span>
                                     <span id="awakeningConfidence" class="confidence"></span>
                                 </div>
                                 <div class="preview-container">
                                      <canvas id="awakeningPreview" width="200" height="50"></canvas>
                                      <div class="preview-controls">
-                                         <label for="awakeningContrast">コントラスト:</label>
+                                         <label for="awakeningContrast">繧ｳ繝ｳ繝医Λ繧ｹ繝・</label>
                                          <input type="range" id="awakeningContrast" min="1" max="5" step="0.1" value="1">
-                                         <label for="awakeningZoom">ズーム:</label>
+                                         <label for="awakeningZoom">繧ｺ繝ｼ繝:</label>
                                          <input type="range" id="awakeningZoom" min="1" max="4" step="0.2" value="3.6">
                                      </div>
                                 </div>
@@ -137,71 +137,63 @@
                         <div class="progress-bar">
                             <div class="progress-fill" id="progressFill"></div>
                         </div>
-                        <p id="progressText">処理中...</p>
+                        <p id="progressText">蜃ｦ逅・ｸｭ...</p>
                     </div>
 
                     <div class="ocr-actions">
-                        <button id="applyOcrResultBtn" class="btn btn-primary">この値をフォームに適用</button>
+                        <button id="applyOcrResultBtn" class="btn btn-primary">縺薙・蛟､繧偵ヵ繧ｩ繝ｼ繝縺ｫ驕ｩ逕ｨ</button>
                     </div>
                 </main>
             </div>
         </div>
     </div>
     <main>
-        <h1 class="title-sf-effect">星の翼 総合耐久・覚醒シミュレーター</h1>
-
-        <div class="event-promo-banner" style="text-align: center; margin: 20px 0; padding: 15px; background-color: #e0f7fa; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-            <p style="font-size: 1.2em; color: #007bff; margin-bottom: 10px;">🎉 夏イベント「ビーチパーティー」開催中！</p>
-            <a href="event.html" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: background-color 0.3s ease;">
-                イベント詳細はこちら！ <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
-
+        <h1 class="title-sf-effect">譏溘・鄙ｼ 邱丞粋閠蝉ｹ・・隕夐・繧ｷ繝溘Η繝ｬ繝ｼ繧ｿ繝ｼ</h1>
         <div class="usage-guide-container">
-            <h2><i class="fas fa-question-circle"></i> ツールの使い方ガイド</h2>
-            <p class="guide-intro">このツールは、コストオーバーが起こって再出撃した際の耐久値の計算に加え、チームの総耐久力予測、覚醒ゲージの予測が可能です。この使い方ガイド自体はクリックで内容を開閉できます。主要な機能である「再出撃シミュレーション」と「チーム合計耐久力予測」も開閉が出来、初期状態では開いています。以下のポイントをチェックして、本ツールを使いこなそう！</p>
+            <h2><i class="fas fa-question-circle"></i> 繝・・繝ｫ縺ｮ菴ｿ縺・婿繧ｬ繧､繝・/h2>
+            <p class="guide-intro">縺薙・繝・・繝ｫ縺ｯ縲√さ繧ｹ繝医が繝ｼ繝舌・縺瑚ｵｷ縺薙▲縺ｦ蜀榊・謦・＠縺滄圀縺ｮ閠蝉ｹ・､縺ｮ險育ｮ励↓蜉縺医√メ繝ｼ繝縺ｮ邱剰蝉ｹ・鴨莠域ｸｬ縲∬ｦ夐・繧ｲ繝ｼ繧ｸ縺ｮ莠域ｸｬ縺悟庄閭ｽ縺ｧ縺吶ゅ％縺ｮ菴ｿ縺・婿繧ｬ繧､繝芽・菴薙・繧ｯ繝ｪ繝・け縺ｧ蜀・ｮｹ繧帝幕髢峨〒縺阪∪縺吶ゆｸｻ隕√↑讖溯・縺ｧ縺ゅｋ縲悟・蜃ｺ謦・す繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ縲阪→縲後メ繝ｼ繝蜷郁ｨ郁蝉ｹ・鴨莠域ｸｬ縲阪ｂ髢矩哩縺悟・譚･縲∝・譛溽憾諷九〒縺ｯ髢九＞縺ｦ縺・∪縺吶ゆｻ･荳九・繝昴う繝ｳ繝医ｒ繝√ぉ繝・け縺励※縲∵悽繝・・繝ｫ繧剃ｽｿ縺・％縺ｪ縺昴≧・・/p>
 
             <div class="accordion">
                 <div class="accordion-item">
                     <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-search-dollar"></i> 1. 🚀 目当てのキャラ発見＆ピンチ度チェック！</span>
+                        <span><i class="fas fa-search-dollar"></i> 1. 噫 逶ｮ蠖薙※縺ｮ繧ｭ繝｣繝ｩ逋ｺ隕具ｼ・ヴ繝ｳ繝∝ｺｦ繝√ぉ繝・け・・/span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
-                        <p>ページ下部の検索・フィルターで、お目当てのキャラを瞬時に発見！🔍 表示されたキャラカードでHP・コストをチェックし、再出撃時の耐久値も一目でわかります。💪</p>
-                        <p>カード内の「再出撃時耐久値」をクリックするとHPバーが連動！残りHPのヤバさが視覚的に分かります。📉</p>
+                        <p>繝壹・繧ｸ荳矩Κ縺ｮ讀懃ｴ｢繝ｻ繝輔ぅ繝ｫ繧ｿ繝ｼ縺ｧ縲√♀逶ｮ蠖薙※縺ｮ繧ｭ繝｣繝ｩ繧堤椪譎ゅ↓逋ｺ隕具ｼÅ沐・陦ｨ遉ｺ縺輔ｌ縺溘く繝｣繝ｩ繧ｫ繝ｼ繝峨〒HP繝ｻ繧ｳ繧ｹ繝医ｒ繝√ぉ繝・け縺励∝・蜃ｺ謦・凾縺ｮ閠蝉ｹ・､繧ゆｸ逶ｮ縺ｧ繧上°繧翫∪縺吶を汳ｪ</p>
+                        <p>繧ｫ繝ｼ繝牙・縺ｮ縲悟・蜃ｺ謦・凾閠蝉ｹ・､縲阪ｒ繧ｯ繝ｪ繝・け縺吶ｋ縺ｨHP繝舌・縺碁｣蜍包ｼ∵ｮ九ｊHP縺ｮ繝､繝舌＆縺瑚ｦ冶ｦ夂噪縺ｫ蛻・°繧翫∪縺吶を沒・/p>
                         <details class="guide-details">
-                            <summary>💡 詳細な操作方法と計算式を見る</summary>
-                            <p><strong>検索・フィルタリング:</strong> ページ下部にある「キャラクター名検索」ボックス、コスト別「フィルター」ボタン、表示順「並び替え」ボタンで、キャラクターグリッドの表示をカスタマイズできます。</p>
-                            <p><strong>個別耐久値の確認:</strong> 各キャラクターカードには、基本情報（HP、コスト）と、コストオーバー時の「再出撃時耐久値」が表示されています。</p>
-                            <p class="formula"><strong>計算式:</strong> 再出撃時耐久値 = 本来の耐久値 × (残りコスト ÷ キャラクターのコスト)</p>
-                            <p><strong>HPバーリセット:</strong> HPバー表示を100%に戻したい場合は、キャラクターカードの「本来の耐久値」の数値部分をクリックしてください。</p>
+                            <summary>庁 隧ｳ邏ｰ縺ｪ謫堺ｽ懈婿豕輔→險育ｮ怜ｼ上ｒ隕九ｋ</summary>
+                            <p><strong>讀懃ｴ｢繝ｻ繝輔ぅ繝ｫ繧ｿ繝ｪ繝ｳ繧ｰ:</strong> 繝壹・繧ｸ荳矩Κ縺ｫ縺ゅｋ縲後く繝｣繝ｩ繧ｯ繧ｿ繝ｼ蜷肴､懃ｴ｢縲阪・繝・け繧ｹ縲√さ繧ｹ繝亥挨縲後ヵ繧｣繝ｫ繧ｿ繝ｼ縲阪・繧ｿ繝ｳ縲∬｡ｨ遉ｺ鬆・御ｸｦ縺ｳ譖ｿ縺医阪・繧ｿ繝ｳ縺ｧ縲√く繝｣繝ｩ繧ｯ繧ｿ繝ｼ繧ｰ繝ｪ繝・ラ縺ｮ陦ｨ遉ｺ繧偵き繧ｹ繧ｿ繝槭う繧ｺ縺ｧ縺阪∪縺吶・/p>
+                            <p><strong>蛟句挨閠蝉ｹ・､縺ｮ遒ｺ隱・</strong> 蜷・く繝｣繝ｩ繧ｯ繧ｿ繝ｼ繧ｫ繝ｼ繝峨↓縺ｯ縲∝渕譛ｬ諠・ｱ・・P縲√さ繧ｹ繝茨ｼ峨→縲√さ繧ｹ繝医が繝ｼ繝舌・譎ゅ・縲悟・蜃ｺ謦・凾閠蝉ｹ・､縲阪′陦ｨ遉ｺ縺輔ｌ縺ｦ縺・∪縺吶・/p>
+                            <p class="formula"><strong>險育ｮ怜ｼ・</strong> 蜀榊・謦・凾閠蝉ｹ・､ = 譛ｬ譚･縺ｮ閠蝉ｹ・､ ﾃ・(谿九ｊ繧ｳ繧ｹ繝・ﾃｷ 繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ縺ｮ繧ｳ繧ｹ繝・</p>
+                            <p><strong>HP繝舌・繝ｪ繧ｻ繝・ヨ:</strong> HP繝舌・陦ｨ遉ｺ繧・00%縺ｫ謌ｻ縺励◆縺・ｴ蜷医・縲√く繝｣繝ｩ繧ｯ繧ｿ繝ｼ繧ｫ繝ｼ繝峨・縲梧悽譚･縺ｮ閠蝉ｹ・､縲阪・謨ｰ蛟､驛ｨ蛻・ｒ繧ｯ繝ｪ繝・け縺励※縺上□縺輔＞縲・/p>
                         </details>
                     </div>
                 </div>
 
                 <div class="accordion-item">
                     <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-cogs"></i> 2. 🔥 最強タッグで再出撃＆覚醒を狙え！</span>
+                        <span><i class="fas fa-cogs"></i> 2. 櫨 譛蠑ｷ繧ｿ繝・げ縺ｧ蜀榊・謦・ｼ・ｦ夐・繧堤漁縺茨ｼ・/span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
-                        <p>ページ中ほどの「再出撃シミュレーション」で、自機＆相方を選んでチームを編成！🤝 残りコストを指定しボタンを押せば、再出撃後のHPをズバリ予測！✨</p>
-                        <p>さらに「覚醒ゲージ予測」で、撃墜後の覚醒チャンスも逃さない！⚡️ 計算詳細は同セクション内で確認可能。結果はXやURLでシェアしよう！<i class="fas fa-share-alt"></i></p>
+                        <p>繝壹・繧ｸ荳ｭ縺ｻ縺ｩ縺ｮ縲悟・蜃ｺ謦・す繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ縲阪〒縲∬・讖滂ｼ・嶌譁ｹ繧帝∈繧薙〒繝√・繝繧堤ｷｨ謌撰ｼÅ洟・谿九ｊ繧ｳ繧ｹ繝医ｒ謖・ｮ壹＠繝懊ち繝ｳ繧呈款縺帙・縲∝・蜃ｺ謦・ｾ後・HP繧偵ぜ繝舌Μ莠域ｸｬ・≫惠</p>
+                        <p>縺輔ｉ縺ｫ縲瑚ｦ夐・繧ｲ繝ｼ繧ｸ莠域ｸｬ縲阪〒縲∵茶蠅懷ｾ後・隕夐・繝√Ε繝ｳ繧ｹ繧る・＆縺ｪ縺・ｼ≫圍・・險育ｮ苓ｩｳ邏ｰ縺ｯ蜷後そ繧ｯ繧ｷ繝ｧ繝ｳ蜀・〒遒ｺ隱榊庄閭ｽ縲らｵ先棡縺ｯX繧ФRL縺ｧ繧ｷ繧ｧ繧｢縺励ｈ縺・ｼ・i class="fas fa-share-alt"></i></p>
                         <details class="guide-details">
-                            <summary>💡 シミュレーションと予測の詳細手順を見る</summary>
-                            <p><strong>チーム再出撃シミュレーション手順:</strong></p>
+                            <summary>庁 繧ｷ繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ縺ｨ莠域ｸｬ縺ｮ隧ｳ邏ｰ謇矩・ｒ隕九ｋ</summary>
+                            <p><strong>繝√・繝蜀榊・謦・す繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ謇矩・</strong></p>
                             <ul>
-                                <li><strong>自機と相方を選択:</strong> ドロップダウンからチームメンバーを選択。選択機体はミニカード表示、チーム合計コストも自動計算されます。</li>
-                                <li><strong>指定キャラ撃墜後の残りコスト:</strong> チームの残り総力コストを選択します。</li>
-                                <li><strong>シミュレーション実行:</strong> 「自機が再出撃した場合」または「相方が再出撃した場合」ボタンで結果表示。再出撃機体の情報とHPバーを確認できます。</li>
+                                <li><strong>閾ｪ讖溘→逶ｸ譁ｹ繧帝∈謚・</strong> 繝峨Ο繝・・繝繧ｦ繝ｳ縺九ｉ繝√・繝繝｡繝ｳ繝舌・繧帝∈謚槭る∈謚樊ｩ滉ｽ薙・繝溘ル繧ｫ繝ｼ繝芽｡ｨ遉ｺ縲√メ繝ｼ繝蜷郁ｨ医さ繧ｹ繝医ｂ閾ｪ蜍戊ｨ育ｮ励＆繧後∪縺吶・/li>
+                                <li><strong>謖・ｮ壹く繝｣繝ｩ謦・｢懷ｾ後・谿九ｊ繧ｳ繧ｹ繝・</strong> 繝√・繝縺ｮ谿九ｊ邱丞鴨繧ｳ繧ｹ繝医ｒ驕ｸ謚槭＠縺ｾ縺吶・/li>
+                                <li><strong>繧ｷ繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ螳溯｡・</strong> 縲瑚・讖溘′蜀榊・謦・＠縺溷ｴ蜷医阪∪縺溘・縲檎嶌譁ｹ縺悟・蜃ｺ謦・＠縺溷ｴ蜷医阪・繧ｿ繝ｳ縺ｧ邨先棡陦ｨ遉ｺ縲ょ・蜃ｺ謦・ｩ滉ｽ薙・諠・ｱ縺ｨHP繝舌・繧堤｢ｺ隱阪〒縺阪∪縺吶・/li>
                             </ul>
-                            <p><strong>覚醒ゲージ予測手順:</strong></p>
+                            <p><strong>隕夐・繧ｲ繝ｼ繧ｸ莠域ｸｬ謇矩・</strong></p>
                             <ul>
-                                <li>「再出撃シミュレーション」結果表示エリアの下にある「覚醒ゲージ予測」セクションで行います。</li>
-                                <li><strong>撃墜直前の状況入力:</strong> 「覚醒が溜まるか調べたい覚醒ゲージ」と「覚醒が溜まるか調べたい耐久値」（残りHP）を入力します。</li>
-                                <li><strong>各種ボーナス考慮:</strong> 「再出撃直後のゲージ量にする」「与ダメージ考慮」「相方撃墜考慮」のチェックボックスとドロップダウンで条件を設定。</li>
-                                <li><strong>結果確認:</strong> 「予測覚醒ゲージ」と「覚醒使用可否」が表示されます。「覚醒ゲージ計算の詳細」では計算の内訳も確認可能です。</li>
+                                <li>縲悟・蜃ｺ謦・す繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ縲咲ｵ先棡陦ｨ遉ｺ繧ｨ繝ｪ繧｢縺ｮ荳九↓縺ゅｋ縲瑚ｦ夐・繧ｲ繝ｼ繧ｸ莠域ｸｬ縲阪そ繧ｯ繧ｷ繝ｧ繝ｳ縺ｧ陦後＞縺ｾ縺吶・/li>
+                                <li><strong>謦・｢懃峩蜑阪・迥ｶ豕∝・蜉・</strong> 縲瑚ｦ夐・縺梧ｺ懊∪繧九°隱ｿ縺ｹ縺溘＞隕夐・繧ｲ繝ｼ繧ｸ縲阪→縲瑚ｦ夐・縺梧ｺ懊∪繧九°隱ｿ縺ｹ縺溘＞閠蝉ｹ・､縲搾ｼ域ｮ九ｊHP・峨ｒ蜈･蜉帙＠縺ｾ縺吶・/li>
+                                <li><strong>蜷・ｨｮ繝懊・繝翫せ閠・・:</strong> 縲悟・蜃ｺ謦・峩蠕後・繧ｲ繝ｼ繧ｸ驥上↓縺吶ｋ縲阪御ｸ弱ム繝｡繝ｼ繧ｸ閠・・縲阪檎嶌譁ｹ謦・｢懆・・縲阪・繝√ぉ繝・け繝懊ャ繧ｯ繧ｹ縺ｨ繝峨Ο繝・・繝繧ｦ繝ｳ縺ｧ譚｡莉ｶ繧定ｨｭ螳壹・/li>
+                                <li><strong>邨先棡遒ｺ隱・</strong> 縲御ｺ域ｸｬ隕夐・繧ｲ繝ｼ繧ｸ縲阪→縲瑚ｦ夐・菴ｿ逕ｨ蜿ｯ蜷ｦ縲阪′陦ｨ遉ｺ縺輔ｌ縺ｾ縺吶ゅ瑚ｦ夐・繧ｲ繝ｼ繧ｸ險育ｮ励・隧ｳ邏ｰ縲阪〒縺ｯ險育ｮ励・蜀・ｨｳ繧ら｢ｺ隱榊庄閭ｽ縺ｧ縺吶・/li>
                             </ul>
                         </details>
                     </div>
@@ -209,86 +201,86 @@
 
                 <div class="accordion-item">
                     <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-users"></i> 3. 🛡️ チームの粘り強さ、徹底解剖！</span>
+                        <span><i class="fas fa-users"></i> 3. 孱・・繝√・繝縺ｮ邊倥ｊ蠑ｷ縺輔∝ｾｹ蠎戊ｧ｣蜑厄ｼ・/span>
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
-                        <p>「再出撃シミュレーション」でチームを組むと、その下の「チーム合計耐久力予測」セクション（初期表示で展開）が自動更新！📈 様々な撃墜シナリオでのチーム総耐久力を丸裸にします。</p>
-                        <p>理想的な落ち方から最悪パターンまで、チームの限界を把握！💪💔 詳細な撃墜順序も確認可能。結果はXやURLでシェア！<i class="fas fa-share-alt"></i></p>
+                        <p>縲悟・蜃ｺ謦・す繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ縲阪〒繝√・繝繧堤ｵ・・縺ｨ縲√◎縺ｮ荳九・縲後メ繝ｼ繝蜷郁ｨ郁蝉ｹ・鴨莠域ｸｬ縲阪そ繧ｯ繧ｷ繝ｧ繝ｳ・亥・譛溯｡ｨ遉ｺ縺ｧ螻暮幕・峨′閾ｪ蜍墓峩譁ｰ・Å沒・讒倥・↑謦・｢懊す繝翫Μ繧ｪ縺ｧ縺ｮ繝√・繝邱剰蝉ｹ・鴨繧剃ｸｸ陬ｸ縺ｫ縺励∪縺吶・/p>
+                        <p>逅・Φ逧・↑關ｽ縺｡譁ｹ縺九ｉ譛謔ｪ繝代ち繝ｼ繝ｳ縺ｾ縺ｧ縲√メ繝ｼ繝縺ｮ髯千阜繧呈滑謠｡・Å汳ｪ樗 隧ｳ邏ｰ縺ｪ謦・｢憺・ｺ上ｂ遒ｺ隱榊庄閭ｽ縲らｵ先棡縺ｯX繧ФRL縺ｧ繧ｷ繧ｧ繧｢・・i class="fas fa-share-alt"></i></p>
                         <details class="guide-details">
-                            <summary>💡 予測シナリオと詳細確認方法を見る</summary>
-                            <p><strong>予測シナリオの概要:</strong></p>
+                            <summary>庁 莠域ｸｬ繧ｷ繝翫Μ繧ｪ縺ｨ隧ｳ邏ｰ遒ｺ隱肴婿豕輔ｒ隕九ｋ</summary>
+                            <p><strong>莠域ｸｬ繧ｷ繝翫Μ繧ｪ縺ｮ讎りｦ・</strong></p>
                             <ul>
-                                <li><strong>チーム合計耐久値(最高):</strong> 高コスト機から落ちる大よそ理想的なケース。</li>
-                                <li><strong>チーム合計耐久値(妥協):</strong> 低コスト機から落ちるケース。</li>
-                                <li><strong>チーム合計耐久値(爆弾):</strong> 低コスト機のみが連続撃墜されるケース。</li>
-                                <li><strong>チーム合計耐久値(最低):</strong> 一方の機体のみが連続撃墜される最も非効率なケース。</li>
+                                <li><strong>繝√・繝蜷郁ｨ郁蝉ｹ・､(譛鬮・:</strong> 鬮倥さ繧ｹ繝域ｩ溘°繧芽誠縺｡繧句､ｧ繧医◎逅・Φ逧・↑繧ｱ繝ｼ繧ｹ縲・/li>
+                                <li><strong>繝√・繝蜷郁ｨ郁蝉ｹ・､(螯･蜊・:</strong> 菴弱さ繧ｹ繝域ｩ溘°繧芽誠縺｡繧九こ繝ｼ繧ｹ縲・/li>
+                                <li><strong>繝√・繝蜷郁ｨ郁蝉ｹ・､(辷・ｼｾ):</strong> 菴弱さ繧ｹ繝域ｩ溘・縺ｿ縺碁｣邯壽茶蠅懊＆繧後ｋ繧ｱ繝ｼ繧ｹ縲・/li>
+                                <li><strong>繝√・繝蜷郁ｨ郁蝉ｹ・､(譛菴・:</strong> 荳譁ｹ縺ｮ讖滉ｽ薙・縺ｿ縺碁｣邯壽茶蠅懊＆繧後ｋ譛繧る撼蜉ｹ邇・↑繧ｱ繝ｼ繧ｹ縲・/li>
                             </ul>
-                            <p><strong>詳細確認:</strong> 各シナリオの下にある「撃墜順序と獲得HP」と書かれたアコーディオンヘッダー（▼マークの部分）をクリックすると、そのシナリオにおける詳細な撃墜の進行と、各段階での獲得HP、残りチームコストの内訳を確認できます。</p>
+                            <p><strong>隧ｳ邏ｰ遒ｺ隱・</strong> 蜷・す繝翫Μ繧ｪ縺ｮ荳九↓縺ゅｋ縲梧茶蠅憺・ｺ上→迯ｲ蠕幽P縲阪→譖ｸ縺九ｌ縺溘い繧ｳ繝ｼ繝・ぅ繧ｪ繝ｳ繝倥ャ繝繝ｼ・遺名繝槭・繧ｯ縺ｮ驛ｨ蛻・ｼ峨ｒ繧ｯ繝ｪ繝・け縺吶ｋ縺ｨ縲√◎縺ｮ繧ｷ繝翫Μ繧ｪ縺ｫ縺翫￠繧玖ｩｳ邏ｰ縺ｪ謦・｢懊・騾ｲ陦後→縲∝推谿ｵ髫弱〒縺ｮ迯ｲ蠕幽P縲∵ｮ九ｊ繝√・繝繧ｳ繧ｹ繝医・蜀・ｨｳ繧堤｢ｺ隱阪〒縺阪∪縺吶・/p>
                         </details>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 再出撃シミュレーションセクションをアコーディオン化 -->
+        <!-- 蜀榊・謦・す繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ繧ｻ繧ｯ繧ｷ繝ｧ繝ｳ繧偵い繧ｳ繝ｼ繝・ぅ繧ｪ繝ｳ蛹・-->
         <div id="redeploy-simulation-section">
             <div class="accordion-item">
                 <button class="accordion-header main-section-accordion-header" aria-expanded="true">
-                    <span><i class="fas fa-robot"></i> 再出撃シミュレーション</span>
+                    <span><i class="fas fa-robot"></i> 蜀榊・謦・す繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ</span>
                     <i class="fas fa-chevron-down accordion-icon"></i>
                 </button>
                 <div class="accordion-content" id="redeploy-simulation-content">
                     <div class="simulation-container">
-                        <p class="guide-intro">自機と相方を選択し、現在のチーム残りコストを入力することで、どちらかの機体が再出撃した場合の耐久値をシミュレーションできます。</p>
+                        <p class="guide-intro">閾ｪ讖溘→逶ｸ譁ｹ繧帝∈謚槭＠縲∫樟蝨ｨ縺ｮ繝√・繝谿九ｊ繧ｳ繧ｹ繝医ｒ蜈･蜉帙☆繧九％縺ｨ縺ｧ縲√←縺｡繧峨°縺ｮ讖滉ｽ薙′蜀榊・謦・＠縺溷ｴ蜷医・閠蝉ｹ・､繧偵す繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ縺ｧ縺阪∪縺吶・/p>
 
                         <div class="character-select-group">
                             <div class="select-wrapper">
-                                <label for="playerCharSelect"><i class="fas fa-user-astronaut"></i> 自機:</label>
+                                <label for="playerCharSelect"><i class="fas fa-user-astronaut"></i> 閾ｪ讖・</label>
                                 <select id="playerCharSelect" class="select-dropdown"></select>
                             </div>
                             <div class="select-wrapper">
-                                <label for="partnerCharSelect"><i class="fas fa-user-friends"></i> 相方:</label>
+                                <label for="partnerCharSelect"><i class="fas fa-user-friends"></i> 逶ｸ譁ｹ:</label>
                                 <select id="partnerCharSelect" class="select-dropdown"></select>
                             </div>
                         </div>
 
                         <div class="team-cost-display">
-                            <span class="cost-label"><i class="fas fa-users-cog"></i> チーム合計コスト:</span>
+                            <span class="cost-label"><i class="fas fa-users-cog"></i> 繝√・繝蜷郁ｨ医さ繧ｹ繝・</span>
                             <span id="totalTeamCost" class="cost-value">0.0</span>
                         </div>
 
                         <div class="selected-characters-display" id="selectedCharsDisplay">
-                            <!-- 選択された自機と相方のミニカードがここに表示される -->
+                            <!-- 驕ｸ謚槭＆繧後◆閾ｪ讖溘→逶ｸ譁ｹ縺ｮ繝溘ル繧ｫ繝ｼ繝峨′縺薙％縺ｫ陦ｨ遉ｺ縺輔ｌ繧・-->
                         </div>
 
                         <div class="simulation-input-group">
-                            <label for="remainingTeamCostInput"><i class="fas fa-coins"></i> 指定キャラ撃墜後の残りコスト:</label>
+                            <label for="remainingTeamCostInput"><i class="fas fa-coins"></i> 謖・ｮ壹く繝｣繝ｩ謦・｢懷ｾ後・谿九ｊ繧ｳ繧ｹ繝・</label>
                             <select id="remainingTeamCostInput" class="select-dropdown"></select>
                         </div>
 
                         <div class="simulation-buttons">
-                            <button id="simulatePlayerRedeploy" class="simulation-button">自機が再出撃した場合</button>
-                            <button id="simulatePartnerRedeploy" class="simulation-button">相方が再出撃した場合</button>
+                            <button id="simulatePlayerRedeploy" class="simulation-button">閾ｪ讖溘′蜀榊・謦・＠縺溷ｴ蜷・/button>
+                            <button id="simulatePartnerRedeploy" class="simulation-button">逶ｸ譁ｹ縺悟・蜃ｺ謦・＠縺溷ｴ蜷・/button>
                         </div>
 
                         <div class="simulation-results" id="simulationResults">
-                            <h3><i class="fas fa-bolt"></i> 再出撃予測結果</h3>
+                            <h3><i class="fas fa-bolt"></i> 蜀榊・謦・ｺ域ｸｬ邨先棡</h3>
                             <div class="result-display-area">
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">再出撃機体:</span> <span id="redeployCharName" class="info-value">--</span>
+                                    <span class="info-label">蜀榊・謦・ｩ滉ｽ・</span> <span id="redeployCharName" class="info-value">--</span>
                                 </div>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">機体コスト:</span> <span id="redeployCharCost" class="info-value">--</span>
+                                    <span class="info-label">讖滉ｽ薙さ繧ｹ繝・</span> <span id="redeployCharCost" class="info-value">--</span>
                                 </div>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">本来の耐久値:</span> <span id="redeployOriginalHp" class="info-value">--</span>
+                                    <span class="info-label">譛ｬ譚･縺ｮ閠蝉ｹ・､:</span> <span id="redeployOriginalHp" class="info-value">--</span>
                                 </div>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">再出撃時コスト消費:</span> <span id="redeployCostConsumed" class="info-value">--</span>
+                                    <span class="info-label">蜀榊・謦・凾繧ｳ繧ｹ繝域ｶ郁ｲｻ:</span> <span id="redeployCostConsumed" class="info-value">--</span>
                                 </div>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">再出撃時耐久値:</span> <span id="redeployCalculatedHp" class="info-value">--</span>
+                                    <span class="info-label">蜀榊・謦・凾閠蝉ｹ・､:</span> <span id="redeployCalculatedHp" class="info-value">--</span>
                                 </div>
                             </div>
                             <div class="hp-bar-container simulation-hp-bar">
@@ -298,25 +290,23 @@
 
                             <!-- Awakening Simulation Area with new features -->
                             <div class="awakening-simulation-area">
-                                <h4><i class="fas fa-brain"></i> 覚醒ゲージ予測</h4>
+                                <h4><i class="fas fa-brain"></i> 隕夐・繧ｲ繝ｼ繧ｸ莠域ｸｬ</h4>
 
                                 <div class="image-upload-section" style="margin-bottom: 20px; text-align: center;">
                                     <label class="simulation-button upload-button" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
-                                        <i class="fas fa-camera"></i> ゲーム画面から自動入力
-                                    </label>
+                                        <i class="fas fa-camera"></i> 繧ｲ繝ｼ繝逕ｻ髱｢縺九ｉ閾ｪ蜍募・蜉・                                    </label>
                                     <input type="file" id="gameImageUpload" accept="image/*" style="display: none;">
                                     <p class="ocr-warning">
-                                        ※この機能は試験的な運用です。精度が保証できない為、認識された数値が正しいかを確認し、必要に応じて手動で修正してください。
-                                    </p>
+                                        窶ｻ縺薙・讖溯・縺ｯ隧ｦ鬨鍋噪縺ｪ驕狗畑縺ｧ縺吶らｲｾ蠎ｦ縺御ｿ晁ｨｼ縺ｧ縺阪↑縺・ぜ縲∬ｪ崎ｭ倥＆繧後◆謨ｰ蛟､縺梧ｭ｣縺励＞縺九ｒ遒ｺ隱阪＠縲∝ｿ・ｦ√↓蠢懊§縺ｦ謇句虚縺ｧ菫ｮ豁｣縺励※縺上□縺輔＞縲・                                    </p>
                                     <p id="imageUploadStatus" class="upload-status" style="margin-top: 10px; font-size: 0.9em; color: var(--accent-color); min-height: 1.2em;"></p>
                                 </div>
 
                                 <div class="simulation-input-group">
-                                    <label for="beforeShotdownAwakeningGaugeInput"><i class="fas fa-meteor"></i> 覚醒が溜まるか調べたい覚醒ゲージ:</label>
+                                    <label for="beforeShotdownAwakeningGaugeInput"><i class="fas fa-meteor"></i> 隕夐・縺梧ｺ懊∪繧九°隱ｿ縺ｹ縺溘＞隕夐・繧ｲ繝ｼ繧ｸ:</label>
                                     <input type="number" id="beforeShotdownAwakeningGaugeInput" class="select-dropdown" min="0" max="100" step="1" value="0">
                                 </div>
                                 <div class="simulation-input-group">
-                                    <label for="beforeShotdownHpInput"><i class="fas fa-heart-broken"></i> 覚醒が溜まるか調べたい耐久値:</label>
+                                    <label for="beforeShotdownHpInput"><i class="fas fa-heart-broken"></i> 隕夐・縺梧ｺ懊∪繧九°隱ｿ縺ｹ縺溘＞閠蝉ｹ・､:</label>
                                     <input type="number" id="beforeShotdownHpInput" class="select-dropdown" min="0" step="1" value="0">
                                 </div>
 
@@ -324,19 +314,19 @@
                                     <div class="simulation-input-group checkbox-group">
                                         <i class="fas fa-crosshairs"></i>
                                         <input type="checkbox" id="considerOwnDownCheckbox">
-                                        <label for="considerOwnDownCheckbox">再出撃直後(最低保証値)のゲージ量にする</label>
+                                        <label for="considerOwnDownCheckbox">蜀榊・謦・峩蠕・譛菴惹ｿ晁ｨｼ蛟､)縺ｮ繧ｲ繝ｼ繧ｸ驥上↓縺吶ｋ</label>
                                     </div>
 
                                     <div class="simulation-input-group checkbox-group has-dropdown">
                                         <i class="fas fa-fist-raised"></i>
                                         <input type="checkbox" id="considerDamageDealtCheckbox">
-                                        <label for="considerDamageDealtCheckbox">与ダメージ考慮</label>
+                                        <label for="considerDamageDealtCheckbox">荳弱ム繝｡繝ｼ繧ｸ閠・・</label>
                                         <div class="select-dropdown-container" id="damageDealtOptionsContainer">
                                             <select id="damageDealtAwakeningBonusSelect" class="select-dropdown">
-                                                <option value="0">選択なし</option>
-                                                <option value="3">覚醒ゲージ+3 (ズンダ約1回分)</option>
-                                                <option value="6">覚醒ゲージ+6 (ズンダ約2回分)</option>
-                                                <option value="9">覚醒ゲージ+9 (ズンダ約3回分)</option>
+                                                <option value="0">驕ｸ謚槭↑縺・/option>
+                                                <option value="3">隕夐・繧ｲ繝ｼ繧ｸ+3 (繧ｺ繝ｳ繝邏・蝗槫・)</option>
+                                                <option value="6">隕夐・繧ｲ繝ｼ繧ｸ+6 (繧ｺ繝ｳ繝邏・蝗槫・)</option>
+                                                <option value="9">隕夐・繧ｲ繝ｼ繧ｸ+9 (繧ｺ繝ｳ繝邏・蝗槫・)</option>
                                             </select>
                                         </div>
                                     </div>
@@ -344,17 +334,17 @@
                                     <div class="simulation-input-group checkbox-group">
                                          <i class="fas fa-user-slash"></i>
                                          <input type="checkbox" id="considerPartnerDownCheckbox">
-                                         <label for="considerPartnerDownCheckbox">相方撃墜考慮</label>
+                                         <label for="considerPartnerDownCheckbox">逶ｸ譁ｹ謦・｢懆・・</label>
                                     </div>
                                 </div>
 
                                 <div class="result-display-area" style="margin-top: 30px;">
                                     <div class="redeploy-char-info">
-                                        <span class="info-label">予測覚醒ゲージ:</span>
+                                        <span class="info-label">莠域ｸｬ隕夐・繧ｲ繝ｼ繧ｸ:</span>
                                         <span id="predictedAwakeningGauge" class="info-value">--</span>
                                     </div>
                                     <div class="redeploy-char-info">
-                                        <span class="info-label">覚醒使用:</span>
+                                        <span class="info-label">隕夐・菴ｿ逕ｨ:</span>
                                         <span id="awakeningAvailability" class="info-value">--</span>
                                     </div>
                                 </div>
@@ -362,58 +352,57 @@
                                 <div class="sub-accordion-container accordion">
                                     <div class="accordion-item">
                                         <button class="accordion-header sub-accordion-header" aria-expanded="false">
-                                            <span><i class="fas fa-info-circle"></i> 覚醒ゲージ計算の詳細</span>
+                                            <span><i class="fas fa-info-circle"></i> 隕夐・繧ｲ繝ｼ繧ｸ險育ｮ励・隧ｳ邏ｰ</span>
                                             <i class="fas fa-chevron-down accordion-icon"></i>
                                         </button>
                                         <div class="accordion-content sub-accordion-content">
-                                            <p>覚醒ゲージは以下の要素に基づいて計算されます:</p>
+                                            <p>隕夐・繧ｲ繝ｼ繧ｸ縺ｯ莉･荳九・隕∫ｴ縺ｫ蝓ｺ縺･縺・※險育ｮ励＆繧後∪縺・</p>
 
                                             <div class="gauge-section">
-                                                <h5><i class="fas fa-heartbeat"></i> 基礎増加（被ダメージ）</h5>
-                                                <p>受けたダメージ量に応じて増加します。本来の耐久値に対するダメージ割合が重要です。</p>
-                                                <p class="formula small-formula"><strong>増加量 = (被ダメージ量 / 本来の耐久値) × 100 × 約<span id="avgGaugeCoeffValue"></span></strong></p>
-                                                <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: 例として、耐久値3000の機体が1500ダメージ受けて撃墜された場合、(1500/3000)*100*約<span id="avgGaugeCoeffExampleValue"></span> = 約29.9% 増加します。</p>
+                                                <h5><i class="fas fa-heartbeat"></i> 蝓ｺ遉主｢怜刈・郁｢ｫ繝繝｡繝ｼ繧ｸ・・/h5>
+                                                <p>蜿励￠縺溘ム繝｡繝ｼ繧ｸ驥上↓蠢懊§縺ｦ蠅怜刈縺励∪縺吶よ悽譚･縺ｮ閠蝉ｹ・､縺ｫ蟇ｾ縺吶ｋ繝繝｡繝ｼ繧ｸ蜑ｲ蜷医′驥崎ｦ√〒縺吶・/p>
+                                                <p class="formula small-formula"><strong>蠅怜刈驥・= (陲ｫ繝繝｡繝ｼ繧ｸ驥・/ 譛ｬ譚･縺ｮ閠蝉ｹ・､) ﾃ・100 ﾃ・邏・span id="avgGaugeCoeffValue"></span></strong></p>
+                                                <p class="tip"><i class="fas fa-lightbulb"></i> 繝偵Φ繝・ 萓九→縺励※縲∬蝉ｹ・､3000縺ｮ讖滉ｽ薙′1500繝繝｡繝ｼ繧ｸ蜿励￠縺ｦ謦・｢懊＆繧後◆蝣ｴ蜷医・1500/3000)*100*邏・span id="avgGaugeCoeffExampleValue"></span> = 邏・9.9% 蠅怜刈縺励∪縺吶・/p>
                                             </div>
 
                                             <div class="gauge-section">
-                                                <h5><i class="fas fa-rocket"></i> 再出撃直後のゲージ量（最低保証値）</h5>
-                                                <p>「再出撃直後のゲージ量にする」にチェックを入れると、撃墜によって増加する覚醒ゲージが加算されます。このボーナスは自機のコストによって異なり、ツール内では計測した範囲での最低保証値を適用しています。撃墜された際に耐久値以上のダメージを受けるとその分も加算される為、実際には誤差が発生しやすいです。</p>
+                                                <h5><i class="fas fa-rocket"></i> 蜀榊・謦・峩蠕後・繧ｲ繝ｼ繧ｸ驥擾ｼ域怙菴惹ｿ晁ｨｼ蛟､・・/h5>
+                                                <p>縲悟・蜃ｺ謦・峩蠕後・繧ｲ繝ｼ繧ｸ驥上↓縺吶ｋ縲阪↓繝√ぉ繝・け繧貞・繧後ｋ縺ｨ縲∵茶蠅懊↓繧医▲縺ｦ蠅怜刈縺吶ｋ隕夐・繧ｲ繝ｼ繧ｸ縺悟刈邂励＆繧後∪縺吶ゅ％縺ｮ繝懊・繝翫せ縺ｯ閾ｪ讖溘・繧ｳ繧ｹ繝医↓繧医▲縺ｦ逡ｰ縺ｪ繧翫√ヤ繝ｼ繝ｫ蜀・〒縺ｯ險域ｸｬ縺励◆遽・峇縺ｧ縺ｮ譛菴惹ｿ晁ｨｼ蛟､繧帝←逕ｨ縺励※縺・∪縺吶よ茶蠅懊＆繧後◆髫帙↓閠蝉ｹ・､莉･荳翫・繝繝｡繝ｼ繧ｸ繧貞女縺代ｋ縺ｨ縺昴・蛻・ｂ蜉邂励＆繧後ｋ轤ｺ縲∝ｮ滄圀縺ｫ縺ｯ隱､蟾ｮ縺檎匱逕溘＠繧・☆縺・〒縺吶・/p>
                                                 <ul>
-                                                    <li>コスト3.0 / 2.5: +約<span id="ownDownBonus30"></span>%</li>
-                                                    <li>コスト2.0: +約<span id="ownDownBonus20"></span>%</li>
-                                                    <li>コスト1.5: +約<span id="ownDownBonus15"></span>%</li>
+                                                    <li>繧ｳ繧ｹ繝・.0 / 2.5: +邏・span id="ownDownBonus30"></span>%</li>
+                                                    <li>繧ｳ繧ｹ繝・.0: +邏・span id="ownDownBonus20"></span>%</li>
+                                                    <li>繧ｳ繧ｹ繝・.5: +邏・span id="ownDownBonus15"></span>%</li>
                                                 </ul>
                                             </div>
 
                                             <div class="gauge-section">
-                                                <h5><i class="fas fa-fist-raised"></i> 与ダメージ考慮</h5>
-                                                <p>「与ダメージ考慮」にチェックを入れ、ドロップダウンで与ダメージ量に応じたボーナスを選択すると、その分が加算されます。これは撃墜までに与えたダメージの量を模擬したものです。</p>
+                                                <h5><i class="fas fa-fist-raised"></i> 荳弱ム繝｡繝ｼ繧ｸ閠・・</h5>
+                                                <p>縲御ｸ弱ム繝｡繝ｼ繧ｸ閠・・縲阪↓繝√ぉ繝・け繧貞・繧後√ラ繝ｭ繝・・繝繧ｦ繝ｳ縺ｧ荳弱ム繝｡繝ｼ繧ｸ驥上↓蠢懊§縺溘・繝ｼ繝翫せ繧帝∈謚槭☆繧九→縲√◎縺ｮ蛻・′蜉邂励＆繧後∪縺吶ゅ％繧後・謦・｢懊∪縺ｧ縺ｫ荳弱∴縺溘ム繝｡繝ｼ繧ｸ縺ｮ驥上ｒ讓｡謫ｬ縺励◆繧ゅ・縺ｧ縺吶・/p>
                                             </div>
 
                                             <div class="gauge-section">
-                                                <h5><i class="fas fa-user-slash"></i> 相方撃墜考慮</h5>
-                                                <p>「相方撃墜考慮」にチェックを入れると、相方が撃墜されたことによる覚醒ゲージ増加分が加算されます。このボーナスも自機のコストによって異なります。</p>
+                                                <h5><i class="fas fa-user-slash"></i> 逶ｸ譁ｹ謦・｢懆・・</h5>
+                                                <p>縲檎嶌譁ｹ謦・｢懆・・縲阪↓繝√ぉ繝・け繧貞・繧後ｋ縺ｨ縲∫嶌譁ｹ縺梧茶蠅懊＆繧後◆縺薙→縺ｫ繧医ｋ隕夐・繧ｲ繝ｼ繧ｸ蠅怜刈蛻・′蜉邂励＆繧後∪縺吶ゅ％縺ｮ繝懊・繝翫せ繧り・讖溘・繧ｳ繧ｹ繝医↓繧医▲縺ｦ逡ｰ縺ｪ繧翫∪縺吶・/p>
                                                 <ul>
-                                                    <li>コスト3.0: +約<span id="partnerDownBonus30"></span>%</li>
-                                                    <li>コスト2.5: +約<span id="partnerDownBonus25"></span>%</li>
-                                                    <li>コスト2.0: +約<span id="partnerDownBonus20"></span>%</li>
-                                                    <li>コスト1.5: +約<span id="partnerDownBonus15"></span>%</li>
+                                                    <li>繧ｳ繧ｹ繝・.0: +邏・span id="partnerDownBonus30"></span>%</li>
+                                                    <li>繧ｳ繧ｹ繝・.5: +邏・span id="partnerDownBonus25"></span>%</li>
+                                                    <li>繧ｳ繧ｹ繝・.0: +邏・span id="partnerDownBonus20"></span>%</li>
+                                                    <li>繧ｳ繧ｹ繝・.5: +邏・span id="partnerDownBonus15"></span>%</li>
                                                 </ul>
                                             </div>
 
-                                            <p>最終的な覚醒ゲージが<span id="awakeningThresholdValue"></span>%以上で覚醒が使用可能となります。計算結果は常に0%から100%の範囲に収まります。</p>
+                                            <p>譛邨ら噪縺ｪ隕夐・繧ｲ繝ｼ繧ｸ縺・span id="awakeningThresholdValue"></span>%莉･荳翫〒隕夐・縺御ｽｿ逕ｨ蜿ｯ閭ｽ縺ｨ縺ｪ繧翫∪縺吶りｨ育ｮ礼ｵ先棡縺ｯ蟶ｸ縺ｫ0%縺九ｉ100%縺ｮ遽・峇縺ｫ蜿弱∪繧翫∪縺吶・/p>
 
                                             <div class="tip additional-note-block">
                                                 <i class="fas fa-exclamation-triangle"></i>
                                                 <div>
-                                                    <h4>注意点:</h4>
+                                                    <h4>豕ｨ諢冗せ:</h4>
                                                     <ul>
-                                                        <li>被ダメージによる覚醒ゲージ増加率の係数は、各キャラクターによって異なります。このツールでは誤差を最小限にする為、自身で計測した平均的な係数を使用しています。</li>
-                                                        <li>再出撃直後のゲージ量は基本的に自機コストに依存しますが、一部のキャラクター（例: スコーピオンは約+15%など）では異なる数値が設定されている場合があります。</li>
-                                                        <li>覚醒ゲージは小数点以下まで計算されていると推測されるため、ゲーム内の表示と多少の誤差が生じる可能性があります。</li>
+                                                        <li>陲ｫ繝繝｡繝ｼ繧ｸ縺ｫ繧医ｋ隕夐・繧ｲ繝ｼ繧ｸ蠅怜刈邇・・菫よ焚縺ｯ縲∝推繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ縺ｫ繧医▲縺ｦ逡ｰ縺ｪ繧翫∪縺吶ゅ％縺ｮ繝・・繝ｫ縺ｧ縺ｯ隱､蟾ｮ繧呈怙蟆城剞縺ｫ縺吶ｋ轤ｺ縲∬・霄ｫ縺ｧ險域ｸｬ縺励◆蟷ｳ蝮・噪縺ｪ菫よ焚繧剃ｽｿ逕ｨ縺励※縺・∪縺吶・/li>
+                                                        <li>蜀榊・謦・峩蠕後・繧ｲ繝ｼ繧ｸ驥上・蝓ｺ譛ｬ逧・↓閾ｪ讖溘さ繧ｹ繝医↓萓晏ｭ倥＠縺ｾ縺吶′縲∽ｸ驛ｨ縺ｮ繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ・井ｾ・ 繧ｹ繧ｳ繝ｼ繝斐が繝ｳ縺ｯ邏・15%縺ｪ縺ｩ・峨〒縺ｯ逡ｰ縺ｪ繧区焚蛟､縺瑚ｨｭ螳壹＆繧後※縺・ｋ蝣ｴ蜷医′縺ゅｊ縺ｾ縺吶・/li>
+                                                        <li>隕夐・繧ｲ繝ｼ繧ｸ縺ｯ蟆乗焚轤ｹ莉･荳九∪縺ｧ險育ｮ励＆繧後※縺・ｋ縺ｨ謗ｨ貂ｬ縺輔ｌ繧九◆繧√√ご繝ｼ繝蜀・・陦ｨ遉ｺ縺ｨ螟壼ｰ代・隱､蟾ｮ縺檎函縺倥ｋ蜿ｯ閭ｽ諤ｧ縺後≠繧翫∪縺吶・/li>
                                                     </ul>
-                                                    以上のことから、本ツールの計算結果はあくまで目安としてご利用ください。
-                                                </div>
+                                                    莉･荳翫・縺薙→縺九ｉ縲∵悽繝・・繝ｫ縺ｮ險育ｮ礼ｵ先棡縺ｯ縺ゅ￥縺ｾ縺ｧ逶ｮ螳峨→縺励※縺泌茜逕ｨ縺上□縺輔＞縲・                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -422,10 +411,9 @@
                             <!-- Share Buttons for Redeploy Simulation -->
                             <div class="simulation-buttons share-buttons-group">
                                 <button id="shareRedeployResultBtn" class="simulation-button share-button" style="display: none;">
-                                    <i class="fab fa-x-twitter"></i> Xで結果を共有
-                                </button>
+                                    <i class="fab fa-x-twitter"></i> X縺ｧ邨先棡繧貞・譛・                                </button>
                                 <button id="copyRedeployUrlBtn" class="simulation-button copy-url-button" style="display: none;">
-                                    <i class="fas fa-link"></i> URLをコピー
+                                    <i class="fas fa-link"></i> URL繧偵さ繝斐・
                                 </button>
                             </div>
                         </div>
@@ -434,64 +422,62 @@
             </div>
         </div>
 
-        <!-- チーム合計耐久力予測セクションをアコーディオン化 -->
+        <!-- 繝√・繝蜷郁ｨ郁蝉ｹ・鴨莠域ｸｬ繧ｻ繧ｯ繧ｷ繝ｧ繝ｳ繧偵い繧ｳ繝ｼ繝・ぅ繧ｪ繝ｳ蛹・-->
         <div class="main-section-accordion" id="total-hp-accordion">
             <div class="accordion-item">
                 <button class="accordion-header main-section-accordion-header" aria-expanded="false">
-                    <span><i class="fas fa-medal"></i> チーム合計耐久力予測</span>
+                    <span><i class="fas fa-medal"></i> 繝√・繝蜷郁ｨ郁蝉ｹ・鴨莠域ｸｬ</span>
                     <i class="fas fa-chevron-down accordion-icon"></i>
                 </button>
                 <div class="accordion-content main-section-accordion-content">
                     <div class="total-hp-display-area" id="totalHpDisplayArea">
                         <p class="total-hp-summary">
-                            選択された<span class="cost-value-small" id="selectedPlayerCharNameSummary">自機</span>と<span class="cost-value-small" id="selectedPartnerCharNameSummary">相方</span>の組み合わせで、
-                            高コストから落ちた場合(理想)、低コストから落ちた場合(妥協)、低コストのみ落ちた場合(爆弾)、最も非効率的な落ち方をした場合の合計耐久力を予測します。
-                        </p>
+                            驕ｸ謚槭＆繧後◆<span class="cost-value-small" id="selectedPlayerCharNameSummary">閾ｪ讖・/span>縺ｨ<span class="cost-value-small" id="selectedPartnerCharNameSummary">逶ｸ譁ｹ</span>縺ｮ邨・∩蜷医ｏ縺帙〒縲・                            鬮倥さ繧ｹ繝医°繧芽誠縺｡縺溷ｴ蜷・逅・Φ)縲∽ｽ弱さ繧ｹ繝医°繧芽誠縺｡縺溷ｴ蜷・螯･蜊・縲∽ｽ弱さ繧ｹ繝医・縺ｿ關ｽ縺｡縺溷ｴ蜷・辷・ｼｾ)縲∵怙繧る撼蜉ｹ邇・噪縺ｪ關ｽ縺｡譁ｹ繧偵＠縺溷ｴ蜷医・蜷郁ｨ郁蝉ｹ・鴨繧剃ｺ域ｸｬ縺励∪縺吶・                        </p>
 
                         <div class="total-hp-grid">
                             <div class="total-hp-scenario">
-                                <h4 id="highestHpScenarioTitleParent"><i class="fas fa-chart-line"></i> <span id="highestHpScenarioTitle">チーム合計耐久値(最高)</span></h4>
+                                <h4 id="highestHpScenarioTitleParent"><i class="fas fa-chart-line"></i> <span id="highestHpScenarioTitle">繝√・繝蜷郁ｨ郁蝉ｹ・､(譛鬮・</span></h4>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">合計獲得耐久値:</span> <span id="idealGainedHp" class="info-value">--</span>
+                                    <span class="info-label">蜷郁ｨ育佐蠕苓蝉ｹ・､:</span> <span id="idealGainedHp" class="info-value">--</span>
                                 </div>
                                 <button class="total-hp-accordion-header" aria-expanded="false">
-                                    <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                                    <span class="total-hp-accordion-title">謦・｢憺・ｺ上→迯ｲ蠕幽P</span>
                                     <i class="fas fa-chevron-down accordion-icon"></i>
                                 </button>
                                 <ul id="idealSequenceList" class="total-hp-accordion-content"></ul>
                             </div>
 
                             <div class="total-hp-scenario">
-                                <h4 id="compromiseHpScenarioTitleParent"><i class="fas fa-chart-area"></i> <span id="compromiseHpScenarioTitle">チーム合計耐久値(妥協)</span></h4>
+                                <h4 id="compromiseHpScenarioTitleParent"><i class="fas fa-chart-area"></i> <span id="compromiseHpScenarioTitle">繝√・繝蜷郁ｨ郁蝉ｹ・､(螯･蜊・</span></h4>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">合計獲得耐久値:</span> <span id="minGainedHpSpan" class="info-value">--</span>
+                                    <span class="info-label">蜷郁ｨ育佐蠕苓蝉ｹ・､:</span> <span id="minGainedHpSpan" class="info-value">--</span>
                                 </div>
                                 <button class="total-hp-accordion-header" aria-expanded="false">
-                                    <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                                    <span class="total-hp-accordion-title">謦・｢憺・ｺ上→迯ｲ蠕幽P</span>
                                     <i class="fas fa-chevron-down accordion-icon"></i>
                                 </button>
                                 <ul id="minSequenceList" class="total-hp-accordion-content"></ul>
                             </div>
 
-                            <div class="total-hp-scenario"> <!-- チーム合計耐久値(爆弾) -->
-                                <h4 id="bombHpScenarioTitleParent"><i class="fas fa-bomb"></i> <span id="bombHpScenarioTitle">チーム合計耐久値(爆弾)</span></h4>
+                            <div class="total-hp-scenario"> <!-- 繝√・繝蜷郁ｨ郁蝉ｹ・､(辷・ｼｾ) -->
+                                <h4 id="bombHpScenarioTitleParent"><i class="fas fa-bomb"></i> <span id="bombHpScenarioTitle">繝√・繝蜷郁ｨ郁蝉ｹ・､(辷・ｼｾ)</span></h4>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">合計獲得耐久値:</span> <span id="bombGainedHp" class="info-value">--</span>
+                                    <span class="info-label">蜷郁ｨ育佐蠕苓蝉ｹ・､:</span> <span id="bombGainedHp" class="info-value">--</span>
                                 </div>
                                 <button class="total-hp-accordion-header" aria-expanded="false">
-                                    <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                                    <span class="total-hp-accordion-title">謦・｢憺・ｺ上→迯ｲ蠕幽P</span>
                                     <i class="fas fa-chevron-down accordion-icon"></i>
                                 </button>
                                 <ul id="bombSequenceList" class="total-hp-accordion-content"></ul>
                             </div>
 
-                            <div class="total-hp-scenario"> <!-- チーム合計耐久値(最低) -->
-                                <h4 id="lowestHpScenarioTitleParent"><i class="fas fa-arrow-down"></i> <span id="lowestHpScenarioTitle">チーム合計耐久値(最低)</span></h4>
+                            <div class="total-hp-scenario"> <!-- 繝√・繝蜷郁ｨ郁蝉ｹ・､(譛菴・ -->
+                                <h4 id="lowestHpScenarioTitleParent"><i class="fas fa-arrow-down"></i> <span id="lowestHpScenarioTitle">繝√・繝蜷郁ｨ郁蝉ｹ・､(譛菴・</span></h4>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">合計獲得耐久値:</span> <span id="lowestGainedHp" class="info-value">--</span>
+                                    <span class="info-label">蜷郁ｨ育佐蠕苓蝉ｹ・､:</span> <span id="lowestGainedHp" class="info-value">--</span>
                                 </div>
                                 <button class="total-hp-accordion-header" aria-expanded="false">
-                                    <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
+                                    <span class="total-hp-accordion-title">謦・｢憺・ｺ上→迯ｲ蠕幽P</span>
                                     <i class="fas fa-chevron-down accordion-icon"></i>
                                 </button>
                                 <ul id="lowestSequenceList" class="total-hp-accordion-content"></ul>
@@ -500,10 +486,9 @@
                         <!-- Share Buttons for Total HP Prediction -->
                         <div class="simulation-buttons share-buttons-group">
                             <button id="shareTotalHpResultBtn" class="simulation-button share-button" style="display: none;">
-                                <i class="fab fa-x-twitter"></i> Xで予測を共有
-                            </button>
+                                <i class="fab fa-x-twitter"></i> X縺ｧ莠域ｸｬ繧貞・譛・                            </button>
                             <button id="copyTotalHpUrlBtn" class="simulation-button copy-url-button" style="display: none;">
-                                <i class="fas fa-link"></i> URLをコピー
+                                <i class="fas fa-link"></i> URL繧偵さ繝斐・
                             </button>
                         </div>
                     </div>
@@ -514,12 +499,12 @@
         <div class="main-section-accordion" id="selected-characters-full-card-accordion">
             <div class="accordion-item">
                 <button class="accordion-header main-section-accordion-header" aria-expanded="false">
-                    <span><i class="fas fa-user-friends"></i> 選択キャラクター詳細</span>
+                    <span><i class="fas fa-user-friends"></i> 驕ｸ謚槭く繝｣繝ｩ繧ｯ繧ｿ繝ｼ隧ｳ邏ｰ</span>
                     <i class="fas fa-chevron-down accordion-icon"></i>
                 </button>
                 <div class="accordion-content main-section-accordion-content">
                     <div id="redeploySimulationSelectedCharactersGrid" class="character-grid">
-                        <!-- 自機と相方のキャラクターカードがここに挿入されます -->
+                        <!-- 閾ｪ讖溘→逶ｸ譁ｹ縺ｮ繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ繧ｫ繝ｼ繝峨′縺薙％縺ｫ謖ｿ蜈･縺輔ｌ縺ｾ縺・-->
                     </div>
                 </div>
             </div>
@@ -528,14 +513,14 @@
         <div class="controls-container">
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" id="characterSearch" placeholder="キャラクター名で検索..." autocomplete="off">
+                <input type="text" id="characterSearch" placeholder="繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ蜷阪〒讀懃ｴ｢..." autocomplete="off">
             </div>
 
             <div class="filter-container">
                 <div class="filter-group">
-                    <span class="filter-label"><i class="fas fa-coins"></i> コスト:</span>
+                    <span class="filter-label"><i class="fas fa-coins"></i> 繧ｳ繧ｹ繝・</span>
                     <div class="filter-buttons" id="costFilter">
-                        <button class="filter-button active" data-cost="all">全て</button>
+                        <button class="filter-button active" data-cost="all">蜈ｨ縺ｦ</button>
                         <button class="filter-button" data-cost="1.5">1.5</button>
                         <button class="filter-button" data-cost="2">2.0</button>
                         <button class="filter-button" data-cost="2.5">2.5</button>
@@ -544,20 +529,20 @@
                 </div>
 
                 <div class="filter-group">
-                    <span class="filter-label"><i class="fas fa-sort"></i> 並び替え:</span>
+                    <span class="filter-label"><i class="fas fa-sort"></i> 荳ｦ縺ｳ譖ｿ縺・</span>
                     <div class="filter-buttons" id="sortFilter">
-                        <button class="filter-button active" data-sort="name">名前順</button>
-                        <button class="filter-button" data-sort="cost-asc">コスト <i class="fas fa-arrow-down"></i></button>
-                        <button class="filter-button" data-sort="cost-desc">コスト <i class="fas fa-arrow-up"></i></button>
-                        <button class="filter-button" data-sort="hp-asc">耐久値 <i class="fas fa-arrow-down"></i></button>
-                        <button class="filter-button" data-sort="hp-desc">耐久値 <i class="fas fa-arrow-up"></i></button>
+                        <button class="filter-button active" data-sort="name">蜷榊燕鬆・/button>
+                        <button class="filter-button" data-sort="cost-asc">繧ｳ繧ｹ繝・<i class="fas fa-arrow-down"></i></button>
+                        <button class="filter-button" data-sort="cost-desc">繧ｳ繧ｹ繝・<i class="fas fa-arrow-up"></i></button>
+                        <button class="filter-button" data-sort="hp-asc">閠蝉ｹ・､ <i class="fas fa-arrow-down"></i></button>
+                        <button class="filter-button" data-sort="hp-desc">閠蝉ｹ・､ <i class="fas fa-arrow-up"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="characterGrid" class="character-grid">
-            <!-- キャラクターカードがここに挿入されます -->
+            <!-- 繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ繧ｫ繝ｼ繝峨′縺薙％縺ｫ謖ｿ蜈･縺輔ｌ縺ｾ縺・-->
         </div>
     </main>
 
@@ -566,7 +551,7 @@
     </div>
 
     <footer class="footer">
-        <p>© 2025 Lu:Na:Clock</p> <!-- 年は適宜更新してください -->
+        <p>ﾂｩ 2025 Lu:Na:Clock</p> <!-- 蟷ｴ縺ｯ驕ｩ螳懈峩譁ｰ縺励※縺上□縺輔＞ -->
     </footer>
 
     <!-- GSAP for animations -->
@@ -584,3 +569,4 @@
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
+

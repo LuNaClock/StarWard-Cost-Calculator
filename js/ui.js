@@ -104,14 +104,14 @@ export function generateCharacterCards(charactersToDisplay) {
 
                 const thead = document.createElement('thead');
                 const trHead = document.createElement('tr');
-                trHead.appendChild(createTextElement('th', '', '残りコスト'));
+                trHead.appendChild(createTextElement('th', '', '残コスト'));
                 applicableRemainingCosts.forEach(cost => trHead.appendChild(createTextElement('th', '', cost.toFixed(1))));
                 thead.appendChild(trHead);
                 table.appendChild(thead);
 
                 const tbody = document.createElement('tbody');
                 const trBody = document.createElement('tr');
-                trBody.appendChild(createTextElement('td', '', '再出撃時耐久値'));
+                trBody.appendChild(createTextElement('td', '', '耐久値'));
                 costOverHPs.forEach(hp => {
                     const td = createTextElement('td', '', hp.toLocaleString());
                     td.dataset.redeployHp = hp;
@@ -296,14 +296,14 @@ export function generateSelectedCharacterCards() {
 
         const thead = document.createElement('thead');
         const trHead = document.createElement('tr');
-        trHead.appendChild(createTextElement('th', '', '残りコスト'));
+        trHead.appendChild(createTextElement('th', '', '残コスト'));
         applicableRemainingCosts.forEach(cost => trHead.appendChild(createTextElement('th', '', cost.toFixed(1))));
         thead.appendChild(trHead);
         table.appendChild(thead);
 
         const tbody = document.createElement('tbody');
         const trBody = document.createElement('tr');
-        trBody.appendChild(createTextElement('td', '', '再出撃時耐久値'));
+        trBody.appendChild(createTextElement('td', '', '耐久値'));
         costOverHPs.forEach(hp => {
             const td = createTextElement('td', '', hp.toLocaleString());
             td.dataset.redeployHp = hp;
@@ -568,103 +568,6 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         DOM.awakeningAvailabilitySpan.textContent = '使用不可';
         DOM.awakeningAvailabilitySpan.classList.add('awakening-not-possible');
     }
-}
-
-
-export function toggleAccordion(headerElement, contentElement, isSubAccordion = false) {
-    if (!headerElement || !contentElement) return;
-    const isExpanded = headerElement.getAttribute('aria-expanded') === 'true';
-    headerElement.setAttribute('aria-expanded', String(!isExpanded));
-    headerElement.classList.toggle('active');
-    contentElement.classList.toggle('show');
-
-    const padding = isSubAccordion ? "20px" : "25px";
-
-    if (!isExpanded) { // Opening
-        gsap.to(contentElement, {
-            maxHeight: contentElement.scrollHeight + "px",
-            paddingTop: padding,
-            paddingBottom: padding,
-            opacity: 1,
-            scaleY: 1,
-            duration: 0.4,
-            ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"
-        });
-    } else { // Closing
-        gsap.to(contentElement, {
-            maxHeight: 0,
-            paddingTop: 0,
-            paddingBottom: 0,
-            opacity: 0,
-            scaleY: 0.8,
-            duration: 0.4,
-            ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"
-        });
-    }
-}
-
-// === ここから修正箇所 ===
-export function toggleTotalHpAccordion(headerElement, contentElement) {
-    if (!headerElement || !contentElement) return;
-
-    // JavaScriptでクラスを付け外しするだけにする
-    headerElement.classList.toggle('active');
-    contentElement.classList.toggle('show');
-    headerElement.setAttribute('aria-expanded', contentElement.classList.contains('show'));
-}
-// === ここまで修正箇所 ===
-
-
-// 新規追加: ページロード時に指定のアコーディオンを確実に閉じる関数
-export function ensureAccordionsClosedAtStart() {
-    const accordionsToClose = [
-        { header: DOM.totalHpMainAccordionHeader, content: DOM.totalHpMainAccordionContent },
-        { header: DOM.selectedCharactersFullCardAccordionHeader, content: DOM.selectedCharactersFullCardAccordionContent }
-    ];
-
-    accordionsToClose.forEach(({ header, content }) => {
-        if (header && content) {
-            // 状態がexpandedまたはactiveであれば閉じる
-            if (header.getAttribute('aria-expanded') === 'true' || header.classList.contains('active') || content.classList.contains('show')) {
-                header.setAttribute('aria-expanded', 'false');
-                header.classList.remove('active');
-                content.classList.remove('show');
-                gsap.set(content, { maxHeight: 0, opacity: 0, paddingTop: 0, paddingBottom: 0, marginTop: 0, borderWidth: "0px", overflow: 'hidden', scaleY: 0.8 });
-            }
-        }
-    });
-}
-
-// 新規追加: 指定のアコーディオンをアニメーション付きで開く関数
-export function openAccordionWithAnimation(headerElement, contentElement, isTotalHp = false, onCompleteCallback = null) {
-    if (!headerElement || !contentElement) return;
-
-    const isExpanded = headerElement.getAttribute('aria-expanded') === 'true';
-    if (!isExpanded) { // 現在閉じている場合のみ開く
-        headerElement.setAttribute('aria-expanded', 'true');
-        headerElement.classList.add('active');
-        contentElement.classList.add('show');
-
-        gsap.to(contentElement, {
-            maxHeight: contentElement.scrollHeight + "px",
-            paddingTop: isTotalHp ? "0px" : "25px",
-            paddingBottom: "25px",
-            opacity: 1,
-            scaleY: 1,
-            duration: 0.4,
-            ease: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-            onComplete: onCompleteCallback
-        });
-    }
-}
-
-export function initPageAnimations() {
-    const tl = gsap.timeline({ defaults: { opacity: 0, ease: "power3.out", overwrite: true } });
-    tl.from("h1", { y: -50, duration: 1, scale: 0.8, delay: 0.5 })
-        .from(".usage-guide-container", { y: 50, duration: 0.8 }, "-=0.5")
-        .from(".simulation-container", { y: 50, duration: 0.8 }, "-=0.4")
-        .from(".controls-container", { y: 50, duration: 0.7 }, "-=0.4")
-        .add(initSearchIconPulseAnimation);
 }
 
 export function setAwakeningDetailsConstants() {

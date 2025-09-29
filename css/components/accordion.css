@@ -1,0 +1,136 @@
+/* アコーディオンコンポーネント - 最低限版 */
+
+.accordion {
+    border: 1px solid var(--primary-light);
+    border-radius: 10px;
+    overflow: visible;
+    background-color: #F8FCFF;
+    box-shadow: inset 0 0 15px rgba(0, 191, 255, 0.1);
+    margin-bottom: 20px;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.accordion-item {
+    border-bottom: 1px solid rgba(0, 191, 255, 0.1);
+    display: block !important;
+}
+
+.accordion-item:last-child {
+    border-bottom: none;
+}
+
+.accordion-header {
+    background-color: var(--background-light);
+    color: var(--primary-dark);
+    padding: 18px 25px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.2em;
+    font-weight: 700;
+    transition: all var(--transition-speed);
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.accordion-header:hover {
+    background-color: #E6EEF4;
+    color: var(--primary-light);
+    box-shadow: inset 0 0 15px rgba(0, 191, 255, 0.2);
+}
+
+.accordion-header.active {
+    background-color: var(--primary-light);
+    color: var(--card-background);
+    box-shadow: inset 0 0 25px rgba(0, 191, 255, 0.5);
+}
+
+.accordion-content {
+    background-color: var(--card-background);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-speed), 
+                opacity var(--transition-speed), 
+                transform var(--transition-speed),
+                padding var(--transition-speed);
+    padding: 0 25px;
+    opacity: 0;
+    transform: translateY(-10px);
+    display: block !important;
+    visibility: visible !important;
+}
+
+.accordion-content.show {
+    max-height: none;
+    opacity: 1 !important;
+    transform: translateY(0);
+    padding: 25px !important;
+    overflow: visible;
+}
+
+/* サブアコーディオン */
+.sub-accordion-header {
+    background-color: var(--background-light);
+    color: var(--primary-dark);
+    padding: 15px 20px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: all var(--transition-speed);
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.sub-accordion-header:hover {
+    background-color: #E6EEF4;
+    color: var(--primary-light);
+}
+
+.sub-accordion-header.active {
+    background-color: var(--primary-light);
+    color: var(--card-background);
+}
+
+.sub-accordion-content {
+    background-color: var(--card-background);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-speed), 
+                opacity var(--transition-speed), 
+                transform var(--transition-speed),
+                padding var(--transition-speed);
+    padding: 0 20px;
+    opacity: 0;
+    transform: translateY(-10px);
+    display: block !important;
+    visibility: visible !important;
+    position: relative;
+}
+
+.sub-accordion-content.show {
+    max-height: none;
+    opacity: 1 !important;
+    transform: translateY(0);
+    padding: 20px !important;
+    overflow: visible;
+} 

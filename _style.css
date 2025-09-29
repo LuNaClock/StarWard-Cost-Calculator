@@ -378,10 +378,10 @@ h1 {
     overflow: hidden;
     /* IMPROVEMENT 3: アコーディオンの開閉アニメーション改善 */
     transition: 
-      max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* paddingもイージング適用 */
+        max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* paddingもイージング適用 */
     color: #555;
     font-size: 1.05em;
     opacity: 0;
@@ -2398,10 +2398,10 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     transform-origin: top;
     overflow: hidden; /* Contents should be hidden when closed */
     transition: 
-      max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* paddingもイージング適用 */
+        max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* paddingもイージング適用 */
     will-change: max-height, padding, opacity, transform; /* will-changeを追加 */
 }
 
