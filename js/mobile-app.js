@@ -205,6 +205,9 @@ function renderTeamSummary() {
       if (binding.list) {
         binding.list.innerHTML = '';
       }
+      if (binding.details) {
+        binding.details.open = false;
+      }
     });
     return;
   }
@@ -215,6 +218,21 @@ function renderTeamSummary() {
       dom.teamSummaryEmpty.hidden = false;
     }
     dom.teamSummaryGrid.hidden = true;
+    Object.values(scenarioBindings).forEach((binding) => {
+      if (!binding) return;
+      if (binding.title) {
+        binding.title.textContent = binding.defaultTitle;
+      }
+      if (binding.value) {
+        binding.value.textContent = binding.defaultValue || '--';
+      }
+      if (binding.list) {
+        binding.list.innerHTML = '';
+      }
+      if (binding.details) {
+        binding.details.open = false;
+      }
+    });
     return;
   }
 
@@ -234,6 +252,9 @@ function renderTeamSummary() {
     const data = scenarios[scenarioKey];
     const binding = scenarioBindings[bindingKey];
     if (!data || !binding) return;
+    if (binding.details) {
+      binding.details.open = false;
+    }
     if (binding.title) {
       binding.title.textContent = data.name;
     }
