@@ -353,7 +353,8 @@ function setupFilters() {
   dom.costFilters.addEventListener('click', (event) => {
     const button = event.target.closest('button[data-cost]');
     if (!button) return;
-    state.costFilter = button.dataset.cost;
+    const { cost } = button.dataset;
+    state.costFilter = cost === 'all' ? 'all' : Number(cost).toFixed(1);
     dom.costFilters.querySelectorAll('button[data-cost]').forEach((chip) => {
       chip.setAttribute('aria-pressed', String(chip === button));
     });
@@ -377,7 +378,7 @@ function renderCards() {
   const query = state.search.toLowerCase();
   const hiraQuery = toHiragana(query);
   const filtered = state.characters.filter((char) => {
-    if (state.costFilter !== 'all' && char.cost.toFixed(1) !== state.costFilter) {
+    if (state.costFilter !== 'all' && char.costKey !== state.costFilter) {
       return false;
     }
     if (!query) return true;
