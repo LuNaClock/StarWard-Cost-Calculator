@@ -451,11 +451,18 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 @media (max-width: 560px) {
     .character-picker-panel {
         position: fixed;
+        top: 72px;
+        top: calc(env(safe-area-inset-top, 0px) + 72px);
         left: 50%;
         transform: translate(-50%, 10px);
-        width: min(420px, calc(100% - 40px));
+        width: min(420px, calc(100% - 32px));
         max-height: 80vh;
+        max-height: calc(100vh - env(safe-area-inset-top, 0px) - 96px);
+        max-height: min(80vh, calc(100vh - env(safe-area-inset-top, 0px) - 96px));
+        max-height: min(80svh, calc(100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 96px));
+        max-height: min(80dvh, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 96px));
         overflow-y: auto;
+        overscroll-behavior: contain;
     }
 
     .character-picker.open .character-picker-panel {
