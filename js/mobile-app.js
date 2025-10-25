@@ -97,8 +97,9 @@ function initializeCharacters() {
   state.characters = rawCharacterData.map((char, index) => {
     const key = Number(char.cost).toFixed(1);
     const readings = kanjiNameReadings[char.name] || {};
-    const hira = readings.hiragana || toHiragana(char.name);
-    const kata = readings.katakana || toHiragana(char.name).replace(/[\u3041-\u3096]/g, (m) => String.fromCharCode(m.charCodeAt(0) + 0x60));
+    const hiraSource = toHiragana(char.name);
+    const hira = readings.hiragana || hiraSource;
+    const kata = readings.katakana || hiraSource.replace(/[\u3041-\u3096]/g, (m) => String.fromCharCode(m.charCodeAt(0) + 0x60));
     const durabilityOptions = buildDurabilityTable(char);
     return {
       ...char,
@@ -180,57 +181,20 @@ function createScenarioListItem(step) {
   return item;
 }
 
-function renderTeamSummary() {
+function renderTeamSummary(selection = getSelectedCharacters()) {
   if (!dom.teamSummaryPanel || !dom.teamSummaryGrid) {
     return;
   }
-  const player = getSelectedCharacter(dom.playerSelect.value);
-  const partner = getSelectedCharacter(dom.partnerSelect.value);
+  const { player, partner } = selection;
 
   if (!player || !partner) {
-    if (dom.teamSummaryEmpty) {
-      dom.teamSummaryEmpty.hidden = false;
-    }
-    dom.teamSummaryGrid.hidden = true;
-    Object.values(scenarioBindings).forEach((binding) => {
-      if (!binding) return;
-      if (binding.title) {
-        binding.title.textContent = binding.defaultTitle;
-      }
-      if (binding.value) {
-        binding.value.textContent = binding.defaultValue || '--';
-      }
-      if (binding.list) {
-        binding.list.innerHTML = '';
-      }
-      if (binding.details) {
-        binding.details.open = false;
-      }
-    });
+    resetScenarioDisplay();
     return;
   }
 
   const scenarios = calculateTeamHpScenariosForCharacters(player, partner);
   if (!scenarios) {
-    if (dom.teamSummaryEmpty) {
-      dom.teamSummaryEmpty.hidden = false;
-    }
-    dom.teamSummaryGrid.hidden = true;
-    Object.values(scenarioBindings).forEach((binding) => {
-      if (!binding) return;
-      if (binding.title) {
-        binding.title.textContent = binding.defaultTitle;
-      }
-      if (binding.value) {
-        binding.value.textContent = binding.defaultValue || '--';
-      }
-      if (binding.list) {
-        binding.list.innerHTML = '';
-      }
-      if (binding.details) {
-        binding.details.open = false;
-      }
-    });
+    resetScenarioDisplay();
     return;
   }
 
@@ -269,19 +233,37 @@ function renderTeamSummary() {
   });
 }
 
-function renderSelectedCharacterDetails() {
+function resetScenarioDisplay() {
+  if (dom.teamSummaryEmpty) {
+    dom.teamSummaryEmpty.hidden = false;
+  }
+  dom.teamSummaryGrid.hidden = true;
+  Object.values(scenarioBindings).forEach((binding) => {
+    if (!binding) return;
+    if (binding.title) {
+      binding.title.textContent = binding.defaultTitle;
+    }
+    if (binding.value) {
+      binding.value.textContent = binding.defaultValue || '--';
+    }
+    if (binding.list) {
+      binding.list.innerHTML = '';
+    }
+    if (binding.details) {
+      binding.details.open = false;
+    }
+  });
+}
+
+function renderSelectedCharacterDetails(selection = getSelectedCharacters()) {
   if (!dom.selectedCharacterGrid) {
     return;
   }
-  const player = getSelectedCharacter(dom.playerSelect.value);
-  const partner = getSelectedCharacter(dom.partnerSelect.value);
-  const selected = [];
-  if (player) {
-    selected.push({ character: player, role: '自機' });
-  }
-  if (partner) {
-    selected.push({ character: partner, role: '相方' });
-  }
+  const { player, partner } = selection;
+  const selected = [
+    player ? { character: player, role: '自機' } : null,
+    partner ? { character: partner, role: '相方' } : null
+  ].filter(Boolean);
 
   dom.selectedCharacterGrid.innerHTML = '';
 
@@ -465,8 +447,8 @@ function setupCollapse() {
 }
 
 function updateSelectedSummaries() {
-  const player = getSelectedCharacter(dom.playerSelect.value);
-  const partner = getSelectedCharacter(dom.partnerSelect.value);
+  const selection = getSelectedCharacters();
+  const { player, partner } = selection;
   dom.playerCost.textContent = player ? player.cost.toFixed(1) : '--';
   dom.playerHp.textContent = player ? player.hp.toLocaleString() : '--';
   dom.partnerCost.textContent = partner ? partner.cost.toFixed(1) : '--';
@@ -474,12 +456,11 @@ function updateSelectedSummaries() {
   const total = (player?.cost || 0) + (partner?.cost || 0);
   dom.teamTotal.textContent = total.toFixed(1);
 
-  const activeTarget = state.redeployTarget;
-  const targetChar = activeTarget === 'player' ? player : partner;
+  const targetChar = resolveRedeployTarget(selection);
   dom.damageTaken.max = targetChar ? String(targetChar.hp) : '';
 
-  renderTeamSummary();
-  renderSelectedCharacterDetails();
+  renderTeamSummary(selection);
+  renderSelectedCharacterDetails(selection);
 }
 
 function getSelectedCharacter(value) {
@@ -489,12 +470,22 @@ function getSelectedCharacter(value) {
   return state.characters.find((char) => char.id === id) || null;
 }
 
+function getSelectedCharacters() {
+  return {
+    player: getSelectedCharacter(dom.playerSelect?.value),
+    partner: getSelectedCharacter(dom.partnerSelect?.value)
+  };
+}
+
+function resolveRedeployTarget(selection = getSelectedCharacters()) {
+  const { player, partner } = selection;
+  return state.redeployTarget === 'partner' ? partner : player;
+}
+
 function setupSelects() {
-  dom.playerSelect.addEventListener('change', () => {
-    updateSelectedSummaries();
-  });
-  dom.partnerSelect.addEventListener('change', () => {
-    updateSelectedSummaries();
+  [dom.playerSelect, dom.partnerSelect].forEach((select) => {
+    if (!select) return;
+    select.addEventListener('change', updateSelectedSummaries);
   });
 
   dom.redeployChips.addEventListener('click', (event) => {
@@ -520,9 +511,8 @@ function setupBonusToggle() {
 }
 
 function runSimulation() {
-  const player = getSelectedCharacter(dom.playerSelect.value);
-  const partner = getSelectedCharacter(dom.partnerSelect.value);
-  const targetChar = state.redeployTarget === 'partner' ? partner : player;
+  const selection = getSelectedCharacters();
+  const targetChar = resolveRedeployTarget(selection);
 
   if (!targetChar) {
     alert('再出撃する機体を選択してください');
