@@ -9,6 +9,7 @@ import {
   PARTNER_DOWN_AWAKENING_BONUS
 } from '../data.js';
 import { toHiragana } from './utils.js';
+import { calculateTeamHpScenariosForCharacters } from './calculator.js';
 
 const HISTORY_KEY = 'starward-mobile-history-v1';
 const appRoot = document.querySelector('.mobile-app');
@@ -45,6 +46,12 @@ const dom = {
   partnerDown: document.getElementById('partnerDown'),
   runSimulation: document.getElementById('runSimulation'),
   simResults: document.getElementById('simResults'),
+  teamSummaryPanel: document.getElementById('teamSummaryPanel'),
+  teamSummaryEmpty: document.querySelector('[data-role="team-summary-empty"]'),
+  teamSummaryGrid: document.querySelector('[data-role="team-summary-grid"]'),
+  selectedCharactersPanel: document.getElementById('selectedCharactersPanel'),
+  selectedCharactersEmpty: document.querySelector('[data-role="selected-empty"]'),
+  selectedCharacterGrid: document.getElementById('selectedCharacterGrid'),
   resultHp: document.querySelector('[data-bind="result-hp"]'),
   resultCost: document.querySelector('[data-bind="result-cost"]'),
   resultGauge: document.querySelector('[data-bind="result-gauge"]'),
@@ -57,6 +64,30 @@ const dom = {
   sortButtons: document.querySelectorAll('.sort-select'),
   cardGrid: document.getElementById('cardGrid')
 };
+
+const scenarioBindings = initializeScenarioBindings();
+
+function initializeScenarioBindings() {
+  const cards = Array.from(document.querySelectorAll('.team-summary-card[data-scenario]'));
+  return cards.reduce((acc, card) => {
+    const key = card.dataset.scenario;
+    if (!key) {
+      return acc;
+    }
+    const title = card.querySelector('[data-role="title"]');
+    const value = card.querySelector('[data-role="value"]');
+    acc[key] = {
+      card,
+      title,
+      value,
+      list: card.querySelector('[data-role="list"]'),
+      details: card.querySelector('details'),
+      defaultTitle: title ? title.textContent : '',
+      defaultValue: value ? value.textContent : ''
+    };
+    return acc;
+  }, {});
+}
 
 function initializeCharacters() {
   state.characters = rawCharacterData.map((char, index) => {
@@ -90,6 +121,244 @@ function buildDurabilityTable(char) {
       hp,
       ratio: Math.min(1, effective / Number(char.cost))
     };
+  });
+}
+
+function formatCostValue(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return `${value.toFixed(1)} COST`;
+  }
+  const parsed = Number(value);
+  if (!Number.isNaN(parsed)) {
+    return `${parsed.toFixed(1)} COST`;
+  }
+  return '--';
+}
+
+function createScenarioListItem(step) {
+  const item = document.createElement('li');
+  item.className = 'scenario-step';
+
+  const header = document.createElement('div');
+  header.className = 'scenario-step-header';
+  const title = document.createElement('span');
+  title.className = 'scenario-step-title';
+  const prefix = step.turn === 0 ? '初期チームHP' : `${step.turn}回目: ${step.charType ? `${step.charType} ` : ''}${step.charName}`;
+  title.textContent = prefix;
+
+  const value = document.createElement('span');
+  value.className = 'scenario-step-value';
+  if (typeof step.hpGained === 'number' && Number.isFinite(step.hpGained)) {
+    value.textContent = step.turn === 0 ? `${step.hpGained.toLocaleString()} HP` : `+${step.hpGained.toLocaleString()} HP`;
+  } else {
+    value.textContent = '--';
+  }
+
+  header.append(title, value);
+  item.appendChild(header);
+
+  const meta = document.createElement('div');
+  meta.className = 'scenario-step-meta';
+  const consumed = document.createElement('span');
+  consumed.textContent = `消費: ${formatCostValue(step.costConsumed ?? 0)}`;
+  const remaining = document.createElement('span');
+  remaining.textContent = `残り: ${formatCostValue(step.remainingCost ?? '')}`;
+  meta.append(consumed, remaining);
+  item.appendChild(meta);
+
+  if (step.note) {
+    const note = document.createElement('p');
+    note.className = 'scenario-step-note';
+    note.textContent = step.note;
+    item.appendChild(note);
+  }
+
+  return item;
+}
+
+function renderTeamSummary() {
+  if (!dom.teamSummaryPanel || !dom.teamSummaryGrid) {
+    return;
+  }
+  const player = getSelectedCharacter(dom.playerSelect.value);
+  const partner = getSelectedCharacter(dom.partnerSelect.value);
+
+  if (!player || !partner) {
+    if (dom.teamSummaryEmpty) {
+      dom.teamSummaryEmpty.hidden = false;
+    }
+    dom.teamSummaryGrid.hidden = true;
+    Object.values(scenarioBindings).forEach((binding) => {
+      if (!binding) return;
+      if (binding.title) {
+        binding.title.textContent = binding.defaultTitle;
+      }
+      if (binding.value) {
+        binding.value.textContent = binding.defaultValue || '--';
+      }
+      if (binding.list) {
+        binding.list.innerHTML = '';
+      }
+      if (binding.details) {
+        binding.details.open = false;
+      }
+    });
+    return;
+  }
+
+  const scenarios = calculateTeamHpScenariosForCharacters(player, partner);
+  if (!scenarios) {
+    if (dom.teamSummaryEmpty) {
+      dom.teamSummaryEmpty.hidden = false;
+    }
+    dom.teamSummaryGrid.hidden = true;
+    Object.values(scenarioBindings).forEach((binding) => {
+      if (!binding) return;
+      if (binding.title) {
+        binding.title.textContent = binding.defaultTitle;
+      }
+      if (binding.value) {
+        binding.value.textContent = binding.defaultValue || '--';
+      }
+      if (binding.list) {
+        binding.list.innerHTML = '';
+      }
+      if (binding.details) {
+        binding.details.open = false;
+      }
+    });
+    return;
+  }
+
+  if (dom.teamSummaryEmpty) {
+    dom.teamSummaryEmpty.hidden = true;
+  }
+  dom.teamSummaryGrid.hidden = false;
+
+  const mapping = [
+    ['idealScenario', 'ideal'],
+    ['compromiseScenario', 'compromise'],
+    ['bombScenario', 'bomb'],
+    ['lowestScenario', 'lowest']
+  ];
+
+  mapping.forEach(([scenarioKey, bindingKey]) => {
+    const data = scenarios[scenarioKey];
+    const binding = scenarioBindings[bindingKey];
+    if (!data || !binding) return;
+    if (binding.details) {
+      binding.details.open = false;
+    }
+    if (binding.title) {
+      binding.title.textContent = data.name;
+    }
+    if (binding.value) {
+      const totalHpText = typeof data.totalHp === 'number' ? data.totalHp.toLocaleString() : '--';
+      binding.value.textContent = `${totalHpText} HP`;
+    }
+    if (binding.list) {
+      binding.list.innerHTML = '';
+      data.sequence.forEach((step) => {
+        binding.list.appendChild(createScenarioListItem(step));
+      });
+    }
+  });
+}
+
+function renderSelectedCharacterDetails() {
+  if (!dom.selectedCharacterGrid) {
+    return;
+  }
+  const player = getSelectedCharacter(dom.playerSelect.value);
+  const partner = getSelectedCharacter(dom.partnerSelect.value);
+  const selected = [];
+  if (player) {
+    selected.push({ character: player, role: '自機' });
+  }
+  if (partner) {
+    selected.push({ character: partner, role: '相方' });
+  }
+
+  dom.selectedCharacterGrid.innerHTML = '';
+
+  if (!selected.length) {
+    dom.selectedCharacterGrid.hidden = true;
+    if (dom.selectedCharactersEmpty) {
+      dom.selectedCharactersEmpty.hidden = false;
+    }
+    return;
+  }
+
+  dom.selectedCharacterGrid.hidden = false;
+  if (dom.selectedCharactersEmpty) {
+    dom.selectedCharactersEmpty.hidden = true;
+  }
+
+  selected.forEach(({ character, role }) => {
+    const card = document.createElement('div');
+    card.className = 'selected-character-card';
+
+    const header = document.createElement('div');
+    header.className = 'selected-character-header';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'selected-character-avatar';
+    avatar.textContent = character.name.charAt(0);
+    if (character.image) {
+      const img = document.createElement('img');
+      img.alt = `${character.name}のアイコン`;
+      img.src = character.image;
+      if (img.complete && img.naturalWidth > 0) {
+        avatar.textContent = '';
+      } else {
+        img.addEventListener('load', () => {
+          avatar.textContent = '';
+        });
+        img.addEventListener('error', () => {
+          avatar.textContent = character.name.charAt(0);
+          img.remove();
+        });
+      }
+      avatar.appendChild(img);
+    }
+
+    const meta = document.createElement('div');
+    meta.className = 'selected-character-meta';
+    const roleEl = document.createElement('span');
+    roleEl.className = 'selected-character-role';
+    roleEl.textContent = role;
+    const nameEl = document.createElement('p');
+    nameEl.className = 'selected-character-name';
+    nameEl.textContent = character.name;
+    const statsEl = document.createElement('p');
+    statsEl.className = 'selected-character-stats';
+    statsEl.textContent = `コスト ${character.cost.toFixed(1)} / ${character.hp.toLocaleString()} HP`;
+    meta.append(roleEl, nameEl, statsEl);
+
+    header.append(avatar, meta);
+    card.appendChild(header);
+
+    const table = document.createElement('div');
+    table.className = 'selected-character-table';
+    const tableTitle = document.createElement('p');
+    tableTitle.className = 'selected-character-table-title';
+    tableTitle.textContent = '残コスト別の再出撃耐久値';
+    const list = document.createElement('ul');
+    list.className = 'selected-character-table-list';
+    character.durabilityOptions.forEach((option) => {
+      const listItem = document.createElement('li');
+      listItem.className = 'selected-character-table-item';
+      const cost = document.createElement('span');
+      cost.textContent = `${option.remaining.toFixed(1)} コスト`;
+      const hp = document.createElement('span');
+      hp.textContent = `${option.hp.toLocaleString()} HP`;
+      listItem.append(cost, hp);
+      list.appendChild(listItem);
+    });
+    table.append(tableTitle, list);
+    card.appendChild(table);
+
+    dom.selectedCharacterGrid.appendChild(card);
   });
 }
 
@@ -178,6 +447,9 @@ function updateSelectedSummaries() {
   const activeTarget = state.redeployTarget;
   const targetChar = activeTarget === 'player' ? player : partner;
   dom.damageTaken.max = targetChar ? String(targetChar.hp) : '';
+
+  renderTeamSummary();
+  renderSelectedCharacterDetails();
 }
 
 function getSelectedCharacter(value) {
