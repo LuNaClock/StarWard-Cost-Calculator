@@ -226,6 +226,7 @@ body[data-view-mode="desktop"] .view-switcher {
   inset: 0;
   background: radial-gradient(circle at top right, rgba(34, 211, 238, 0.45), transparent 55%);
   opacity: 0.6;
+  /* Decorational glow should not block taps on underlying CTAs */
   pointer-events: none;
 }
 
