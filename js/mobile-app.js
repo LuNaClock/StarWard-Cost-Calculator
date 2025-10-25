@@ -134,13 +134,31 @@ function initializePickerRefs() {
   });
 }
 
+const supportsNativeLazyLoading = typeof HTMLImageElement !== 'undefined'
+  && 'loading' in HTMLImageElement.prototype;
+
+function isIosSafari() {
+  if (typeof navigator === 'undefined' || !navigator.userAgent) {
+    return false;
+  }
+  const ua = navigator.userAgent;
+  const isIosDevice = /iPad|iPhone|iPod/.test(ua);
+  if (!isIosDevice) {
+    return false;
+  }
+  const isSafari = /Safari/.test(ua) && !/(CriOS|FxiOS|EdgiOS|OPiOS)/.test(ua);
+  return isSafari;
+}
+
 function createCharacterAvatar(character, size = 'default') {
   const avatar = document.createElement('div');
   avatar.className = `character-picker-avatar${size === 'small' ? ' small' : ''}`;
 
   const img = document.createElement('img');
   img.alt = `${character.name}のアイコン`;
-  img.loading = 'lazy';
+  if (supportsNativeLazyLoading && !isIosSafari()) {
+    img.loading = 'lazy';
+  }
 
   const fallback = document.createElement('span');
   fallback.className = 'character-icon-fallback';
