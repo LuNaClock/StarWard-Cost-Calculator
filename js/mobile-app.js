@@ -20,7 +20,8 @@ const state = {
   costFilter: 'all',
   sort: 'hp-desc',
   redeployTarget: 'player',
-  history: []
+  history: [],
+  cardScope: 'all'
 };
 
 const dom = {
@@ -62,7 +63,10 @@ const dom = {
   cardSearch: document.getElementById('cardSearch'),
   costFilters: document.getElementById('costFilters'),
   sortButtons: document.querySelectorAll('.sort-select'),
-  cardGrid: document.getElementById('cardGrid')
+  cardGrid: document.getElementById('cardGrid'),
+  recentFilterNotice: document.getElementById('recentFilterNotice'),
+  recentFilterText: document.querySelector('[data-role="recent-notice-text"]'),
+  resetCardScope: document.querySelector('[data-action="reset-card-scope"]')
 };
 
 const scenarioBindings = initializeScenarioBindings();
@@ -396,6 +400,12 @@ function setupRouting() {
   dom.heroButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.navTarget;
+      const scope = btn.dataset.cardScope;
+      if (scope) {
+        applyCardScope(scope);
+      } else if (target === '#cards') {
+        applyCardScope('all');
+      }
       if (target) {
         window.location.hash = target;
       }
@@ -404,6 +414,26 @@ function setupRouting() {
 
   window.addEventListener('hashchange', handleHashChange);
   handleHashChange();
+}
+
+function applyCardScope(scope) {
+  state.cardScope = scope === 'recent' ? 'recent' : 'all';
+  updateCardScopeNotice();
+  renderCards();
+}
+
+function updateCardScopeNotice() {
+  if (!dom.recentFilterNotice || !dom.recentFilterText) {
+    return;
+  }
+  const isRecent = state.cardScope === 'recent';
+  dom.recentFilterNotice.hidden = !isRecent;
+  if (!isRecent) {
+    return;
+  }
+  dom.recentFilterText.textContent = state.history.length
+    ? '最近の計算に使ったキャラのみ表示中'
+    : '最近の計算履歴がまだありません';
 }
 
 function switchTab(targetId) {
@@ -552,27 +582,34 @@ function clamp(value, min, max) {
 }
 
 function renderHistory() {
+  if (!dom.recentList) {
+    return;
+  }
   dom.recentList.innerHTML = '';
   if (!state.history.length) {
     const empty = document.createElement('p');
     empty.className = 'panel-subtitle';
     empty.textContent = 'まだ計算履歴がありません';
     dom.recentList.appendChild(empty);
-    return;
+  } else {
+    state.history.forEach((entry) => {
+      const item = document.createElement('div');
+      item.className = 'quick-item';
+      item.innerHTML = `
+        <div class="quick-label">
+          <span>${entry.name}</span>
+          <span>${formatDate(entry.timestamp)} / 覚醒 ${entry.gauge}%</span>
+        </div>
+        <span class="quick-value">${entry.hp.toLocaleString()} HP</span>
+      `;
+      dom.recentList.appendChild(item);
+    });
   }
 
-  state.history.forEach((entry) => {
-    const item = document.createElement('div');
-    item.className = 'quick-item';
-    item.innerHTML = `
-      <div class="quick-label">
-        <span>${entry.name}</span>
-        <span>${formatDate(entry.timestamp)} / 覚醒 ${entry.gauge}%</span>
-      </div>
-      <span class="quick-value">${entry.hp.toLocaleString()} HP</span>
-    `;
-    dom.recentList.appendChild(item);
-  });
+  if (state.cardScope === 'recent') {
+    renderCards();
+  }
+  updateCardScopeNotice();
 }
 
 function formatDate(iso) {
@@ -603,11 +640,22 @@ function loadHistory() {
 }
 
 function setupHistoryControls() {
-  dom.clearHistory.addEventListener('click', () => {
-    state.history = [];
-    persistHistory();
-    renderHistory();
-  });
+  if (dom.clearHistory) {
+    dom.clearHistory.addEventListener('click', () => {
+      state.history = [];
+      persistHistory();
+      renderHistory();
+      if (state.cardScope === 'recent') {
+        applyCardScope('all');
+      }
+    });
+  }
+
+  if (dom.resetCardScope) {
+    dom.resetCardScope.addEventListener('click', () => {
+      applyCardScope('all');
+    });
+  }
 }
 
 function setupFilters() {
@@ -640,10 +688,27 @@ function setupFilters() {
 }
 
 function renderCards() {
+  if (!dom.cardGrid) {
+    return;
+  }
   dom.cardGrid.innerHTML = '';
   const query = state.search.toLowerCase();
   const hiraQuery = toHiragana(query);
+  const isRecentScope = state.cardScope === 'recent';
+  const recentNames = isRecentScope ? new Set(state.history.map((entry) => entry.name)) : null;
+
+  if (isRecentScope && recentNames && recentNames.size === 0) {
+    const emptyRecent = document.createElement('p');
+    emptyRecent.className = 'panel-subtitle';
+    emptyRecent.textContent = '最近の計算履歴がまだありません';
+    dom.cardGrid.appendChild(emptyRecent);
+    return;
+  }
+
   const filtered = state.characters.filter((char) => {
+    if (isRecentScope && recentNames && !recentNames.has(char.name)) {
+      return false;
+    }
     if (state.costFilter !== 'all' && char.costKey !== state.costFilter) {
       return false;
     }
@@ -655,6 +720,16 @@ function renderCards() {
       char.kata.toLowerCase().includes(query)
     );
   });
+
+  if (!filtered.length) {
+    const empty = document.createElement('p');
+    empty.className = 'panel-subtitle';
+    empty.textContent = isRecentScope
+      ? '最近の計算に使ったキャラで該当するものがありません'
+      : '該当するキャラクターが見つかりません';
+    dom.cardGrid.appendChild(empty);
+    return;
+  }
 
   const sorted = filtered.sort((a, b) => sortCharacters(a, b, state.sort));
   sorted.forEach((char) => {
@@ -698,12 +773,6 @@ function renderCards() {
     setupCardHpInteractions(card, char);
   });
 
-  if (!sorted.length) {
-    const empty = document.createElement('p');
-    empty.className = 'panel-subtitle';
-    empty.textContent = '該当するキャラクターが見つかりません';
-    dom.cardGrid.appendChild(empty);
-  }
 }
 
 function setupCardHpInteractions(card, char) {

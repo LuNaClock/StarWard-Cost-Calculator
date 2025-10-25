@@ -226,6 +226,11 @@ body[data-view-mode="desktop"] .view-switcher {
   inset: 0;
   background: radial-gradient(circle at top right, rgba(34, 211, 238, 0.45), transparent 55%);
   opacity: 0.6;
+  /*
+   * Decorative glow overlay must stay non-interactive so the hero CTA buttons
+   * remain tappable on touch devices. Do not remove pointer-events: none.
+   */
+  pointer-events: none;
 }
 
 .hero-content {
@@ -416,6 +421,43 @@ body[data-view-mode="desktop"] .view-switcher {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-2);
+}
+
+.filter-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-card);
+  background: rgba(37, 99, 235, 0.16);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.filter-notice__text {
+  flex: 1;
+}
+
+.filter-notice__action {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--brand-500);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mobile-app[data-theme="light"] .filter-notice {
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.filter-notice__action:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
 }
 
 .sort-select {

@@ -65,7 +65,7 @@
                                         <path d="M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
-                                <button class="cta-secondary" data-nav-target="#cards">
+                                <button class="cta-secondary" data-nav-target="#cards" data-card-scope="recent">
                                     最近使ったキャラを見る
                                 </button>
                             </div>
@@ -95,7 +95,7 @@
                                 </div>
                                 <span class="quick-value">開く</span>
                             </div>
-                            <div class="quick-item" data-nav-target="#cards">
+                            <div class="quick-item" data-nav-target="#cards" data-card-scope="all">
                                 <div class="quick-label">
                                     <span>キャラクターカード一覧</span>
                                     <span>残コスト別の耐久テーブル</span>
@@ -302,6 +302,10 @@
                                 <button class="sort-select" type="button" data-sort="cost-desc">コスト 高い順</button>
                                 <button class="sort-select" type="button" data-sort="cost-asc">コスト 低い順</button>
                             </div>
+                            <p class="filter-notice" id="recentFilterNotice" hidden>
+                                <span class="filter-notice__text" data-role="recent-notice-text"></span>
+                                <button type="button" class="filter-notice__action" data-action="reset-card-scope">すべて表示</button>
+                            </p>
                         </div>
                     </article>
 
