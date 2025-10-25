@@ -55,6 +55,8 @@ export const rawCharacterData = [
     { name: "スノーウォル", hp: 1872, cost: 1.5, image: "assets/character_icons/snowowl.webp" }
 ];
 
+export const characterSequence = rawCharacterData.map((_, index) => index);
+
 export const kanjiNameReadings = {
     "影": { hiragana: "かげ", katakana: "カゲ" },
     "轟雷改": { hiragana: "ごうらいかい", katakana: "ゴウライカイ" },

@@ -1,5 +1,6 @@
 import {
   rawCharacterData,
+  characterSequence,
   kanjiNameReadings,
   costRemainingMap,
   MAX_TEAM_COST,
@@ -94,22 +95,29 @@ function initializeScenarioBindings() {
 }
 
 function initializeCharacters() {
-  state.characters = rawCharacterData.map((char, index) => {
-    const key = Number(char.cost).toFixed(1);
-    const readings = kanjiNameReadings[char.name] || {};
-    const hiraSource = toHiragana(char.name);
-    const hira = readings.hiragana || hiraSource;
-    const kata = readings.katakana || hiraSource.replace(/[\u3041-\u3096]/g, (m) => String.fromCharCode(m.charCodeAt(0) + 0x60));
-    const durabilityOptions = buildDurabilityTable(char);
-    return {
-      ...char,
-      id: index,
-      costKey: key,
-      hira: hira,
-      kata: kata,
-      durabilityOptions
-    };
-  });
+  const orderedCharacters = characterSequence
+    .map((id) => {
+      const char = rawCharacterData[id];
+      if (!char) {
+        return null;
+      }
+      const key = Number(char.cost).toFixed(1);
+      const readings = kanjiNameReadings[char.name] || {};
+      const hiraSource = toHiragana(char.name);
+      const hira = readings.hiragana || hiraSource;
+      const kata = readings.katakana || hiraSource.replace(/[\u3041-\u3096]/g, (m) => String.fromCharCode(m.charCodeAt(0) + 0x60));
+      const durabilityOptions = buildDurabilityTable(char);
+      return {
+        ...char,
+        id,
+        costKey: key,
+        hira: hira,
+        kata: kata,
+        durabilityOptions
+      };
+    })
+    .filter(Boolean);
+  state.characters = orderedCharacters;
 }
 
 function buildDurabilityTable(char) {
@@ -351,12 +359,21 @@ function renderSelectedCharacterDetails(selection = getSelectedCharacters()) {
 function hydrateSelectOptions() {
   const fragment = document.createDocumentFragment();
   const partnerFragment = document.createDocumentFragment();
-  state.characters.forEach((char) => {
-    const option = document.createElement('option');
-    option.value = String(char.id);
-    option.textContent = `${char.name} (HP ${char.hp})`;
-    fragment.appendChild(option);
-    partnerFragment.appendChild(option.cloneNode(true));
+  const charactersById = new Map(state.characters.map((char) => [char.id, char]));
+  characterSequence.forEach((id) => {
+    const char = charactersById.get(id);
+    if (!char) {
+      return;
+    }
+    const playerOption = document.createElement('option');
+    playerOption.value = String(char.id);
+    playerOption.textContent = `${char.name} (HP ${char.hp})`;
+    fragment.appendChild(playerOption);
+
+    const partnerOption = document.createElement('option');
+    partnerOption.value = playerOption.value;
+    partnerOption.textContent = playerOption.textContent;
+    partnerFragment.appendChild(partnerOption);
   });
   dom.playerSelect.appendChild(fragment);
   dom.partnerSelect.appendChild(partnerFragment);
