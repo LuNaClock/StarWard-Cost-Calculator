@@ -448,8 +448,78 @@ function setupCardHpInteractions(card, char) {
 
   const originalHp = Number(char.hp) || 0;
   const originalHpDisplay = originalHp ? originalHp.toLocaleString() : '0';
+  let currentHpValue = originalHp;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const allowAnimation = !prefersReducedMotion;
 
-  const updateFromCell = (cell) => {
+  const clampPercent = (value) => Math.max(0, Math.min(100, value));
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+  const createNumberAnimator = () => {
+    let animationFrameId = null;
+    return (start, end, onUpdate, duration = 420) => {
+      if (!allowAnimation) {
+        onUpdate(Number.isFinite(end) ? end : 0, true);
+        return;
+      }
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      const resolvedStart = Number.isFinite(start) ? start : 0;
+      const resolvedEnd = Number.isFinite(end) ? end : 0;
+      const startTime = performance.now();
+
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        const eased = easeOutCubic(progress);
+        const value = Math.round(resolvedStart + (resolvedEnd - resolvedStart) * eased);
+        onUpdate(value, progress === 1);
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(step);
+        }
+      };
+
+      animationFrameId = requestAnimationFrame(step);
+    };
+  };
+
+  const animateHpNumber = createNumberAnimator();
+  const animateMetricNumber = createNumberAnimator();
+  const animateRatioNumber = createNumberAnimator();
+
+  const animateBar = (targetPercent) => {
+    if (!allowAnimation) {
+      hpBarFill.style.width = `${clampPercent(targetPercent)}%`;
+      return;
+    }
+    const currentPercent = parseFloat(hpBarFill.style.width) || 0;
+    const clampedTarget = clampPercent(targetPercent);
+    if (!hpBarFill.animate) {
+      hpBarFill.style.width = `${clampedTarget}%`;
+      return;
+    }
+    const animation = hpBarFill.animate(
+      [
+        { width: `${clampPercent(currentPercent)}%` },
+        { width: `${clampedTarget}%` }
+      ],
+      { duration: 420, easing: 'cubic-bezier(0.22, 0.68, 0, 1)' }
+    );
+    animation.addEventListener('finish', () => {
+      hpBarFill.style.width = `${clampedTarget}%`;
+    });
+  };
+
+  const updateNumberDisplays = (hpValue) => {
+    const percent = originalHp > 0 ? clampPercent(Math.round((hpValue / originalHp) * 100)) : 0;
+    const hpText = `${hpValue.toLocaleString()} HP`;
+    hpCurrent.textContent = hpText;
+    metricValue.textContent = `${hpValue.toLocaleString()} HP (${percent}%)`;
+    ratioText.textContent = `${hpValue.toLocaleString()} / ${originalHpDisplay} (${percent}%)`;
+  };
+
+  const updateFromCell = (cell, { animate = true } = {}) => {
     const hp = Number(cell.dataset.hp) || 0;
     const ratio = Number(cell.dataset.ratio);
     const remaining = Number(cell.dataset.remaining);
@@ -463,13 +533,36 @@ function setupCardHpInteractions(card, char) {
     const ratioValue = Number.isFinite(ratio) ? ratio : originalHp > 0 ? hp / originalHp : 0;
     const clampedRatio = Math.max(0, Math.min(1, ratioValue));
     const percent = Math.round(clampedRatio * 100);
-
-    hpBarFill.style.width = `${percent}%`;
     const remainingLabel = Number.isFinite(remaining) ? remaining.toFixed(1) : '--';
+
     metricLabel.textContent = `残コスト ${remainingLabel}`;
-    metricValue.textContent = `${hp.toLocaleString()} HP`;
-    hpCurrent.textContent = `${hp.toLocaleString()} HP`;
-    ratioText.textContent = `${hp.toLocaleString()} / ${originalHpDisplay} (${percent}%)`;
+    if (!animate || !allowAnimation) {
+      hpBarFill.style.width = `${percent}%`;
+      updateNumberDisplays(hp);
+      currentHpValue = hp;
+      return;
+    }
+
+    animateBar(percent);
+
+    animateHpNumber(currentHpValue, hp, (value, done) => {
+      const finalValue = done ? hp : value;
+      hpCurrent.textContent = `${finalValue.toLocaleString()} HP`;
+    });
+
+    animateMetricNumber(currentHpValue, hp, (value, done) => {
+      const finalValue = done ? hp : value;
+      const percentValue = originalHp > 0 ? clampPercent(Math.round((finalValue / originalHp) * 100)) : 0;
+      metricValue.textContent = `${finalValue.toLocaleString()} HP (${percentValue}%)`;
+    });
+
+    animateRatioNumber(currentHpValue, hp, (value, done) => {
+      const finalValue = done ? hp : value;
+      const percentValue = originalHp > 0 ? clampPercent(Math.round((finalValue / originalHp) * 100)) : 0;
+      ratioText.textContent = `${finalValue.toLocaleString()} / ${originalHpDisplay} (${percentValue}%)`;
+    });
+
+    currentHpValue = hp;
   };
 
   durabilityCells.forEach((cell) => {
@@ -489,7 +582,7 @@ function setupCardHpInteractions(card, char) {
 
   const initialCell = durabilityCells.find((cellElement) => cellElement.classList.contains('is-active')) || durabilityCells[0];
   if (initialCell) {
-    updateFromCell(initialCell);
+    updateFromCell(initialCell, { animate: false });
   }
 }
 
