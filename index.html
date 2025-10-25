@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <!-- Content Security Policy (CSP) -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
@@ -25,9 +25,328 @@
           crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- 分離したCSSファイルを読み込む -->
     <link rel="stylesheet" href="css/main.css?v=1.3">
+    <link rel="stylesheet" href="css/mobile-app.css">
 </head>
 <body>
-    <div id="ocrModal" class="ocr-modal" style="display: none;">
+    <div class="mobile-app" data-theme="dark">
+        <div class="app-shell">
+            <header class="app-header">
+                <p class="app-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M4 12a8 8 0 0116 0v4.5a2.5 2.5 0 01-2.5 2.5H6.5A2.5 2.5 0 014 16.5V12z" stroke="currentColor" stroke-width="1.6" fill="none"></path>
+                        <path d="M9 18.5v1.5a2.5 2.5 0 005 0v-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                    </svg>
+                    星の翼 モバイルシミュレーター
+                    <span class="badge-beta">Beta</span>
+                </p>
+            </header>
+
+            <main class="app-main">
+                <section id="home" class="screen" role="tabpanel" aria-labelledby="tab-home">
+                    <article class="panel hero-card">
+                        <div class="hero-content">
+                            <div>
+                                <p class="panel-subtitle">進行中のシミュレーションがあります</p>
+                                <h1 class="panel-title">続きから再開しますか？</h1>
+                            </div>
+                            <div class="hero-actions">
+                                <button class="cta-primary" data-nav-target="#sim">
+                                    <span>シミュレーターを開く</span>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M5 12h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                                        <path d="M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <button class="cta-secondary" data-nav-target="#cards">
+                                    最近使ったキャラを見る
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">最近の計算</h2>
+                            <button class="cta-secondary" data-action="clear-history">履歴をクリア</button>
+                        </div>
+                        <div class="quick-list" id="recentList" aria-live="polite">
+                            <p class="panel-subtitle">まだ計算履歴がありません</p>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">クイックリンク</h2>
+                            <p class="panel-subtitle">よく使う機能に素早くアクセス</p>
+                        </div>
+                        <div class="quick-list">
+                            <div class="quick-item" data-nav-target="#sim">
+                                <div class="quick-label">
+                                    <span>コスト再出撃シミュレーター</span>
+                                    <span>自機/相方・残りコスト・覚醒条件</span>
+                                </div>
+                                <span class="quick-value">開く</span>
+                            </div>
+                            <div class="quick-item" data-nav-target="#cards">
+                                <div class="quick-label">
+                                    <span>キャラクターカード一覧</span>
+                                    <span>残コスト別の耐久テーブル</span>
+                                </div>
+                                <span class="quick-value">開く</span>
+                            </div>
+                            <div class="quick-item" data-nav-target="#settings">
+                                <div class="quick-label">
+                                    <span>単位・テーマ設定</span>
+                                    <span>好みに合わせて切り替え</span>
+                                </div>
+                                <span class="quick-value">開く</span>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+
+                <section id="sim" class="screen" role="tabpanel" aria-labelledby="tab-sim" hidden>
+                    <article class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">シミュレーター</h2>
+                            <p class="panel-subtitle">チーム構成と覚醒条件を入力</p>
+                        </div>
+                        <div class="section-group">
+                            <button class="section-toggle" type="button" aria-expanded="true" data-collapse="#sim-team">
+                                チーム情報
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                            <div id="sim-team" class="collapse" data-open="true">
+                                <div class="input-list">
+                                    <div class="form-field">
+                                        <label for="playerSelect">自機</label>
+                                        <select id="playerSelect" aria-describedby="playerCost">
+                                            <option value="">選択してください</option>
+                                        </select>
+                                        <p class="input-helper" id="playerCost">選択中: <span data-bind="player-cost">--</span> コスト / <span data-bind="player-hp">--</span> 耐久</p>
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="partnerSelect">相方</label>
+                                        <select id="partnerSelect" aria-describedby="partnerCost">
+                                            <option value="">選択してください</option>
+                                        </select>
+                                        <p class="input-helper" id="partnerCost">選択中: <span data-bind="partner-cost">--</span> コスト / <span data-bind="partner-hp">--</span> 耐久</p>
+                                    </div>
+                                    <div class="form-field">
+                                        <span id="redeployLabel">再出撃する機体</span>
+                                        <div class="chip-row" role="radiogroup" aria-labelledby="redeployLabel" id="redeployChips">
+                                            <button class="filter-chip" type="button" data-value="player" aria-pressed="true">自機</button>
+                                            <button class="filter-chip" type="button" data-value="partner" aria-pressed="false">相方</button>
+                                        </div>
+                                        <p class="input-helper">再出撃対象に合わせて覚醒計算も行います</p>
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="remainingCost">残りチームコスト</label>
+                                        <input id="remainingCost" type="number" inputmode="decimal" step="0.1" min="0" max="6" value="6">
+                                        <p class="input-helper">チーム合計コスト: <span data-bind="team-total">0.0</span> / 6.0</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="section-toggle" type="button" aria-expanded="false" data-collapse="#sim-awakening">
+                                覚醒条件
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                            <div id="sim-awakening" class="collapse">
+                                <div class="input-list">
+                                    <div class="form-field">
+                                        <label for="preGauge">撃墜前の覚醒ゲージ (%)</label>
+                                        <input id="preGauge" type="number" inputmode="numeric" min="0" max="100" value="0">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="damageTaken">撃墜時の被ダメージ (HP)</label>
+                                        <input id="damageTaken" type="number" inputmode="numeric" min="0" value="0">
+                                        <p class="input-helper">自動で選択した機体の最大耐久値を上限にします</p>
+                                    </div>
+                                    <label class="checkbox-field">
+                                        <input type="checkbox" id="ownDown"> 再出撃直後ボーナスを加算
+                                    </label>
+                                    <label class="checkbox-field">
+                                        <input type="checkbox" id="damageBonus"> 与ダメージボーナスを加算
+                                    </label>
+                                    <div class="form-field" data-field="bonus-select" hidden>
+                                        <label for="bonusSelect">与ダメージボーナス</label>
+                                        <select id="bonusSelect">
+                                            <option value="0">なし</option>
+                                            <option value="3">+3 (ズンダ1回分)</option>
+                                            <option value="6">+6 (ズンダ2回分)</option>
+                                            <option value="9">+9 (ズンダ3回分)</option>
+                                        </select>
+                                    </div>
+                                    <label class="checkbox-field">
+                                        <input type="checkbox" id="partnerDown"> 相方撃墜ボーナスを加算
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <div class="sticky-footer-cta">
+                        <button class="cta-primary" id="runSimulation">結果を計算</button>
+                    </div>
+
+                    <article class="results-panel" id="simResults" hidden>
+                        <h3 class="panel-title">シミュレーション結果</h3>
+                        <div class="results-grid">
+                            <div class="result-figure">
+                                <span>再出撃耐久値</span>
+                                <strong data-bind="result-hp">0</strong>
+                            </div>
+                            <div class="result-figure">
+                                <span>消費コスト</span>
+                                <strong data-bind="result-cost">0</strong>
+                            </div>
+                            <div class="result-figure">
+                                <span>覚醒ゲージ予測</span>
+                                <strong data-bind="result-gauge">0%</strong>
+                            </div>
+                            <div class="result-figure">
+                                <span>覚醒可否</span>
+                                <strong data-bind="result-awaken">--</strong>
+                            </div>
+                        </div>
+                        <div class="hp-bar" aria-hidden="true">
+                            <span data-bind="result-hp-bar" style="width: 0%"></span>
+                        </div>
+                        <p class="panel-subtitle">履歴に保存しました</p>
+                    </article>
+                </section>
+
+                <section id="cards" class="screen" role="tabpanel" aria-labelledby="tab-cards" hidden>
+                    <article class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">キャラクターカード</h2>
+                            <p class="panel-subtitle">耐久と残コストを一覧で確認</p>
+                        </div>
+                        <div class="input-list">
+                            <div class="form-field">
+                                <label for="cardSearch">キャラクター検索</label>
+                                <input id="cardSearch" type="text" placeholder="名前・読みで検索" autocomplete="off">
+                            </div>
+                            <div class="chip-row" role="toolbar" aria-label="コスト帯フィルタ" id="costFilters">
+                                <button class="filter-chip" type="button" data-cost="all" aria-pressed="true">すべて</button>
+                                <button class="filter-chip" type="button" data-cost="3">コスト3.0</button>
+                                <button class="filter-chip" type="button" data-cost="2.5">コスト2.5</button>
+                                <button class="filter-chip" type="button" data-cost="2">コスト2.0</button>
+                                <button class="filter-chip" type="button" data-cost="1.5">コスト1.5</button>
+                            </div>
+                            <div class="sort-controls">
+                                <button class="sort-select" type="button" data-sort="hp-desc">HP 高い順</button>
+                                <button class="sort-select" type="button" data-sort="hp-asc">HP 低い順</button>
+                                <button class="sort-select" type="button" data-sort="cost-desc">コスト 高い順</button>
+                                <button class="sort-select" type="button" data-sort="cost-asc">コスト 低い順</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <div class="card-grid" id="cardGrid" aria-live="polite"></div>
+                </section>
+
+                <section id="settings" class="screen" role="tabpanel" aria-labelledby="tab-settings" hidden>
+                    <article class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">設定</h2>
+                            <p class="panel-subtitle">お好みの表示にカスタマイズ</p>
+                        </div>
+                        <div class="setting-group">
+                            <div class="setting-item">
+                                <label for="themeSelect">テーマ</label>
+                                <select id="themeSelect">
+                                    <option value="system">システムに合わせる</option>
+                                    <option value="dark" selected>ダーク</option>
+                                    <option value="light">ライト</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="currencySelect">通貨</label>
+                                <select id="currencySelect">
+                                    <option value="yen">JPY</option>
+                                    <option value="usd">USD</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="unitSelect">耐久単位</label>
+                                <select id="unitSelect">
+                                    <option value="hp">HP</option>
+                                    <option value="percent">%</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label>ヘルプ</label>
+                                <a class="cta-secondary" href="https://example.com/help" target="_blank" rel="noopener">ヘルプセンターを開く</a>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+            </main>
+
+            <nav class="bottom-nav" role="tablist" aria-label="主要タブ">
+                <button class="tab-button" id="tab-home" role="tab" aria-controls="home" aria-selected="true">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M4 11.5L12 4l8 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M6.5 10.5V19a1.5 1.5 0 001.5 1.5H16a1.5 1.5 0 001.5-1.5v-8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                    </svg>
+                    ホーム
+                </button>
+                <button class="tab-button" id="tab-sim" role="tab" aria-controls="sim" aria-selected="false">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M4 7h16M7 4v6M12 4v6M17 4v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                        <rect x="6" y="11" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.6"></rect>
+                    </svg>
+                    Simulator
+                </button>
+                <button class="tab-button" id="tab-cards" role="tab" aria-controls="cards" aria-selected="false">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <rect x="4" y="4" width="7" height="16" rx="2" stroke="currentColor" stroke-width="1.6"></rect>
+                        <rect x="13" y="7" width="7" height="13" rx="2" stroke="currentColor" stroke-width="1.6"></rect>
+                    </svg>
+                    Cards
+                </button>
+                <button class="tab-button" id="tab-settings" role="tab" aria-controls="settings" aria-selected="false">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06A1.65 1.65 0 0015 19.4a1.65 1.65 0 00-1 .6 1.65 1.65 0 00-.33 1.82l-.02.07a2 2 0 01-3.3 0l-.02-.07a1.65 1.65 0 00-.33-1.82 1.65 1.65 0 00-1-.6 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-.6-1 1.65 1.65 0 00-1.82-.33l-.07.02a2 2 0 010-3.3l.07-.02a1.65 1.65 0 001.82-.33 1.65 1.65 0 00.6-1 1.65 1.65 0 00-.6-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-.6 1.65 1.65 0 00.33-1.82l.02-.07a2 2 0 013.3 0l.02.07a1.65 1.65 0 00.33 1.82 1.65 1.65 0 001 .6 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.6 1 1.65 1.65 0 00.6 1.82z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    Settings
+                </button>
+            </nav>
+        </div>
+
+        <div class="bottom-sheet" id="cardSheet" role="dialog" aria-modal="true" aria-labelledby="cardSheetTitle" hidden>
+            <div class="sheet-header">
+                <h3 id="cardSheetTitle"></h3>
+                <button class="sheet-close" type="button" aria-label="閉じる">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="sheet-metrics">
+                <div>
+                    <p class="panel-subtitle">残コスト</p>
+                    <p class="panel-title" data-bind="sheet-remaining">--</p>
+                </div>
+                <div>
+                    <p class="panel-subtitle">最大耐久</p>
+                    <p class="panel-title" data-bind="sheet-hp">--</p>
+                </div>
+            </div>
+            <div class="sheet-rows" id="sheetTable"></div>
+            <p class="panel-subtitle" data-bind="sheet-description"></p>
+        </div>
+    </div>
+
+    <div class="desktop-app">
+        <div id="ocrModal" class="ocr-modal" style="display: none;">
         <div class="ocr-modal-content">
             <button id="closeOcrModal" class="close-button">×</button>
             <div class="container">
@@ -565,6 +884,7 @@
     <footer class="footer">
         <p>© 2025 Lu:Na:Clock</p> <!-- 年は適宜更新してください -->
     </footer>
+    </div>
 
     <!-- GSAP for animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -578,6 +898,7 @@
     </script>
     
     <!-- Your application scripts -->
+    <script type="module" src="js/mobile-app.js"></script>
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
