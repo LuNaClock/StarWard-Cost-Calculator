@@ -129,17 +129,67 @@
                             <div id="sim-team" class="collapse" data-open="true">
                                 <div class="input-list">
                                     <div class="form-field">
-                                        <label for="playerSelect">自機</label>
-                                        <select id="playerSelect" aria-describedby="playerCost">
-                                            <option value="">選択してください</option>
-                                        </select>
+                                        <label for="mobilePlayerPickerToggle">自機</label>
+                                        <div class="character-picker" data-picker-role="player">
+                                            <button id="mobilePlayerPickerToggle" class="character-picker-toggle" type="button" data-picker-toggle="player" aria-expanded="false">
+                                                <div class="character-picker-toggle-content">
+                                                    <div class="character-picker-selected-icon is-placeholder" data-picker-selected-icon="player">?</div>
+                                                    <div class="character-picker-selected-text">
+                                                        <span class="character-picker-label">自機を選択</span>
+                                                        <span class="character-picker-selected-name" data-picker-selected-name="player">未選択</span>
+                                                    </div>
+                                                </div>
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                            </button>
+                                            <div class="character-picker-panel" data-picker-panel="player" role="dialog" aria-modal="false" hidden>
+                                                <div class="character-picker-search">
+                                                    <i class="fas fa-search" aria-hidden="true"></i>
+                                                    <input type="text" class="character-picker-search-input" data-picker-search="player" placeholder="キャラ名で検索..." aria-label="自機候補を検索" autocomplete="off">
+                                                </div>
+                                                <div class="character-picker-cost-filter" role="group" aria-label="コスト帯で絞り込む">
+                                                    <button type="button" class="picker-filter-button active" data-picker-cost="all" aria-pressed="true">すべて</button>
+                                                    <button type="button" class="picker-filter-button" data-picker-cost="3.0" aria-pressed="false">3.0</button>
+                                                    <button type="button" class="picker-filter-button" data-picker-cost="2.5" aria-pressed="false">2.5</button>
+                                                    <button type="button" class="picker-filter-button" data-picker-cost="2.0" aria-pressed="false">2.0</button>
+                                                    <button type="button" class="picker-filter-button" data-picker-cost="1.5" aria-pressed="false">1.5</button>
+                                                </div>
+                                                <div class="character-picker-list" data-picker-list="player" role="listbox" aria-label="自機候補一覧"></div>
+                                            </div>
+                                        </div>
                                         <p class="input-helper" id="playerCost">選択中: <span data-bind="player-cost">--</span> コスト / <span data-bind="player-hp">--</span> 耐久</p>
                                     </div>
                                     <div class="form-field">
-                                        <label for="partnerSelect">相方</label>
-                                        <select id="partnerSelect" aria-describedby="partnerCost">
-                                            <option value="">選択してください</option>
-                                        </select>
+                                        <label for="mobilePartnerPickerToggle">相方</label>
+                                        <div class="character-picker" data-picker-role="partner">
+                                            <button id="mobilePartnerPickerToggle" class="character-picker-toggle" type="button" data-picker-toggle="partner" aria-expanded="false">
+                                                <div class="character-picker-toggle-content">
+                                                    <div class="character-picker-selected-icon is-placeholder" data-picker-selected-icon="partner">?</div>
+                                                    <div class="character-picker-selected-text">
+                                                        <span class="character-picker-label">相方を選択</span>
+                                                        <span class="character-picker-selected-name" data-picker-selected-name="partner">未選択</span>
+                                                    </div>
+                                                </div>
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                            </button>
+                                            <div class="character-picker-panel" data-picker-panel="partner" role="dialog" aria-modal="false" hidden>
+                                                <div class="character-picker-search">
+                                                    <i class="fas fa-search" aria-hidden="true"></i>
+                                                    <input type="text" class="character-picker-search-input" data-picker-search="partner" placeholder="キャラ名で検索..." aria-label="相方候補を検索" autocomplete="off">
+                                                </div>
+                                                <div class="character-picker-cost-filter" role="group" aria-label="コスト帯で絞り込む">
+                                                    <button type="button" class="picker-filter-button active" data-picker-cost="all" aria-pressed="true">すべて</button>
+                                                    <button type="button" class="picker-filter-button" data-picker-cost="3.0" aria-pressed="false">3.0</button>
+                                                    <button type="button" class="picker-filter-button" data-picker-cost="2.5" aria-pressed="false">2.5</button>
+                                                    <button type="button" class="picker-filter-button" data-picker-cost="2.0" aria-pressed="false">2.0</button>
+                                                    <button type="button" class="picker-filter-button" data-picker-cost="1.5" aria-pressed="false">1.5</button>
+                                                </div>
+                                                <div class="character-picker-list" data-picker-list="partner" role="listbox" aria-label="相方候補一覧"></div>
+                                            </div>
+                                        </div>
                                         <p class="input-helper" id="partnerCost">選択中: <span data-bind="partner-cost">--</span> コスト / <span data-bind="partner-hp">--</span> 耐久</p>
                                     </div>
                                     <div class="form-field">
