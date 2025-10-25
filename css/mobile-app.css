@@ -539,10 +539,10 @@ body[data-view-mode="desktop"] .view-switcher {
 }
 
 .hp-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--space-2);
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-2);
   font-size: 12px;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
@@ -555,10 +555,12 @@ body[data-view-mode="desktop"] .view-switcher {
 }
 
 .hp-info .hp-ratio-text {
-  margin-left: auto;
+  justify-self: end;
   font-size: 12px;
   color: var(--muted);
   text-align: right;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .durability-table {
