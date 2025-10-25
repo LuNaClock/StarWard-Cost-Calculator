@@ -453,7 +453,7 @@ body[data-view-mode="desktop"] .view-switcher {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  cursor: pointer;
+  cursor: default;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -509,6 +509,7 @@ body[data-view-mode="desktop"] .view-switcher {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--space-2);
   font-size: 14px;
   color: var(--muted);
 }
@@ -516,21 +517,82 @@ body[data-view-mode="desktop"] .view-switcher {
 .metric-row strong {
   color: var(--text);
   font-size: 16px;
+  margin-left: auto;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .hp-bar {
   width: 100%;
   height: 10px;
   border-radius: 999px;
-  background: rgba(59, 130, 246, 0.15);
+  background: rgba(15, 23, 42, 0.35);
+  border: 1px solid rgba(148, 163, 184, 0.4);
   overflow: hidden;
+  box-shadow: inset 0 2px 5px rgba(15, 23, 42, 0.25);
 }
 
 .hp-bar span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--brand-500), var(--accent));
+  background: linear-gradient(
+      90deg,
+      var(--hp-low) 0%,
+      var(--hp-medium) 50%,
+      var(--hp-high) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.45) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  background-size: 100% 100%, 200% 100%;
+  background-repeat: no-repeat;
+  transition: width 0.3s ease;
+  animation: hpShine 2.6s linear infinite;
+}
+
+@keyframes hpShine {
+  0% {
+    background-position: 0% 0%, -100% 0%;
+  }
+
+  100% {
+    background-position: 0% 0%, 100% 0%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-bar span {
+    animation: none;
+  }
+}
+
+.hp-info {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-2);
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.hp-info .hp-current {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.hp-info .hp-ratio-text {
+  justify-self: end;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .durability-table {
@@ -548,10 +610,23 @@ body[data-view-mode="desktop"] .view-switcher {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .durability-cell:nth-child(even) {
   background: rgba(17, 24, 39, 0.9);
+}
+
+.durability-cell.is-active {
+  border-color: rgba(59, 130, 246, 0.6);
+  background: rgba(37, 99, 235, 0.25);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.35);
+}
+
+.durability-cell:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.7);
+  outline-offset: 2px;
 }
 
 .durability-label {
@@ -683,74 +758,6 @@ body[data-view-mode="desktop"] .view-switcher {
 .setting-item label {
   font-size: 14px;
   color: var(--muted);
-}
-
-.bottom-sheet {
-  position: fixed;
-  inset: auto 0 0;
-  background: rgba(11, 18, 32, 0.96);
-  border-radius: 16px 16px 0 0;
-  box-shadow: var(--shadow-2);
-  transform: translateY(100%);
-  transition: transform 0.2s ease;
-  padding: var(--space-4);
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.bottom-sheet[data-open="true"] {
-  transform: translateY(0);
-}
-
-.sheet-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-3);
-}
-
-.sheet-header h3 {
-  margin: 0;
-  font-size: 18px;
-}
-
-.sheet-close {
-  border: none;
-  background: rgba(15, 23, 42, 0.8);
-  color: var(--text);
-  border-radius: 999px;
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-}
-
-.sheet-metrics {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: var(--space-3);
-  margin-bottom: var(--space-3);
-}
-
-.sheet-rows {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.sheet-row {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-3);
-  font-size: 14px;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-card);
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(37, 99, 235, 0.2);
-}
-
-.sheet-row:nth-child(even) {
-  background: rgba(17, 24, 39, 0.9);
 }
 
 [hidden] {

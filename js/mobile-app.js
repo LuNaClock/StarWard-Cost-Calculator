@@ -55,13 +55,7 @@ const dom = {
   cardSearch: document.getElementById('cardSearch'),
   costFilters: document.getElementById('costFilters'),
   sortButtons: document.querySelectorAll('.sort-select'),
-  cardGrid: document.getElementById('cardGrid'),
-  cardSheet: document.getElementById('cardSheet'),
-  cardSheetTitle: document.getElementById('cardSheetTitle'),
-  sheetRemaining: document.querySelector('[data-bind="sheet-remaining"]'),
-  sheetHp: document.querySelector('[data-bind="sheet-hp"]'),
-  sheetDescription: document.querySelector('[data-bind="sheet-description"]'),
-  sheetTable: document.getElementById('sheetTable')
+  cardGrid: document.getElementById('cardGrid')
 };
 
 function initializeCharacters() {
@@ -392,11 +386,20 @@ function renderCards() {
 
   const sorted = filtered.sort((a, b) => sortCharacters(a, b, state.sort));
   sorted.forEach((char) => {
-    const featured = char.durabilityOptions[0];
-    const card = document.createElement('button');
-    card.type = 'button';
+    const card = document.createElement('div');
     card.className = 'character-card';
     card.setAttribute('data-id', String(char.id));
+    card.dataset.originalHp = String(char.hp);
+
+    const durabilityCellsHtml = char.durabilityOptions
+      .map((item, index) => `
+        <div class="durability-cell${index === 0 ? ' is-active' : ''}" data-remaining="${item.remaining}" data-hp="${item.hp}" data-ratio="${item.ratio}" tabindex="0" role="button" aria-pressed="${index === 0}">
+          <span class="durability-label">${item.remaining.toFixed(1)} コスト</span>
+          <span class="durability-value">${item.hp.toLocaleString()} HP</span>
+        </div>
+      `)
+      .join('');
+
     card.innerHTML = `
       <div class="card-header">
         <span class="avatar"><img src="${char.image}" alt="${char.name}のアイコン" loading="lazy"></span>
@@ -406,23 +409,21 @@ function renderCards() {
         </div>
       </div>
       <div class="metric-row">
-        <span>残コスト ${featured.remaining.toFixed(1)}</span>
-        <strong>${featured.hp.toLocaleString()} HP</strong>
+        <span class="metric-label">残コスト --</span>
+        <strong class="metric-value">-- HP</strong>
       </div>
-      <div class="hp-bar"><span style="width:${Math.round(featured.ratio * 100)}%"></span></div>
+      <div class="hp-bar" role="presentation"><span style="width:0%"></span></div>
+      <div class="hp-info">
+        <span class="hp-current">-- HP</span>
+        <span class="hp-ratio-text">--</span>
+      </div>
       <div class="durability-table">
-        ${char.durabilityOptions
-          .map((item) => `
-            <div class="durability-cell">
-              <span class="durability-label">${item.remaining.toFixed(1)} コスト</span>
-              <span class="durability-value">${item.hp.toLocaleString()} HP</span>
-            </div>
-          `)
-          .join('')}
+        ${durabilityCellsHtml}
       </div>
     `;
-    card.addEventListener('click', () => openCardSheet(char));
+
     dom.cardGrid.appendChild(card);
+    setupCardHpInteractions(card, char);
   });
 
   if (!sorted.length) {
@@ -430,6 +431,158 @@ function renderCards() {
     empty.className = 'panel-subtitle';
     empty.textContent = '該当するキャラクターが見つかりません';
     dom.cardGrid.appendChild(empty);
+  }
+}
+
+function setupCardHpInteractions(card, char) {
+  const hpBarFill = card.querySelector('.hp-bar span');
+  const metricLabel = card.querySelector('.metric-label');
+  const metricValue = card.querySelector('.metric-value');
+  const hpCurrent = card.querySelector('.hp-current');
+  const ratioText = card.querySelector('.hp-ratio-text');
+  const durabilityCells = Array.from(card.querySelectorAll('.durability-cell'));
+
+  if (!hpBarFill || !metricLabel || !metricValue || !hpCurrent || !ratioText || !durabilityCells.length) {
+    return;
+  }
+
+  const originalHp = Number(char.hp) || 0;
+  const originalHpDisplay = originalHp ? originalHp.toLocaleString() : '0';
+  let currentHpValue = originalHp;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const allowAnimation = !prefersReducedMotion;
+
+  const clampPercent = (value) => Math.max(0, Math.min(100, value));
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+  const createNumberAnimator = () => {
+    let animationFrameId = null;
+    return (start, end, onUpdate, duration = 420) => {
+      if (!allowAnimation) {
+        onUpdate(Number.isFinite(end) ? end : 0, true);
+        return;
+      }
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      const resolvedStart = Number.isFinite(start) ? start : 0;
+      const resolvedEnd = Number.isFinite(end) ? end : 0;
+      const startTime = performance.now();
+
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        const eased = easeOutCubic(progress);
+        const value = Math.round(resolvedStart + (resolvedEnd - resolvedStart) * eased);
+        onUpdate(value, progress === 1);
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(step);
+        }
+      };
+
+      animationFrameId = requestAnimationFrame(step);
+    };
+  };
+
+  const animateHpNumber = createNumberAnimator();
+  const animateMetricNumber = createNumberAnimator();
+  const animateRatioNumber = createNumberAnimator();
+
+  const animateBar = (targetPercent) => {
+    if (!allowAnimation) {
+      hpBarFill.style.width = `${clampPercent(targetPercent)}%`;
+      return;
+    }
+    const currentPercent = parseFloat(hpBarFill.style.width) || 0;
+    const clampedTarget = clampPercent(targetPercent);
+    if (!hpBarFill.animate) {
+      hpBarFill.style.width = `${clampedTarget}%`;
+      return;
+    }
+    const animation = hpBarFill.animate(
+      [
+        { width: `${clampPercent(currentPercent)}%` },
+        { width: `${clampedTarget}%` }
+      ],
+      { duration: 420, easing: 'cubic-bezier(0.22, 0.68, 0, 1)' }
+    );
+    animation.addEventListener('finish', () => {
+      hpBarFill.style.width = `${clampedTarget}%`;
+    });
+  };
+
+  const updateNumberDisplays = (hpValue) => {
+    const percent = originalHp > 0 ? clampPercent(Math.round((hpValue / originalHp) * 100)) : 0;
+    const hpText = `${hpValue.toLocaleString()} HP`;
+    hpCurrent.textContent = hpText;
+    metricValue.textContent = `${hpValue.toLocaleString()} HP (${percent}%)`;
+    ratioText.textContent = `${hpValue.toLocaleString()} / ${originalHpDisplay} (${percent}%)`;
+  };
+
+  const updateFromCell = (cell, { animate = true } = {}) => {
+    const hp = Number(cell.dataset.hp) || 0;
+    const ratio = Number(cell.dataset.ratio);
+    const remaining = Number(cell.dataset.remaining);
+
+    durabilityCells.forEach((otherCell) => {
+      const isActive = otherCell === cell;
+      otherCell.classList.toggle('is-active', isActive);
+      otherCell.setAttribute('aria-pressed', String(isActive));
+    });
+
+    const ratioValue = Number.isFinite(ratio) ? ratio : originalHp > 0 ? hp / originalHp : 0;
+    const clampedRatio = Math.max(0, Math.min(1, ratioValue));
+    const percent = Math.round(clampedRatio * 100);
+    const remainingLabel = Number.isFinite(remaining) ? remaining.toFixed(1) : '--';
+
+    metricLabel.textContent = `残コスト ${remainingLabel}`;
+    if (!animate || !allowAnimation) {
+      hpBarFill.style.width = `${percent}%`;
+      updateNumberDisplays(hp);
+      currentHpValue = hp;
+      return;
+    }
+
+    animateBar(percent);
+
+    animateHpNumber(currentHpValue, hp, (value, done) => {
+      const finalValue = done ? hp : value;
+      hpCurrent.textContent = `${finalValue.toLocaleString()} HP`;
+    });
+
+    animateMetricNumber(currentHpValue, hp, (value, done) => {
+      const finalValue = done ? hp : value;
+      const percentValue = originalHp > 0 ? clampPercent(Math.round((finalValue / originalHp) * 100)) : 0;
+      metricValue.textContent = `${finalValue.toLocaleString()} HP (${percentValue}%)`;
+    });
+
+    animateRatioNumber(currentHpValue, hp, (value, done) => {
+      const finalValue = done ? hp : value;
+      const percentValue = originalHp > 0 ? clampPercent(Math.round((finalValue / originalHp) * 100)) : 0;
+      ratioText.textContent = `${finalValue.toLocaleString()} / ${originalHpDisplay} (${percentValue}%)`;
+    });
+
+    currentHpValue = hp;
+  };
+
+  durabilityCells.forEach((cell) => {
+    cell.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      updateFromCell(cell);
+    });
+
+    cell.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        updateFromCell(cell);
+      }
+    });
+  });
+
+  const initialCell = durabilityCells.find((cellElement) => cellElement.classList.contains('is-active')) || durabilityCells[0];
+  if (initialCell) {
+    updateFromCell(initialCell, { animate: false });
   }
 }
 
@@ -446,45 +599,6 @@ function sortCharacters(a, b, sortKey) {
     default:
       return b.hp - a.hp || a.name.localeCompare(b.name, 'ja');
   }
-}
-
-function openCardSheet(char) {
-  dom.cardSheetTitle.textContent = char.name;
-  dom.sheetRemaining.textContent = `${char.cost.toFixed(1)} COST`;
-  dom.sheetHp.textContent = `${char.hp.toLocaleString()} HP`;
-  dom.sheetDescription.textContent = '残コストごとの再出撃耐久を確認できます';
-  dom.sheetTable.innerHTML = '';
-
-  char.durabilityOptions.forEach((item) => {
-    const row = document.createElement('div');
-    row.className = 'sheet-row';
-    row.innerHTML = `
-      <span>${item.remaining.toFixed(1)} コスト使用</span>
-      <span>${item.hp.toLocaleString()} HP (${Math.round(item.ratio * 100)}%)</span>
-    `;
-    dom.sheetTable.appendChild(row);
-  });
-
-  dom.cardSheet.removeAttribute('hidden');
-  dom.cardSheet.dataset.open = 'true';
-}
-
-function closeCardSheet() {
-  dom.cardSheet.dataset.open = 'false';
-  dom.cardSheet.setAttribute('hidden', '');
-}
-
-function setupSheet() {
-  dom.cardSheet.addEventListener('click', (event) => {
-    if (event.target.closest('.sheet-close')) {
-      closeCardSheet();
-    }
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && dom.cardSheet.dataset.open === 'true') {
-      closeCardSheet();
-    }
-  });
 }
 
 function setupSettings() {
@@ -518,7 +632,6 @@ function init() {
   setupSelects();
   setupBonusToggle();
   setupFilters();
-  setupSheet();
   setupSettings();
   setupHistoryControls();
   loadHistory();
