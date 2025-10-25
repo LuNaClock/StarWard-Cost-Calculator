@@ -1,6 +1,7 @@
 import * as DOM from './domElements.js';
 import { costRemainingMap, AVERAGE_GAUGE_COEFFICIENT, AWAKENING_BONUS_BY_COST, PARTNER_DOWN_AWAKENING_BONUS, AWAKENING_THRESHOLD } from '../data.js';
 import { getCharacters, getSelectedPlayerChar, getSelectedPartnerChar } from './state.js';
+import * as Utils from './utils.js';
 
 export function showLoading() {
     if (DOM.loadingOverlay) DOM.loadingOverlay.classList.add('active');
@@ -8,6 +9,302 @@ export function showLoading() {
 
 export function hideLoading() {
     if (DOM.loadingOverlay) gsap.to(DOM.loadingOverlay, { opacity: 0, duration: 0.3, onComplete: () => DOM.loadingOverlay.classList.remove('active') });
+}
+
+const CHARACTER_PICKER_TYPES = ['player', 'partner'];
+
+const characterPickerRefs = {
+    player: buildCharacterPickerRefs('player'),
+    partner: buildCharacterPickerRefs('partner')
+};
+
+const characterPickerState = {
+    player: { cost: 'all', searchTerm: '', filteredIndices: [] },
+    partner: { cost: 'all', searchTerm: '', filteredIndices: [] }
+};
+
+function buildCharacterPickerRefs(type) {
+    const container = document.querySelector(`.character-picker[data-role="${type}"]`);
+    if (!container) return null;
+    return {
+        container,
+        toggle: container.querySelector('.character-picker-toggle'),
+        panel: container.querySelector('.character-picker-panel'),
+        searchInput: container.querySelector('.character-picker-search-input'),
+        costButtons: Array.from(container.querySelectorAll('.picker-filter-button')),
+        list: container.querySelector('.character-picker-list'),
+        selectedIcon: container.querySelector('.character-picker-selected-icon'),
+        selectedName: container.querySelector('.character-picker-selected-name')
+    };
+}
+
+function getSelectElementByType(type) {
+    if (type === 'player') return DOM.playerCharSelect;
+    if (type === 'partner') return DOM.partnerCharSelect;
+    return null;
+}
+
+function createCharacterAvatar(character, size = 'default') {
+    const avatar = document.createElement('div');
+    avatar.className = `character-picker-avatar${size === 'small' ? ' small' : ''}`;
+
+    const img = document.createElement('img');
+    img.alt = character.name;
+
+    const fallback = document.createElement('span');
+    fallback.className = 'character-icon-fallback';
+    fallback.textContent = character.name ? character.name.charAt(0) : '?';
+
+    if (character.image) {
+        img.src = character.image;
+        const markVisibleIfReady = () => {
+            if (img.complete && img.naturalWidth > 0) avatar.classList.add('show-image');
+        };
+        img.onload = () => avatar.classList.add('show-image');
+        img.onerror = () => avatar.classList.remove('show-image');
+        markVisibleIfReady();
+    }
+
+    avatar.appendChild(img);
+    avatar.appendChild(fallback);
+    return avatar;
+}
+
+function updateCharacterPickerSelectionDisplay(type, character) {
+    const refs = characterPickerRefs[type];
+    if (!refs) return;
+
+    if (refs.selectedIcon) {
+        refs.selectedIcon.innerHTML = '';
+        if (character) {
+            refs.selectedIcon.classList.remove('is-placeholder');
+            refs.selectedIcon.appendChild(createCharacterAvatar(character, 'small'));
+        } else {
+            refs.selectedIcon.classList.add('is-placeholder');
+            refs.selectedIcon.textContent = '?';
+        }
+    }
+
+    if (refs.selectedName) {
+        refs.selectedName.textContent = character ? `${character.name} (コスト${character.cost.toFixed(1)})` : '未選択';
+    }
+}
+
+function updateCharacterPickerCostButtonState(type) {
+    const refs = characterPickerRefs[type];
+    if (!refs || !refs.costButtons) return;
+    const currentCost = characterPickerState[type]?.cost ?? 'all';
+    refs.costButtons.forEach(button => {
+        const buttonCost = button.dataset.cost || 'all';
+        button.classList.toggle('active', buttonCost === currentCost);
+    });
+}
+
+function getCurrentSelectedIndex(type) {
+    const selectEl = getSelectElementByType(type);
+    if (!selectEl || selectEl.value === '') return null;
+    const parsed = parseInt(selectEl.value, 10);
+    return Number.isNaN(parsed) ? null : parsed;
+}
+
+function filterCharactersForPicker(type) {
+    const characters = getCharacters();
+    if (!Array.isArray(characters) || !characterPickerState[type]) return [];
+
+    const { cost, searchTerm } = characterPickerState[type];
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    const hiraTerm = normalizedSearch ? Utils.toHiragana(normalizedSearch) : '';
+    const kataTerm = normalizedSearch ? Utils.toKatakana(normalizedSearch) : '';
+
+    return characters
+        .map((char, index) => ({ char, index }))
+        .filter(({ char }) => {
+            if (cost && cost !== 'all' && char.cost.toFixed(1) !== cost) {
+                return false;
+            }
+
+            if (!normalizedSearch) return true;
+
+            const nameLower = (char.name || '').toLowerCase();
+            const yomiHira = (char.yomi_hiragana || '').toLowerCase();
+            const yomiKata = (char.yomi_katakana || '').toLowerCase();
+
+            return nameLower.includes(normalizedSearch) || nameLower.includes(hiraTerm) || nameLower.includes(kataTerm) ||
+                yomiHira.includes(normalizedSearch) || yomiHira.includes(hiraTerm) || yomiHira.includes(kataTerm) ||
+                yomiKata.includes(normalizedSearch) || yomiKata.includes(hiraTerm) || yomiKata.includes(kataTerm);
+        });
+}
+
+export function getCharacterPickerRefs(type) {
+    return characterPickerRefs[type] || null;
+}
+
+export function renderCharacterPicker(type) {
+    const refs = characterPickerRefs[type];
+    if (!refs || !refs.list || !characterPickerState[type]) return;
+
+    updateCharacterPickerCostButtonState(type);
+    if (refs.searchInput && refs.searchInput.value !== characterPickerState[type].searchTerm) {
+        refs.searchInput.value = characterPickerState[type].searchTerm;
+    }
+
+    const filtered = filterCharactersForPicker(type);
+    characterPickerState[type].filteredIndices = filtered.map(item => item.index);
+
+    refs.list.innerHTML = '';
+
+    const currentSelectedIndex = getCurrentSelectedIndex(type);
+    const clearButton = document.createElement('button');
+    clearButton.type = 'button';
+    clearButton.className = 'character-picker-item clear-option';
+    clearButton.dataset.index = '';
+    clearButton.setAttribute('role', 'option');
+    clearButton.textContent = '未選択に戻す';
+    if (currentSelectedIndex === null) {
+        clearButton.classList.add('selected');
+        clearButton.setAttribute('aria-selected', 'true');
+    } else {
+        clearButton.setAttribute('aria-selected', 'false');
+    }
+    refs.list.appendChild(clearButton);
+
+    if (filtered.length === 0) {
+        const emptyMessage = document.createElement('div');
+        emptyMessage.className = 'character-picker-empty';
+        emptyMessage.textContent = '該当するキャラが見つかりません';
+        refs.list.appendChild(emptyMessage);
+        return;
+    }
+
+    filtered.forEach(({ char, index }) => {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'character-picker-item';
+        item.dataset.index = index.toString();
+        item.setAttribute('role', 'option');
+
+        const avatar = createCharacterAvatar(char, 'small');
+        item.appendChild(avatar);
+
+        const info = document.createElement('div');
+        info.className = 'character-picker-item-info';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'character-picker-item-name';
+        nameSpan.textContent = char.name;
+
+        const metaSpan = document.createElement('span');
+        metaSpan.className = 'character-picker-item-meta';
+        metaSpan.textContent = `コスト ${char.cost.toFixed(1)} / 耐久 ${char.hp.toLocaleString()}`;
+
+        info.appendChild(nameSpan);
+        info.appendChild(metaSpan);
+        item.appendChild(info);
+
+        if (currentSelectedIndex === index) {
+            item.classList.add('selected');
+            item.setAttribute('aria-selected', 'true');
+        } else {
+            item.setAttribute('aria-selected', 'false');
+        }
+
+        refs.list.appendChild(item);
+    });
+}
+
+export function setCharacterPickerCostFilter(type, cost) {
+    if (!characterPickerState[type]) return;
+    const normalizedCost = cost || 'all';
+    characterPickerState[type].cost = normalizedCost;
+    renderCharacterPicker(type);
+}
+
+export function setCharacterPickerSearchTerm(type, term) {
+    if (!characterPickerState[type]) return;
+    characterPickerState[type].searchTerm = term ?? '';
+    renderCharacterPicker(type);
+}
+
+export function getFirstFilteredCharacterIndex(type) {
+    const indices = characterPickerState[type]?.filteredIndices || [];
+    return indices.length > 0 ? indices[0] : null;
+}
+
+export function focusCharacterPickerSearch(type) {
+    const refs = characterPickerRefs[type];
+    if (!refs || !refs.searchInput) return;
+    requestAnimationFrame(() => refs.searchInput.focus());
+}
+
+export function isCharacterPickerOpen(type) {
+    const refs = characterPickerRefs[type];
+    return !!(refs && refs.container && refs.container.classList.contains('open'));
+}
+
+export function openCharacterPicker(type) {
+    const refs = characterPickerRefs[type];
+    if (!refs || !refs.container) return;
+    closeAllCharacterPickers(type);
+    refs.container.classList.add('open');
+    renderCharacterPicker(type);
+}
+
+export function closeCharacterPicker(type) {
+    const refs = characterPickerRefs[type];
+    if (!refs || !refs.container) return;
+    refs.container.classList.remove('open');
+}
+
+export function closeAllCharacterPickers(exceptType = null) {
+    CHARACTER_PICKER_TYPES.forEach(t => {
+        if (exceptType && t === exceptType) return;
+        closeCharacterPicker(t);
+    });
+}
+
+export function toggleCharacterPicker(type) {
+    if (isCharacterPickerOpen(type)) {
+        closeCharacterPicker(type);
+    } else {
+        openCharacterPicker(type);
+    }
+}
+
+export function selectCharacterFromPicker(type, characterIndex) {
+    const selectEl = getSelectElementByType(type);
+    if (!selectEl) return;
+
+    if (characterPickerState[type]) {
+        characterPickerState[type].searchTerm = '';
+    }
+
+    const newValue = characterIndex === null || typeof characterIndex === 'undefined' ? '' : characterIndex.toString();
+    const hasChanged = selectEl.value !== newValue;
+    selectEl.value = newValue;
+
+    if (hasChanged) {
+        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+        syncCharacterPickerSelection(type);
+    }
+
+    closeCharacterPicker(type);
+}
+
+export function syncCharacterPickerSelection(type) {
+    const selectEl = getSelectElementByType(type);
+    const characters = getCharacters();
+    let selectedCharacter = null;
+
+    if (selectEl && selectEl.value !== '') {
+        const index = parseInt(selectEl.value, 10);
+        if (!Number.isNaN(index) && characters && characters[index]) {
+            selectedCharacter = characters[index];
+        }
+    }
+
+    updateCharacterPickerSelectionDisplay(type, selectedCharacter);
+    renderCharacterPicker(type);
 }
 
 function createTextElement(tag, className, textContent) {
@@ -192,6 +489,8 @@ export function populateCharacterSelects() {
         DOM.playerCharSelect.appendChild(option.cloneNode(true));
         DOM.partnerCharSelect.appendChild(option);
     });
+
+    CHARACTER_PICKER_TYPES.forEach(type => syncCharacterPickerSelection(type));
 }
 
 export function populateRemainingCostSelect(maxTeamCost) {

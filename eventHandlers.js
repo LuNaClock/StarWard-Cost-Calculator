@@ -59,19 +59,21 @@ function handleCharacterCardClick(event) {
 }
 
 function handlePlayerCharSelectChange(event) {
-    State.setSelectedPlayerChar(event.target.value); 
+    State.setSelectedPlayerChar(event.target.value);
+    UI.syncCharacterPickerSelection('player');
     UI.updateTeamCostDisplay(MAX_TEAM_COST);
     UI.updateSelectedCharactersDisplay();
     UI.resetSimulationResultsUI();
-    processTeamHpCombinations(); 
+    processTeamHpCombinations();
 }
 
 function handlePartnerCharSelectChange(event) {
-    State.setSelectedPartnerChar(event.target.value); 
+    State.setSelectedPartnerChar(event.target.value);
+    UI.syncCharacterPickerSelection('partner');
     UI.updateTeamCostDisplay(MAX_TEAM_COST);
     UI.updateSelectedCharactersDisplay();
     UI.resetSimulationResultsUI();
-    processTeamHpCombinations(); 
+    processTeamHpCombinations();
 }
 
 function handleAwakeningInputChange() {
@@ -165,6 +167,86 @@ function handleImageUpload(event) {
     event.target.value = '';
 }
 
+function setupCharacterPickerEventListeners() {
+    const pickerTypes = ['player', 'partner'];
+
+    pickerTypes.forEach(type => {
+        const refs = UI.getCharacterPickerRefs(type);
+        if (!refs) return;
+
+        if (refs.toggle) {
+            refs.toggle.addEventListener('click', () => {
+                UI.toggleCharacterPicker(type);
+                if (UI.isCharacterPickerOpen(type)) {
+                    UI.focusCharacterPickerSearch(type);
+                }
+            });
+        }
+
+        if (refs.searchInput) {
+            refs.searchInput.addEventListener('input', event => {
+                UI.setCharacterPickerSearchTerm(type, event.target.value);
+            });
+
+            refs.searchInput.addEventListener('keydown', event => {
+                if (event.key === 'Enter') {
+                    const firstIndex = UI.getFirstFilteredCharacterIndex(type);
+                    if (firstIndex !== null && firstIndex !== undefined) {
+                        UI.selectCharacterFromPicker(type, firstIndex);
+                    }
+                    event.preventDefault();
+                } else if (event.key === 'Escape') {
+                    UI.closeCharacterPicker(type);
+                    refs.toggle?.focus();
+                }
+            });
+        }
+
+        if (refs.costButtons && refs.costButtons.length > 0) {
+            refs.costButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const costValue = button.dataset.cost || 'all';
+                    UI.setCharacterPickerCostFilter(type, costValue);
+                });
+            });
+        }
+
+        if (refs.list) {
+            refs.list.addEventListener('click', event => {
+                const item = event.target.closest('.character-picker-item');
+                if (!item) return;
+
+                const dataIndex = item.dataset.index;
+                if (typeof dataIndex === 'undefined') return;
+
+                if (dataIndex === '') {
+                    UI.selectCharacterFromPicker(type, null);
+                    return;
+                }
+
+                const parsedIndex = parseInt(dataIndex, 10);
+                if (Number.isNaN(parsedIndex) || parsedIndex < 0) return;
+                UI.selectCharacterFromPicker(type, parsedIndex);
+            });
+        }
+
+        if (refs.container) {
+            refs.container.addEventListener('keydown', event => {
+                if (event.key === 'Escape') {
+                    UI.closeCharacterPicker(type);
+                    refs.toggle?.focus();
+                }
+            });
+        }
+    });
+
+    document.addEventListener('click', event => {
+        if (!event.target.closest('.character-picker')) {
+            UI.closeAllCharacterPickers();
+        }
+    });
+}
+
 export function setupEventListeners() {
     // Search and Filters
     if (DOM.characterSearchInput) {
@@ -182,6 +264,8 @@ export function setupEventListeners() {
 
     // Character Grid
     if (DOM.characterGrid) DOM.characterGrid.addEventListener('click', handleCharacterCardClick);
+
+    setupCharacterPickerEventListeners();
 
     // New: Redeploy Simulation Selected Characters Grid
     if (DOM.redeploySimulationSelectedCharactersGrid) DOM.redeploySimulationSelectedCharactersGrid.addEventListener('click', handleCharacterCardClick);

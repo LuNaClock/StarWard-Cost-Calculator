@@ -141,8 +141,11 @@ export function parseUrlAndRestoreState() {
             // console.warn("Invalid partner index from URL:", partnerIndexStr);
         }
     }
-    
-    UI.updateTeamCostDisplay(MAX_TEAM_COST); 
+
+    UI.syncCharacterPickerSelection('player');
+    UI.syncCharacterPickerSelection('partner');
+
+    UI.updateTeamCostDisplay(MAX_TEAM_COST);
     UI.updateSelectedCharactersDisplay();
 
     const playerChar = State.getSelectedPlayerChar(); // Get selected char for max HP validation
