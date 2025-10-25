@@ -226,7 +226,10 @@ body[data-view-mode="desktop"] .view-switcher {
   inset: 0;
   background: radial-gradient(circle at top right, rgba(34, 211, 238, 0.45), transparent 55%);
   opacity: 0.6;
-  /* Decorational glow should not block taps on underlying CTAs */
+  /*
+   * Decorative glow overlay must stay non-interactive so the hero CTA buttons
+   * remain tappable on touch devices. Do not remove pointer-events: none.
+   */
   pointer-events: none;
 }
 
