@@ -418,6 +418,10 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     display: block;
 }
 
+.character-picker-avatar.show-image .character-icon-fallback {
+    display: none;
+}
+
 .character-picker-avatar .character-icon-fallback {
     position: absolute;
     inset: 0;
