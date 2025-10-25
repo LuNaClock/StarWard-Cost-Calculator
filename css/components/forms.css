@@ -451,10 +451,14 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 @media (max-width: 560px) {
     .character-picker-panel {
         position: fixed;
+        top: 72px;
+        top: calc(env(safe-area-inset-top) + 72px);
         left: 50%;
         transform: translate(-50%, 10px);
         width: min(420px, calc(100% - 40px));
         max-height: 80vh;
+        max-height: calc(100vh - env(safe-area-inset-top) - 96px);
+        max-height: min(80vh, calc(100vh - env(safe-area-inset-top) - 96px));
         overflow-y: auto;
     }
 
