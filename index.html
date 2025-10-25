@@ -576,12 +576,64 @@
                         <p class="guide-intro">自機と相方を選択し、現在のチーム残りコストを入力することで、どちらかの機体が再出撃した場合の耐久値をシミュレーションできます。</p>
                         <div class="character-select-group">
                             <div class="select-wrapper">
-                                <label for="playerCharSelect"><i class="fas fa-user-astronaut"></i> 自機:</label>
-                                <select id="playerCharSelect" class="select-dropdown"></select>
+                                <label for="playerCharPickerToggle"><i class="fas fa-user-astronaut"></i> 自機:</label>
+                                <div class="character-picker" data-role="player">
+                                    <button id="playerCharPickerToggle" class="character-picker-toggle" type="button">
+                                        <div class="character-picker-toggle-content">
+                                            <div class="character-picker-selected-icon is-placeholder" aria-hidden="true">?</div>
+                                            <div class="character-picker-selected-text">
+                                                <span class="character-picker-label">自機を選択</span>
+                                                <span class="character-picker-selected-name">未選択</span>
+                                            </div>
+                                        </div>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="character-picker-panel" role="dialog" aria-modal="false">
+                                        <div class="character-picker-search">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" class="character-picker-search-input" placeholder="キャラ名で検索..." aria-label="自機候補を検索" autocomplete="off">
+                                        </div>
+                                        <div class="character-picker-cost-filter" role="group" aria-label="自機のコストで絞り込む">
+                                            <button type="button" class="picker-filter-button active" data-cost="all">全て</button>
+                                            <button type="button" class="picker-filter-button" data-cost="3.0">3.0</button>
+                                            <button type="button" class="picker-filter-button" data-cost="2.5">2.5</button>
+                                            <button type="button" class="picker-filter-button" data-cost="2.0">2.0</button>
+                                            <button type="button" class="picker-filter-button" data-cost="1.5">1.5</button>
+                                        </div>
+                                        <div class="character-picker-list" role="listbox" aria-label="自機候補一覧"></div>
+                                    </div>
+                                </div>
+                                <select id="playerCharSelect" class="select-dropdown" hidden aria-hidden="true"></select>
                             </div>
                             <div class="select-wrapper">
-                                <label for="partnerCharSelect"><i class="fas fa-user-friends"></i> 相方:</label>
-                                <select id="partnerCharSelect" class="select-dropdown"></select>
+                                <label for="partnerCharPickerToggle"><i class="fas fa-user-friends"></i> 相方:</label>
+                                <div class="character-picker" data-role="partner">
+                                    <button id="partnerCharPickerToggle" class="character-picker-toggle" type="button">
+                                        <div class="character-picker-toggle-content">
+                                            <div class="character-picker-selected-icon is-placeholder" aria-hidden="true">?</div>
+                                            <div class="character-picker-selected-text">
+                                                <span class="character-picker-label">相方を選択</span>
+                                                <span class="character-picker-selected-name">未選択</span>
+                                            </div>
+                                        </div>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="character-picker-panel" role="dialog" aria-modal="false">
+                                        <div class="character-picker-search">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" class="character-picker-search-input" placeholder="キャラ名で検索..." aria-label="相方候補を検索" autocomplete="off">
+                                        </div>
+                                        <div class="character-picker-cost-filter" role="group" aria-label="相方のコストで絞り込む">
+                                            <button type="button" class="picker-filter-button active" data-cost="all">全て</button>
+                                            <button type="button" class="picker-filter-button" data-cost="3.0">3.0</button>
+                                            <button type="button" class="picker-filter-button" data-cost="2.5">2.5</button>
+                                            <button type="button" class="picker-filter-button" data-cost="2.0">2.0</button>
+                                            <button type="button" class="picker-filter-button" data-cost="1.5">1.5</button>
+                                        </div>
+                                        <div class="character-picker-list" role="listbox" aria-label="相方候補一覧"></div>
+                                    </div>
+                                </div>
+                                <select id="partnerCharSelect" class="select-dropdown" hidden aria-hidden="true"></select>
                             </div>
                         </div>
 
