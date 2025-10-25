@@ -5,6 +5,7 @@ import { applyFiltersAndSearch, processTeamHpCombinations, processSimulateRedepl
 import { MAX_TEAM_COST } from '../data.js';
 import * as Sharing from './sharing.js'; 
 import * as ImageProcessor from './imageProcessor.js';
+import { accordionManager } from './accordion.js';
 
 let isComposing = false;
 let searchTimeoutLocal;
@@ -23,13 +24,13 @@ function handleCharacterSearchComposition(event) {
         applyFiltersAndSearch(); 
     }
 }
+
 function handleCharacterSearchBlur() {
     if (!isComposing) {
         clearTimeout(searchTimeoutLocal);
         applyFiltersAndSearch();
     }
 }
-
 
 function handleFilterButtonClick(event, filterType) {
     const button = event.target.closest('.filter-button');
@@ -41,21 +42,7 @@ function handleFilterButtonClick(event, filterType) {
     applyFiltersAndSearch();
 }
 
-function handleAccordionToggle(event, isSubAccordion = false, isTotalHpAccordion = false) {
-    const header = event.currentTarget;
-    const content = header.nextElementSibling;
-    if (!content) { // Safety check
-        // console.warn("Accordion content not found for header:", header);
-        return;
-    }
-    if (isTotalHpAccordion) {
-        UI.toggleTotalHpAccordion(header, content);
-    } else {
-        UI.toggleAccordion(header, content, isSubAccordion);
-    }
-}
-
-
+// 新規追加: 不足している関数を追加
 function handleCharacterCardClick(event) {
     const clickedElement = event.target;
     const card = clickedElement.closest('.character-card');
@@ -190,9 +177,8 @@ export function setupEventListeners() {
     if (DOM.sortFilterButtons) DOM.sortFilterButtons.forEach(button => button.addEventListener('click', (e) => handleFilterButtonClick(e, 'sort')));
 
     // Accordions
-    if (DOM.mainAccordionHeaders) DOM.mainAccordionHeaders.forEach(header => header.addEventListener('click', (e) => handleAccordionToggle(e, false, false)));
-    if (DOM.subAccordionHeaders) DOM.subAccordionHeaders.forEach(header => header.addEventListener('click', (e) => handleAccordionToggle(e, true, false)));
-    if (DOM.totalHpAccordionHeaders) DOM.totalHpAccordionHeaders.forEach(header => header.addEventListener('click', (e) => handleAccordionToggle(e, false, true)));
+    accordionManager.init();
+    accordionManager.setInitialState();
 
     // Character Grid
     if (DOM.characterGrid) DOM.characterGrid.addEventListener('click', handleCharacterCardClick);
@@ -209,7 +195,7 @@ export function setupEventListeners() {
     // Awakening Gauge Inputs
     const awakeningInputs = [
         DOM.beforeShotdownAwakeningGaugeInput,
-        DOM.beforeShotdownHpInput_damageTakenInput,
+        DOM.beforeShotdownHpInput,
         DOM.damageDealtAwakeningBonusSelect,
         DOM.considerOwnDownCheckbox,
         DOM.considerPartnerDownCheckbox

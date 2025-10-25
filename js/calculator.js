@@ -7,6 +7,10 @@ import {
 } from '../data.js';
 import { getSelectedPlayerChar, getSelectedPartnerChar } from './state.js';
 
+function getCharacterType(character, selectedPlayerChar) {
+    return character === selectedPlayerChar ? "自機" : "相方";
+}
+
 export function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeamCostRemaining, currentRedeployCount, isTeamHpScenario = false) {
     // Validate inputs
     if (!charToRedeploy || typeof charToRedeploy.cost !== 'number' || typeof charToRedeploy.hp !== 'number' ||
@@ -90,13 +94,12 @@ export function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeam
 }
 
 
-function simulateRemainingSequenceContinuous(fallingChar, initialRemainingCost, fallCountOfThisCharBeforeThisSubsequence, isTeamScenario) {
+function simulateRemainingSequenceContinuous(fallingChar, initialRemainingCost, fallCountOfThisCharBeforeThisSubsequence, isTeamScenario, selectedPlayerChar) {
     let currentTeamCostRemaining = initialRemainingCost;
     let totalGainedHpInSubSequence = 0;
     const subSequence = [];
     let currentFallCountForChar = fallCountOfThisCharBeforeThisSubsequence;
     const maxRedeployAttempts = 5; let attemptsInSub = 0;
-    const selectedPlayerChar = getSelectedPlayerChar();
 
     while (currentTeamCostRemaining >= 0.001 && attemptsInSub < maxRedeployAttempts) {
         attemptsInSub++;
@@ -104,7 +107,7 @@ function simulateRemainingSequenceContinuous(fallingChar, initialRemainingCost, 
         if (result.note.includes("出撃不可") && result.hpGained <= 0 && result.costConsumed <= 0 && currentTeamCostRemaining < 0.001 && attemptsInSub > 1 ) break;
 
         subSequence.push({
-            turn: attemptsInSub, charName: fallingChar.name, charType: (fallingChar === selectedPlayerChar) ? "自機" : "相方",
+            turn: attemptsInSub, charName: fallingChar.name, charType: getCharacterType(fallingChar, selectedPlayerChar),
             charCost: fallingChar.cost, hpGained: result.hpGained, costConsumed: result.costConsumed,
             remainingCost: result.remainingCostAfterConsumption.toFixed(1), note: result.note
         });
@@ -116,13 +119,12 @@ function simulateRemainingSequenceContinuous(fallingChar, initialRemainingCost, 
     return { totalHp: totalGainedHpInSubSequence, sequence: subSequence };
 }
 
-function simulateRemainingSequenceAlternating(charA, charB, initialRemainingCost, fallCountA_before, fallCountB_before, isTeamScenario) {
+function simulateRemainingSequenceAlternating(charA, charB, initialRemainingCost, fallCountA_before, fallCountB_before, isTeamScenario, selectedPlayerChar) {
     let currentTeamCostRemaining = initialRemainingCost;
     let totalGainedHpInSubSequence = 0;
     const subSequence = [];
     let currentFallCountA = fallCountA_before; let currentFallCountB = fallCountB_before;
     const maxRedeployAttempts = 5; let attemptsInSub = 0; let nextToFallIsA = true;
-    const selectedPlayerChar = getSelectedPlayerChar();
 
     while (currentTeamCostRemaining >= 0.001 && attemptsInSub < maxRedeployAttempts) {
         attemptsInSub++;
@@ -133,7 +135,7 @@ function simulateRemainingSequenceAlternating(charA, charB, initialRemainingCost
         if (result.note.includes("出撃不可") && result.hpGained <= 0 && result.costConsumed <= 0 && currentTeamCostRemaining < 0.001 && attemptsInSub > 1) break;
 
         subSequence.push({
-            turn: attemptsInSub, charName: charToRedeploy.name, charType: (charToRedeploy === selectedPlayerChar) ? "自機" : "相方",
+            turn: attemptsInSub, charName: charToRedeploy.name, charType: getCharacterType(charToRedeploy, selectedPlayerChar),
             charCost: charToRedeploy.cost, hpGained: result.hpGained, costConsumed: result.costConsumed,
             remainingCost: result.remainingCostAfterConsumption.toFixed(1), note: result.note
         });
@@ -145,14 +147,13 @@ function simulateRemainingSequenceAlternating(charA, charB, initialRemainingCost
     return { totalHp: totalGainedHpInSubSequence, sequence: subSequence };
 }
 
-function simulateMinimumSequence(fallingChar, isTeamScenario) {
+function simulateMinimumSequence(fallingChar, isTeamScenario, selectedPlayerChar) {
     let currentTeamCostRemaining = MAX_TEAM_COST;
     let totalGainedRedeployHp = 0;
     let redeployCountForThisCharInSequence = 0;
     const sequence = [];
     const maxRedeployAttempts = 10;
     let attempts = 0;
-    const selectedPlayerChar = getSelectedPlayerChar();
 
     while (currentTeamCostRemaining >= 0.001 && attempts < maxRedeployAttempts) {
         attempts++;
@@ -162,7 +163,7 @@ function simulateMinimumSequence(fallingChar, isTeamScenario) {
         sequence.push({
             turn: redeployCountForThisCharInSequence + 1,
             charName: fallingChar.name,
-            charType: (fallingChar === selectedPlayerChar) ? "自機" : "相方",
+            charType: getCharacterType(fallingChar, selectedPlayerChar),
             charCost: fallingChar.cost,
             hpGained: result.hpGained,
             costConsumed: result.costConsumed,
@@ -178,10 +179,7 @@ function simulateMinimumSequence(fallingChar, isTeamScenario) {
 }
 
 
-export function calculateTeamHpScenarios() {
-    const selectedPlayerChar = getSelectedPlayerChar();
-    const selectedPartnerChar = getSelectedPartnerChar();
-
+function calculateTeamHpScenariosInternal(selectedPlayerChar, selectedPartnerChar) {
     if (!selectedPlayerChar || !selectedPartnerChar) {
         return null;
     }
@@ -202,17 +200,17 @@ export function calculateTeamHpScenarios() {
 
     let res1_highest = calculateRedeployEffect(firstFallChar_highest, null, currentCostForHighest, fallCount_A_highest++, IS_TEAM_SCENARIO);
     currentHpForHighest += res1_highest.hpGained; currentCostForHighest = res1_highest.remainingCostAfterConsumption;
-    highestSequence.push({ turn: currentTurn_highest++, charName: firstFallChar_highest.name, charType: (firstFallChar_highest === selectedPlayerChar) ? "自機" : "相方", charCost: firstFallChar_highest.cost, hpGained: res1_highest.hpGained, costConsumed: res1_highest.costConsumed, remainingCost: currentCostForHighest.toFixed(1), note: res1_highest.note });
+    highestSequence.push({ turn: currentTurn_highest++, charName: firstFallChar_highest.name, charType: getCharacterType(firstFallChar_highest, selectedPlayerChar), charCost: firstFallChar_highest.cost, hpGained: res1_highest.hpGained, costConsumed: res1_highest.costConsumed, remainingCost: currentCostForHighest.toFixed(1), note: res1_highest.note });
 
     if (currentCostForHighest >= 0.001 && !(res1_highest.note.includes("出撃不可") && res1_highest.hpGained <= 0 && res1_highest.costConsumed <= 0 && currentCostForHighest < 0.001)) {
         let res2_highest = calculateRedeployEffect(secondFallChar_highest, null, currentCostForHighest, fallCount_B_highest++, IS_TEAM_SCENARIO);
         currentHpForHighest += res2_highest.hpGained; currentCostForHighest = res2_highest.remainingCostAfterConsumption;
-        highestSequence.push({ turn: currentTurn_highest++, charName: secondFallChar_highest.name, charType: (secondFallChar_highest === selectedPlayerChar) ? "自機" : "相方", charCost: secondFallChar_highest.cost, hpGained: res2_highest.hpGained, costConsumed: res2_highest.costConsumed, remainingCost: currentCostForHighest.toFixed(1), note: res2_highest.note });
+        highestSequence.push({ turn: currentTurn_highest++, charName: secondFallChar_highest.name, charType: getCharacterType(secondFallChar_highest, selectedPlayerChar), charCost: secondFallChar_highest.cost, hpGained: res2_highest.hpGained, costConsumed: res2_highest.costConsumed, remainingCost: currentCostForHighest.toFixed(1), note: res2_highest.note });
 
         if (currentCostForHighest >= 0.001 && !(res2_highest.note.includes("出撃不可") && res2_highest.hpGained <= 0 && res2_highest.costConsumed <= 0 && currentCostForHighest < 0.001)) {
-            const subA_h = simulateRemainingSequenceAlternating(firstFallChar_highest, secondFallChar_highest, currentCostForHighest, fallCount_A_highest, fallCount_B_highest, IS_TEAM_SCENARIO);
-            const subB_h = simulateRemainingSequenceContinuous(firstFallChar_highest, currentCostForHighest, fallCount_A_highest, IS_TEAM_SCENARIO);
-            const subC_h = simulateRemainingSequenceContinuous(secondFallChar_highest, currentCostForHighest, fallCount_B_highest, IS_TEAM_SCENARIO);
+            const subA_h = simulateRemainingSequenceAlternating(firstFallChar_highest, secondFallChar_highest, currentCostForHighest, fallCount_A_highest, fallCount_B_highest, IS_TEAM_SCENARIO, selectedPlayerChar);
+            const subB_h = simulateRemainingSequenceContinuous(firstFallChar_highest, currentCostForHighest, fallCount_A_highest, IS_TEAM_SCENARIO, selectedPlayerChar);
+            const subC_h = simulateRemainingSequenceContinuous(secondFallChar_highest, currentCostForHighest, fallCount_B_highest, IS_TEAM_SCENARIO, selectedPlayerChar);
             let bestSub_h = subA_h; if (subB_h.totalHp > bestSub_h.totalHp) bestSub_h = subB_h; if (subC_h.totalHp > bestSub_h.totalHp) bestSub_h = subC_h;
             currentHpForHighest += bestSub_h.totalHp; let subTurnCounter = currentTurn_highest; bestSub_h.sequence.forEach(item => { highestSequence.push({ ...item, turn: subTurnCounter++ }); });
         }
@@ -233,17 +231,17 @@ export function calculateTeamHpScenarios() {
 
     let res1_compromise = calculateRedeployEffect(firstFallChar_compromise, null, currentCostForCompromise, fallCount_A_compromise++, IS_TEAM_SCENARIO);
     currentHpForCompromise += res1_compromise.hpGained; currentCostForCompromise = res1_compromise.remainingCostAfterConsumption;
-    compromiseSequence.push({ turn: currentTurn_compromise++, charName: firstFallChar_compromise.name, charType: (firstFallChar_compromise === selectedPlayerChar) ? "自機" : "相方", charCost: firstFallChar_compromise.cost, hpGained: res1_compromise.hpGained, costConsumed: res1_compromise.costConsumed, remainingCost: currentCostForCompromise.toFixed(1), note: res1_compromise.note });
+    compromiseSequence.push({ turn: currentTurn_compromise++, charName: firstFallChar_compromise.name, charType: getCharacterType(firstFallChar_compromise, selectedPlayerChar), charCost: firstFallChar_compromise.cost, hpGained: res1_compromise.hpGained, costConsumed: res1_compromise.costConsumed, remainingCost: currentCostForCompromise.toFixed(1), note: res1_compromise.note });
 
     if(currentCostForCompromise >= 0.001 && !(res1_compromise.note.includes("出撃不可") && res1_compromise.hpGained <= 0 && res1_compromise.costConsumed <= 0 && currentCostForCompromise < 0.001)) {
         let res2_compromise = calculateRedeployEffect(secondFallChar_compromise, null, currentCostForCompromise, fallCount_B_compromise++, IS_TEAM_SCENARIO);
         currentHpForCompromise += res2_compromise.hpGained; currentCostForCompromise = res2_compromise.remainingCostAfterConsumption;
-        compromiseSequence.push({ turn: currentTurn_compromise++, charName: secondFallChar_compromise.name, charType: (secondFallChar_compromise === selectedPlayerChar) ? "自機" : "相方", charCost: secondFallChar_compromise.cost, hpGained: res2_compromise.hpGained, costConsumed: res2_compromise.costConsumed, remainingCost: currentCostForCompromise.toFixed(1), note: res2_compromise.note });
+        compromiseSequence.push({ turn: currentTurn_compromise++, charName: secondFallChar_compromise.name, charType: getCharacterType(secondFallChar_compromise, selectedPlayerChar), charCost: secondFallChar_compromise.cost, hpGained: res2_compromise.hpGained, costConsumed: res2_compromise.costConsumed, remainingCost: currentCostForCompromise.toFixed(1), note: res2_compromise.note });
 
         if (currentCostForCompromise >= 0.001 && !(res2_compromise.note.includes("出撃不可") && res2_compromise.hpGained <= 0 && res2_compromise.costConsumed <= 0 && currentCostForCompromise < 0.001)) {
-            const subA_c = simulateRemainingSequenceAlternating(firstFallChar_compromise, secondFallChar_compromise, currentCostForCompromise, fallCount_A_compromise, fallCount_B_compromise, IS_TEAM_SCENARIO);
-            const subB_c = simulateRemainingSequenceContinuous(firstFallChar_compromise, currentCostForCompromise, fallCount_A_compromise, IS_TEAM_SCENARIO);
-            const subC_c = simulateRemainingSequenceContinuous(secondFallChar_compromise, currentCostForCompromise, fallCount_B_compromise, IS_TEAM_SCENARIO);
+            const subA_c = simulateRemainingSequenceAlternating(firstFallChar_compromise, secondFallChar_compromise, currentCostForCompromise, fallCount_A_compromise, fallCount_B_compromise, IS_TEAM_SCENARIO, selectedPlayerChar);
+            const subB_c = simulateRemainingSequenceContinuous(firstFallChar_compromise, currentCostForCompromise, fallCount_A_compromise, IS_TEAM_SCENARIO, selectedPlayerChar);
+            const subC_c = simulateRemainingSequenceContinuous(secondFallChar_compromise, currentCostForCompromise, fallCount_B_compromise, IS_TEAM_SCENARIO, selectedPlayerChar);
             let bestSub_c = subA_c; if (subB_c.totalHp > bestSub_c.totalHp) bestSub_c = subB_c; if (subC_c.totalHp > bestSub_c.totalHp) bestSub_c = subC_c;
             currentHpForCompromise += bestSub_c.totalHp; let subTurnCounter_c = currentTurn_compromise; bestSub_c.sequence.forEach(item => { compromiseSequence.push({ ...item, turn: subTurnCounter_c++ }); });
         }
@@ -255,19 +253,19 @@ export function calculateTeamHpScenarios() {
     if (selectedPlayerChar.cost < selectedPartnerChar.cost) { fallingChar_bomb = selectedPlayerChar; }
     else if (selectedPartnerChar.cost < selectedPlayerChar.cost) { fallingChar_bomb = selectedPartnerChar; }
     else { fallingChar_bomb = (selectedPlayerChar.hp <= selectedPartnerChar.hp) ? selectedPlayerChar : selectedPartnerChar; }
-    const bombFallResult = simulateMinimumSequence(fallingChar_bomb, IS_TEAM_SCENARIO);
+    const bombFallResult = simulateMinimumSequence(fallingChar_bomb, IS_TEAM_SCENARIO, selectedPlayerChar);
     const bombTotalHp = selectedPlayerChar.hp + selectedPartnerChar.hp + bombFallResult.totalHp;
     let bombSequence = [ { turn: 0, charName: "初期HP", charType: "", charCost: 0, hpGained: selectedPlayerChar.hp + selectedPartnerChar.hp, costConsumed: 0, remainingCost: MAX_TEAM_COST.toFixed(1), note: `${selectedPlayerChar.name} (${selectedPlayerChar.hp.toLocaleString()}) + ${selectedPartnerChar.name} (${selectedPartnerChar.hp.toLocaleString()})` } ];
     bombFallResult.sequence.forEach(item => { bombSequence.push(item); });
     const bombScenario = { name: `チーム合計耐久値(爆弾) (${fallingChar_bomb.name}のみ連続撃墜)`, totalHp: bombTotalHp, sequence: bombSequence };
 
     // Lowest HP Scenario (one character takes all hits)
-    const playerFocusRedeploys = simulateMinimumSequence(selectedPlayerChar, IS_TEAM_SCENARIO);
+    const playerFocusRedeploys = simulateMinimumSequence(selectedPlayerChar, IS_TEAM_SCENARIO, selectedPlayerChar);
     const lowestPlayerFocusTotalHp = selectedPlayerChar.hp + playerFocusRedeploys.totalHp;
     let lowestPlayerFocusSequence = [ { turn: 0, charName: "初期HP", charType: "", charCost: 0, hpGained: selectedPlayerChar.hp, costConsumed: 0, remainingCost: MAX_TEAM_COST.toFixed(1), note: `${selectedPlayerChar.name}(${selectedPlayerChar.hp.toLocaleString()})で開始、${selectedPlayerChar.name}が集中狙い` } ];
     playerFocusRedeploys.sequence.forEach(item => lowestPlayerFocusSequence.push(item));
 
-    const partnerFocusRedeploys = simulateMinimumSequence(selectedPartnerChar, IS_TEAM_SCENARIO);
+    const partnerFocusRedeploys = simulateMinimumSequence(selectedPartnerChar, IS_TEAM_SCENARIO, selectedPlayerChar);
     const lowestPartnerFocusTotalHp = selectedPartnerChar.hp + partnerFocusRedeploys.totalHp;
     let lowestPartnerFocusSequence = [ { turn: 0, charName: "初期HP", charType: "", charCost: 0, hpGained: selectedPartnerChar.hp, costConsumed: 0, remainingCost: MAX_TEAM_COST.toFixed(1), note: `${selectedPartnerChar.name}(${selectedPartnerChar.hp.toLocaleString()})で開始、${selectedPartnerChar.name}が集中狙い` } ];
     partnerFocusRedeploys.sequence.forEach(item => lowestPartnerFocusSequence.push(item));
@@ -279,6 +277,16 @@ export function calculateTeamHpScenarios() {
         lowestScenario = { name: `チーム合計耐久値(最低/${selectedPartnerChar.name}集中狙い)`, totalHp: lowestPartnerFocusTotalHp, sequence: lowestPartnerFocusSequence };
     }
     return { idealScenario, compromiseScenario, bombScenario, lowestScenario };
+}
+
+export function calculateTeamHpScenarios() {
+    const selectedPlayerChar = getSelectedPlayerChar();
+    const selectedPartnerChar = getSelectedPartnerChar();
+    return calculateTeamHpScenariosInternal(selectedPlayerChar, selectedPartnerChar);
+}
+
+export function calculateTeamHpScenariosForCharacters(playerChar, partnerChar) {
+    return calculateTeamHpScenariosInternal(playerChar, partnerChar);
 }
 
 

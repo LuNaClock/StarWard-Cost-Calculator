@@ -1,0 +1,120 @@
+/* 基本スタイルとリセット */
+
+/* ----- 基本スタイル ----- */
+body {
+    font-family: 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.7; /* 読みやすく */
+    color: var(--text-color);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 25px; /* パディングを増やす */
+    background: linear-gradient(135deg, var(--primary-dark) 0%, #102030 100%); /* 暗めのSF背景 */
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden; /* 横スクロール防止 */
+    position: relative;
+    min-height: 100vh; /* 最小高さを確保 */
+    z-index: 1; /* グリッドやノイズの上にコンテンツを配置 */
+    /* 背景アニメーションを継続 */
+    background-size: 200% 200%;
+    animation: backgroundShift 60s ease-in-out infinite alternate;
+    will-change: background-position; /* will-changeを追加 */
+}
+
+/* 背景の微細なグリッドパターンとノイズ */
+body::before, body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+body::before { /* グリッド */
+    background-image: linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.2;
+    animation: gridPan 120s linear infinite;
+    will-change: background-position; /* will-changeを追加 */
+}
+
+body::after { /* ノイズオーバレイ */
+    /* base64エンコードされたSVGノイズ */
+    background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Cfilter id=%27h%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%27.8 .8%27 numOctaves=%271%27 seed=%272%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 fill=%27url(%23h)%27 opacity=%270.05%27/%3E%3C/svg%3E');
+    background-size: 200px;
+    opacity: 0.1;
+}
+
+/* タイポグラフィ */
+h1 {
+    font-family: 'Orbitron', sans-serif; /* SFフォント適用 */
+    color: var(--card-background); /* 背景に合わせて白色に */
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 3.2em; /* さらに大きく */
+    font-weight: 700;
+    letter-spacing: 3px; /* 文字間を広げる */
+    text-shadow: 0 0 15px rgba(0, 191, 255, 0.6); /* 常にわずかに光る */
+    position: relative;
+    z-index: 10; /* 最前面に */
+    display: inline-block; /* text-shadowアニメーションのため */
+    padding: 5px 0;
+}
+
+/* ----- H1タイトル SF演出 (初期ロード時のみ) ----- */
+.title-sf-effect {
+    /* IMPROVEMENT 7: タイトルのグリッチエフェクト強化 */
+    animation: neonGlowInitial 1.5s ease-in-out forwards, 
+               glitchTextInitial 2s linear forwards,
+               subtleGlitch 15s infinite alternate;
+    will-change: transform, text-shadow, color; /* will-changeを追加 */
+}
+
+/* フッター */
+footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+    color: var(--medium-grey);
+    font-size: 0.9em;
+    border-top: 1px solid var(--light-grey-border);
+    background-color: var(--card-background);
+    border-radius: 10px;
+    box-shadow: var(--soft-shadow);
+}
+
+footer a {
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: var(--transition-speed);
+}
+
+footer a:hover {
+    color: var(--accent-orange);
+    text-shadow: 0 0 5px var(--accent-orange);
+}
+
+/* スクロールバー */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover { 
+    background: var(--accent-orange);
+}
+
+/* ユーティリティクラス */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+} 

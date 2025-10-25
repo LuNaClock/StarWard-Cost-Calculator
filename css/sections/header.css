@@ -1,0 +1,47 @@
+/* ヘッダーセクション */
+
+/* ヘッダーコンテナ */
+.header-container {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* タイトル */
+h1 {
+    font-family: 'Orbitron', sans-serif; /* SFフォント適用 */
+    color: var(--card-background); /* 背景に合わせて白色に */
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 3.2em; /* さらに大きく */
+    font-weight: 700;
+    letter-spacing: 3px; /* 文字間を広げる */
+    text-shadow: 0 0 15px rgba(0, 191, 255, 0.6); /* 常にわずかに光る */
+    position: relative;
+    z-index: 10; /* 最前面に */
+    display: inline-block; /* text-shadowアニメーションのため */
+    padding: 5px 0;
+}
+
+/* H1タイトル SF演出 (初期ロード時のみ) */
+.title-sf-effect {
+    /* IMPROVEMENT 7: タイトルのグリッチエフェクト強化 */
+    animation: neonGlowInitial 1.5s ease-in-out forwards, 
+               glitchTextInitial 2s linear forwards,
+               subtleGlitch 15s infinite alternate;
+    will-change: transform, text-shadow, color; /* will-changeを追加 */
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5em;
+        letter-spacing: 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2em;
+        letter-spacing: 1px;
+    }
+} 

@@ -1,0 +1,304 @@
+/* アニメーションとキーフレーム定義 */
+
+/* 背景シフトアニメーション */
+@keyframes backgroundShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+/* グリッドパンアニメーション */
+@keyframes gridPan {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 5000px 5000px;
+    }
+    /* 非常にゆっくり移動 */
+}
+
+/* タイトル関連アニメーション */
+@keyframes subtleGlitch {
+  0%, 100% { transform: translate(0); }
+  97% { transform: translate(1px, -1px); }
+  98% { transform: translate(-1px, 1px); }
+  99% { transform: translate(0.5px, -0.5px); }
+}
+
+@keyframes neonGlowInitial {
+    0% {
+        text-shadow: 0 0 5px var(--neon-glow), 0 0 10px var(--neon-glow), 0 0 20px var(--neon-glow), 0 0 40px rgba(0, 239, 255, 0.4);
+        color: var(--primary-light); /* 初期は強く発光 */
+    }
+
+    100% {
+        text-shadow: 0 0 15px rgba(0, 191, 255, 0.6); /* 落ち着いた輝きに */
+        color: var(--card-background);
+    }
+}
+
+@keyframes glitchTextInitial {
+    0% {
+        transform: translate(0);
+        text-shadow: none;
+    }
+
+    5% {
+        transform: translate(-2px, 2px);
+        text-shadow: 2px 0 0 var(--glitch-color1);
+    }
+
+    10% {
+        transform: translate(2px, -2px);
+        text-shadow: -2px 0 0 var(--glitch-color2);
+    }
+
+    15% {
+        transform: translate(-1px, 1px);
+        text-shadow: 1px 0 0 var(--glitch-color1);
+    }
+
+    20% {
+        transform: translate(1px, -1px);
+        text-shadow: -1px 0 0 var(--glitch-color2);
+    }
+
+    21% {
+        transform: translate(0);
+        text-shadow: none;
+    }
+
+    70% {
+        transform: translate(0);
+        text-shadow: none;
+    }
+
+    75% {
+        transform: translate(3px, -3px);
+        text-shadow: -3px 0 0 var(--glitch-color2);
+    }
+
+    80% {
+        transform: translate(-3px, 3px);
+        text-shadow: 3px 0 0 var(--glitch-color1);
+    }
+
+    85% {
+        transform: translate(2px, -2px);
+        text-shadow: -2px 0 0 var(--glitch-color2);
+    }
+
+    90% {
+        transform: translate(-2px, 2px);
+        text-shadow: 2px 0 0 var(--glitch-color1);
+    }
+
+    91% {
+        transform: translate(0);
+        text-shadow: none;
+    }
+
+    100% {
+        transform: translate(0);
+        text-shadow: none;
+    }
+}
+
+/* グリッチ表示アニメーション */
+@keyframes glitchDisplay {
+    0%, 100% {
+        transform: translate(0);
+        text-shadow: none;
+    }
+
+    10% {
+        transform: translate(-2px, 2px);
+        text-shadow: 2px 0 0 var(--glitch-color1);
+    }
+
+    20% {
+        transform: translate(2px, -2px);
+        text-shadow: -2px 0 0 var(--glitch-color2);
+    }
+
+    30% {
+        transform: translate(-1px, 1px);
+        text-shadow: 1px 0 0 var(--glitch-color1);
+    }
+
+    40% {
+        transform: translate(1px, -1px);
+        text-shadow: -1px 0 0 var(--glitch-color2);
+    }
+
+    50% {
+        transform: translate(0);
+        text-shadow: none;
+    }
+
+    60% {
+        transform: translate(3px, -3px);
+        text-shadow: -3px 0 0 var(--glitch-color2);
+    }
+
+    70% {
+        transform: translate(-3px, 3px);
+        text-shadow: 3px 0 0 var(--glitch-color1);
+    }
+
+    80% {
+        transform: translate(2px, -2px);
+        text-shadow: -2px 0 0 var(--glitch-color2);
+    }
+
+    90% {
+        transform: translate(-2px, 2px);
+        text-shadow: 2px 0 0 var(--glitch-color1);
+    }
+}
+
+/* アイコンバウンスアニメーション */
+@keyframes bounceIcon {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+/* ボタン関連アニメーション */
+@keyframes activeButtonGlow {
+    0%, 100% {
+        box-shadow: 0 0 10px var(--primary-light), 0 0 20px var(--primary-light), 0 0 30px var(--primary-light);
+    }
+
+    50% {
+        box-shadow: 0 0 15px var(--primary-light), 0 0 25px var(--primary-light), 0 0 35px var(--primary-light);
+    }
+}
+
+/* カード関連アニメーション */
+@keyframes cardBorderFlow {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+@keyframes card-entry {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* HP関連アニメーション */
+@keyframes hpNumberPop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes hpShine {
+    0% {
+        background-position: -100% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes hpPulse {
+    0%, 100% {
+        box-shadow: 0 0 5px var(--hp-pulse-color);
+    }
+
+    50% {
+        box-shadow: 0 0 20px var(--hp-pulse-color), 0 0 30px var(--hp-pulse-color);
+    }
+}
+
+/* テーブルセルフラッシュアニメーション */
+@keyframes cellFlash {
+    0% {
+        background-color: transparent;
+    }
+
+    50% {
+        background-color: rgba(0, 191, 255, 0.3);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+/* ローディングスピナーアニメーション */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* フェードインアニメーション */
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* パルスアニメーション */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+} 

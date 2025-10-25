@@ -378,10 +378,10 @@ h1 {
     overflow: hidden;
     /* IMPROVEMENT 3: アコーディオンの開閉アニメーション改善 */
     transition: 
-      max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* paddingもイージング適用 */
+        max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* paddingもイージング適用 */
     color: #555;
     font-size: 1.05em;
     opacity: 0;
@@ -1919,7 +1919,7 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     white-space: normal;
-    word-break: break-word;
+    word-break: break-all;
 }
 .total-hp-accordion-content li:last-child {
     margin-bottom: 0;
@@ -2057,10 +2057,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     .sub-accordion-content.show {
         padding: 20px; /* 開いた時のパディング */
         max-height: 3000px; /* サブアコーディオンの最大高さ (デバッグ前の値に戻す) */
-        /* overflow: visible !important; */ /* デバッグ用スタイルを削除 */
-        /* background-color: lime !important; */ /* デバッグ用スタイルを削除 */
-        /* border: 5px solid red !important; */ /* デバッグ用スタイルを削除 */
-        /* z-index: 9999 !important; */ /* デバッグ用スタイルを削除 */
     }
 
     /* 以下が新規/変更されたスタイル */
@@ -2402,10 +2398,10 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     transform-origin: top;
     overflow: hidden; /* Contents should be hidden when closed */
     transition: 
-      max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-      padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* paddingもイージング適用 */
+        max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        padding 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* paddingもイージング適用 */
     will-change: max-height, padding, opacity, transform; /* will-changeを追加 */
 }
 
@@ -2445,8 +2441,15 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 }
 
 /* ===== NEW STYLES FOR DETAILS IN USAGE GUIDE ===== */
-.accordion-content details[open] {
+.accordion-content details {
+    margin-top: 1rem;
+}
+
+.accordion-content.show {
     overflow: visible; /* detailsが開いたときに内容が隠れないように */
+}
+
+.accordion-content details[open] {
     padding-bottom: 10px; /* 内容の下に少し余白を追加 */
 }
 
@@ -2454,22 +2457,11 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     margin-bottom: 10px; /* summaryと内容の間に余白を追加 */
 }
 
-/* 
-  .accordion-content はデフォルトで overflow: hidden; のままです。
-  .accordion-content.show の時に overflow: visible; にすることで、
-  展開された <details> の内容が表示されるようにします。
-  特に .usage-guide-container 内のアコーディオンに適用します。
-*/
-.usage-guide-container .accordion-content.show {
-    overflow: visible !important; /* Ensure content isn't clipped when details open */
-}
-
 .guide-details { /* detailsタグ自体へのスタイル */
     background-color: #f8f9fa; /* 少し明るい背景色 */
     border: 1px solid #dee2e6;
     border-radius: .25rem; /* 4px */
     padding: 1rem; /* 15px or 16px depending on root font-size */
-    margin-top: 1rem;
     color: var(--text-color); 
 }
 
@@ -2485,12 +2477,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     color: var(--primary-light);
 }
 
-/* 
-  デフォルトのdetailsマーカー（通常は三角形）はブラウザによってスタイル制御が難しい場合があります。
-  もしマーカーの色も変えたい場合は、list-style: none; にしてカスタムアイコンを擬似要素で追加するなどの対応も考えられます。
-  ここでは、summaryのテキスト色に連動することを期待します。
-  もしマーカーの色が追従しない場合、 .guide-details summary::marker { color: var(--primary-dark); } などを試します。
-*/
 .guide-details summary::marker {
     color: var(--primary-dark); /* Trying to style the marker */
 }
@@ -2519,78 +2505,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 .usage-guide-container .accordion-item .accordion-content details p:last-child,
 .usage-guide-container .accordion-item .accordion-content details ul:last-child {
     margin-bottom: 0; /* Last element in details has no bottom margin */
-}
-
-/* ===== NEW STYLES FOR DETAILS IN USAGE GUIDE (REVISED ATTEMPT 2) ===== */
-.usage-guide-container .accordion-item .accordion-content.show {
-    /* Attempt to remove max-height constraint to see if content appears */
-    max-height: none !important;
-    height: auto !important;
-    overflow: visible !important;  /* Crucial for <details> content */
-    /* opacity and transform are handled by the general .accordion-content.show */
-    /* Padding might still be needed if removed by other rules */
-    padding-top: 25px !important; /* Ensure padding is applied from .accordion-content.show */
-    padding-bottom: 25px !important; /* Ensure padding is applied from .accordion-content.show */
-}
-
-.usage-guide-container > .accordion > .accordion-item > .accordion-content.show {
-    /* Re-apply desired open state for this specific accordion, overriding general ones if needed */
-    max-height: none !important; /* Let content define height */
-    height: auto !important;
-    opacity: 1 !important;
-    transform: scaleY(1) !important;
-    overflow: visible !important;
-    padding: 25px !important; /* Original padding for .accordion-content.show */
-}
-
-/* Ensure the details element itself is not being clipped or limited */
-.guide-details {
-    max-height: none !important; /* Remove any potential max-height limit */
-    overflow: visible !important; /* Ensure its own content is visible */
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: .25rem;
-    padding: 1rem;
-    margin-top: 1rem;
-    color: var(--text-color);
-}
-
-.guide-details summary {
-    font-weight: bold;
-    cursor: pointer;
-    color: var(--primary-dark);
-    padding: 0.5rem 0;
-    position: relative;
-}
-.guide-details summary:hover {
-    color: var(--primary-light);
-}
-.guide-details summary::marker {
-    color: var(--primary-dark);
-}
-.guide-details summary:hover::marker {
-    color: var(--primary-light);
-}
-
-.usage-guide-container .accordion-item .accordion-content details p,
-.usage-guide-container .accordion-item .accordion-content details ul {
-    margin-bottom: 0.75rem;
-    color: var(--text-color);
-    font-size: 0.95em;
-    line-height: 1.6;
-}
-
-.usage-guide-container .accordion-item .accordion-content details ul {
-    padding-left: 20px;
-    list-style-type: disc;
-}
-.usage-guide-container .accordion-item .accordion-content details ul li {
-    margin-bottom: 0.5rem;
-}
-
-.usage-guide-container .accordion-item .accordion-content details p:last-child,
-.usage-guide-container .accordion-item .accordion-content details ul:last-child {
-    margin-bottom: 0;
 }
 
 @keyframes card-entry {
