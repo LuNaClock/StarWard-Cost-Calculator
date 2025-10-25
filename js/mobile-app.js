@@ -351,16 +351,13 @@ function renderSelectedCharacterDetails(selection = getSelectedCharacters()) {
 function hydrateSelectOptions() {
   const fragment = document.createDocumentFragment();
   const partnerFragment = document.createDocumentFragment();
-  state.characters
-    .slice()
-    .sort((a, b) => a.name.localeCompare(b.name, 'ja'))
-    .forEach((char) => {
-      const option = document.createElement('option');
-      option.value = String(char.id);
-      option.textContent = `${char.name} (HP ${char.hp})`;
-      fragment.appendChild(option);
-      partnerFragment.appendChild(option.cloneNode(true));
-    });
+  state.characters.forEach((char) => {
+    const option = document.createElement('option');
+    option.value = String(char.id);
+    option.textContent = `${char.name} (HP ${char.hp})`;
+    fragment.appendChild(option);
+    partnerFragment.appendChild(option.cloneNode(true));
+  });
   dom.playerSelect.appendChild(fragment);
   dom.partnerSelect.appendChild(partnerFragment);
 }
