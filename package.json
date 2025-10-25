@@ -4,7 +4,7 @@
   "description": "このツールは、ゲーム「星の翼」における戦闘シミュレーションを支援するウェブアプリケーションです。主な機能として、以下の計算・予測が可能です。",
   "main": "data.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
