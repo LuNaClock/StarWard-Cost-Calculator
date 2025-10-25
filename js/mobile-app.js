@@ -360,9 +360,13 @@ function resetPickerSearch(type) {
 
 function setSelectedCharacter(type, characterId) {
   const key = type === 'partner' ? 'partnerId' : 'playerId';
-  const parsedId = typeof characterId === 'number' ? characterId : Number(characterId);
-  const normalizedId = Number.isNaN(parsedId) ? null : parsedId;
-  state.selected[key] = normalizedId;
+  if (characterId === null || characterId === undefined) {
+    state.selected[key] = null;
+  } else {
+    const parsedId = typeof characterId === 'number' ? characterId : Number(characterId);
+    const normalizedId = Number.isNaN(parsedId) ? null : parsedId;
+    state.selected[key] = normalizedId;
+  }
   resetPickerSearch(type);
   updatePickerDisplay(type);
   closePicker(type);
