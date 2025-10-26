@@ -178,15 +178,8 @@
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: none;
-    box-shadow: 0 8px 18px rgba(0, 191, 255, 0.12);
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.25);
     backdrop-filter: blur(6px);
-}
-
-body:not([data-theme="dark"]) .character-stat-label {
-    background-color: rgba(14, 116, 224, 0.22);
-    border-color: rgba(14, 116, 224, 0.48);
-    color: #0A213A;
-    box-shadow: 0 12px 26px rgba(59, 130, 246, 0.2);
 }
 
 .character-hp {
@@ -246,10 +239,6 @@ body[data-theme="dark"] .character-card::before {
 body[data-theme="dark"] .character-image {
     background-color: #0F1C2D;
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.35), inset 0 0 12px rgba(2, 6, 23, 0.65);
-}
-
-body[data-theme="dark"] .character-stat-label {
-    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.25);
 }
 
 body[data-theme="dark"] .hp-bar-container {
