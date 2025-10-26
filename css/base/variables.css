@@ -15,9 +15,9 @@
     --transition-speed: 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* よりSF的なイージング */
 
     --surface-contrast-color: #FFFFFF;
-    --stat-label-bg: rgba(0, 191, 255, 0.08);
-    --stat-label-border: rgba(0, 191, 255, 0.25);
-    --stat-label-color: #0F1C2D;
+    --stat-label-bg: rgba(14, 116, 224, 0.18);
+    --stat-label-border: rgba(14, 116, 224, 0.42);
+    --stat-label-color: #0B2642;
 
     /* HPバーの色 (グラデーション用) */
     --hp-low: #dc3545; /* 赤 */
