@@ -20,6 +20,23 @@ body {
     will-change: background-position; /* will-changeを追加 */
 }
 
+body[data-theme="dark"] {
+    background: linear-gradient(135deg, #020617 0%, #0B1220 100%);
+    animation: backgroundShift 80s ease-in-out infinite alternate;
+}
+
+body[data-theme="dark"]::after {
+    opacity: 0.2;
+}
+
+body[data-theme="dark"] h1 {
+    text-shadow: 0 0 18px rgba(56, 189, 248, 0.75);
+}
+
+body[data-theme="dark"] footer {
+    color: var(--text-secondary);
+}
+
 /* 背景の微細なグリッドパターンとノイズ */
 body::before, body::after {
     content: '';
@@ -50,7 +67,7 @@ body::after { /* ノイズオーバレイ */
 /* タイポグラフィ */
 h1 {
     font-family: 'Orbitron', sans-serif; /* SFフォント適用 */
-    color: var(--card-background); /* 背景に合わせて白色に */
+    color: var(--surface-contrast-color); /* 背景に合わせて白色に */
     text-align: center;
     margin-bottom: 40px;
     font-size: 3.2em; /* さらに大きく */

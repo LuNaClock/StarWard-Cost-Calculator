@@ -8,17 +8,23 @@
     --background-light: #F0F5F9; /* ごく薄いライトブルーグレー */
     --card-background: #FFFFFF;
     --text-color: #333333;
+    --text-secondary: #51606D;
     --light-grey-border: #CED4DA; /* 明るいグレー */
     --medium-grey: #6C757D; /* 中間グレー */
     --soft-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* 影を強調 */
     --transition-speed: 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* よりSF的なイージング */
-    
+
+    --surface-contrast-color: #FFFFFF;
+    --stat-label-bg: rgba(14, 116, 224, 0.18);
+    --stat-label-border: rgba(14, 116, 224, 0.42);
+    --stat-label-color: #0B2642;
+
     /* HPバーの色 (グラデーション用) */
     --hp-low: #dc3545; /* 赤 */
     --hp-medium: #ffc107; /* 黄 */
     --hp-high: #28a745; /* 緑 */
     --hp-pulse-color: rgba(220, 53, 69, 0.6); /* 低HP時の脈動色 */
-    
+
     /* SF演出用追加カラー */
     --neon-glow: #00EFFF; /* ネオンブルー */
     --neon-glow-strong: #00BFFF; /* より強いネオンブルー */
@@ -26,12 +32,12 @@
     --glitch-color2: #00FFFF; /* シアン */
     --grid-line-color: rgba(0, 191, 255, 0.08); /* グリッド線の色 */
     --loading-spinner-color: #00BFFF;
-    
+
     /* X (Twitter) Blue for share buttons */
     --twitter-blue: #1DA1F2;
     --twitter-blue-shadow: rgba(29, 161, 242, 0.4);
     --twitter-blue-hover-shadow: rgba(29, 161, 242, 0.6);
-    
+
     /* URL Copy Button Color */
     --copy-url-button-bg: #6c757d; /* Bootstrap secondary color */
     --copy-url-button-border: #6c757d;
@@ -41,4 +47,31 @@
     --copy-success-bg: var(--hp-high); /* Green for success */
     --copy-success-border: var(--hp-high);
     --copy-success-shadow: rgba(40, 167, 69, 0.4);
-} 
+}
+
+body[data-theme="dark"] {
+    --primary-dark: #0F172A;
+    --primary-light: #38BDF8;
+    --accent-orange: #F59E0B;
+    --background-light: #0B1120;
+    --card-background: #162032;
+    --text-color: #E2E8F0;
+    --text-secondary: #9AA6C4;
+    --light-grey-border: rgba(148, 163, 184, 0.35);
+    --medium-grey: #94A3B8;
+    --soft-shadow: 0 16px 32px rgba(2, 6, 23, 0.6);
+    --surface-contrast-color: #F8FAFC;
+    --stat-label-bg: rgba(59, 130, 246, 0.18);
+    --stat-label-border: rgba(37, 99, 235, 0.4);
+    --stat-label-color: #E2E8F0;
+    --grid-line-color: rgba(59, 130, 246, 0.15);
+    --loading-spinner-color: #38BDF8;
+    --twitter-blue-shadow: rgba(37, 99, 235, 0.4);
+    --twitter-blue-hover-shadow: rgba(37, 99, 235, 0.55);
+    --copy-url-button-bg: #1E293B;
+    --copy-url-button-border: rgba(148, 163, 184, 0.4);
+    --copy-url-button-hover-bg: #2C3B55;
+    --copy-url-button-shadow: rgba(15, 23, 42, 0.45);
+    --copy-url-button-hover-shadow: rgba(37, 99, 235, 0.35);
+    --copy-success-shadow: rgba(40, 167, 69, 0.45);
+}
