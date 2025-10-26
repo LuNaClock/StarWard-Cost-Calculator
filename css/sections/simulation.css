@@ -259,7 +259,7 @@ body[data-theme="dark"] .simulation-note {
 }
 
 .total-hp-accordion-header {
-    background-color: var(--primary-dark);
+    background-color: var(--card-background);
     color: var(--surface-contrast-color);
     padding: 15px 20px;
     width: 100%;
@@ -302,7 +302,7 @@ body[data-theme="dark"] .simulation-note {
     max-height: 0;
     overflow: hidden;
     transition: all var(--transition-speed);
-    color: #555;
+    color: var(--text-color);
     font-size: 0.95em;
     opacity: 0;
     transform: scaleY(0.8);

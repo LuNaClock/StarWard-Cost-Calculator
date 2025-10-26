@@ -72,7 +72,7 @@
 }
 
 .character-header {
-    background-color: var(--primary-dark);
+    background-color: var(--card-background);
     color: var(--surface-contrast-color);
     padding: 18px 30px; /* パディングを増やす */
     font-weight: 700;
