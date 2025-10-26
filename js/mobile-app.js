@@ -636,15 +636,24 @@ function renderSelectedCharacterDetails(selection = getSelectedCharacters()) {
   if (!dom.selectedCharacterGrid) {
     return;
   }
-  const { player, partner } = selection;
-  const selected = [
-    player ? { character: player, role: '自機' } : null,
-    partner ? { character: partner, role: '相方' } : null
-  ].filter(Boolean);
+
+  const cardMap = new Map();
+  const registerCharacter = (character, role) => {
+    if (!character) return;
+    const existing = cardMap.get(character.id);
+    if (existing) {
+      existing.roles.push(role);
+      return;
+    }
+    cardMap.set(character.id, { character, roles: [role] });
+  };
+
+  registerCharacter(selection.player, '自機');
+  registerCharacter(selection.partner, '相方');
 
   dom.selectedCharacterGrid.innerHTML = '';
 
-  if (!selected.length) {
+  if (!cardMap.size) {
     dom.selectedCharacterGrid.hidden = true;
     if (dom.selectedCharactersEmpty) {
       dom.selectedCharactersEmpty.hidden = false;
@@ -657,70 +666,8 @@ function renderSelectedCharacterDetails(selection = getSelectedCharacters()) {
     dom.selectedCharactersEmpty.hidden = true;
   }
 
-  selected.forEach(({ character, role }) => {
-    const card = document.createElement('div');
-    card.className = 'selected-character-card';
-
-    const header = document.createElement('div');
-    header.className = 'selected-character-header';
-
-    const avatar = document.createElement('div');
-    avatar.className = 'selected-character-avatar';
-    avatar.textContent = character.name.charAt(0);
-    if (character.image) {
-      const img = document.createElement('img');
-      img.alt = `${character.name}のアイコン`;
-      img.src = character.image;
-      if (img.complete && img.naturalWidth > 0) {
-        avatar.textContent = '';
-      } else {
-        img.addEventListener('load', () => {
-          avatar.textContent = '';
-        });
-        img.addEventListener('error', () => {
-          avatar.textContent = character.name.charAt(0);
-          img.remove();
-        });
-      }
-      avatar.appendChild(img);
-    }
-
-    const meta = document.createElement('div');
-    meta.className = 'selected-character-meta';
-    const roleEl = document.createElement('span');
-    roleEl.className = 'selected-character-role';
-    roleEl.textContent = role;
-    const nameEl = document.createElement('p');
-    nameEl.className = 'selected-character-name';
-    nameEl.textContent = character.name;
-    const statsEl = document.createElement('p');
-    statsEl.className = 'selected-character-stats';
-    statsEl.textContent = `コスト ${character.cost.toFixed(1)} / ${character.hp.toLocaleString()} HP`;
-    meta.append(roleEl, nameEl, statsEl);
-
-    header.append(avatar, meta);
-    card.appendChild(header);
-
-    const table = document.createElement('div');
-    table.className = 'selected-character-table';
-    const tableTitle = document.createElement('p');
-    tableTitle.className = 'selected-character-table-title';
-    tableTitle.textContent = '残コスト別の再出撃耐久値';
-    const list = document.createElement('ul');
-    list.className = 'selected-character-table-list';
-    character.durabilityOptions.forEach((option) => {
-      const listItem = document.createElement('li');
-      listItem.className = 'selected-character-table-item';
-      const cost = document.createElement('span');
-      cost.textContent = `${option.remaining.toFixed(1)} コスト`;
-      const hp = document.createElement('span');
-      hp.textContent = `${option.hp.toLocaleString()} HP`;
-      listItem.append(cost, hp);
-      list.appendChild(listItem);
-    });
-    table.append(tableTitle, list);
-    card.appendChild(table);
-
+  Array.from(cardMap.values()).forEach(({ character, roles }) => {
+    const card = createCharacterCardElement(character, { selectedRoles: roles });
     dom.selectedCharacterGrid.appendChild(card);
   });
 }
@@ -1037,6 +984,60 @@ function setupFilters() {
   }
 }
 
+function createCharacterCardElement(char, { selectedRoles = [] } = {}) {
+  const card = document.createElement('div');
+  card.className = 'character-card';
+  card.setAttribute('data-id', String(char.id));
+  card.dataset.originalHp = String(char.hp);
+
+  const avatarContent = char.image
+    ? `<img src="${char.image}" alt="${char.name}のアイコン" loading="lazy">`
+    : `<span class="avatar-fallback" aria-hidden="true">${char.name.charAt(0)}</span>`;
+
+  const durabilityCellsHtml = char.durabilityOptions
+    .map((item, index) => `
+        <div class="durability-cell${index === 0 ? ' is-active' : ''}" data-remaining="${item.remaining}" data-hp="${item.hp}" data-ratio="${item.ratio}" tabindex="0" role="button" aria-pressed="${index === 0}">
+          <span class="durability-label">${item.remaining.toFixed(1)} コスト</span>
+          <span class="durability-value">${item.hp.toLocaleString()} HP</span>
+        </div>
+      `)
+    .join('');
+
+  card.innerHTML = `
+      <div class="card-header">
+        <span class="avatar">${avatarContent}</span>
+        <div class="card-meta">
+          <span class="card-name">${char.name}</span>
+          <span class="cost-badge">${char.cost.toFixed(1)} COST</span>
+        </div>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">残コスト --</span>
+        <strong class="metric-value">-- HP</strong>
+      </div>
+      <div class="hp-bar" role="presentation"><span style="width:0%"></span></div>
+      <div class="hp-info">
+        <span class="hp-current">-- HP</span>
+        <span class="hp-ratio-text">--</span>
+      </div>
+      <div class="durability-table">
+        ${durabilityCellsHtml}
+      </div>
+    `;
+
+  if (selectedRoles.length) {
+    card.classList.add('is-selected');
+    const badge = document.createElement('span');
+    badge.className = 'character-card-selection-badge';
+    badge.textContent = selectedRoles.join(' / ');
+    card.appendChild(badge);
+  }
+
+  setupCardHpInteractions(card, char);
+
+  return card;
+}
+
 function renderCards() {
   if (!dom.cardGrid) {
     return;
@@ -1083,42 +1084,6 @@ function renderCards() {
 
   const sorted = filtered.sort((a, b) => sortCharacters(a, b, state.sort));
   sorted.forEach((char) => {
-    const card = document.createElement('div');
-    card.className = 'character-card';
-    card.setAttribute('data-id', String(char.id));
-    card.dataset.originalHp = String(char.hp);
-
-    const durabilityCellsHtml = char.durabilityOptions
-      .map((item, index) => `
-        <div class="durability-cell${index === 0 ? ' is-active' : ''}" data-remaining="${item.remaining}" data-hp="${item.hp}" data-ratio="${item.ratio}" tabindex="0" role="button" aria-pressed="${index === 0}">
-          <span class="durability-label">${item.remaining.toFixed(1)} コスト</span>
-          <span class="durability-value">${item.hp.toLocaleString()} HP</span>
-        </div>
-      `)
-      .join('');
-
-    card.innerHTML = `
-      <div class="card-header">
-        <span class="avatar"><img src="${char.image}" alt="${char.name}のアイコン" loading="lazy"></span>
-        <div class="card-meta">
-          <span class="card-name">${char.name}</span>
-          <span class="cost-badge">${char.cost.toFixed(1)} COST</span>
-        </div>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">残コスト --</span>
-        <strong class="metric-value">-- HP</strong>
-      </div>
-      <div class="hp-bar" role="presentation"><span style="width:0%"></span></div>
-      <div class="hp-info">
-        <span class="hp-current">-- HP</span>
-        <span class="hp-ratio-text">--</span>
-      </div>
-      <div class="durability-table">
-        ${durabilityCellsHtml}
-      </div>
-    `;
-
     const selectedRoles = [];
     if (state.selected.playerId === char.id) {
       selectedRoles.push('自機');
@@ -1126,16 +1091,8 @@ function renderCards() {
     if (state.selected.partnerId === char.id) {
       selectedRoles.push('相方');
     }
-    if (selectedRoles.length) {
-      card.classList.add('is-selected');
-      const badge = document.createElement('span');
-      badge.className = 'character-card-selection-badge';
-      badge.textContent = selectedRoles.join(' / ');
-      card.appendChild(badge);
-    }
-
+    const card = createCharacterCardElement(char, { selectedRoles });
     dom.cardGrid.appendChild(card);
-    setupCardHpInteractions(card, char);
   });
 
 }
