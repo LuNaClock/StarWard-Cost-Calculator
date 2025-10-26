@@ -243,6 +243,12 @@
                                     <label class="checkbox-field">
                                         <input type="checkbox" id="partnerDown"> 相方撃墜ボーナスを加算
                                     </label>
+                                    <details class="scenario-details">
+                                        <summary>覚醒ゲージ計算の詳細 (Web版と共通)</summary>
+                                        <p>覚醒ゲージは、撃墜前に溜まっていたゲージ量、撃墜時に受けたダメージ量、チェックした各種ボーナス（再出撃直後/与ダメージ/相方撃墜）を合算して算出します。</p>
+                                        <p>再出撃直後ボーナスと相方撃墜ボーナスは機体コストによって増加量が変化します。与ダメージボーナスは+3ごとにズンダ1回分を目安にしています。</p>
+                                        <p>計算結果は0〜100%の範囲に丸めた上で表示し、最終的な数値が必要閾値以上なら覚醒が使用可能となります。ゲーム内表示との僅かな誤差が出る場合がありますが、Web版と同じロジックで計算されています。</p>
+                                    </details>
                                 </div>
                             </div>
                         </div>
@@ -282,6 +288,19 @@
                         <div class="panel-header">
                             <h3 class="panel-title">チーム合計耐久力予測</h3>
                             <p class="panel-subtitle" data-role="team-summary-empty">「自機」と「相方」を選択すると、理想/妥協/爆弾/最低シナリオ別の合計耐久力が表示されます。</p>
+                            <div class="panel-description">
+                                <p>「再出撃シミュレーション」でチームを決めると、このセクションが自動で更新され、様々な撃墜順における粘り強さをグラフ感覚で確認できます。</p>
+                                <p>各シナリオカードの下部にある「撃墜順序と獲得HP」を開くと、順番ごとの残りコストや再出撃耐久の内訳も追えます。</p>
+                                <details class="scenario-details" open>
+                                    <summary>予測シナリオの見方</summary>
+                                    <ul>
+                                        <li><strong>最高:</strong> 主に高コスト機が先に落ちる理想的なケース。</li>
+                                        <li><strong>妥協:</strong> 低コスト機を先に落としてしまった場合の平均的なケース。</li>
+                                        <li><strong>爆弾:</strong> 低コスト機のみが連続撃墜されるリスクの高い展開。</li>
+                                        <li><strong>最低:</strong> 片側だけがひたすら撃墜される最悪の展開。</li>
+                                    </ul>
+                                </details>
+                            </div>
                         </div>
                         <div class="team-summary-grid" data-role="team-summary-grid" hidden>
                             <div class="team-summary-card" data-scenario="ideal">
