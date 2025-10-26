@@ -152,12 +152,13 @@ function isIosSafari() {
 
 function createCharacterAvatar(character, size = 'default') {
   const avatar = document.createElement('div');
-  avatar.className = `character-picker-avatar${size === 'small' ? ' small' : ''}`;
+  const isSmall = size === 'small';
+  avatar.className = `character-picker-avatar${isSmall ? ' small' : ''}`;
 
   const img = document.createElement('img');
   img.alt = `${character.name}のアイコン`;
   if (supportsNativeLazyLoading && !isIosSafari()) {
-    img.loading = 'lazy';
+    img.loading = isSmall ? 'eager' : 'lazy';
   }
 
   const fallback = document.createElement('span');
