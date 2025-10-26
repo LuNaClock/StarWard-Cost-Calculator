@@ -745,10 +745,30 @@ function setupCollapse() {
     const target = document.querySelector(targetSelector);
     if (!target) return;
 
+    const updateCollapseHeight = () => {
+      const measuredHeight = target.scrollHeight;
+      if (measuredHeight > 0) {
+        target.style.setProperty('--collapse-max-height', `${measuredHeight}px`);
+      }
+    };
+
+    if (target.dataset.open === 'true') {
+      updateCollapseHeight();
+    }
+
     toggle.addEventListener('click', () => {
       const expanded = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!expanded));
-      target.dataset.open = String(!expanded);
+      const willExpand = !expanded;
+
+      toggle.setAttribute('aria-expanded', String(willExpand));
+      target.dataset.open = String(willExpand);
+
+      if (willExpand) {
+        updateCollapseHeight();
+        requestAnimationFrame(updateCollapseHeight);
+      } else {
+        target.style.removeProperty('--collapse-max-height');
+      }
     });
   });
 }

@@ -517,7 +517,7 @@ body[data-view-mode="desktop"] .view-switcher {
 }
 
 .collapse[data-open="true"] {
-  max-height: 900px;
+  max-height: var(--collapse-max-height, 900px);
   margin-top: var(--space-3);
   padding: var(--space-3);
   border: 1px solid rgba(59, 130, 246, 0.22);
