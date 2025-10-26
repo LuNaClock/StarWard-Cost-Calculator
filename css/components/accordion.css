@@ -51,7 +51,7 @@
 
 .accordion-header.active {
     background-color: var(--primary-light);
-    color: var(--card-background);
+    color: var(--surface-contrast-color);
     box-shadow: inset 0 0 25px rgba(0, 191, 255, 0.5);
 }
 
@@ -108,7 +108,7 @@
 
 .sub-accordion-header.active {
     background-color: var(--primary-light);
-    color: var(--card-background);
+    color: var(--surface-contrast-color);
 }
 
 .sub-accordion-content {
@@ -133,4 +133,30 @@
     transform: translateY(0);
     padding: 20px !important;
     overflow: visible;
-} 
+}
+
+body[data-theme="dark"] .accordion {
+    background-color: rgba(15, 23, 42, 0.82);
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: inset 0 0 20px rgba(59, 130, 246, 0.12);
+}
+
+body[data-theme="dark"] .accordion-header {
+    background-color: rgba(15, 23, 42, 0.88);
+    color: var(--surface-contrast-color);
+}
+
+body[data-theme="dark"] .accordion-header:hover {
+    background-color: rgba(59, 130, 246, 0.22);
+    color: var(--surface-contrast-color);
+}
+
+body[data-theme="dark"] .sub-accordion-header {
+    background-color: rgba(15, 23, 42, 0.8);
+    color: var(--surface-contrast-color);
+}
+
+body[data-theme="dark"] .sub-accordion-header:hover {
+    background-color: rgba(59, 130, 246, 0.18);
+    color: var(--surface-contrast-color);
+}

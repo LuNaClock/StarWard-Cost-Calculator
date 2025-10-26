@@ -373,7 +373,7 @@ export function generateCharacterCards(charactersToDisplay) {
                 // Stats
                 const stats = document.createElement('div');
                 stats.className = 'character-stats';
-                stats.appendChild(createTextElement('span', '', '本来の耐久値:'));
+                stats.appendChild(createTextElement('span', 'character-stat-label', '本来の耐久値:'));
                 stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
                 body.appendChild(stats);
 
@@ -567,7 +567,7 @@ export function generateSelectedCharacterCards() {
         // Stats
         const stats = document.createElement('div');
         stats.className = 'character-stats';
-        stats.appendChild(createTextElement('span', '', '本来の耐久値:'));
+        stats.appendChild(createTextElement('span', 'character-stat-label', '本来の耐久値:'));
         stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
         body.appendChild(stats);
 
