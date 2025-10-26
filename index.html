@@ -244,6 +244,50 @@
                                         <input type="checkbox" id="partnerDown"> 相方撃墜ボーナスを加算
                                     </label>
                                 </div>
+                                <details class="info-details" data-role="awakening-guide">
+                                    <summary>覚醒ゲージ計算の詳細 (Web版と同じ説明)</summary>
+                                    <p>覚醒ゲージは以下の要素に基づいて計算されます。</p>
+                                    <div class="info-details__section">
+                                        <h4>基礎増加（被ダメージ）</h4>
+                                        <p>受けたダメージ量に応じてゲージが増加します。本来の耐久値に対する割合が重要です。</p>
+                                        <p class="info-details__formula"><strong>増加量 = (被ダメージ量 / 本来の耐久値) × 100 × 約0.598</strong></p>
+                                        <p class="info-details__tip">例: 耐久値3000の機体が1500ダメージで撃墜された場合、(1500 / 3000) × 100 × 約0.598 ≒ 約29.9% 増加します。</p>
+                                    </div>
+                                    <div class="info-details__section">
+                                        <h4>再出撃直後のゲージ量（最低保証値）</h4>
+                                        <p>「再出撃直後ボーナスを加算」にチェックを入れると、撃墜による覚醒ゲージ増加分が加わります。自機コストに応じてツール内で計測した最低保証値を適用しています。</p>
+                                        <ul>
+                                            <li>コスト3.0 / 2.5: +約22%</li>
+                                            <li>コスト2.0: +約20%</li>
+                                            <li>コスト1.5: +約15%</li>
+                                        </ul>
+                                        <p class="info-details__tip">撃墜時に最大耐久値を超えるダメージを受けた分も加算されるため、実際の値とは誤差が生じる場合があります。</p>
+                                    </div>
+                                    <div class="info-details__section">
+                                        <h4>与ダメージ考慮</h4>
+                                        <p>「与ダメージボーナスを加算」にチェックを入れ、ドロップダウンから与ダメージ量に応じたボーナスを選ぶと、その分が加算されます。撃墜までに与えたダメージ量を模擬した項目です。</p>
+                                    </div>
+                                    <div class="info-details__section">
+                                        <h4>相方撃墜考慮</h4>
+                                        <p>「相方撃墜ボーナスを加算」にチェックを入れると、相方が撃墜されたときの覚醒ゲージ増加分が加わります。こちらも自機のコストごとに増加量が変わります。</p>
+                                        <ul>
+                                            <li>コスト3.0: +約10%</li>
+                                            <li>コスト2.5: +約9%</li>
+                                            <li>コスト2.0: +約7%</li>
+                                            <li>コスト1.5: +約5%</li>
+                                        </ul>
+                                    </div>
+                                    <p>最終的な覚醒ゲージが50%以上になると覚醒を使用できます。計算結果は常に0%から100%の範囲に収まります。</p>
+                                    <div class="info-details__note">
+                                        <h4>注意点</h4>
+                                        <ul>
+                                            <li>被ダメージによる覚醒ゲージ増加率の係数は機体ごとに異なります。本ツールでは計測した平均的な係数を採用しています。</li>
+                                            <li>再出撃直後のゲージ量は基本的に自機コスト依存ですが、一部機体では異なる数値が設定されている場合があります。</li>
+                                            <li>覚醒ゲージは小数点以下まで計算されていると推測され、ゲーム内表示と誤差が生じる可能性があります。</li>
+                                        </ul>
+                                        <p>以上の理由から、計算結果は目安としてご利用ください。</p>
+                                    </div>
+                                </details>
                             </div>
                         </div>
                     </article>
@@ -283,6 +327,21 @@
                             <h3 class="panel-title">チーム合計耐久力予測</h3>
                             <p class="panel-subtitle" data-role="team-summary-empty">「自機」と「相方」を選択すると、理想/妥協/爆弾/最低シナリオ別の合計耐久力が表示されます。</p>
                         </div>
+                        <details class="info-details" data-role="team-summary-guide">
+                            <summary>チーム合計耐久力予測の見方</summary>
+                            <p>「再出撃シミュレーション」でチームを組むと、ここに表示される4つのシナリオが自動更新され、撃墜順序による合計耐久力の差を確認できます。</p>
+                            <p>理想的な落ち方から最悪パターンまでを一度に把握し、どの展開でも粘り強く戦えるかをチェックしましょう。</p>
+                            <div class="info-details__section">
+                                <h4>各シナリオの概要</h4>
+                                <ul>
+                                    <li><strong>チーム合計耐久値(最高):</strong> 高コスト機から撃墜される理想的なケース。</li>
+                                    <li><strong>チーム合計耐久値(妥協):</strong> 低コスト機から撃墜されるケース。</li>
+                                    <li><strong>チーム合計耐久値(爆弾):</strong> 低コスト機のみが連続で撃墜されるケース。</li>
+                                    <li><strong>チーム合計耐久値(最低):</strong> 片方の機体だけが落ち続ける最も非効率なケース。</li>
+                                </ul>
+                            </div>
+                            <p class="info-details__note">各カードの「撃墜順序と獲得HP」をタップすると、撃墜の進行や各段階での獲得耐久値・残りコストの内訳を確認できます。</p>
+                        </details>
                         <div class="team-summary-grid" data-role="team-summary-grid" hidden>
                             <div class="team-summary-card" data-scenario="ideal">
                                 <p class="team-summary-title" data-role="title">チーム合計耐久値(最高)</p>
