@@ -50,7 +50,7 @@
 }
 
 body[data-theme="dark"] {
-    --primary-dark: #0F172A;
+    --primary-dark: #E2E8F0;
     --primary-light: #38BDF8;
     --accent-orange: #F59E0B;
     --background-light: #0B1120;

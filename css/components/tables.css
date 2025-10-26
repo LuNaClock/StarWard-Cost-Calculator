@@ -28,7 +28,7 @@
 }
 
 .cost-table th {
-    background-color: var(--primary-dark);
+    background-color: var(--card-background);
     color: var(--surface-contrast-color);
     font-weight: 700;
     font-size: 1.1em;
