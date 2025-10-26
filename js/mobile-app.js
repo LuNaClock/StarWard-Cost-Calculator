@@ -134,8 +134,10 @@ function initializePickerRefs() {
   });
 }
 
-const supportsNativeLazyLoading = typeof HTMLImageElement !== 'undefined'
-  && 'loading' in HTMLImageElement.prototype;
+function hasNativeLazyLoadingSupport() {
+  return typeof HTMLImageElement !== 'undefined'
+    && 'loading' in HTMLImageElement.prototype;
+}
 
 function isIosSafari() {
   if (typeof navigator === 'undefined' || !navigator.userAgent) {
@@ -150,6 +152,18 @@ function isIosSafari() {
   return isSafari;
 }
 
+function isIosChromium() {
+  if (typeof navigator === 'undefined' || !navigator.userAgent) {
+    return false;
+  }
+  const ua = navigator.userAgent;
+  const isIosDevice = /iPad|iPhone|iPod/.test(ua);
+  if (!isIosDevice) {
+    return false;
+  }
+  return /(CriOS|EdgiOS|OPiOS)/.test(ua);
+}
+
 function createCharacterAvatar(character, size = 'default') {
   const avatar = document.createElement('div');
   const isSmall = size === 'small';
@@ -157,8 +171,11 @@ function createCharacterAvatar(character, size = 'default') {
 
   const img = document.createElement('img');
   img.alt = `${character.name}のアイコン`;
-  if (supportsNativeLazyLoading && !isIosSafari()) {
-    img.loading = isSmall ? 'eager' : 'lazy';
+  const desiredLoading = isSmall ? 'eager' : 'lazy';
+  if (hasNativeLazyLoadingSupport() && !isIosSafari()) {
+    img.loading = desiredLoading;
+  } else if (isSmall && isIosChromium()) {
+    img.setAttribute('loading', 'eager');
   }
 
   const fallback = document.createElement('span');
@@ -1308,3 +1325,10 @@ function init() {
 }
 
 init();
+
+export {
+  createCharacterAvatar,
+  hasNativeLazyLoadingSupport,
+  isIosSafari,
+  isIosChromium
+};
