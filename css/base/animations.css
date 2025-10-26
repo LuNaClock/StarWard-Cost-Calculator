@@ -39,7 +39,7 @@
 
     100% {
         text-shadow: 0 0 15px rgba(0, 191, 255, 0.6); /* 落ち着いた輝きに */
-        color: var(--card-background);
+        color: var(--surface-contrast-color);
     }
 }
 

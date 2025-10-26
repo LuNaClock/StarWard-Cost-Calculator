@@ -9,7 +9,7 @@
 /* タイトル */
 h1 {
     font-family: 'Orbitron', sans-serif; /* SFフォント適用 */
-    color: var(--card-background); /* 背景に合わせて白色に */
+    color: var(--surface-contrast-color); /* 背景に合わせて白色に */
     text-align: center;
     margin-bottom: 40px;
     font-size: 3.2em; /* さらに大きく */

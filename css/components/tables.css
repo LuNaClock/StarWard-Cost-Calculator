@@ -29,7 +29,7 @@
 
 .cost-table th {
     background-color: var(--primary-dark);
-    color: var(--card-background);
+    color: var(--surface-contrast-color);
     font-weight: 700;
     font-size: 1.1em;
     font-family: 'Rajdhani', sans-serif;
@@ -68,6 +68,28 @@
     box-shadow: 0 2px 8px rgba(0, 191, 255, 0.2);
 }
 
+body[data-theme="dark"] .cost-table {
+    box-shadow: 0 16px 32px rgba(2, 6, 23, 0.55);
+}
+
+body[data-theme="dark"] .cost-table tr:nth-child(even) td {
+    background-color: rgba(59, 130, 246, 0.08);
+}
+
+body[data-theme="dark"] .cost-table td:hover {
+    background-color: rgba(59, 130, 246, 0.22);
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.25);
+}
+
+body[data-theme="dark"] .cost-table td.active-hp-display {
+    background-color: rgba(59, 130, 246, 0.28);
+    color: var(--surface-contrast-color);
+}
+
+body[data-theme="dark"] .cost-table tr:last-child td:first-child {
+    background-color: rgba(15, 23, 42, 0.9);
+}
+
 .cost-table td.active-hp-display {
     background-color: rgba(0, 191, 255, 0.15);
     color: var(--primary-light);
@@ -80,7 +102,7 @@
     border-radius: 0 0 0 10px;
     font-weight: 700;
     background-color: var(--primary-dark);
-    color: var(--card-background);
+    color: var(--surface-contrast-color);
 }
 
 .cost-table tr:last-child td:last-child {
