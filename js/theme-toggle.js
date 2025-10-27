@@ -1,4 +1,5 @@
 const THEME_STORAGE_KEY = 'starward-desktop-theme';
+const DEFAULT_THEME = 'dark';
 const body = document.body;
 const themeButtons = document.querySelectorAll('[data-theme-option]');
 
@@ -16,10 +17,6 @@ function setStoredTheme(value) {
   } catch (error) {
     // noop - storage may be unavailable
   }
-}
-
-function resolveSystemTheme() {
-  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 function applyTheme(theme, { skipSave = false } = {}) {
@@ -42,12 +39,11 @@ function applyTheme(theme, { skipSave = false } = {}) {
 
 const storedTheme = getStoredTheme();
 const systemPreference = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+const initialTheme = storedTheme === 'light' || storedTheme === 'dark'
+  ? storedTheme
+  : (systemPreference && systemPreference.matches ? 'dark' : DEFAULT_THEME);
 
-if (storedTheme === 'light' || storedTheme === 'dark') {
-  applyTheme(storedTheme, { skipSave: true });
-} else {
-  applyTheme(resolveSystemTheme(), { skipSave: true });
-}
+applyTheme(initialTheme, { skipSave: true });
 
 if (systemPreference && typeof systemPreference.addEventListener === 'function' && !(storedTheme === 'light' || storedTheme === 'dark')) {
   systemPreference.addEventListener('change', (event) => {
