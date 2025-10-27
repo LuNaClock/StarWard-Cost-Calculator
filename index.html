@@ -296,31 +296,42 @@
                         <button class="cta-primary" id="runSimulation">結果を計算</button>
                     </div>
 
-                    <article class="results-panel" id="simResults" hidden>
-                        <h3 class="panel-title">シミュレーション結果</h3>
-                        <div class="results-grid">
-                            <div class="result-figure">
-                                <span>再出撃耐久値</span>
-                                <strong data-bind="result-hp">0</strong>
+                    <section class="results-panel-group" id="simResults" hidden aria-label="シミュレーション結果">
+                        <article class="results-panel results-panel--redeploy" id="simRedeployResults">
+                            <h3 class="panel-title">再出撃結果</h3>
+                            <div class="results-section" role="group" aria-label="再出撃計算の概要">
+                                <div class="results-grid">
+                                    <div class="result-figure">
+                                        <span>再出撃耐久値</span>
+                                        <strong data-bind="result-hp">0</strong>
+                                    </div>
+                                    <div class="result-figure">
+                                        <span>消費コスト</span>
+                                        <strong data-bind="result-cost">0</strong>
+                                    </div>
+                                </div>
+                                <div class="hp-bar" aria-hidden="true">
+                                    <span data-bind="result-hp-bar" style="width: 0%"></span>
+                                </div>
                             </div>
-                            <div class="result-figure">
-                                <span>消費コスト</span>
-                                <strong data-bind="result-cost">0</strong>
+                        </article>
+                        <article class="results-panel results-panel--awakening" id="simAwakeningResults">
+                            <h3 class="panel-title">覚醒ゲージ予測</h3>
+                            <div class="results-section" role="group" aria-label="覚醒ゲージの計算結果">
+                                <div class="results-grid">
+                                    <div class="result-figure">
+                                        <span>覚醒ゲージ予測</span>
+                                        <strong data-bind="result-gauge">0%</strong>
+                                    </div>
+                                    <div class="result-figure">
+                                        <span>覚醒可否</span>
+                                        <strong data-bind="result-awaken">--</strong>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="result-figure">
-                                <span>覚醒ゲージ予測</span>
-                                <strong data-bind="result-gauge">0%</strong>
-                            </div>
-                            <div class="result-figure">
-                                <span>覚醒可否</span>
-                                <strong data-bind="result-awaken">--</strong>
-                            </div>
-                        </div>
-                        <div class="hp-bar" aria-hidden="true">
-                            <span data-bind="result-hp-bar" style="width: 0%"></span>
-                        </div>
-                        <p class="panel-subtitle">履歴に保存しました</p>
-                    </article>
+                        </article>
+                        <p class="panel-subtitle results-history-note">履歴に保存しました</p>
+                    </section>
 
                     <article class="panel team-summary" id="teamSummaryPanel">
                         <div class="panel-header">
