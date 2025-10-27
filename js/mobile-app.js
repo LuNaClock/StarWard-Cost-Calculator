@@ -53,7 +53,6 @@ const dom = {
   bonusSelectField: document.querySelector('[data-field="bonus-select"]'),
   bonusSelect: document.getElementById('bonusSelect'),
   partnerDown: document.getElementById('partnerDown'),
-  runSimulation: document.getElementById('runSimulation'),
   simResults: document.getElementById('simResults'),
   teamSummaryPanel: document.getElementById('teamSummaryPanel'),
   teamSummaryEmpty: document.querySelector('[data-role="team-summary-empty"]'),
@@ -912,9 +911,29 @@ function clearSimulationResults() {
   }
 }
 
-function performSimulation({ persistHistory = false, showAlert = false, commitInputs = true } = {}) {
+function performSimulation({
+  persistHistory: persistHistoryOverride,
+  showAlert = false,
+  commitInputs = true
+} = {}) {
   const selection = getSelectedCharacters();
   const targetChar = resolveRedeployTarget(selection);
+
+  let historyRole = 'player';
+  let historyCharacter = selection.player || null;
+
+  if (targetChar && selection.partner && targetChar.id === selection.partner.id) {
+    historyRole = 'partner';
+    historyCharacter = selection.partner;
+  } else if (targetChar && selection.player && targetChar.id === selection.player.id) {
+    historyRole = 'player';
+    historyCharacter = selection.player;
+  } else if (state.redeployTarget === 'partner') {
+    historyRole = 'partner';
+    historyCharacter = selection.partner || targetChar || null;
+  } else if (!historyCharacter && targetChar) {
+    historyCharacter = targetChar;
+  }
 
   if (!targetChar) {
     if (showAlert) {
@@ -964,9 +983,14 @@ function performSimulation({ persistHistory = false, showAlert = false, commitIn
   dom.resultHpBar.style.width = `${Math.min(100, Math.round((calculatedHp / targetChar.hp) * 100))}%`;
   dom.simResults.hidden = false;
 
-  if (persistHistory) {
+  const shouldPersistHistory =
+    typeof persistHistoryOverride === 'boolean' ? persistHistoryOverride : commitInputs;
+
+  if (shouldPersistHistory) {
     const historyEntry = {
-      name: targetChar.name,
+      role: historyRole,
+      characterId: historyCharacter?.id ?? targetChar?.id ?? null,
+      name: historyCharacter?.name || targetChar.name,
       timestamp: new Date().toISOString(),
       hp: calculatedHp,
       cost: allocatedCost,
@@ -991,10 +1015,6 @@ function performSimulation({ persistHistory = false, showAlert = false, commitIn
   };
 }
 
-function runSimulation() {
-  performSimulation({ persistHistory: true, showAlert: true, commitInputs: true });
-}
-
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
@@ -1011,11 +1031,21 @@ function renderHistory() {
     dom.recentList.appendChild(empty);
   } else {
     state.history.forEach((entry) => {
+      const matchedCharacter =
+        typeof entry.characterId === 'number'
+          ? state.characters.find((char) => char.id === entry.characterId)
+          : null;
+      const characterName = matchedCharacter?.name || entry.name || '--';
+      const rolePrefix = entry.role === 'partner'
+        ? '相方: '
+        : entry.role === 'player'
+          ? '自機: '
+          : '';
       const item = document.createElement('div');
       item.className = 'quick-item';
       item.innerHTML = `
         <div class="quick-label">
-          <span>${entry.name}</span>
+          <span>${rolePrefix}${characterName}</span>
           <span>${formatDate(entry.timestamp)} / 覚醒 ${entry.gauge}%</span>
         </div>
         <span class="quick-value">${entry.hp.toLocaleString()} HP</span>
@@ -1424,8 +1454,6 @@ function init() {
   renderHistory();
   renderCards();
   updateSelectedSummaries();
-
-  dom.runSimulation.addEventListener('click', runSimulation);
 }
 
 init();
