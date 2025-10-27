@@ -267,7 +267,7 @@
     max-height: 0;
     overflow: hidden;
     transition: all var(--transition-speed);
-    color: #555;
+    color: var(--text-color);
     font-size: 0.95em;
     opacity: 0;
     transform: scaleY(0.8);
