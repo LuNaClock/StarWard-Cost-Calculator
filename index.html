@@ -6,11 +6,11 @@
     <!-- Content Security Policy (CSP) -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
-                   script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://docs.opencv.org *.googletagmanager.com 'unsafe-inline' blob: 'unsafe-eval';
+                   script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
                    style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
-                   style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://docs.opencv.org;
+                   style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
                    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-                   connect-src 'self' https://paddlejs.bj.bcebos.com https://cdn.jsdelivr.net https://docs.opencv.org data: *.google-analytics.com *.googletagmanager.com;
+                   connect-src 'self';
                    img-src 'self' data: blob: assets:;
                    form-action 'none';">
     <meta name="description" content="Starward Cost Calculator">
@@ -497,126 +497,6 @@
                 </button>
             </div>
         </div>
-        <div id="ocrModal" class="ocr-modal" style="display: none;">
-        <div class="ocr-modal-content">
-            <button id="closeOcrModal" class="close-button">×</button>
-            <div class="container">
-                <header>
-                    <h1>ゲーム画面OCR</h1>
-                    <p>ゲーム画面から耐久値と覚醒ゲージを自動認識します</p>
-                </header>
-
-                <main>
-                    <div class="upload-section">
-                        <div class="upload-area" id="uploadArea">
-                            <div class="upload-content">
-                                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                    <polyline points="7,10 12,15 17,10"></polyline>
-                                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                                </svg>
-                                <p>画像をドラッグ&ドロップまたはクリックして選択</p>
-                                <p class="file-info">対応形式: PNG, JPG, JPEG</p>
-                            </div>
-                            <input type="file" id="fileInput" accept="image/*" hidden>
-                        </div>
-                    </div>
-
-                    <div class="image-section" id="imageSection" style="display: none;">
-                        <div class="image-container">
-                            <canvas id="imageCanvas"></canvas>
-                            <div class="region-overlay">
-                                <div class="region durability-region" id="durabilityRegion">
-                                    <span class="region-label">耐久値</span>
-                                    <div class="resizer ne"></div>
-                                    <div class="resizer nw"></div>
-                                    <div class="resizer se"></div>
-                                    <div class="resizer sw"></div>
-                                </div>
-                                <div class="region awakening-region" id="awakeningRegion">
-                                    <span class="region-label">覚醒ゲージ</span>
-                                    <div class="resizer ne"></div>
-                                    <div class="resizer nw"></div>
-                                    <div class="resizer se"></div>
-                                    <div class="resizer sw"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="ocr-instructions" class="ocr-instructions-box">
-                            <h4><i class="fas fa-info-circle"></i> 操作手順</h4>
-                            <ol>
-                                <li>「耐久値」と「覚醒ゲージ」の枠をドラッグ＆リサイズして、数字を正確に囲ってください。</li>
-                                <li>「OCR解析開始」ボタンを押して、数値を認識します。</li>
-                                <li>認識結果が正しくない場合は、プレビュー下の「ズーム」を調整し、再度解析してください。</li>
-                            </ol>
-                        </div>
-
-                        <div class="controls">
-                            <button id="analyzeBtn" class="btn btn-primary">OCR解析開始</button>
-                            <button id="resetBtn" class="btn btn-secondary">リセット</button>
-                        </div>
-                    </div>
-
-                    <div class="results-section" id="resultsSection" style="display: none;">
-                        <div class="result-card">
-                            <h3>認識結果 & プレビュー</h3>
-                            <div class="result-grid">
-                                <!-- 耐久値 -->
-                                <div class="result-item-header">
-                                    <h4>耐久値</h4>
-                                </div>
-                                <div class="result-item">
-                                    <label>認識結果:</label>
-                                    <span id="durabilityValue" class="result-value">-</span>
-                                    <span id="durabilityConfidence" class="confidence"></span>
-                                </div>
-                                <div class="preview-container">
-                                    <canvas id="durabilityPreview" width="200" height="50"></canvas>
-                                    <div class="preview-controls">
-                                        <label for="durabilityContrast">コントラスト:</label>
-                                        <input type="range" id="durabilityContrast" min="1" max="5" step="0.1" value="1">
-                                        <label for="durabilityZoom">ズーム:</label>
-                                        <input type="range" id="durabilityZoom" min="1" max="4" step="0.2" value="4">
-                                    </div>
-                                </div>
-
-                                <!-- 覚醒ゲージ -->
-                                <div class="result-item-header">
-                                    <h4>覚醒ゲージ</h4>
-                                </div>
-                                <div class="result-item">
-                                    <label>認識結果:</label>
-                                    <span id="awakeningValue" class="result-value">-</span>
-                                    <span id="awakeningConfidence" class="confidence"></span>
-                                </div>
-                                <div class="preview-container">
-                                     <canvas id="awakeningPreview" width="200" height="50"></canvas>
-                                     <div class="preview-controls">
-                                         <label for="awakeningContrast">コントラスト:</label>
-                                         <input type="range" id="awakeningContrast" min="1" max="5" step="0.1" value="1">
-                                         <label for="awakeningZoom">ズーム:</label>
-                                         <input type="range" id="awakeningZoom" min="1" max="4" step="0.2" value="3.6">
-                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="progress-section" id="progressSection" style="display: none;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill"></div>
-                        </div>
-                        <p id="progressText">処理中...</p>
-                    </div>
-
-                    <div class="ocr-actions">
-                        <button id="applyOcrResultBtn" class="btn btn-primary">この値をフォームに適用</button>
-                    </div>
-                </main>
-            </div>
-        </div>
-    </div>
     <main>
         <h1 class="title-sf-effect">星の翼 総合耐久・覚醒シミュレーター</h1>
 
@@ -813,17 +693,6 @@
                             <!-- Awakening Simulation Area with new features -->
                             <div class="awakening-simulation-area">
                                 <h4><i class="fas fa-brain"></i> 覚醒ゲージ予測</h4>
-
-                                <div class="image-upload-section" style="margin-bottom: 20px; text-align: center;">
-                                    <label class="simulation-button upload-button" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
-                                        <i class="fas fa-camera"></i> ゲーム画面から自動入力
-                                    </label>
-                                    <input type="file" id="gameImageUpload" accept="image/*" style="display: none;">
-                                    <p class="ocr-warning">
-                                        ※この機能は試験的な運用です。精度が保証できない為、認識された数値が正しいかを確認し、必要に応じて手動で修正してください。
-                                    </p>
-                                    <p id="imageUploadStatus" class="upload-status" style="margin-top: 10px; font-size: 0.9em; color: var(--accent-color); min-height: 1.2em;"></p>
-                                </div>
 
                                 <div class="simulation-input-group">
                                     <label for="beforeShotdownAwakeningGaugeInput"><i class="fas fa-meteor"></i> 覚醒が溜まるか調べたい覚醒ゲージ:</label>
@@ -1085,14 +954,6 @@
     <!-- GSAP for animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
-    <!-- OCR Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
-    <script async src="https://docs.opencv.org/4.8.0/opencv.js" type="text/javascript"></script>
-    <script type="module">
-        import * as Paddle from "https://cdn.jsdelivr.net/npm/esearch-ocr@5.1.5/dist/esearch-ocr.js";
-        window.paddle = Paddle; // use window.paddle to be consistent
-    </script>
-    
     <!-- Your application scripts -->
     <script type="module" src="js/view-toggle.js"></script>
     <script type="module" src="js/theme-toggle.js"></script>
