@@ -911,7 +911,11 @@ function clearSimulationResults() {
   }
 }
 
-function performSimulation({ persistHistory, showAlert = false, commitInputs = true } = {}) {
+function performSimulation({
+  persistHistory: persistHistoryOverride,
+  showAlert = false,
+  commitInputs = true
+} = {}) {
   const selection = getSelectedCharacters();
   const targetChar = resolveRedeployTarget(selection);
 
@@ -963,7 +967,8 @@ function performSimulation({ persistHistory, showAlert = false, commitInputs = t
   dom.resultHpBar.style.width = `${Math.min(100, Math.round((calculatedHp / targetChar.hp) * 100))}%`;
   dom.simResults.hidden = false;
 
-  const shouldPersistHistory = typeof persistHistory === 'boolean' ? persistHistory : commitInputs;
+  const shouldPersistHistory =
+    typeof persistHistoryOverride === 'boolean' ? persistHistoryOverride : commitInputs;
 
   if (shouldPersistHistory) {
     const historyEntry = {
