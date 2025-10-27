@@ -53,7 +53,6 @@ const dom = {
   bonusSelectField: document.querySelector('[data-field="bonus-select"]'),
   bonusSelect: document.getElementById('bonusSelect'),
   partnerDown: document.getElementById('partnerDown'),
-  runSimulation: document.getElementById('runSimulation'),
   simResults: document.getElementById('simResults'),
   teamSummaryPanel: document.getElementById('teamSummaryPanel'),
   teamSummaryEmpty: document.querySelector('[data-role="team-summary-empty"]'),
@@ -912,7 +911,7 @@ function clearSimulationResults() {
   }
 }
 
-function performSimulation({ persistHistory = false, showAlert = false, commitInputs = true } = {}) {
+function performSimulation({ persistHistory, showAlert = false, commitInputs = true } = {}) {
   const selection = getSelectedCharacters();
   const targetChar = resolveRedeployTarget(selection);
 
@@ -964,7 +963,9 @@ function performSimulation({ persistHistory = false, showAlert = false, commitIn
   dom.resultHpBar.style.width = `${Math.min(100, Math.round((calculatedHp / targetChar.hp) * 100))}%`;
   dom.simResults.hidden = false;
 
-  if (persistHistory) {
+  const shouldPersistHistory = typeof persistHistory === 'boolean' ? persistHistory : commitInputs;
+
+  if (shouldPersistHistory) {
     const historyEntry = {
       name: targetChar.name,
       timestamp: new Date().toISOString(),
@@ -989,10 +990,6 @@ function performSimulation({ persistHistory = false, showAlert = false, commitIn
     finalGauge,
     awakenText
   };
-}
-
-function runSimulation() {
-  performSimulation({ persistHistory: true, showAlert: true, commitInputs: true });
 }
 
 function clamp(value, min, max) {
@@ -1424,8 +1421,6 @@ function init() {
   renderHistory();
   renderCards();
   updateSelectedSummaries();
-
-  dom.runSimulation.addEventListener('click', runSimulation);
 }
 
 init();
