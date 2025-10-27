@@ -4,7 +4,6 @@ import * as UI from './ui.js';
 import { applyFiltersAndSearch, processTeamHpCombinations, processSimulateRedeploy, processAwakeningGaugeCalculation } from './app.js';
 import { MAX_TEAM_COST } from '../data.js';
 import * as Sharing from './sharing.js'; 
-import * as ImageProcessor from './imageProcessor.js';
 import { accordionManager } from './accordion.js';
 
 let isComposing = false;
@@ -158,15 +157,6 @@ function handleCopyTotalHpUrl(event) {
     Sharing.copyUrlToClipboard(urlToCopy, event.currentTarget); 
 }
 
-function handleImageUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        ImageProcessor.processImageFromFile(file);
-    }
-    // 同じファイルを再度アップロードできるように値をクリア
-    event.target.value = '';
-}
-
 function setupCharacterPickerEventListeners() {
     const pickerTypes = ['player', 'partner'];
 
@@ -299,8 +289,4 @@ export function setupEventListeners() {
     if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.addEventListener('click', handleCopyRedeployUrl);
     if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.addEventListener('click', handleCopyTotalHpUrl);
 
-    // Image Upload
-    if (DOM.gameImageUpload) {
-        DOM.gameImageUpload.addEventListener('change', handleImageUpload);
-    }
 }

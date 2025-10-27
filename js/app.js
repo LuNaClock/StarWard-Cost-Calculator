@@ -6,7 +6,6 @@ import * as Calculator from './calculator.js';
 import * as UI from './ui.js';
 import * as EventHandlers from './eventHandlers.js';
 import * as Sharing from './sharing.js';
-import { GameOCR } from './imageProcessor.js';
 import { initAccordions, accordionManager } from './accordion.js';
 
 function initializeCharacterData() {
@@ -245,69 +244,10 @@ function initializePage() {
     }, 100);
 
     setupInitialEventListeners();
-    initializeOcrModal();
 }
 
 function setupInitialEventListeners() {
     DOM.copyTotalHpUrlBtn.addEventListener('click', () => Sharing.copyToClipboard(Sharing.generateShareUrl('totalHp')));
-}
-
-function initializeOcrModal() {
-    const ocrModal = document.getElementById('ocrModal');
-    const openOcrBtn = document.querySelector('.upload-button');
-    const closeOcrBtn = document.getElementById('closeOcrModal');
-    const applyOcrResultBtn = document.getElementById('applyOcrResultBtn');
-    let gameOcrInstance = null;
-
-    if (openOcrBtn) {
-        openOcrBtn.removeAttribute('for');
-    }
-
-    const openModal = (e) => {
-        e.preventDefault();
-        ocrModal.style.display = 'flex';
-        if (!gameOcrInstance) {
-            gameOcrInstance = new GameOCR({
-                onOcrComplete: (results) => {
-                    console.log('OCR完了:', results);
-                    if (applyOcrResultBtn) applyOcrResultBtn.disabled = false;
-                }
-            });
-        }
-    };
-
-    const closeModal = () => {
-        ocrModal.style.display = 'none';
-    };
-
-    const applyResults = () => {
-        if (gameOcrInstance && gameOcrInstance.lastOcrResult) {
-            const { durability, awakening } = gameOcrInstance.lastOcrResult;
-            if (durability && durability.value) {
-                DOM.beforeShotdownHpInput.value = durability.value;
-            }
-            if (awakening && awakening.value) {
-                DOM.beforeShotdownAwakeningGaugeInput.value = awakening.value;
-            }
-            // Manually trigger input events to ensure other parts of the app update
-            DOM.beforeShotdownHpInput.dispatchEvent(new Event('input', { bubbles: true }));
-            DOM.beforeShotdownAwakeningGaugeInput.dispatchEvent(new Event('input', { bubbles: true }));
-            closeModal();
-        } else {
-            alert('適用するOCR結果がありません。');
-        }
-    };
-
-    if (openOcrBtn) {
-        openOcrBtn.addEventListener('click', openModal);
-    }
-    if (closeOcrBtn) {
-        closeOcrBtn.addEventListener('click', closeModal);
-    }
-    if (applyOcrResultBtn) {
-        applyOcrResultBtn.addEventListener('click', applyResults);
-        applyOcrResultBtn.disabled = true;
-    }
 }
 
 function handleTeamChange() {

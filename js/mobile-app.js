@@ -771,6 +771,18 @@ function setupCollapse() {
   });
 }
 
+function calculateRemainingTeamCost(totalCost, maxCost) {
+  const sanitizedTotal = typeof totalCost === 'number' && Number.isFinite(totalCost)
+    ? totalCost
+    : 0;
+  const sanitizedMax = typeof maxCost === 'number' && Number.isFinite(maxCost)
+    ? maxCost
+    : 0;
+  const remainingRaw = Math.max(0, sanitizedMax - sanitizedTotal);
+  const roundedRemaining = Math.round(remainingRaw * 2) / 2;
+  return Number.isFinite(roundedRemaining) ? roundedRemaining : 0;
+}
+
 function updateSelectedSummaries() {
   const selection = getSelectedCharacters();
   const { player, partner } = selection;
@@ -781,11 +793,18 @@ function updateSelectedSummaries() {
   const total = (player?.cost || 0) + (partner?.cost || 0);
   dom.teamTotal.textContent = total.toFixed(1);
 
+  if (dom.remainingCost) {
+    const remaining = calculateRemainingTeamCost(total, MAX_TEAM_COST);
+    dom.remainingCost.value = remaining.toFixed(1);
+  }
+
   const targetChar = resolveRedeployTarget(selection);
   dom.damageTaken.max = targetChar ? String(targetChar.hp) : '';
 
   renderTeamSummary(selection);
   renderSelectedCharacterDetails(selection);
+
+  performSimulation({ commitInputs: true });
 }
 
 function getSelectedCharacterByRole(role) {
@@ -831,28 +850,95 @@ function setupBonusToggle() {
   const toggleField = () => {
     dom.bonusSelectField.toggleAttribute('hidden', !dom.damageBonus.checked);
   };
-  dom.damageBonus.addEventListener('change', toggleField);
+  dom.damageBonus.addEventListener('change', () => {
+    toggleField();
+    performSimulation({ commitInputs: true });
+  });
   toggleField();
 }
 
-function runSimulation() {
+function setupSimulationAutoUpdate() {
+  if (!dom.simResults) {
+    return;
+  }
+
+  if (dom.remainingCost) {
+    dom.remainingCost.addEventListener('input', () => performSimulation({ commitInputs: false }));
+    dom.remainingCost.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
+  if (dom.preGauge) {
+    dom.preGauge.addEventListener('input', () => performSimulation({ commitInputs: false }));
+    dom.preGauge.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
+  if (dom.damageTaken) {
+    dom.damageTaken.addEventListener('input', () => performSimulation({ commitInputs: false }));
+    dom.damageTaken.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
+  if (dom.bonusSelect) {
+    dom.bonusSelect.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
+  if (dom.ownDown) {
+    dom.ownDown.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
+  if (dom.partnerDown) {
+    dom.partnerDown.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
+}
+
+function clearSimulationResults() {
+  if (dom.resultHp) {
+    dom.resultHp.textContent = '--';
+  }
+  if (dom.resultCost) {
+    dom.resultCost.textContent = '--';
+  }
+  if (dom.resultGauge) {
+    dom.resultGauge.textContent = '--';
+  }
+  if (dom.resultAwaken) {
+    dom.resultAwaken.textContent = '--';
+  }
+  if (dom.resultHpBar) {
+    dom.resultHpBar.style.width = '0%';
+  }
+  if (dom.simResults) {
+    dom.simResults.hidden = true;
+  }
+}
+
+function performSimulation({ persistHistory = false, showAlert = false, commitInputs = true } = {}) {
   const selection = getSelectedCharacters();
   const targetChar = resolveRedeployTarget(selection);
 
   if (!targetChar) {
-    alert('再出撃する機体を選択してください');
-    return;
+    if (showAlert) {
+      alert('再出撃する機体を選択してください');
+    }
+    clearSimulationResults();
+    return null;
   }
 
   const remainingCost = clamp(parseFloat(dom.remainingCost.value) || 0, 0, MAX_TEAM_COST);
-  dom.remainingCost.value = remainingCost.toFixed(1);
+  if (commitInputs) {
+    dom.remainingCost.value = remainingCost.toFixed(1);
+  }
 
   const allocatedCost = Math.min(remainingCost, targetChar.cost);
   const calculatedHp = Math.round(targetChar.hp * (allocatedCost / targetChar.cost));
   const gaugeBefore = clamp(parseFloat(dom.preGauge.value) || 0, 0, 100);
-  dom.preGauge.value = String(gaugeBefore);
+  if (commitInputs) {
+    dom.preGauge.value = String(gaugeBefore);
+  }
   const damageInput = clamp(parseFloat(dom.damageTaken.value) || 0, 0, targetChar.hp);
-  dom.damageTaken.value = String(damageInput);
+  if (commitInputs) {
+    dom.damageTaken.value = String(damageInput);
+  }
 
   const damageRatio = targetChar.hp > 0 ? damageInput / targetChar.hp : 0;
   const gaugeFromDamage = Math.floor(damageRatio * 100 * AVERAGE_GAUGE_COEFFICIENT);
@@ -878,18 +964,35 @@ function runSimulation() {
   dom.resultHpBar.style.width = `${Math.min(100, Math.round((calculatedHp / targetChar.hp) * 100))}%`;
   dom.simResults.hidden = false;
 
-  const historyEntry = {
-    name: targetChar.name,
-    timestamp: new Date().toISOString(),
-    hp: calculatedHp,
-    cost: allocatedCost,
-    gauge: finalGauge,
-    awaken: awakenText
+  if (persistHistory) {
+    const historyEntry = {
+      name: targetChar.name,
+      timestamp: new Date().toISOString(),
+      hp: calculatedHp,
+      cost: allocatedCost,
+      gauge: finalGauge,
+      awaken: awakenText
+    };
+    state.history.unshift(historyEntry);
+    state.history = state.history.slice(0, 5);
+    persistHistory();
+    renderHistory();
+  }
+
+  return {
+    targetChar,
+    remainingCost,
+    allocatedCost,
+    calculatedHp,
+    gaugeBefore,
+    damageInput,
+    finalGauge,
+    awakenText
   };
-  state.history.unshift(historyEntry);
-  state.history = state.history.slice(0, 5);
-  persistHistory();
-  renderHistory();
+}
+
+function runSimulation() {
+  performSimulation({ persistHistory: true, showAlert: true, commitInputs: true });
 }
 
 function clamp(value, min, max) {
@@ -1313,6 +1416,7 @@ function init() {
   setupCollapse();
   setupRedeployChips();
   setupBonusToggle();
+  setupSimulationAutoUpdate();
   setupFilters();
   setupSettings();
   setupHistoryControls();
@@ -1330,5 +1434,6 @@ export {
   createCharacterAvatar,
   hasNativeLazyLoadingSupport,
   isIosSafari,
-  isIosChromium
+  isIosChromium,
+  calculateRemainingTeamCost
 };

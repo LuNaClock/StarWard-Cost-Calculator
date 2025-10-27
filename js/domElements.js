@@ -99,7 +99,3 @@ export const shareTotalHpResultBtn = document.getElementById('shareTotalHpResult
 // New URL Copy Buttons (IDs will be defined in HTML later)
 export const copyRedeployUrlBtn = document.getElementById('copyRedeployUrlBtn');
 export const copyTotalHpUrlBtn = document.getElementById('copyTotalHpUrlBtn');
-
-// Image Processor Elements
-export const gameImageUpload = document.getElementById('gameImageUpload');
-export const imageUploadStatus = document.getElementById('imageUploadStatus');

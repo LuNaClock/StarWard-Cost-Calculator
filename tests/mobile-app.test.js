@@ -11,6 +11,27 @@ function setUserAgent(ua) {
   });
 }
 
+describe('calculateRemainingTeamCost', () => {
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
+  it('returns a rounded remaining cost in 0.5 increments', async () => {
+    const module = await import('../js/mobile-app.js');
+    expect(module.calculateRemainingTeamCost(5.2, 8)).toBe(3);
+  });
+
+  it('never returns a negative value', async () => {
+    const module = await import('../js/mobile-app.js');
+    expect(module.calculateRemainingTeamCost(10, 8)).toBe(0);
+  });
+
+  it('handles invalid numbers gracefully', async () => {
+    const module = await import('../js/mobile-app.js');
+    expect(module.calculateRemainingTeamCost(Number.NaN, undefined)).toBe(0);
+  });
+});
+
 describe('createCharacterAvatar', () => {
   beforeEach(() => {
     vi.resetModules();
