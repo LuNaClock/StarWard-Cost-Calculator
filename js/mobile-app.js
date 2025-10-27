@@ -893,6 +893,29 @@ function setupSimulationAutoUpdate() {
 
 }
 
+function applyInlineAwakeningState({
+  gaugeText = '--%',
+  statusText = '--',
+  isReady = null,
+  visible = false
+} = {}) {
+  if (dom.inlineAwakeningGauge) {
+    dom.inlineAwakeningGauge.textContent = gaugeText;
+  }
+  if (dom.inlineAwakeningStatus) {
+    dom.inlineAwakeningStatus.textContent = statusText;
+    dom.inlineAwakeningStatus.classList.remove('inline-result__status--ready', 'inline-result__status--not-ready');
+    if (typeof isReady === 'boolean') {
+      dom.inlineAwakeningStatus.classList.add(
+        isReady ? 'inline-result__status--ready' : 'inline-result__status--not-ready'
+      );
+    }
+  }
+  if (dom.inlineAwakeningResults) {
+    dom.inlineAwakeningResults.hidden = !visible;
+  }
+}
+
 function clearSimulationResults() {
   if (dom.resultHp) {
     dom.resultHp.textContent = '--';
@@ -909,16 +932,7 @@ function clearSimulationResults() {
   if (dom.resultHpBar) {
     dom.resultHpBar.style.width = '0%';
   }
-  if (dom.inlineAwakeningGauge) {
-    dom.inlineAwakeningGauge.textContent = '--%';
-  }
-  if (dom.inlineAwakeningStatus) {
-    dom.inlineAwakeningStatus.textContent = '--';
-    dom.inlineAwakeningStatus.classList.remove('inline-result__status--ready', 'inline-result__status--not-ready');
-  }
-  if (dom.inlineAwakeningResults) {
-    dom.inlineAwakeningResults.hidden = true;
-  }
+  applyInlineAwakeningState();
   if (dom.simResults) {
     dom.simResults.hidden = true;
   }
@@ -1028,19 +1042,12 @@ function performSimulation({
   dom.resultHpBar.style.width = `${Math.min(100, Math.round((calculatedHp / targetChar.hp) * 100))}%`;
   dom.simResults.hidden = false;
 
-  if (dom.inlineAwakeningGauge) {
-    dom.inlineAwakeningGauge.textContent = `${finalGauge}%`;
-  }
-  if (dom.inlineAwakeningStatus) {
-    dom.inlineAwakeningStatus.textContent = awakenText;
-    dom.inlineAwakeningStatus.classList.remove('inline-result__status--ready', 'inline-result__status--not-ready');
-    dom.inlineAwakeningStatus.classList.add(
-      isReadyToAwaken ? 'inline-result__status--ready' : 'inline-result__status--not-ready'
-    );
-  }
-  if (dom.inlineAwakeningResults) {
-    dom.inlineAwakeningResults.hidden = false;
-  }
+  applyInlineAwakeningState({
+    gaugeText: `${finalGauge}%`,
+    statusText: awakenText,
+    isReady: isReadyToAwaken,
+    visible: true
+  });
 
   const shouldPersistHistory =
     typeof persistHistoryOverride === 'boolean' ? persistHistoryOverride : commitInputs;
