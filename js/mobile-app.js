@@ -912,7 +912,7 @@ function clearSimulationResults() {
   }
 }
 
-function performSimulation({ persistHistory = false, showAlert = false, commitInputs = true } = {}) {
+function performSimulation({ persistHistory: shouldPersistHistory = false, showAlert = false, commitInputs = true } = {}) {
   const selection = getSelectedCharacters();
   const targetChar = resolveRedeployTarget(selection);
 
@@ -964,14 +964,22 @@ function performSimulation({ persistHistory = false, showAlert = false, commitIn
   dom.resultHpBar.style.width = `${Math.min(100, Math.round((calculatedHp / targetChar.hp) * 100))}%`;
   dom.simResults.hidden = false;
 
-  if (persistHistory) {
+  if (shouldPersistHistory) {
+    const { player, partner } = selection;
     const historyEntry = {
       name: targetChar.name,
+      targetRole: state.redeployTarget === 'partner' ? 'partner' : 'player',
       timestamp: new Date().toISOString(),
       hp: calculatedHp,
       cost: allocatedCost,
       gauge: finalGauge,
-      awaken: awakenText
+      awaken: awakenText,
+      player: player
+        ? { id: player.id, name: player.name }
+        : null,
+      partner: partner
+        ? { id: partner.id, name: partner.name }
+        : null
     };
     state.history.unshift(historyEntry);
     state.history = state.history.slice(0, 5);
@@ -999,6 +1007,26 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function getHistoryEntryNames(entry) {
+  if (!entry || typeof entry !== 'object') {
+    return [];
+  }
+  const names = [];
+  if (typeof entry.player?.name === 'string' && entry.player.name) {
+    names.push(entry.player.name);
+  }
+  if (typeof entry.partner?.name === 'string' && entry.partner.name) {
+    names.push(entry.partner.name);
+  }
+  if (typeof entry.name === 'string' && entry.name) {
+    names.push(entry.name);
+  }
+  if (typeof entry.targetName === 'string' && entry.targetName) {
+    names.push(entry.targetName);
+  }
+  return names;
+}
+
 function renderHistory() {
   if (!dom.recentList) {
     return;
@@ -1013,12 +1041,24 @@ function renderHistory() {
     state.history.forEach((entry) => {
       const item = document.createElement('div');
       item.className = 'quick-item';
+      const playerName = entry.player?.name || '未選択';
+      const partnerName = entry.partner?.name || '未選択';
+      const roleText = entry.targetRole === 'partner' ? '相方' : '自機';
+      const targetName = entry.name || entry.targetName || roleText;
+      const hpValue = typeof entry.hp === 'number' ? entry.hp : Number(entry.hp) || 0;
+      const gaugeValue = typeof entry.gauge === 'number' ? entry.gauge : Number(entry.gauge) || 0;
       item.innerHTML = `
-        <div class="quick-label">
-          <span>${entry.name}</span>
-          <span>${formatDate(entry.timestamp)} / 覚醒 ${entry.gauge}%</span>
+        <div class="quick-info">
+          <div class="quick-label">
+            <span>${roleText}：${targetName}</span>
+            <span>${formatDate(entry.timestamp)} / 覚醒 ${gaugeValue}%</span>
+          </div>
+          <div class="quick-meta">
+            <span>自機：${playerName}</span>
+            <span>相方：${partnerName}</span>
+          </div>
         </div>
-        <span class="quick-value">${entry.hp.toLocaleString()} HP</span>
+        <span class="quick-value">${hpValue.toLocaleString()} HP</span>
       `;
       dom.recentList.appendChild(item);
     });
@@ -1167,7 +1207,9 @@ function renderCards() {
   const query = state.search.toLowerCase();
   const hiraQuery = toHiragana(query);
   const isRecentScope = state.cardScope === 'recent';
-  const recentNames = isRecentScope ? new Set(state.history.map((entry) => entry.name)) : null;
+  const recentNames = isRecentScope
+    ? new Set(state.history.flatMap((entry) => getHistoryEntryNames(entry)))
+    : null;
 
   if (isRecentScope && recentNames && recentNames.size === 0) {
     const emptyRecent = document.createElement('p');
