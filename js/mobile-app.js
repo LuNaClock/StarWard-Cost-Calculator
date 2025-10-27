@@ -918,9 +918,22 @@ function performSimulation({
 } = {}) {
   const selection = getSelectedCharacters();
   const targetChar = resolveRedeployTarget(selection);
-  const historyRole = state.redeployTarget === 'partner' ? 'partner' : 'player';
-  const historyCharacter =
-    historyRole === 'partner' ? selection.partner : selection.player;
+
+  let historyRole = 'player';
+  let historyCharacter = selection.player || null;
+
+  if (targetChar && selection.partner && targetChar.id === selection.partner.id) {
+    historyRole = 'partner';
+    historyCharacter = selection.partner;
+  } else if (targetChar && selection.player && targetChar.id === selection.player.id) {
+    historyRole = 'player';
+    historyCharacter = selection.player;
+  } else if (state.redeployTarget === 'partner') {
+    historyRole = 'partner';
+    historyCharacter = selection.partner || targetChar || null;
+  } else if (!historyCharacter && targetChar) {
+    historyCharacter = targetChar;
+  }
 
   if (!targetChar) {
     if (showAlert) {
