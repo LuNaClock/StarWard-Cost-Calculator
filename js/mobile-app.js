@@ -65,6 +65,9 @@ const dom = {
   resultGauge: document.querySelector('[data-bind="result-gauge"]'),
   resultAwaken: document.querySelector('[data-bind="result-awaken"]'),
   resultHpBar: document.querySelector('[data-bind="result-hp-bar"]'),
+  inlineAwakeningResults: document.getElementById('awakeningInlineResults'),
+  inlineAwakeningGauge: document.querySelector('[data-inline="gauge"]'),
+  inlineAwakeningStatus: document.querySelector('[data-inline="awaken"]'),
   recentList: document.getElementById('recentList'),
   clearHistory: document.querySelector('[data-action="clear-history"]'),
   cardSearch: document.getElementById('cardSearch'),
@@ -890,6 +893,29 @@ function setupSimulationAutoUpdate() {
 
 }
 
+function applyInlineAwakeningState({
+  gaugeText = '--%',
+  statusText = '--',
+  isReady = null,
+  visible = false
+} = {}) {
+  if (dom.inlineAwakeningGauge) {
+    dom.inlineAwakeningGauge.textContent = gaugeText;
+  }
+  if (dom.inlineAwakeningStatus) {
+    dom.inlineAwakeningStatus.textContent = statusText;
+    dom.inlineAwakeningStatus.classList.remove('inline-result__status--ready', 'inline-result__status--not-ready');
+    if (typeof isReady === 'boolean') {
+      dom.inlineAwakeningStatus.classList.add(
+        isReady ? 'inline-result__status--ready' : 'inline-result__status--not-ready'
+      );
+    }
+  }
+  if (dom.inlineAwakeningResults) {
+    dom.inlineAwakeningResults.hidden = !visible;
+  }
+}
+
 function clearSimulationResults() {
   if (dom.resultHp) {
     dom.resultHp.textContent = '--';
@@ -906,6 +932,7 @@ function clearSimulationResults() {
   if (dom.resultHpBar) {
     dom.resultHpBar.style.width = '0%';
   }
+  applyInlineAwakeningState();
   if (dom.simResults) {
     dom.simResults.hidden = true;
   }
@@ -1005,7 +1032,8 @@ function performSimulation({
   }
 
   const finalGauge = clamp(Math.floor(gaugeBefore + gaugeFromDamage + bonus), 0, 100);
-  const awakenText = finalGauge >= AWAKENING_THRESHOLD ? '覚醒可能' : '不可';
+  const isReadyToAwaken = finalGauge >= AWAKENING_THRESHOLD;
+  const awakenText = isReadyToAwaken ? '覚醒可能' : '不可';
 
   dom.resultHp.textContent = `${calculatedHp.toLocaleString()} HP`;
   dom.resultCost.textContent = `${allocatedCost.toFixed(1)} コスト`;
@@ -1013,6 +1041,13 @@ function performSimulation({
   dom.resultAwaken.textContent = awakenText;
   dom.resultHpBar.style.width = `${Math.min(100, Math.round((calculatedHp / targetChar.hp) * 100))}%`;
   dom.simResults.hidden = false;
+
+  applyInlineAwakeningState({
+    gaugeText: `${finalGauge}%`,
+    statusText: awakenText,
+    isReady: isReadyToAwaken,
+    visible: true
+  });
 
   const shouldPersistHistory =
     typeof persistHistoryOverride === 'boolean' ? persistHistoryOverride : commitInputs;
