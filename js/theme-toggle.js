@@ -38,20 +38,19 @@ function applyTheme(theme, { skipSave = false } = {}) {
 }
 
 const storedTheme = getStoredTheme();
+const hasStoredTheme = storedTheme === 'light' || storedTheme === 'dark';
 const systemPreference = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-const initialTheme = storedTheme === 'light' || storedTheme === 'dark'
-  ? storedTheme
-  : (systemPreference && systemPreference.matches ? 'dark' : DEFAULT_THEME);
+const initialTheme = hasStoredTheme ? storedTheme : DEFAULT_THEME;
 
 applyTheme(initialTheme, { skipSave: true });
 
-if (systemPreference && typeof systemPreference.addEventListener === 'function' && !(storedTheme === 'light' || storedTheme === 'dark')) {
+if (systemPreference && typeof systemPreference.addEventListener === 'function' && !hasStoredTheme) {
   systemPreference.addEventListener('change', (event) => {
     applyTheme(event.matches ? 'dark' : 'light', { skipSave: true });
   });
 }
 
-if (systemPreference && typeof systemPreference.addListener === 'function' && !(storedTheme === 'light' || storedTheme === 'dark')) {
+if (systemPreference && typeof systemPreference.addListener === 'function' && !hasStoredTheme) {
   systemPreference.addListener((event) => {
     applyTheme(event.matches ? 'dark' : 'light', { skipSave: true });
   });

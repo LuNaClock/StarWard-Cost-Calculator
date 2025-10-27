@@ -75,6 +75,8 @@ describe('デスクトップテーマ切り替え', () => {
     const darkButton = document.querySelector('[data-theme-option="dark"]');
 
     expect(document.body.dataset.theme).toBe('dark');
+    expect(lightButton.getAttribute('aria-pressed')).toBe('false');
+    expect(darkButton.getAttribute('aria-pressed')).toBe('true');
 
     lightButton.click();
 
