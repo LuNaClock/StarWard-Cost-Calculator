@@ -918,6 +918,9 @@ function performSimulation({
 } = {}) {
   const selection = getSelectedCharacters();
   const targetChar = resolveRedeployTarget(selection);
+  const historyRole = state.redeployTarget === 'partner' ? 'partner' : 'player';
+  const historyCharacter =
+    historyRole === 'partner' ? selection.partner : selection.player;
 
   if (!targetChar) {
     if (showAlert) {
@@ -972,7 +975,9 @@ function performSimulation({
 
   if (shouldPersistHistory) {
     const historyEntry = {
-      name: targetChar.name,
+      role: historyRole,
+      characterId: historyCharacter?.id ?? targetChar?.id ?? null,
+      name: historyCharacter?.name || targetChar.name,
       timestamp: new Date().toISOString(),
       hp: calculatedHp,
       cost: allocatedCost,
@@ -1013,11 +1018,21 @@ function renderHistory() {
     dom.recentList.appendChild(empty);
   } else {
     state.history.forEach((entry) => {
+      const matchedCharacter =
+        typeof entry.characterId === 'number'
+          ? state.characters.find((char) => char.id === entry.characterId)
+          : null;
+      const characterName = matchedCharacter?.name || entry.name || '--';
+      const rolePrefix = entry.role === 'partner'
+        ? '相方: '
+        : entry.role === 'player'
+          ? '自機: '
+          : '';
       const item = document.createElement('div');
       item.className = 'quick-item';
       item.innerHTML = `
         <div class="quick-label">
-          <span>${entry.name}</span>
+          <span>${rolePrefix}${characterName}</span>
           <span>${formatDate(entry.timestamp)} / 覚醒 ${entry.gauge}%</span>
         </div>
         <span class="quick-value">${entry.hp.toLocaleString()} HP</span>
