@@ -298,27 +298,35 @@
 
                     <article class="results-panel" id="simResults" hidden>
                         <h3 class="panel-title">シミュレーション結果</h3>
-                        <div class="results-grid">
-                            <div class="result-figure">
-                                <span>再出撃耐久値</span>
-                                <strong data-bind="result-hp">0</strong>
+                        <section class="results-section" aria-label="再出撃結果">
+                            <h4 class="results-section-title">再出撃結果</h4>
+                            <div class="results-grid">
+                                <div class="result-figure">
+                                    <span>再出撃耐久値</span>
+                                    <strong data-bind="result-hp">0</strong>
+                                </div>
+                                <div class="result-figure">
+                                    <span>消費コスト</span>
+                                    <strong data-bind="result-cost">0</strong>
+                                </div>
                             </div>
-                            <div class="result-figure">
-                                <span>消費コスト</span>
-                                <strong data-bind="result-cost">0</strong>
+                            <div class="hp-bar" aria-hidden="true">
+                                <span data-bind="result-hp-bar" style="width: 0%"></span>
                             </div>
-                            <div class="result-figure">
-                                <span>覚醒ゲージ予測</span>
-                                <strong data-bind="result-gauge">0%</strong>
+                        </section>
+                        <section class="results-section" aria-label="覚醒ゲージ予測">
+                            <h4 class="results-section-title">覚醒ゲージ予測</h4>
+                            <div class="results-grid">
+                                <div class="result-figure">
+                                    <span>覚醒ゲージ予測</span>
+                                    <strong data-bind="result-gauge">0%</strong>
+                                </div>
+                                <div class="result-figure">
+                                    <span>覚醒可否</span>
+                                    <strong data-bind="result-awaken">--</strong>
+                                </div>
                             </div>
-                            <div class="result-figure">
-                                <span>覚醒可否</span>
-                                <strong data-bind="result-awaken">--</strong>
-                            </div>
-                        </div>
-                        <div class="hp-bar" aria-hidden="true">
-                            <span data-bind="result-hp-bar" style="width: 0%"></span>
-                        </div>
+                        </section>
                         <p class="panel-subtitle">履歴に保存しました</p>
                     </article>
 
