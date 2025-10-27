@@ -985,8 +985,9 @@ function performSimulation({
 
   const shouldPersistHistory =
     typeof persistHistoryOverride === 'boolean' ? persistHistoryOverride : commitInputs;
+  const hasFullTeamSelection = Boolean(selection.player && selection.partner);
 
-  if (shouldPersistHistory) {
+  if (shouldPersistHistory && hasFullTeamSelection) {
     const historyEntry = {
       role: historyRole,
       characterId: historyCharacter?.id ?? targetChar?.id ?? null,
