@@ -917,6 +917,7 @@ function performSimulation({
   commitInputs = true
 } = {}) {
   const selection = getSelectedCharacters();
+  const hasCompleteSelection = Boolean(selection.player && selection.partner);
   const targetChar = resolveRedeployTarget(selection);
 
   let historyRole = 'player';
@@ -986,7 +987,7 @@ function performSimulation({
   const shouldPersistHistory =
     typeof persistHistoryOverride === 'boolean' ? persistHistoryOverride : commitInputs;
 
-  if (shouldPersistHistory) {
+  if (shouldPersistHistory && hasCompleteSelection) {
     const historyEntry = {
       role: historyRole,
       characterId: historyCharacter?.id ?? targetChar?.id ?? null,
