@@ -781,6 +781,11 @@ function updateSelectedSummaries() {
   const total = (player?.cost || 0) + (partner?.cost || 0);
   dom.teamTotal.textContent = total.toFixed(1);
 
+  if (dom.remainingCost) {
+    const autoRemaining = Math.max(0, Math.round((MAX_TEAM_COST - total) * 2) / 2);
+    dom.remainingCost.value = autoRemaining.toFixed(1);
+  }
+
   const targetChar = resolveRedeployTarget(selection);
   dom.damageTaken.max = targetChar ? String(targetChar.hp) : '';
 
