@@ -335,23 +335,6 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   gap: var(--space-3);
 }
 
-.cta-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-cta);
-  background: linear-gradient(120deg, var(--brand-600), var(--brand-500));
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  min-height: 48px;
-  box-shadow: var(--shadow-2);
-}
-
 .cta-secondary {
   display: inline-flex;
   align-items: center;
