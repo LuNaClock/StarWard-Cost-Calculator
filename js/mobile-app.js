@@ -911,12 +911,43 @@ function clearSimulationResults() {
   }
 }
 
+function getHistoryKey(entry) {
+  if (!entry || typeof entry !== 'object') {
+    return '';
+  }
+  if (entry.characterId !== null && entry.characterId !== undefined) {
+    return `id:${entry.characterId}`;
+  }
+  if (entry.name) {
+    return `name:${entry.name}`;
+  }
+  return `misc:${entry.role ?? ''}:${entry.timestamp ?? ''}`;
+}
+
+function dedupeHistory(entries) {
+  if (!Array.isArray(entries)) {
+    return [];
+  }
+  const seen = new Set();
+  const result = [];
+  entries.forEach((entry) => {
+    const key = getHistoryKey(entry);
+    if (seen.has(key)) {
+      return;
+    }
+    seen.add(key);
+    result.push(entry);
+  });
+  return result;
+}
+
 function performSimulation({
   persistHistory: persistHistoryOverride,
   showAlert = false,
   commitInputs = true
 } = {}) {
   const selection = getSelectedCharacters();
+  const hasCompleteSelection = Boolean(selection.player && selection.partner);
   const targetChar = resolveRedeployTarget(selection);
 
   let historyRole = 'player';
@@ -986,7 +1017,7 @@ function performSimulation({
   const shouldPersistHistory =
     typeof persistHistoryOverride === 'boolean' ? persistHistoryOverride : commitInputs;
 
-  if (shouldPersistHistory) {
+  if (shouldPersistHistory && hasCompleteSelection) {
     const historyEntry = {
       role: historyRole,
       characterId: historyCharacter?.id ?? targetChar?.id ?? null,
@@ -997,8 +1028,8 @@ function performSimulation({
       gauge: finalGauge,
       awaken: awakenText
     };
-    state.history.unshift(historyEntry);
-    state.history = state.history.slice(0, 5);
+    const entryKey = getHistoryKey(historyEntry);
+    state.history = [historyEntry, ...state.history.filter((entry) => getHistoryKey(entry) !== entryKey)].slice(0, 5);
     persistHistory();
     renderHistory();
   }
@@ -1080,7 +1111,7 @@ function loadHistory() {
     if (!saved) return;
     const parsed = JSON.parse(saved);
     if (Array.isArray(parsed)) {
-      state.history = parsed;
+      state.history = dedupeHistory(parsed).slice(0, 5);
     }
   } catch (error) {
     console.warn('Failed to load history', error);
