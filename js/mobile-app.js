@@ -771,6 +771,18 @@ function setupCollapse() {
   });
 }
 
+function calculateRemainingTeamCost(totalCost, maxCost) {
+  const sanitizedTotal = typeof totalCost === 'number' && Number.isFinite(totalCost)
+    ? totalCost
+    : 0;
+  const sanitizedMax = typeof maxCost === 'number' && Number.isFinite(maxCost)
+    ? maxCost
+    : 0;
+  const remainingRaw = Math.max(0, sanitizedMax - sanitizedTotal);
+  const roundedRemaining = Math.round(remainingRaw * 2) / 2;
+  return Number.isFinite(roundedRemaining) ? roundedRemaining : 0;
+}
+
 function updateSelectedSummaries() {
   const selection = getSelectedCharacters();
   const { player, partner } = selection;
@@ -780,6 +792,11 @@ function updateSelectedSummaries() {
   dom.partnerHp.textContent = partner ? partner.hp.toLocaleString() : '--';
   const total = (player?.cost || 0) + (partner?.cost || 0);
   dom.teamTotal.textContent = total.toFixed(1);
+
+  if (dom.remainingCost) {
+    const remaining = calculateRemainingTeamCost(total, MAX_TEAM_COST);
+    dom.remainingCost.value = remaining.toFixed(1);
+  }
 
   const targetChar = resolveRedeployTarget(selection);
   dom.damageTaken.max = targetChar ? String(targetChar.hp) : '';
@@ -1330,5 +1347,6 @@ export {
   createCharacterAvatar,
   hasNativeLazyLoadingSupport,
   isIosSafari,
-  isIosChromium
+  isIosChromium,
+  calculateRemainingTeamCost
 };
