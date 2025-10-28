@@ -31,7 +31,7 @@ export const rawCharacterData = [
     { name: "ノーラ", hp: 2772, cost: 2.5, image: "assets/character_icons/nora.webp" },
     { name: "サンダーボルト・OTOME", hp: 2500, cost: 2.5, image: "assets/character_icons/thunderbolt・OTOME.webp" },
     { name: "ランスロット", hp: 2655, cost: 2.5, image: "assets/character_icons/lancelot.webp" },
-    { name: "ガラハッド・暁", hp: 2340, cost: 2.5, image: "assets/character_icons/galahad_dawn.webp" },
+    { name: "ガラハッド・暁", hp: 2655, cost: 2.5, image: "assets/character_icons/galahad_dawn.webp" },
     { name: "パラス", hp: 2448, cost: 2, image: "assets/character_icons/pallas.webp" },
     { name: "ヴァーチェ", hp: 2348, cost: 2, image: "assets/character_icons/virtue.webp" },
     { name: "ベータ", hp: 2340, cost: 2, image: "assets/character_icons/beta.webp" },
