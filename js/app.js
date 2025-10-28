@@ -191,6 +191,8 @@ export function processAwakeningGaugeCalculation() {
         considerOwnDown: DOM.considerOwnDownCheckbox && DOM.considerOwnDownCheckbox.checked,
         considerDamageDealt: DOM.considerDamageDealtCheckbox && DOM.considerDamageDealtCheckbox.checked,
         damageDealtBonus: (DOM.damageDealtAwakeningBonusSelect && DOM.damageDealtAwakeningBonusSelect.value) || "0",
+        considerShieldSuccess: DOM.considerShieldSuccessCheckbox && DOM.considerShieldSuccessCheckbox.checked,
+        shieldSuccessBonus: (DOM.shieldSuccessAwakeningBonusSelect && DOM.shieldSuccessAwakeningBonusSelect.value) || "0",
         considerPartnerDown: DOM.considerPartnerDownCheckbox && DOM.considerPartnerDownCheckbox.checked
     };
 
