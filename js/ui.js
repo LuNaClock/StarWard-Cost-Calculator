@@ -756,6 +756,11 @@ export function resetSimulationResultsUI() {
                 if(DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
                 if(DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0";
             }
+            if (DOM.considerShieldSuccessCheckbox) {
+                DOM.considerShieldSuccessCheckbox.checked = false;
+                if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'none';
+                if (DOM.shieldSuccessAwakeningBonusSelect) DOM.shieldSuccessAwakeningBonusSelect.value = "0";
+            }
             if (DOM.considerPartnerDownCheckbox) DOM.considerPartnerDownCheckbox.checked = false;
             if (DOM.predictedAwakeningGaugeSpan) DOM.predictedAwakeningGaugeSpan.textContent = '--';
             if (DOM.awakeningAvailabilitySpan) { DOM.awakeningAvailabilitySpan.textContent = '--'; DOM.awakeningAvailabilitySpan.className = 'info-value';}

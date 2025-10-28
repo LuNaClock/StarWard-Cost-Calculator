@@ -52,6 +52,9 @@ const dom = {
   damageBonus: document.getElementById('damageBonus'),
   bonusSelectField: document.querySelector('[data-field="bonus-select"]'),
   bonusSelect: document.getElementById('bonusSelect'),
+  shieldBonus: document.getElementById('shieldBonus'),
+  shieldSelectField: document.querySelector('[data-field="shield-select"]'),
+  shieldSelect: document.getElementById('shieldSelect'),
   partnerDown: document.getElementById('partnerDown'),
   simResults: document.getElementById('simResults'),
   teamSummaryPanel: document.getElementById('teamSummaryPanel'),
@@ -76,7 +79,10 @@ const dom = {
   cardGrid: document.getElementById('cardGrid'),
   recentFilterNotice: document.getElementById('recentFilterNotice'),
   recentFilterText: document.querySelector('[data-role="recent-notice-text"]'),
-  resetCardScope: document.querySelector('[data-action="reset-card-scope"]')
+  resetCardScope: document.querySelector('[data-action="reset-card-scope"]'),
+  considerShieldSuccessCheckbox: document.getElementById('considerShieldSuccessCheckbox'),
+  shieldSuccessOptionsContainer: document.getElementById('shieldSuccessOptionsContainer'),
+  shieldSuccessSelect: document.getElementById('shieldSuccessAwakeningBonusSelect')
 };
 
 const scenarioBindings = initializeScenarioBindings();
@@ -887,14 +893,55 @@ function setupRedeployChips() {
 }
 
 function setupBonusToggle() {
-  const toggleField = () => {
+  const toggleDamageField = () => {
+    if (!dom.bonusSelectField) return;
     dom.bonusSelectField.toggleAttribute('hidden', !dom.damageBonus.checked);
+    if (!dom.damageBonus.checked && dom.bonusSelect) {
+      dom.bonusSelect.value = '0';
+    }
   };
-  dom.damageBonus.addEventListener('change', () => {
-    toggleField();
-    performSimulation({ commitInputs: true });
-  });
-  toggleField();
+
+  if (dom.damageBonus) {
+    dom.damageBonus.addEventListener('change', () => {
+      toggleDamageField();
+      performSimulation({ commitInputs: true });
+    });
+    toggleDamageField();
+  }
+
+  const toggleShieldField = () => {
+    if (!dom.shieldSelectField) return;
+    dom.shieldSelectField.toggleAttribute('hidden', !dom.shieldBonus.checked);
+    if (!dom.shieldBonus.checked && dom.shieldSelect) {
+      dom.shieldSelect.value = '0';
+    }
+  };
+
+  if (dom.shieldBonus) {
+    dom.shieldBonus.addEventListener('change', () => {
+      toggleShieldField();
+      performSimulation({ commitInputs: true });
+    });
+    toggleShieldField();
+  }
+
+  const toggleShieldSuccessContainer = () => {
+    if (!dom.shieldSuccessOptionsContainer) return;
+    const isChecked = dom.considerShieldSuccessCheckbox?.checked ?? false;
+    dom.shieldSuccessOptionsContainer.style.display = isChecked ? 'block' : 'none';
+    if (!isChecked && dom.shieldSuccessSelect) {
+      dom.shieldSuccessSelect.value = '0';
+    }
+  };
+
+  if (dom.considerShieldSuccessCheckbox) {
+    dom.considerShieldSuccessCheckbox.addEventListener('change', () => {
+      toggleShieldSuccessContainer();
+    });
+    toggleShieldSuccessContainer();
+  } else if (dom.shieldSuccessOptionsContainer) {
+    dom.shieldSuccessOptionsContainer.style.display = 'none';
+  }
 }
 
 function setupSimulationAutoUpdate() {
@@ -921,12 +968,24 @@ function setupSimulationAutoUpdate() {
     dom.bonusSelect.addEventListener('change', () => performSimulation({ commitInputs: true }));
   }
 
+  if (dom.shieldSelect) {
+    dom.shieldSelect.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
   if (dom.ownDown) {
     dom.ownDown.addEventListener('change', () => performSimulation({ commitInputs: true }));
   }
 
   if (dom.partnerDown) {
     dom.partnerDown.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
+  if (dom.considerShieldSuccessCheckbox) {
+    dom.considerShieldSuccessCheckbox.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
+  if (dom.shieldSuccessSelect) {
+    dom.shieldSuccessSelect.addEventListener('change', () => performSimulation({ commitInputs: true }));
   }
 
 }
@@ -1064,6 +1123,12 @@ function performSimulation({
   }
   if (dom.damageBonus.checked) {
     bonus += parseInt(dom.bonusSelect.value, 10) || 0;
+  }
+  if (dom.shieldBonus && dom.shieldBonus.checked) {
+    bonus += parseInt(dom.shieldSelect?.value ?? '0', 10) || 0;
+  }
+  if (dom.considerShieldSuccessCheckbox && dom.considerShieldSuccessCheckbox.checked) {
+    bonus += parseInt(dom.shieldSuccessSelect?.value ?? '0', 10) || 0;
   }
   if (dom.partnerDown.checked) {
     bonus += PARTNER_DOWN_AWAKENING_BONUS[costKey] || 0;

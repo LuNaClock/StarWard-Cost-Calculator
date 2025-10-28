@@ -62,6 +62,13 @@ export function generateShareUrlForRedeploy() {
             params.set('ddb', DOM.damageDealtAwakeningBonusSelect.value);
         }
     }
+    if (DOM.considerShieldSuccessCheckbox.checked) {
+        params.set('ss', '1');
+        hasAwakeningParams = true;
+        if (DOM.shieldSuccessAwakeningBonusSelect.value !== "0") {
+            params.set('ssb', DOM.shieldSuccessAwakeningBonusSelect.value);
+        }
+    }
     if (DOM.considerPartnerDownCheckbox.checked) {
         params.set('pd', '1');
         hasAwakeningParams = true;
@@ -215,7 +222,28 @@ export function parseUrlAndRestoreState() {
             }
         } else {
             if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
-            if (DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0"; 
+            if (DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0";
+        }
+    }
+
+    const ssParam = params.get('ss');
+    if (DOM.considerShieldSuccessCheckbox) {
+        DOM.considerShieldSuccessCheckbox.checked = ssParam === '1';
+        if (DOM.considerShieldSuccessCheckbox.checked) {
+            if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'block';
+            if (params.has('ssb') && DOM.shieldSuccessAwakeningBonusSelect) {
+                const ssbValue = params.get('ssb');
+                const isValidSsb = Array.from(DOM.shieldSuccessAwakeningBonusSelect.options).some(opt => opt.value === ssbValue);
+                if (isValidSsb) {
+                    DOM.shieldSuccessAwakeningBonusSelect.value = ssbValue;
+                } else {
+                    // console.warn("Invalid 'ssb' (shield success bonus) parameter from URL:", ssbValue);
+                    DOM.shieldSuccessAwakeningBonusSelect.value = "0";
+                }
+            }
+        } else {
+            if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'none';
+            if (DOM.shieldSuccessAwakeningBonusSelect) DOM.shieldSuccessAwakeningBonusSelect.value = "0";
         }
     }
     
@@ -256,7 +284,7 @@ export function parseUrlAndRestoreState() {
     } else if (playerChar && partnerChar) { 
         processTeamHpCombinations();
         simulationRan = true; 
-        if(params.has('ag') || params.has('ah') || params.has('od') || params.has('dd') || params.has('pd')) {
+        if(params.has('ag') || params.has('ah') || params.has('od') || params.has('dd') || params.has('pd') || params.has('ss') || params.has('ssb')) {
             if (!simTypeFromUrl || !allowedSimTypes.includes(simTypeFromUrl)) {
                 // console.warn("Awakening parameters found in URL, but 'sim' parameter is missing or invalid. Awakening simulation will not run automatically for specific character.");
             }
