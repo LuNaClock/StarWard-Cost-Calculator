@@ -114,15 +114,20 @@ function buildPickerRefs(type) {
   if (!container) {
     return null;
   }
+  const helper = container.querySelector('.character-picker-search-helper');
+  const helperDefaultText = (helper?.dataset?.defaultText ?? helper?.textContent ?? '').trim();
   const refs = {
     container,
     toggle: container.querySelector(`[data-picker-toggle="${type}"]`),
     panel: container.querySelector(`[data-picker-panel="${type}"]`),
     search: container.querySelector(`[data-picker-search="${type}"]`),
+    searchContainer: container.querySelector('.character-picker-search'),
     list: container.querySelector(`[data-picker-list="${type}"]`),
     selectedIcon: container.querySelector(`[data-picker-selected-icon="${type}"]`),
     selectedName: container.querySelector(`[data-picker-selected-name="${type}"]`),
-    costButtons: Array.from(container.querySelectorAll('[data-picker-cost]'))
+    costButtons: Array.from(container.querySelectorAll('[data-picker-cost]')),
+    helper,
+    helperDefaultText
   };
   if (refs.panel) {
     refs.panel.hidden = true;
@@ -242,6 +247,37 @@ function updatePickerCostButtons(type) {
   });
 }
 
+function updatePickerSearchFeedback(type, filteredCount) {
+  const refs = pickerRefs[type];
+  if (!refs) {
+    return;
+  }
+
+  const filters = state.pickerFilters[type] || { search: '', cost: 'all' };
+  const searchTerm = (filters.search || '').trim();
+  const hasSearchTerm = searchTerm.length > 0;
+  const hasResults = filteredCount > 0;
+
+  if (refs.helper) {
+    const defaultText = refs.helperDefaultText || refs.helper.dataset?.defaultText || refs.helper.textContent || '';
+    if (!hasSearchTerm) {
+      refs.helper.textContent = defaultText;
+    } else if (hasResults) {
+      refs.helper.textContent = `該当するキャラ: ${filteredCount}件`;
+    } else {
+      refs.helper.textContent = '該当するキャラクターが見つかりません';
+    }
+    refs.helper.classList.toggle('has-results', hasSearchTerm && hasResults);
+    refs.helper.classList.toggle('no-results', hasSearchTerm && !hasResults);
+  }
+
+  if (refs.searchContainer) {
+    refs.searchContainer.classList.toggle('is-filtering', hasSearchTerm);
+    refs.searchContainer.classList.toggle('has-results', hasSearchTerm && hasResults);
+    refs.searchContainer.classList.toggle('no-results', hasSearchTerm && !hasResults);
+  }
+}
+
 function renderPickerList(type) {
   const refs = pickerRefs[type];
   if (!refs || !refs.list) {
@@ -268,6 +304,8 @@ function renderPickerList(type) {
       kataLower.includes(query)
     );
   });
+
+  updatePickerSearchFeedback(type, filtered.length);
 
   const sorted = filtered.sort((a, b) => sortCharacters(a, b, state.sort));
   const list = refs.list;
