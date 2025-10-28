@@ -213,31 +213,44 @@
                             <div id="sim-awakening" class="collapse">
                                 <div class="input-list">
                                     <div class="form-field">
-                                        <label for="preGauge">撃墜前の覚醒ゲージ (%)</label>
+                                        <label for="preGauge">被弾前の覚醒ゲージ量</label>
                                         <input id="preGauge" type="number" inputmode="numeric" min="0" max="100" value="0">
                                     </div>
                                     <div class="form-field">
-                                        <label for="damageTaken">撃墜時の被ダメージ (HP)</label>
+                                        <label for="damageTaken">想定被ダメージ</label>
                                         <input id="damageTaken" type="number" inputmode="numeric" min="0" value="0">
-                                        <p class="input-helper">自動で選択した機体の最大耐久値を上限にします</p>
+                                        <p class="input-helper">※被撃墜直後のゲージ量を知りたい場合、
+                                            「再出撃時のゲージ量加算」にチェックを入れてください。</p>
                                     </div>
                                     <label class="checkbox-field">
-                                        <input type="checkbox" id="ownDown"> 再出撃直後ボーナスを加算
+                                        <input type="checkbox" id="ownDown"> 再出撃時のゲージ量加算
                                     </label>
                                     <label class="checkbox-field">
-                                        <input type="checkbox" id="damageBonus"> 与ダメージボーナスを加算
+                                        <input type="checkbox" id="damageBonus"> ズンダ時のゲージ量加算
                                     </label>
                                     <div class="form-field" data-field="bonus-select" hidden>
-                                        <label for="bonusSelect">与ダメージボーナス</label>
+                                        <label for="bonusSelect">ズンダ時のゲージ量加算</label>
                                         <select id="bonusSelect">
                                             <option value="0">なし</option>
-                                            <option value="3">+3 (ズンダ1回分)</option>
-                                            <option value="6">+6 (ズンダ2回分)</option>
-                                            <option value="9">+9 (ズンダ3回分)</option>
+                                            <option value="3">約+3% (ズンダ1回分)</option>
+                                            <option value="6">約+6% (ズンダ2回分)</option>
+                                            <option value="9">約+9% (ズンダ3回分)</option>
                                         </select>
                                     </div>
                                     <label class="checkbox-field">
-                                        <input type="checkbox" id="partnerDown"> 相方撃墜ボーナスを加算
+                                        <input type="checkbox" id="shieldBonus"> 盾成功時のゲージ量加算
+                                    </label>
+                                    <div class="form-field" data-field="shield-bonus-select" hidden>
+                                        <label for="shieldBonusSelect">盾成功時のゲージ量加算</label>
+                                        <select id="shieldBonusSelect">
+                                            <option value="0">なし</option>
+                                            <option value="3">約+3% (盾成功1回分)</option>
+                                            <option value="6">約+6% (盾成功2回分)</option>
+                                            <option value="9">約+9% (盾成功3回分)</option>
+                                        </select>
+                                    </div>
+                                    <label class="checkbox-field">
+                                        <input type="checkbox" id="partnerDown"> 相方被撃墜時のゲージ量加算
                                     </label>
                                 </div>
                                 <div class="inline-result" id="awakeningInlineResults" aria-live="polite" hidden>
@@ -708,11 +721,11 @@
                                 <h4><i class="fas fa-brain"></i> 覚醒ゲージ予測</h4>
 
                                 <div class="simulation-input-group">
-                                    <label for="beforeShotdownAwakeningGaugeInput"><i class="fas fa-meteor"></i> 覚醒が溜まるか調べたい覚醒ゲージ:</label>
+                                    <label for="beforeShotdownAwakeningGaugeInput"><i class="fas fa-meteor"></i> 被弾前の覚醒ゲージ量</label>
                                     <input type="number" id="beforeShotdownAwakeningGaugeInput" class="select-dropdown" min="0" max="100" step="1" value="0">
                                 </div>
                                 <div class="simulation-input-group">
-                                    <label for="beforeShotdownHpInput"><i class="fas fa-heart-broken"></i> 覚醒が溜まるか調べたい耐久値:</label>
+                                    <label for="beforeShotdownHpInput"><i class="fas fa-heart-broken"></i> 想定被ダメージ量</label>
                                     <input type="number" id="beforeShotdownHpInput" class="select-dropdown" min="0" step="1" value="0">
                                 </div>
 
@@ -720,19 +733,33 @@
                                     <div class="simulation-input-group checkbox-group">
                                         <i class="fas fa-crosshairs"></i>
                                         <input type="checkbox" id="considerOwnDownCheckbox">
-                                        <label for="considerOwnDownCheckbox">再出撃直後(最低保証値)のゲージ量にする</label>
+                                        <label for="considerOwnDownCheckbox">再出撃時のゲージ量加算</label>
                                     </div>
 
                                     <div class="simulation-input-group checkbox-group has-dropdown">
                                         <i class="fas fa-fist-raised"></i>
                                         <input type="checkbox" id="considerDamageDealtCheckbox">
-                                        <label for="considerDamageDealtCheckbox">与ダメージ考慮</label>
+                                        <label for="considerDamageDealtCheckbox">ズンダ時のゲージ量加算</label>
                                         <div class="select-dropdown-container" id="damageDealtOptionsContainer">
                                             <select id="damageDealtAwakeningBonusSelect" class="select-dropdown">
                                                 <option value="0">選択なし</option>
-                                                <option value="3">覚醒ゲージ+3 (ズンダ約1回分)</option>
-                                                <option value="6">覚醒ゲージ+6 (ズンダ約2回分)</option>
-                                                <option value="9">覚醒ゲージ+9 (ズンダ約3回分)</option>
+                                                <option value="3">約+3% (ズンダ約1回分)</option>
+                                                <option value="6">約+6% (ズンダ約2回分)</option>
+                                                <option value="9">約+9% (ズンダ約3回分)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="simulation-input-group checkbox-group has-dropdown">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <input type="checkbox" id="considerShieldSuccessCheckbox">
+                                        <label for="considerShieldSuccessCheckbox">盾成功時のゲージ量加算</label>
+                                        <div class="select-dropdown-container" id="shieldSuccessOptionsContainer">
+                                            <select id="shieldSuccessAwakeningBonusSelect" class="select-dropdown">
+                                                <option value="0">選択なし</option>
+                                                <option value="3">約+3% (盾成功約1回分)</option>
+                                                <option value="6">約+6% (盾成功約2回分)</option>
+                                                <option value="9">約+9% (盾成功約3回分)</option>
                                             </select>
                                         </div>
                                     </div>
@@ -740,7 +767,7 @@
                                     <div class="simulation-input-group checkbox-group">
                                          <i class="fas fa-user-slash"></i>
                                          <input type="checkbox" id="considerPartnerDownCheckbox">
-                                         <label for="considerPartnerDownCheckbox">相方撃墜考慮</label>
+                                         <label for="considerPartnerDownCheckbox">相方被撃墜時のゲージ量加算</label>
                                     </div>
                                 </div>
 

@@ -52,6 +52,9 @@ const dom = {
   damageBonus: document.getElementById('damageBonus'),
   bonusSelectField: document.querySelector('[data-field="bonus-select"]'),
   bonusSelect: document.getElementById('bonusSelect'),
+  shieldBonus: document.getElementById('shieldBonus'),
+  shieldBonusField: document.querySelector('[data-field="shield-bonus-select"]'),
+  shieldBonusSelect: document.getElementById('shieldBonusSelect'),
   partnerDown: document.getElementById('partnerDown'),
   simResults: document.getElementById('simResults'),
   teamSummaryPanel: document.getElementById('teamSummaryPanel'),
@@ -887,14 +890,37 @@ function setupRedeployChips() {
 }
 
 function setupBonusToggle() {
-  const toggleField = () => {
+  const toggleDamageField = () => {
+    if (!dom.bonusSelectField || !dom.damageBonus) {
+      return;
+    }
     dom.bonusSelectField.toggleAttribute('hidden', !dom.damageBonus.checked);
   };
-  dom.damageBonus.addEventListener('change', () => {
-    toggleField();
-    performSimulation({ commitInputs: true });
-  });
-  toggleField();
+  const toggleShieldField = () => {
+    if (!dom.shieldBonusField || !dom.shieldBonus) {
+      return;
+    }
+    dom.shieldBonusField.toggleAttribute('hidden', !dom.shieldBonus.checked);
+  };
+
+  if (dom.damageBonus) {
+    dom.damageBonus.addEventListener('change', () => {
+      toggleDamageField();
+      performSimulation({ commitInputs: true });
+    });
+    toggleDamageField();
+  }
+
+  if (dom.shieldBonus) {
+    dom.shieldBonus.addEventListener('change', () => {
+      toggleShieldField();
+      if (!dom.shieldBonus.checked && dom.shieldBonusSelect) {
+        dom.shieldBonusSelect.value = '0';
+      }
+      performSimulation({ commitInputs: true });
+    });
+    toggleShieldField();
+  }
 }
 
 function setupSimulationAutoUpdate() {
@@ -919,6 +945,10 @@ function setupSimulationAutoUpdate() {
 
   if (dom.bonusSelect) {
     dom.bonusSelect.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
+  if (dom.shieldBonusSelect) {
+    dom.shieldBonusSelect.addEventListener('change', () => performSimulation({ commitInputs: true }));
   }
 
   if (dom.ownDown) {
@@ -1064,6 +1094,10 @@ function performSimulation({
   }
   if (dom.damageBonus.checked) {
     bonus += parseInt(dom.bonusSelect.value, 10) || 0;
+  }
+  if (dom.shieldBonus && dom.shieldBonus.checked) {
+    const shieldBonusValue = dom.shieldBonusSelect ? parseInt(dom.shieldBonusSelect.value, 10) : 0;
+    bonus += shieldBonusValue || 0;
   }
   if (dom.partnerDown.checked) {
     bonus += PARTNER_DOWN_AWAKENING_BONUS[costKey] || 0;
