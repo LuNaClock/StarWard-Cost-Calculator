@@ -244,18 +244,6 @@
                                         <label for="shieldBonusSelect">盾成功時のゲージ量加算</label>
                                         <select id="shieldBonusSelect">
                                             <option value="0">なし</option>
-                                            <option value="3">約3% (盾成功1回分)</option>
-                                            <option value="6">約6% (盾成功2回分)</option>
-                                            <option value="9">約9% (盾成功3回分)</option>
-                                        </select>
-                                    </div>
-                                    <label class="checkbox-field">
-                                        <input type="checkbox" id="shieldBonus"> 盾成功時のゲージ量加算
-                                    </label>
-                                    <div class="form-field" data-field="shield-bonus-select" hidden>
-                                        <label for="shieldBonusSelect">盾成功時のゲージ量加算</label>
-                                        <select id="shieldBonusSelect">
-                                            <option value="0">なし</option>
                                             <option value="3">約+3% (盾成功1回分)</option>
                                             <option value="6">約+6% (盾成功2回分)</option>
                                             <option value="9">約+9% (盾成功3回分)</option>
@@ -291,9 +279,9 @@
                                         <h4>再出撃直後のゲージ量（最低保証値）</h4>
                                         <p>「再出撃直後ボーナスを加算」にチェックを入れると、撃墜による覚醒ゲージ増加分が加わります。自機コストに応じてツール内で計測した最低保証値を適用しています。</p>
                                         <ul>
-                                            <li>コスト3.0 / 2.5: +約22%</li>
-                                            <li>コスト2.0: +約20%</li>
-                                            <li>コスト1.5: +約15%</li>
+                                            <li>コスト3.0 / 2.5: 約22%</li>
+                                            <li>コスト2.0: 約20%</li>
+                                            <li>コスト1.5: 約15%</li>
                                         </ul>
                                         <p class="info-details__tip">撃墜時に最大耐久値を超えるダメージを受けた分も加算されるため、実際の値とは誤差が生じる場合があります。</p>
                                     </div>
@@ -305,10 +293,10 @@
                                         <h4>相方撃墜考慮</h4>
                                         <p>「相方撃墜ボーナスを加算」にチェックを入れると、相方が撃墜されたときの覚醒ゲージ増加分が加わります。こちらも自機のコストごとに増加量が変わります。</p>
                                         <ul>
-                                            <li>コスト3.0: +約10%</li>
-                                            <li>コスト2.5: +約9%</li>
-                                            <li>コスト2.0: +約7%</li>
-                                            <li>コスト1.5: +約5%</li>
+                                            <li>コスト3.0: 約10%</li>
+                                            <li>コスト2.5: 約9%</li>
+                                            <li>コスト2.0: 約7%</li>
+                                            <li>コスト1.5: 約5%</li>
                                         </ul>
                                     </div>
                                     <p>最終的な覚醒ゲージが50%以上になると覚醒を使用できます。計算結果は常に0%から100%の範囲に収まります。</p>
@@ -776,20 +764,6 @@
                                         </div>
                                     </div>
 
-                                    <div class="simulation-input-group checkbox-group has-dropdown">
-                                        <i class="fas fa-shield-alt"></i>
-                                        <input type="checkbox" id="considerShieldSuccessCheckbox">
-                                        <label for="considerShieldSuccessCheckbox">盾成功時のゲージ量加算</label>
-                                        <div class="select-dropdown-container" id="shieldSuccessOptionsContainer">
-                                            <select id="shieldSuccessAwakeningBonusSelect" class="select-dropdown">
-                                                <option value="0">選択なし</option>
-                                                <option value="3">約+3% (盾成功約1回分)</option>
-                                                <option value="6">約+6% (盾成功約2回分)</option>
-                                                <option value="9">約+9% (盾成功約3回分)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
                                     <div class="simulation-input-group checkbox-group">
                                          <i class="fas fa-user-slash"></i>
                                          <input type="checkbox" id="considerPartnerDownCheckbox">
@@ -827,9 +801,9 @@
                                                 <h5><i class="fas fa-rocket"></i> 再出撃直後のゲージ量（最低保証値）</h5>
                                                 <p>「再出撃直後のゲージ量にする」にチェックを入れると、撃墜によって増加する覚醒ゲージが加算されます。このボーナスは自機のコストによって異なり、ツール内では計測した範囲での最低保証値を適用しています。撃墜された際に耐久値以上のダメージを受けるとその分も加算される為、実際には誤差が発生しやすいです。</p>
                                                 <ul>
-                                                    <li>コスト3.0 / 2.5: +約<span id="ownDownBonus30"></span>%</li>
-                                                    <li>コスト2.0: +約<span id="ownDownBonus20"></span>%</li>
-                                                    <li>コスト1.5: +約<span id="ownDownBonus15"></span>%</li>
+                                                    <li>コスト3.0 / 2.5: 約<span id="ownDownBonus30"></span>%</li>
+                                                    <li>コスト2.0: 約<span id="ownDownBonus20"></span>%</li>
+                                                    <li>コスト1.5: 約<span id="ownDownBonus15"></span>%</li>
                                                 </ul>
                                             </div>
 
@@ -842,10 +816,10 @@
                                                 <h5><i class="fas fa-user-slash"></i> 相方撃墜考慮</h5>
                                                 <p>「相方撃墜考慮」にチェックを入れると、相方が撃墜されたことによる覚醒ゲージ増加分が加算されます。このボーナスも自機のコストによって異なります。</p>
                                                 <ul>
-                                                    <li>コスト3.0: +約<span id="partnerDownBonus30"></span>%</li>
-                                                    <li>コスト2.5: +約<span id="partnerDownBonus25"></span>%</li>
-                                                    <li>コスト2.0: +約<span id="partnerDownBonus20"></span>%</li>
-                                                    <li>コスト1.5: +約<span id="partnerDownBonus15"></span>%</li>
+                                                    <li>コスト3.0: 約<span id="partnerDownBonus30"></span>%</li>
+                                                    <li>コスト2.5: 約<span id="partnerDownBonus25"></span>%</li>
+                                                    <li>コスト2.0: 約<span id="partnerDownBonus20"></span>%</li>
+                                                    <li>コスト1.5: 約<span id="partnerDownBonus15"></span>%</li>
                                                 </ul>
                                             </div>
 
