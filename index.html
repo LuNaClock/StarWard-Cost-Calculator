@@ -53,20 +53,9 @@
                 <section id="home" class="screen" role="tabpanel" aria-labelledby="tab-home">
                     <article class="panel hero-card">
                         <div class="hero-content">
-                            <div>
-                                <p class="panel-subtitle">進行中のシミュレーションがあります</p>
-                                <h1 class="panel-title">続きから再開しますか？</h1>
-                            </div>
                             <div class="hero-actions">
-                                <button class="cta-primary" data-nav-target="#sim">
-                                    <span>シミュレーターを開く</span>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                        <path d="M5 12h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
-                                        <path d="M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                </button>
                                 <button class="cta-secondary" data-nav-target="#cards" data-card-scope="recent">
-                                    最近使ったキャラを見る
+                                    最近シミュレーションしたキャラを確認する
                                 </button>
                             </div>
                         </div>
@@ -243,6 +232,19 @@
                                     <label class="checkbox-field">
                                         <input type="checkbox" id="partnerDown"> 相方撃墜ボーナスを加算
                                     </label>
+                                </div>
+                                <div class="inline-result" id="awakeningInlineResults" aria-live="polite" hidden>
+                                    <div class="inline-result__header">
+                                        <span class="inline-result__title">覚醒ゲージ予測</span>
+                                        <span class="inline-result__status" data-inline="awaken">--</span>
+                                    </div>
+                                    <div class="inline-result__body">
+                                        <div class="inline-result__item">
+                                            <span class="inline-result__label">現在の予測値</span>
+                                            <strong class="inline-result__value" data-inline="gauge">--%</strong>
+                                        </div>
+                                        <p class="inline-result__note">詳細は下部の結果セクションにも反映されます</p>
+                                    </div>
                                 </div>
                                 <details class="info-details" data-role="awakening-guide">
                                     <summary>覚醒ゲージ計算の詳細 (Web版と同じ説明)</summary>
