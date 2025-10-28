@@ -300,6 +300,8 @@ export function calculateAwakeningGauge(inputs) {
         considerOwnDown, // boolean
         considerDamageDealt, // boolean
         damageDealtBonus, // string representing a number
+        considerShieldSuccess, // boolean
+        shieldSuccessBonus, // string representing a number
         considerPartnerDown // boolean
     } = inputs;
 
@@ -333,12 +335,20 @@ export function calculateAwakeningGauge(inputs) {
         }
     }
 
+    let additionalGaugeFromShieldSuccess = 0;
+    if (considerShieldSuccess) {
+        const bonus = parseInt(shieldSuccessBonus, 10);
+        if (!isNaN(bonus) && bonus >= 0) {
+            additionalGaugeFromShieldSuccess = bonus;
+        }
+    }
+
     let additionalGaugeFromPartnerDown = 0;
     if (considerPartnerDown) {
         additionalGaugeFromPartnerDown = PARTNER_DOWN_AWAKENING_BONUS[charCost.toFixed(1)] || 0;
     }
 
-    let finalPredictedGauge = gaugeBeforeShotdown + damageBasedGaugeIncrease + costBonusOnOwnDown + additionalGaugeFromDamageDealt + additionalGaugeFromPartnerDown;
+    let finalPredictedGauge = gaugeBeforeShotdown + damageBasedGaugeIncrease + costBonusOnOwnDown + additionalGaugeFromDamageDealt + additionalGaugeFromShieldSuccess + additionalGaugeFromPartnerDown;
     finalPredictedGauge = Math.max(0, Math.min(100, Math.floor(finalPredictedGauge)));
 
     return {
