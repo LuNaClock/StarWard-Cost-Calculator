@@ -74,13 +74,13 @@
 .character-header {
     background-color: var(--card-background);
     color: var(--surface-contrast-color);
-    padding: 18px 30px; /* パディングを増やす */
+    padding: 14px 20px;
     font-weight: 700;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(255,255,255,0.2);
-    font-size: 1.2em;
+    font-size: 1.1em;
     font-family: 'Rajdhani', sans-serif; /* SFフォント適用 */
     position: relative; /* z-indexを有効にするため */
     z-index: 1; /* ::after より手前に来るように */
@@ -97,7 +97,7 @@
 }
 
 .character-body {
-    padding: 15px; /* パディングを調整 */
+    padding: 12px 16px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -111,11 +111,11 @@
 }
 
 .character-image {
-    width: 120px; /* さらに大きく */
-    height: 120px;
+    width: 96px;
+    height: 96px;
     background-color: #F0F5F9;
     border-radius: 50%;
-    margin: 0 auto 30px;
+    margin: 0 auto 24px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -148,7 +148,7 @@
     display: flex; /* Initially flex to show, JS will hide if img loads */
     justify-content: center;
     align-items: center;
-    font-size: 60px;
+    font-size: 48px;
     color: #7F8C8D;
     font-weight: 700;
     font-family: 'Orbitron', sans-serif;
@@ -158,12 +158,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    font-size: 1.1em;
-    padding: 10px 0;
+    margin-bottom: 12px;
+    font-size: 1.05em;
+    padding: 8px 0;
     border-bottom: 1px solid var(--light-grey-border);
     font-weight: 500;
-    gap: 16px;
+    gap: 12px;
 }
 
 .character-stat-label {

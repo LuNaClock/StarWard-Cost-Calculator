@@ -2,8 +2,8 @@
 
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* 幅を調整 */
-    gap: 30px; /* 間隔を調整 */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* 幅を調整 */
+    gap: 20px; /* 間隔を調整 */
     margin-top: 0px;
     width: 100%;
     max-width: 100%;
@@ -20,14 +20,14 @@
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
     .character-grid {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 25px;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 16px;
     }
 }
 
 @media (max-width: 480px) {
     .character-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 16px;
     }
-} 
+}

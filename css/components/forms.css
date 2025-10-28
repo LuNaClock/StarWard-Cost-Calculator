@@ -33,6 +33,7 @@
     border-radius: 30px;
     font-size: 1.1em;
     background-color: var(--card-background);
+    box-sizing: border-box;
     transition: all var(--transition-speed);
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     will-change: border-color, box-shadow, transform;
