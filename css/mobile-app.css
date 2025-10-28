@@ -484,6 +484,7 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-2);
+  z-index: 0;
 }
 
 .section-group::before {
@@ -496,12 +497,7 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   border: 1px solid rgba(37, 99, 235, 0.12);
   pointer-events: none;
   opacity: 0.35;
-  z-index: 0;
-}
-
-.section-group > * {
-  position: relative;
-  z-index: 1;
+  z-index: -1;
 }
 
 .section-toggle {

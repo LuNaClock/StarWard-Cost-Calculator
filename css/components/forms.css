@@ -262,6 +262,7 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0);
+    z-index: 350;
 }
 
 .character-picker-search {
