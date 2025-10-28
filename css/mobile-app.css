@@ -646,6 +646,14 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.mobile-app .form-field.is-picker-open {
+  z-index: 20;
+}
+
+.mobile-app .form-field.is-picker-open .character-picker-panel {
+  z-index: 40;
+}
+
 .form-field::before {
   content: "";
   position: absolute;

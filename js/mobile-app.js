@@ -366,6 +366,10 @@ function closePicker(type) {
     return;
   }
   refs.container.classList.remove('open');
+  const formField = refs.container.closest('.form-field');
+  if (formField) {
+    formField.classList.remove('is-picker-open');
+  }
   if (refs.toggle) {
     refs.toggle.setAttribute('aria-expanded', 'false');
   }
@@ -393,6 +397,10 @@ function openPicker(type) {
   }
   closeAllPickers(type);
   refs.container.classList.add('open');
+  const formField = refs.container.closest('.form-field');
+  if (formField) {
+    formField.classList.add('is-picker-open');
+  }
   if (refs.toggle) {
     refs.toggle.setAttribute('aria-expanded', 'true');
   }
