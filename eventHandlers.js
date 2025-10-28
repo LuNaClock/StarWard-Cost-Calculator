@@ -80,9 +80,7 @@ function handleAwakeningInputChange() {
 }
 
 function handleDamageDealtCheckboxChange(event) {
-    if (DOM.damageDealtOptionsContainer) {
-        DOM.damageDealtOptionsContainer.style.display = event.target.checked ? 'block' : 'none';
-    }
+    UI.toggleAwakeningBonusContainer(DOM.damageDealtOptionsContainer, event.target.checked);
     if (!event.target.checked && DOM.damageDealtAwakeningBonusSelect) {
         DOM.damageDealtAwakeningBonusSelect.value = "0";
     }
@@ -90,9 +88,7 @@ function handleDamageDealtCheckboxChange(event) {
 }
 
 function handleShieldSuccessCheckboxChange(event) {
-    if (DOM.shieldSuccessOptionsContainer) {
-        DOM.shieldSuccessOptionsContainer.style.display = event.target.checked ? 'block' : 'none';
-    }
+    UI.toggleAwakeningBonusContainer(DOM.shieldSuccessOptionsContainer, event.target.checked);
     if (!event.target.checked && DOM.shieldSuccessAwakeningBonusSelect) {
         DOM.shieldSuccessAwakeningBonusSelect.value = "0";
     }

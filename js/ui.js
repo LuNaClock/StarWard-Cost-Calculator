@@ -733,6 +733,20 @@ export function updateTeamCostDisplay(maxTeamCost) {
     }
 }
 
+export function toggleAwakeningBonusContainer(container, shouldShow) {
+    if (!container) return;
+
+    if (container.hasAttribute('data-field')) {
+        container.toggleAttribute('hidden', !shouldShow);
+    }
+
+    if (shouldShow) {
+        container.style.removeProperty('display');
+    } else {
+        container.style.display = 'none';
+    }
+}
+
 export function resetSimulationResultsUI() {
     gsap.to(DOM.simulationResultsDiv, {
         opacity: 0, y: 20, duration: 0.3, ease: "power2.in",
@@ -753,12 +767,12 @@ export function resetSimulationResultsUI() {
             if(DOM.considerOwnDownCheckbox) DOM.considerOwnDownCheckbox.checked = false;
             if (DOM.considerDamageDealtCheckbox) {
                 DOM.considerDamageDealtCheckbox.checked = false;
-                if(DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
+                toggleAwakeningBonusContainer(DOM.damageDealtOptionsContainer, false);
                 if(DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0";
             }
             if (DOM.considerShieldSuccessCheckbox) {
                 DOM.considerShieldSuccessCheckbox.checked = false;
-                if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'none';
+                toggleAwakeningBonusContainer(DOM.shieldSuccessOptionsContainer, false);
                 if (DOM.shieldSuccessAwakeningBonusSelect) DOM.shieldSuccessAwakeningBonusSelect.value = "0";
             }
             if (DOM.considerPartnerDownCheckbox) DOM.considerPartnerDownCheckbox.checked = false;

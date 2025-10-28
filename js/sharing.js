@@ -209,7 +209,7 @@ export function parseUrlAndRestoreState() {
     if (DOM.considerDamageDealtCheckbox) {
         DOM.considerDamageDealtCheckbox.checked = ddParam === '1';
         if (DOM.considerDamageDealtCheckbox.checked) {
-            if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'block';
+            UI.toggleAwakeningBonusContainer(DOM.damageDealtOptionsContainer, true);
             if (params.has('ddb') && DOM.damageDealtAwakeningBonusSelect) {
                 const ddbValue = params.get('ddb');
                 const isValidDdb = Array.from(DOM.damageDealtAwakeningBonusSelect.options).some(opt => opt.value === ddbValue);
@@ -221,7 +221,7 @@ export function parseUrlAndRestoreState() {
                 }
             }
         } else {
-            if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
+            UI.toggleAwakeningBonusContainer(DOM.damageDealtOptionsContainer, false);
             if (DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0";
         }
     }
@@ -230,7 +230,7 @@ export function parseUrlAndRestoreState() {
     if (DOM.considerShieldSuccessCheckbox) {
         DOM.considerShieldSuccessCheckbox.checked = sdParam === '1';
         if (DOM.considerShieldSuccessCheckbox.checked) {
-            if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'block';
+            UI.toggleAwakeningBonusContainer(DOM.shieldSuccessOptionsContainer, true);
             if (params.has('sdb') && DOM.shieldSuccessAwakeningBonusSelect) {
                 const sdbValue = params.get('sdb');
                 const isValidSdb = Array.from(DOM.shieldSuccessAwakeningBonusSelect.options).some(opt => opt.value === sdbValue);
@@ -242,7 +242,7 @@ export function parseUrlAndRestoreState() {
                 }
             }
         } else {
-            if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'none';
+            UI.toggleAwakeningBonusContainer(DOM.shieldSuccessOptionsContainer, false);
             if (DOM.shieldSuccessAwakeningBonusSelect) DOM.shieldSuccessAwakeningBonusSelect.value = "0";
         }
     }
