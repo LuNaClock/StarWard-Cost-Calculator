@@ -905,9 +905,15 @@
         </div>
 
         <div class="controls-container">
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="characterSearch" placeholder="キャラクター名で検索..." autocomplete="off">
+            <div class="search-container" role="search">
+                <label class="search-label" for="characterSearch">
+                    <span class="search-label-main"><i class="fas fa-compass" aria-hidden="true"></i> キャラクター検索</span>
+                    <span class="search-label-sub" id="characterSearchHelper">名前の一部を入力すると一覧を絞り込めます</span>
+                </label>
+                <div class="search-field">
+                    <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                    <input type="text" id="characterSearch" placeholder="キャラクター名で検索" aria-describedby="characterSearchHelper" autocomplete="off">
+                </div>
             </div>
 
             <div class="filter-container">
