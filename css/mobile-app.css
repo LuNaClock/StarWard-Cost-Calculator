@@ -496,12 +496,11 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   border: 1px solid rgba(37, 99, 235, 0.12);
   pointer-events: none;
   opacity: 0.35;
-  z-index: 0;
+  z-index: -1;
 }
 
 .section-group > * {
   position: relative;
-  z-index: 1;
 }
 
 .section-toggle {
