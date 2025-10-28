@@ -217,7 +217,7 @@
                                         <input id="preGauge" type="number" inputmode="numeric" min="0" max="100" value="0">
                                     </div>
                                     <div class="form-field">
-                                        <label for="damageTaken">想定被ダメージ</label>
+                                        <label for="damageTaken">想定被ダメージ量</label>
                                         <input id="damageTaken" type="number" inputmode="numeric" min="0" value="0">
                                         <p class="input-helper">※被撃墜直後のゲージ量を知りたい場合、
                                             「再出撃時のゲージ量加算」にチェックを入れてください。</p>
@@ -232,9 +232,21 @@
                                         <label for="bonusSelect">ズンダ時のゲージ量加算</label>
                                         <select id="bonusSelect">
                                             <option value="0">なし</option>
-                                            <option value="3">約+3% (ズンダ1回分)</option>
-                                            <option value="6">約+6% (ズンダ2回分)</option>
-                                            <option value="9">約+9% (ズンダ3回分)</option>
+                                            <option value="3">約3% (ズンダ1回分)</option>
+                                            <option value="6">約6% (ズンダ2回分)</option>
+                                            <option value="9">約9% (ズンダ3回分)</option>
+                                        </select>
+                                    </div>
+                                    <label class="checkbox-field">
+                                        <input type="checkbox" id="shieldBonus"> 盾成功時のゲージ量加算
+                                    </label>
+                                    <div class="form-field" data-field="shield-bonus-select" hidden>
+                                        <label for="shieldBonusSelect">盾成功時のゲージ量加算</label>
+                                        <select id="shieldBonusSelect">
+                                            <option value="0">なし</option>
+                                            <option value="3">約3% (盾成功1回分)</option>
+                                            <option value="6">約6% (盾成功2回分)</option>
+                                            <option value="9">約9% (盾成功3回分)</option>
                                         </select>
                                     </div>
                                     <label class="checkbox-field">
@@ -743,9 +755,23 @@
                                         <div class="select-dropdown-container" id="damageDealtOptionsContainer">
                                             <select id="damageDealtAwakeningBonusSelect" class="select-dropdown">
                                                 <option value="0">選択なし</option>
-                                                <option value="3">約+3% (ズンダ約1回分)</option>
-                                                <option value="6">約+6% (ズンダ約2回分)</option>
-                                                <option value="9">約+9% (ズンダ約3回分)</option>
+                                                <option value="3">約3% (ズンダ1回分)</option>
+                                                <option value="6">約6% (ズンダ2回分)</option>
+                                                <option value="9">約9% (ズンダ3回分)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="simulation-input-group checkbox-group has-dropdown">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <input type="checkbox" id="considerShieldSuccessCheckbox">
+                                        <label for="considerShieldSuccessCheckbox">盾成功時のゲージ量加算</label>
+                                        <div class="select-dropdown-container" id="shieldSuccessOptionsContainer">
+                                            <select id="shieldSuccessAwakeningBonusSelect" class="select-dropdown">
+                                                <option value="0">選択なし</option>
+                                                <option value="3">約3% (盾成功1回分)</option>
+                                                <option value="6">約6% (盾成功2回分)</option>
+                                                <option value="9">約9% (盾成功3回分)</option>
                                             </select>
                                         </div>
                                     </div>
@@ -831,7 +857,7 @@
                                                     <h4>注意点:</h4>
                                                     <ul>
                                                         <li>被ダメージによる覚醒ゲージ増加率の係数は、各キャラクターによって異なります。このツールでは誤差を最小限にする為、自身で計測した平均的な係数を使用しています。</li>
-                                                        <li>再出撃直後のゲージ量は基本的に自機コストに依存しますが、一部のキャラクター（例: スコーピオンは約+15%など）では異なる数値が設定されている場合があります。</li>
+                                                        <li>再出撃直後のゲージ量は基本的に自機コストに依存しますが、一部のキャラクター（例: スコーピオンは約15%など）では異なる数値が設定されている場合があります。</li>
                                                         <li>覚醒ゲージは小数点以下まで計算されていると推測されるため、ゲーム内の表示と多少の誤差が生じる可能性があります。</li>
                                                     </ul>
                                                     以上のことから、本ツールの計算結果はあくまで目安としてご利用ください。
