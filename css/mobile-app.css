@@ -684,6 +684,9 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   font-size: 16px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+#simPlayerPickerSearch {
+    padding: 12px 32px;
+}
 
 .mobile-app .character-picker-search {
   display: flex;
