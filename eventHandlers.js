@@ -89,6 +89,16 @@ function handleDamageDealtCheckboxChange(event) {
     processAwakeningGaugeCalculation();
 }
 
+function handleShieldSuccessCheckboxChange(event) {
+    if (DOM.shieldSuccessOptionsContainer) {
+        DOM.shieldSuccessOptionsContainer.style.display = event.target.checked ? 'block' : 'none';
+    }
+    if (!event.target.checked && DOM.shieldSuccessAwakeningBonusSelect) {
+        DOM.shieldSuccessAwakeningBonusSelect.value = "0";
+    }
+    processAwakeningGaugeCalculation();
+}
+
 function handleShareRedeployResult() {
     const playerChar = State.getSelectedPlayerChar();
     const partnerChar = State.getSelectedPartnerChar();
@@ -271,7 +281,9 @@ export function setupEventListeners() {
         DOM.beforeShotdownAwakeningGaugeInput,
         DOM.beforeShotdownHpInput,
         DOM.damageDealtAwakeningBonusSelect,
+        DOM.shieldSuccessAwakeningBonusSelect,
         DOM.considerOwnDownCheckbox,
+        DOM.considerShieldSuccessCheckbox,
         DOM.considerPartnerDownCheckbox
     ];
     awakeningInputs.forEach(el => {
@@ -281,6 +293,7 @@ export function setupEventListeners() {
         }
     });
     if (DOM.considerDamageDealtCheckbox) DOM.considerDamageDealtCheckbox.addEventListener('change', handleDamageDealtCheckboxChange);
+    if (DOM.considerShieldSuccessCheckbox) DOM.considerShieldSuccessCheckbox.addEventListener('change', handleShieldSuccessCheckboxChange);
 
     // Share Buttons
     if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.addEventListener('click', handleShareRedeployResult);

@@ -62,6 +62,13 @@ export function generateShareUrlForRedeploy() {
             params.set('ddb', DOM.damageDealtAwakeningBonusSelect.value);
         }
     }
+    if (DOM.considerShieldSuccessCheckbox && DOM.considerShieldSuccessCheckbox.checked) {
+        params.set('sd', '1');
+        hasAwakeningParams = true;
+        if (DOM.shieldSuccessAwakeningBonusSelect && DOM.shieldSuccessAwakeningBonusSelect.value !== "0") {
+            params.set('sdb', DOM.shieldSuccessAwakeningBonusSelect.value);
+        }
+    }
     if (DOM.considerPartnerDownCheckbox.checked) {
         params.set('pd', '1');
         hasAwakeningParams = true;
@@ -215,10 +222,31 @@ export function parseUrlAndRestoreState() {
             }
         } else {
             if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
-            if (DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0"; 
+            if (DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0";
         }
     }
-    
+
+    const sdParam = params.get('sd');
+    if (DOM.considerShieldSuccessCheckbox) {
+        DOM.considerShieldSuccessCheckbox.checked = sdParam === '1';
+        if (DOM.considerShieldSuccessCheckbox.checked) {
+            if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'block';
+            if (params.has('sdb') && DOM.shieldSuccessAwakeningBonusSelect) {
+                const sdbValue = params.get('sdb');
+                const isValidSdb = Array.from(DOM.shieldSuccessAwakeningBonusSelect.options).some(opt => opt.value === sdbValue);
+                if (isValidSdb) {
+                    DOM.shieldSuccessAwakeningBonusSelect.value = sdbValue;
+                } else {
+                    // console.warn("Invalid 'sdb' (shield success bonus) parameter from URL:", sdbValue);
+                    DOM.shieldSuccessAwakeningBonusSelect.value = "0";
+                }
+            }
+        } else {
+            if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'none';
+            if (DOM.shieldSuccessAwakeningBonusSelect) DOM.shieldSuccessAwakeningBonusSelect.value = "0";
+        }
+    }
+
     if (DOM.considerPartnerDownCheckbox) {
         DOM.considerPartnerDownCheckbox.checked = params.get('pd') === '1';
     }

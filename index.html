@@ -238,6 +238,18 @@
                                         </select>
                                     </div>
                                     <label class="checkbox-field">
+                                        <input type="checkbox" id="shieldSuccess"> 盾成功時のゲージ量加算
+                                    </label>
+                                    <div class="form-field" data-field="shield-select" hidden>
+                                        <label for="shieldSelect">盾成功時のゲージ量加算</label>
+                                        <select id="shieldSelect">
+                                            <option value="0">なし</option>
+                                            <option value="3">約+3% (盾成功1回分)</option>
+                                            <option value="6">約+6% (盾成功2回分)</option>
+                                            <option value="9">約+9% (盾成功3回分)</option>
+                                        </select>
+                                    </div>
+                                    <label class="checkbox-field">
                                         <input type="checkbox" id="partnerDown"> 相方被撃墜時のゲージ量加算
                                     </label>
                                 </div>
@@ -734,6 +746,20 @@
                                                 <option value="3">約+3% (ズンダ約1回分)</option>
                                                 <option value="6">約+6% (ズンダ約2回分)</option>
                                                 <option value="9">約+9% (ズンダ約3回分)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="simulation-input-group checkbox-group has-dropdown">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <input type="checkbox" id="considerShieldSuccessCheckbox">
+                                        <label for="considerShieldSuccessCheckbox">盾成功時のゲージ量加算</label>
+                                        <div class="select-dropdown-container" id="shieldSuccessOptionsContainer">
+                                            <select id="shieldSuccessAwakeningBonusSelect" class="select-dropdown">
+                                                <option value="0">選択なし</option>
+                                                <option value="3">約+3% (盾成功約1回分)</option>
+                                                <option value="6">約+6% (盾成功約2回分)</option>
+                                                <option value="9">約+9% (盾成功約3回分)</option>
                                             </select>
                                         </div>
                                     </div>
