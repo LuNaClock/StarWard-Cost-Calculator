@@ -25,6 +25,7 @@
   --space-3: 12px;
   --space-4: 16px;
   --space-5: 24px;
+  --picker-search-icon-offset: 44px;
   font-size: 16px;
   font-family: 'Noto Sans JP', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
@@ -729,7 +730,8 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
 }
 
 .mobile-app .character-picker-search-input {
-  padding-left: calc(var(--space-3) + 32px);
+  padding: var(--space-3);
+  padding-left: calc(var(--space-3) + var(--picker-search-icon-offset));
 }
 
 .mobile-app .character-picker-search-helper {
