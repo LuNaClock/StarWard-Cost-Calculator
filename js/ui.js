@@ -26,15 +26,20 @@ const characterPickerState = {
 function buildCharacterPickerRefs(type) {
     const container = document.querySelector(`.character-picker[data-role="${type}"]`);
     if (!container) return null;
+    const searchContainer = container.querySelector('.character-picker-search');
+    const helperText = container.querySelector('.character-picker-search-helper');
     return {
         container,
         toggle: container.querySelector('.character-picker-toggle'),
         panel: container.querySelector('.character-picker-panel'),
         searchInput: container.querySelector('.character-picker-search-input'),
+        searchContainer,
         costButtons: Array.from(container.querySelectorAll('.picker-filter-button')),
         list: container.querySelector('.character-picker-list'),
         selectedIcon: container.querySelector('.character-picker-selected-icon'),
-        selectedName: container.querySelector('.character-picker-selected-name')
+        selectedName: container.querySelector('.character-picker-selected-name'),
+        helperText,
+        defaultHelperText: (helperText?.dataset?.defaultText ?? helperText?.textContent ?? '').trim()
     };
 }
 
@@ -135,6 +140,38 @@ function filterCharactersForPicker(type) {
         });
 }
 
+function updateCharacterPickerSearchFeedback(type, filteredCount) {
+    const refs = characterPickerRefs[type];
+    if (!refs) return;
+
+    const state = characterPickerState[type];
+    const searchTerm = state?.searchTerm ?? '';
+    const trimmedTerm = searchTerm.trim();
+    const hasSearchTerm = trimmedTerm.length > 0;
+    const hasResults = filteredCount > 0;
+
+    const helper = refs.helperText;
+    if (helper) {
+        const defaultText = refs.defaultHelperText || helper.dataset?.defaultText || '';
+        if (!hasSearchTerm) {
+            helper.textContent = defaultText;
+        } else if (hasResults) {
+            helper.textContent = `該当するキャラ: ${filteredCount}件`;
+        } else {
+            helper.textContent = '該当するキャラが見つかりません';
+        }
+
+        helper.classList.toggle('has-results', hasSearchTerm && hasResults);
+        helper.classList.toggle('no-results', hasSearchTerm && !hasResults);
+    }
+
+    if (refs.searchContainer) {
+        refs.searchContainer.classList.toggle('is-filtering', hasSearchTerm);
+        refs.searchContainer.classList.toggle('has-results', hasSearchTerm && hasResults);
+        refs.searchContainer.classList.toggle('no-results', hasSearchTerm && !hasResults);
+    }
+}
+
 export function getCharacterPickerRefs(type) {
     return characterPickerRefs[type] || null;
 }
@@ -150,6 +187,7 @@ export function renderCharacterPicker(type) {
 
     const filtered = filterCharactersForPicker(type);
     characterPickerState[type].filteredIndices = filtered.map(item => item.index);
+    updateCharacterPickerSearchFeedback(type, filtered.length);
 
     refs.list.innerHTML = '';
 
