@@ -12,7 +12,7 @@ export const rawCharacterData = [
     { name: "ライン", hp: 2850, cost: 3, image: "assets/character_icons/rhine.webp" },
     { name: "エルフィン", hp: 2808, cost: 3, image: "assets/character_icons/elfin.webp" },
     { name: "秋雲", hp: 2886, cost: 3, image: "assets/character_icons/akigumo.webp" },
-    { name: "ベータ(ロンギヌス)", hp: 2888, cost: 3, image: "assets/character_icons/longinus.webp" },
+    { name: "ベータ(ロンギヌス)", hp: 2888, cost: 3, image: "assets/character_icons/beta_longinus.webp" },
     { name: "キャミィ", hp: 3000, cost: 3.0, image: "assets/character_icons/cammy.webp" },
     { name: "シャオリン", hp: 2772, cost: 2.5, image: "assets/character_icons/xiaoling.webp" },
     { name: "アリス", hp: 2772, cost: 2.5, image: "assets/character_icons/aliz.webp" },
@@ -31,6 +31,7 @@ export const rawCharacterData = [
     { name: "ノーラ", hp: 2772, cost: 2.5, image: "assets/character_icons/nora.webp" },
     { name: "サンダーボルト・OTOME", hp: 2500, cost: 2.5, image: "assets/character_icons/thunderbolt・OTOME.webp" },
     { name: "ランスロット", hp: 2655, cost: 2.5, image: "assets/character_icons/lancelot.webp" },
+    { name: "ガラハッド・暁", hp: 2655, cost: 2.5, image: "assets/character_icons/galahad_dawn.webp" },
     { name: "パラス", hp: 2448, cost: 2, image: "assets/character_icons/pallas.webp" },
     { name: "ヴァーチェ", hp: 2348, cost: 2, image: "assets/character_icons/virtue.webp" },
     { name: "ベータ", hp: 2340, cost: 2, image: "assets/character_icons/beta.webp" },
@@ -46,7 +47,7 @@ export const rawCharacterData = [
     { name: "スティレット", hp: 2340, cost: 2, image: "assets/character_icons/stylet.webp" },
     { name: "ボルゾイ", hp: 2210, cost: 2, image: "assets/character_icons/borzoi.webp" },
     { name: "ガラハッド", hp: 2340, cost: 2, image: "assets/character_icons/galahad.webp" },
-    { name: "キャッティ", hp: 2240, cost: 2, image: "assets/character_icons/catty.webp" },
+    { name: "キャッティ", hp: 2240, cost: 2, image: "assets/character_icons/kitty.webp" },
     { name: "ブリーカー", hp: 2340, cost: 2, image: "assets/character_icons/breaker.webp" },
     { name: "ローランド", hp: 2088, cost: 1.5, image: "assets/character_icons/roland.webp" },
     { name: "カタリナ", hp: 2080, cost: 1.5, image: "assets/character_icons/katerina.webp" },
@@ -64,7 +65,8 @@ export const kanjiNameReadings = {
     "稲": { hiragana: "いね", katakana: "イネ" },
     "咲迦": { hiragana: "えみか", katakana: "エミカ" },
     "鈴蘭": { hiragana: "すずらん", katakana: "スズラン" },
-    "秋雲": { hiragana: "あきぐも", katakana: "アキグモ" }
+    "秋雲": { hiragana: "あきぐも", katakana: "アキグモ" },
+    "ガラハッド・暁": { hiragana: "がらはっど・あかつき", katakana: "ガラハッド・アカツキ" }
 };
 
 export const costRemainingMap = {
