@@ -134,8 +134,12 @@
                                             </button>
                                             <div class="character-picker-panel" data-picker-panel="player" role="dialog" aria-modal="false" hidden>
                                                 <div class="character-picker-search">
-                                                    <i class="fas fa-search" aria-hidden="true"></i>
-                                                    <input type="text" class="character-picker-search-input" data-picker-search="player" placeholder="キャラ名で検索..." aria-label="自機候補を検索" autocomplete="off">
+                                                    <label class="character-picker-search-label" for="mobilePlayerCharacterSearch">キャラ名で検索</label>
+                                                    <div class="character-picker-search-field">
+                                                        <i class="fas fa-search" aria-hidden="true"></i>
+                                                        <input id="mobilePlayerCharacterSearch" type="text" class="character-picker-search-input" data-picker-search="player" placeholder="キャラクター名や一部を入力..." aria-label="自機候補を検索" autocomplete="off">
+                                                    </div>
+                                                    <p class="character-picker-search-helper">例: グリフォン / キャサリン など</p>
                                                 </div>
                                                 <div class="character-picker-cost-filter" role="group" aria-label="コスト帯で絞り込む">
                                                     <button type="button" class="picker-filter-button active" data-picker-cost="all" aria-pressed="true">すべて</button>
@@ -166,8 +170,12 @@
                                             </button>
                                             <div class="character-picker-panel" data-picker-panel="partner" role="dialog" aria-modal="false" hidden>
                                                 <div class="character-picker-search">
-                                                    <i class="fas fa-search" aria-hidden="true"></i>
-                                                    <input type="text" class="character-picker-search-input" data-picker-search="partner" placeholder="キャラ名で検索..." aria-label="相方候補を検索" autocomplete="off">
+                                                    <label class="character-picker-search-label" for="mobilePartnerCharacterSearch">キャラ名で検索</label>
+                                                    <div class="character-picker-search-field">
+                                                        <i class="fas fa-search" aria-hidden="true"></i>
+                                                        <input id="mobilePartnerCharacterSearch" type="text" class="character-picker-search-input" data-picker-search="partner" placeholder="キャラクター名や一部を入力..." aria-label="相方候補を検索" autocomplete="off">
+                                                    </div>
+                                                    <p class="character-picker-search-helper">お気に入りの機体名で素早く絞り込めます</p>
                                                 </div>
                                                 <div class="character-picker-cost-filter" role="group" aria-label="コスト帯で絞り込む">
                                                     <button type="button" class="picker-filter-button active" data-picker-cost="all" aria-pressed="true">すべて</button>
@@ -598,8 +606,12 @@
                                     </button>
                                     <div class="character-picker-panel" role="dialog" aria-modal="false">
                                         <div class="character-picker-search">
-                                            <i class="fas fa-search"></i>
-                                            <input type="text" class="character-picker-search-input" placeholder="キャラ名で検索..." aria-label="自機候補を検索" autocomplete="off">
+                                            <label class="character-picker-search-label" for="desktopPlayerCharacterSearch">キャラ名で検索</label>
+                                            <div class="character-picker-search-field">
+                                                <i class="fas fa-search"></i>
+                                                <input id="desktopPlayerCharacterSearch" type="text" class="character-picker-search-input" placeholder="キャラクター名や一部を入力..." aria-label="自機候補を検索" autocomplete="off">
+                                            </div>
+                                            <p class="character-picker-search-helper">候補が多い場合はコストフィルターも併用しましょう</p>
                                         </div>
                                         <div class="character-picker-cost-filter" role="group" aria-label="自機のコストで絞り込む">
                                             <button type="button" class="picker-filter-button active" data-cost="all">全て</button>
@@ -628,8 +640,12 @@
                                     </button>
                                     <div class="character-picker-panel" role="dialog" aria-modal="false">
                                         <div class="character-picker-search">
-                                            <i class="fas fa-search"></i>
-                                            <input type="text" class="character-picker-search-input" placeholder="キャラ名で検索..." aria-label="相方候補を検索" autocomplete="off">
+                                            <label class="character-picker-search-label" for="desktopPartnerCharacterSearch">キャラ名で検索</label>
+                                            <div class="character-picker-search-field">
+                                                <i class="fas fa-search"></i>
+                                                <input id="desktopPartnerCharacterSearch" type="text" class="character-picker-search-input" placeholder="キャラクター名や一部を入力..." aria-label="相方候補を検索" autocomplete="off">
+                                            </div>
+                                            <p class="character-picker-search-helper">名前の一部でも検索できます</p>
                                         </div>
                                         <div class="character-picker-cost-filter" role="group" aria-label="相方のコストで絞り込む">
                                             <button type="button" class="picker-filter-button active" data-cost="all">全て</button>

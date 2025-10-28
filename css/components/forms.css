@@ -265,36 +265,63 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 }
 
 .character-picker-search {
-    position: relative;
-    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
 }
 
-.character-picker-search i {
+.character-picker-search-label {
+    font-size: 0.82em;
+    font-weight: 700;
+    color: var(--primary-light);
+    letter-spacing: 0.04em;
+}
+
+.character-picker-search-field {
+    position: relative;
+}
+
+.character-picker-search-field i {
     position: absolute;
-    left: 16px;
+    left: 18px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--medium-grey);
+    color: var(--primary-light);
     font-size: 0.95em;
+    opacity: 0.75;
 }
 
 .character-picker-search-input {
     width: 100%;
-    padding: 10px 16px 10px 44px;
+    padding: 12px 18px 12px 52px;
     box-sizing: border-box;
-    border-radius: 999px;
-    border: 1px solid var(--light-grey-border);
-    background: rgba(0, 191, 255, 0.04);
+    border-radius: 14px;
+    border: 2px solid rgba(0, 191, 255, 0.45);
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.18), rgba(0, 191, 255, 0.05));
     color: var(--text-color);
-    font-size: 0.95em;
+    font-size: 0.98em;
+    font-weight: 600;
+    letter-spacing: 0.01em;
     transition: all var(--transition-speed);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.character-picker-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.65);
 }
 
 .character-picker-search-input:focus {
     outline: none;
-    border-color: var(--primary-light);
-    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.15);
-    background: rgba(0, 191, 255, 0.08);
+    border-color: var(--surface-contrast-color);
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.22), 0 14px 32px rgba(0, 0, 0, 0.24);
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.22), rgba(0, 191, 255, 0.08));
+}
+
+.character-picker-search-helper {
+    margin: 0;
+    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .character-picker-cost-filter {
