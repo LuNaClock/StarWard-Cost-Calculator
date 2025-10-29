@@ -107,12 +107,43 @@ function handleCharacterCardClick(event) {
     }
 }
 
+function autoSimulateRedeploy(preferredType = null) {
+    const playerChar = State.getSelectedPlayerChar();
+    const partnerChar = State.getSelectedPartnerChar();
+
+    if (!playerChar || !partnerChar) {
+        UI.resetSimulationResultsUI();
+        return;
+    }
+
+    let targetType = preferredType && (preferredType === 'player' || preferredType === 'partner')
+        ? preferredType
+        : UI.getActiveRedeployTargetType();
+
+    if (targetType !== 'player' && targetType !== 'partner') {
+        targetType = 'player';
+    }
+
+    UI.updateRedeployTargetButtons(targetType);
+    processSimulateRedeploy(targetType);
+}
+
+function handleRedeployTargetToggleClick(event) {
+    const button = event.target.closest('[data-redeploy-target]');
+    if (!button) return;
+
+    const targetType = button.dataset.redeployTarget;
+    if (targetType !== 'player' && targetType !== 'partner') return;
+
+    UI.updateRedeployTargetButtons(targetType);
+    processSimulateRedeploy(targetType);
+}
+
 function handlePlayerCharSelectChange(event) {
     State.setSelectedPlayerChar(event.target.value);
     UI.syncCharacterPickerSelection('player');
     UI.updateTeamCostDisplay(MAX_TEAM_COST);
     UI.updateSelectedCharactersDisplay();
-    UI.resetSimulationResultsUI();
     processTeamHpCombinations();
     autoUpdateRedeploySimulation();
 }
@@ -122,7 +153,6 @@ function handlePartnerCharSelectChange(event) {
     UI.syncCharacterPickerSelection('partner');
     UI.updateTeamCostDisplay(MAX_TEAM_COST);
     UI.updateSelectedCharactersDisplay();
-    UI.resetSimulationResultsUI();
     processTeamHpCombinations();
     autoUpdateRedeploySimulation();
 }
@@ -163,6 +193,11 @@ function handleShieldSuccessCheckboxChange(event) {
         DOM.shieldSuccessAwakeningBonusSelect.value = "0";
     }
     processAwakeningGaugeCalculation();
+}
+
+function handleRemainingTeamCostChange() {
+    const activeTarget = UI.getActiveRedeployTargetType();
+    autoSimulateRedeploy(activeTarget);
 }
 
 function handleShareRedeployResult() {

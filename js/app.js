@@ -76,6 +76,10 @@ export function processSimulateRedeploy(charType) {
     State.setRedeployTarget(charType);
     UI.setRedeployTargetSelection(charType);
 
+    if (charType === 'player' || charType === 'partner') {
+        UI.updateRedeployTargetButtons(charType);
+    }
+
     const selectedPlayer = State.getSelectedPlayerChar();
     const selectedPartner = State.getSelectedPartnerChar();
 
