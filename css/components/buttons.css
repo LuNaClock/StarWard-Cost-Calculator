@@ -234,25 +234,6 @@ body[data-theme="dark"] .theme-toggle__button[aria-pressed="true"] {
     transform: translateY(-2px);
 }
 
-body[data-theme="dark"] .filter-chip {
-    background: rgba(15, 23, 42, 0.55);
-    border-color: rgba(59, 130, 246, 0.35);
-    box-shadow: 0 8px 18px rgba(2, 6, 23, 0.5);
-}
-
-body[data-theme="dark"] .filter-chip:hover,
-body[data-theme="dark"] .filter-chip:focus-visible {
-    border-color: rgba(59, 130, 246, 0.6);
-    box-shadow: 0 12px 28px rgba(14, 116, 233, 0.35);
-}
-
-body[data-theme="dark"] .filter-chip[aria-pressed="true"] {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.92), rgba(56, 189, 248, 0.85));
-    border-color: rgba(56, 189, 248, 0.9);
-    color: #0b1120;
-    box-shadow: 0 14px 30px rgba(14, 116, 233, 0.45);
-}
-
 .simulation-button { /* This is a base class for simulation and share buttons */
     background-color: var(--primary-light);
     color: var(--surface-contrast-color);
