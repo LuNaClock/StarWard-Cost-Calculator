@@ -1135,8 +1135,12 @@ function performSimulation({
 
   dom.resultHp.textContent = `${calculatedHp.toLocaleString()} HP`;
   dom.resultCost.textContent = `${allocatedCost.toFixed(1)} コスト`;
-  dom.resultGauge.textContent = `${finalGauge}%`;
-  dom.resultAwaken.textContent = awakenText;
+  if (dom.resultGauge) {
+    dom.resultGauge.textContent = `${finalGauge}%`;
+  }
+  if (dom.resultAwaken) {
+    dom.resultAwaken.textContent = awakenText;
+  }
   dom.resultHpBar.style.width = `${Math.min(100, Math.round((calculatedHp / targetChar.hp) * 100))}%`;
   dom.simResults.hidden = false;
 
