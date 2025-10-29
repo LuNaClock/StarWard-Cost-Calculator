@@ -21,10 +21,6 @@
         letter-spacing: 2px;
     }
 
-    .usage-guide-container h2, .simulation-container h2 {
-        font-size: 1.5em;
-    }
-
     .character-header {
         padding: 15px 20px;
     }
@@ -89,10 +85,6 @@
     h1 {
         font-size: 2em;
         letter-spacing: 1px;
-    }
-
-    .usage-guide-container h2, .simulation-container h2 {
-        font-size: 1.3em;
     }
 
     .character-grid {

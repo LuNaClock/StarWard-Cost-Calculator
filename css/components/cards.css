@@ -412,43 +412,6 @@ body[data-theme="dark"] .hp-percentage-display {
     font-size: 1.1em;
 }
 
-/* ガイドコンテナ */
-.usage-guide-container {
-    background-color: var(--card-background);
-    border-radius: 15px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: var(--soft-shadow);
-    border: 2px solid rgba(0, 191, 255, 0.1);
-    transition: all var(--transition-speed);
-    will-change: transform, box-shadow;
-}
-
-.usage-guide-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-    border-color: var(--primary-light);
-}
-
-.usage-guide-container h2 {
-    color: var(--primary-dark);
-    font-size: 1.8em;
-    font-weight: 700;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: 'Rajdhani', sans-serif;
-}
-
-.usage-guide-container .guide-intro {
-    color: var(--medium-grey);
-    font-size: 1.1em;
-    line-height: 1.8;
-    margin-bottom: 25px;
-    max-width: 70ch;
-}
-
 /* シミュレーションコンテナ */
 .simulation-container {
     background-color: var(--card-background);

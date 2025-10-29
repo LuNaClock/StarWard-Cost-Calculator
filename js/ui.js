@@ -369,14 +369,14 @@ function createTextElement(tag, className, textContent) {
     return element;
 }
 
-export function generateCharacterCards(charactersToDisplay) {
+export function generateCharacterCards(charactersToDisplay, { emptyMessage = '表示できるキャラクターがいません' } = {}) {
     showLoading();
     gsap.to(Array.from(DOM.characterGrid.children), {
         opacity: 0, scale: 0.8, y: 50, duration: 0.2, stagger: 0.01, ease: "power2.in", overwrite: true,
         onComplete: () => {
             DOM.characterGrid.innerHTML = ''; // Clear previous cards
             if (charactersToDisplay.length === 0) {
-                const noResultsMessage = createTextElement('p', 'no-results-message', 'ERROR: NO DATA FOUND');
+                const noResultsMessage = createTextElement('p', 'no-results-message', emptyMessage);
                 DOM.characterGrid.appendChild(noResultsMessage);
                 gsap.fromTo(noResultsMessage, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out", delay: 0.1 });
                 hideLoading();
@@ -479,6 +479,281 @@ export function generateCharacterCards(charactersToDisplay) {
             hideLoading();
         }
     });
+}
+
+function getHistoryEntryKey(entry) {
+    if (!entry || typeof entry !== 'object') return '';
+    if (entry.characterId !== null && entry.characterId !== undefined) {
+        return `id:${entry.characterId}`;
+    }
+    if (entry.name) {
+        return `name:${entry.name}`;
+    }
+    return `misc:${entry.role ?? ''}:${entry.timestamp ?? ''}`;
+}
+
+function formatHpValue(value) {
+    if (!Number.isFinite(value)) {
+        return '--';
+    }
+    return `${Math.round(value).toLocaleString()} HP`;
+}
+
+function formatCostValue(value) {
+    if (!Number.isFinite(value)) {
+        return '--';
+    }
+    return value.toFixed(1);
+}
+
+function createAvatarThumbnail(name, image, className) {
+    const wrapper = document.createElement('div');
+    wrapper.className = className;
+    if (image) {
+        const img = document.createElement('img');
+        img.src = image;
+        img.alt = name ? `${name}のアイコン` : 'キャラクターアイコン';
+        img.loading = 'lazy';
+        wrapper.appendChild(img);
+    } else {
+        const fallback = document.createElement('span');
+        fallback.textContent = name ? name.charAt(0) : '?';
+        wrapper.appendChild(fallback);
+    }
+    return wrapper;
+}
+
+function resolveHistoryCharacterInfo(entry, role) {
+    const characters = getCharacters();
+    const idKey = role === 'partner' ? 'partnerId' : 'playerId';
+    const storedId = entry[idKey];
+    let matched = null;
+
+    if (typeof storedId === 'number') {
+        matched = characters.find((char) => char.id === storedId) || null;
+    }
+
+    const nameCandidates = [];
+    const nameKey = role === 'partner' ? 'partnerName' : 'playerName';
+    if (!matched && typeof entry[nameKey] === 'string') {
+        nameCandidates.push(entry[nameKey]);
+    }
+    if (!matched && entry.role === role && typeof entry.name === 'string') {
+        nameCandidates.push(entry.name);
+    }
+
+    if (!matched) {
+        matched = characters.find((char) => nameCandidates.includes(char.name)) || null;
+    }
+
+    return {
+        id: matched?.id ?? null,
+        name: matched?.name || nameCandidates.find((candidate) => typeof candidate === 'string' && candidate.trim()) || '--',
+        cost: matched?.cost ?? null,
+        image: matched?.image || null
+    };
+}
+
+function createHistoryCharacterBadge(label, info, isActive) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'history-character';
+    if (isActive) {
+        wrapper.classList.add('history-character--active');
+    }
+
+    const thumb = createAvatarThumbnail(info.name, info.image, 'history-character__thumb');
+    const textWrapper = document.createElement('div');
+    textWrapper.className = 'history-character__text';
+
+    const roleLabel = document.createElement('span');
+    roleLabel.className = 'history-character__role';
+    roleLabel.textContent = label;
+
+    const nameLabel = document.createElement('span');
+    nameLabel.className = 'history-character__name';
+    nameLabel.textContent = info.name || '--';
+
+    textWrapper.append(roleLabel, nameLabel);
+
+    if (isActive) {
+        const activeTag = document.createElement('span');
+        activeTag.className = 'history-character__result';
+        activeTag.textContent = '再出撃対象';
+        textWrapper.appendChild(activeTag);
+    }
+
+    wrapper.append(thumb, textWrapper);
+    return wrapper;
+}
+
+function createHistoryEntryElement(entry, index) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'history-entry';
+    button.dataset.historyIndex = index.toString();
+
+    const content = document.createElement('div');
+    content.className = 'history-entry__content';
+
+    const charactersRow = document.createElement('div');
+    charactersRow.className = 'history-entry__characters';
+
+    const playerInfo = resolveHistoryCharacterInfo(entry, 'player');
+    const partnerInfo = resolveHistoryCharacterInfo(entry, 'partner');
+
+    charactersRow.append(
+        createHistoryCharacterBadge('自機', playerInfo, entry.role !== 'partner'),
+        createHistoryCharacterBadge('相方', partnerInfo, entry.role === 'partner')
+    );
+
+    const details = document.createElement('div');
+    details.className = 'history-entry__details';
+
+    const hpValue = document.createElement('span');
+    hpValue.className = 'history-entry__value';
+    hpValue.textContent = formatHpValue(entry.hp);
+
+    const costValue = document.createElement('span');
+    costValue.textContent = `残コスト ${formatCostValue(entry.remainingCost ?? entry.cost)}`;
+
+    details.append(hpValue, costValue);
+
+    content.append(charactersRow, details);
+
+    const cta = document.createElement('span');
+    cta.className = 'history-entry__cta';
+    cta.innerHTML = '<i class="fas fa-redo"></i>';
+
+    button.append(content, cta);
+
+    const roleLabel = entry.role === 'partner' ? '相方' : '自機';
+    button.setAttribute('aria-label', `${roleLabel}の再出撃結果を再適用 (${formatHpValue(entry.hp)}, 残コスト ${formatCostValue(entry.remainingCost ?? entry.cost)})`);
+
+    return button;
+}
+
+function createRecentCharacterCard(entry, index) {
+    const targetRole = entry.role === 'partner' ? 'partner' : 'player';
+    const roleLabel = targetRole === 'partner' ? '相方' : '自機';
+    const info = resolveHistoryCharacterInfo(entry, targetRole);
+
+    const card = document.createElement('article');
+    card.className = 'recent-character-card';
+    card.dataset.historyIndex = index.toString();
+
+    const thumb = createAvatarThumbnail(info.name, info.image, 'recent-character-card__thumb');
+    const body = document.createElement('div');
+    body.className = 'recent-character-card__body';
+
+    const name = document.createElement('h4');
+    name.className = 'recent-character-card__name';
+    name.textContent = info.name || '--';
+
+    const meta = document.createElement('p');
+    meta.className = 'recent-character-card__meta';
+    const segments = [];
+    if (Number.isFinite(info.cost)) {
+        segments.push(`コスト ${info.cost.toFixed(1)}`);
+    }
+    segments.push(`${roleLabel}としてシミュレーション`);
+    meta.textContent = segments.join(' / ');
+
+    const statRow = document.createElement('div');
+    statRow.className = 'recent-character-card__stat';
+    const statLabel = document.createElement('span');
+    statLabel.textContent = '直近の再出撃体力';
+    const statValue = document.createElement('strong');
+    statValue.textContent = formatHpValue(entry.hp);
+    statRow.append(statLabel, statValue);
+
+    const actions = document.createElement('div');
+    actions.className = 'recent-character-card__actions';
+    const applyButton = document.createElement('button');
+    applyButton.type = 'button';
+    applyButton.className = 'recent-character-card__apply';
+    applyButton.dataset.historyIndex = index.toString();
+    applyButton.textContent = 'この条件を再適用';
+    actions.appendChild(applyButton);
+
+    body.append(name, meta, statRow, actions);
+    card.append(thumb, body);
+
+    return card;
+}
+
+export function renderSimulationHistory(historyEntries = []) {
+    if (!DOM.historyList) {
+        return;
+    }
+
+    DOM.historyList.innerHTML = '';
+
+    if (!Array.isArray(historyEntries) || historyEntries.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'history-empty';
+        empty.textContent = 'まだ計算履歴がありません';
+        DOM.historyList.appendChild(empty);
+        if (DOM.clearHistoryButton) {
+            DOM.clearHistoryButton.disabled = true;
+        }
+        return;
+    }
+
+    historyEntries.forEach((entry, index) => {
+        const item = createHistoryEntryElement(entry, index);
+        DOM.historyList.appendChild(item);
+    });
+
+    if (DOM.clearHistoryButton) {
+        DOM.clearHistoryButton.disabled = false;
+    }
+}
+
+export function renderRecentCharacterCards(historyEntries = []) {
+    if (!DOM.recentCharactersGrid) {
+        return;
+    }
+
+    DOM.recentCharactersGrid.innerHTML = '';
+
+    if (!Array.isArray(historyEntries) || historyEntries.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'history-empty';
+        empty.textContent = 'まだ計算履歴がありません';
+        DOM.recentCharactersGrid.appendChild(empty);
+        return;
+    }
+
+    const seen = new Set();
+    historyEntries.forEach((entry, index) => {
+        const key = getHistoryEntryKey(entry);
+        if (seen.has(key)) {
+            return;
+        }
+        seen.add(key);
+        const card = createRecentCharacterCard(entry, index);
+        DOM.recentCharactersGrid.appendChild(card);
+    });
+
+    if (!seen.size) {
+        const empty = document.createElement('p');
+        empty.className = 'history-empty';
+        empty.textContent = '最近のシミュレーションに該当するキャラがありません';
+        DOM.recentCharactersGrid.appendChild(empty);
+    }
+}
+
+export function updateRecentCardScopeControls({ hasHistory, isRecentScope }) {
+    if (DOM.showRecentCardsButton) {
+        DOM.showRecentCardsButton.disabled = !hasHistory;
+        DOM.showRecentCardsButton.setAttribute('aria-pressed', String(hasHistory && isRecentScope));
+    }
+    if (DOM.resetRecentFilterButton) {
+        DOM.resetRecentFilterButton.toggleAttribute('hidden', !isRecentScope);
+    }
+    if (DOM.clearHistoryButton) {
+        DOM.clearHistoryButton.disabled = !hasHistory;
+    }
 }
 
 export function animateHpDisplayOnCard(card, targetHp) {

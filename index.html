@@ -551,79 +551,44 @@
     <main>
         <h1 class="title-sf-effect">星の翼 総合耐久・覚醒シミュレーター</h1>
 
-        <div class="usage-guide-container">
-            <h2><i class="fas fa-question-circle"></i> ツールの使い方ガイド</h2>
-            <p class="guide-intro">このツールは、コストオーバーが起こって再出撃した際の体力の計算に加え、チームの総体力予測、覚醒ゲージの予測が可能です。この使い方ガイド自体はクリックで内容を開閉できます。主要な機能である「再出撃シミュレーション」と「チーム合計体力予測」も開閉が出来、初期状態では開いています。以下のポイントをチェックして、本ツールを使いこなそう！</p>
-
-            <div class="accordion">
-                <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-search-dollar"></i> 1. 🚀 目当てのキャラ発見＆ピンチ度チェック！</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-content">
-                        <p>ページ下部の検索・フィルターで、お目当てのキャラを瞬時に発見！🔍 表示されたキャラカードでHP・コストをチェックし、再出撃時の体力も一目でわかります。💪</p>
-                        <p>カード内の「再出撃時体力」をクリックするとHPバーが連動！残りHPのヤバさが視覚的に分かります。📉</p>
-                        <details class="guide-details">
-                            <summary>💡 詳細な操作方法と計算式を見る</summary>
-                            <p><strong>検索・フィルタリング:</strong> ページ下部にある「キャラクター名検索」ボックス、コスト別「フィルター」ボタン、表示順「並び替え」ボタンで、キャラクターグリッドの表示をカスタマイズできます。</p>
-                            <p><strong>個別体力の確認:</strong> 各キャラクターカードには、基本情報（HP、コスト）と、コストオーバー時の「再出撃時体力」が表示されています。</p>
-                            <p class="formula"><strong>計算式:</strong> 再出撃時体力 = 本来の体力 × (残りコスト ÷ キャラクターのコスト)</p>
-                            <p><strong>HPバーリセット:</strong> HPバー表示を100%に戻したい場合は、キャラクターカードの「本来の体力」の数値部分をクリックしてください。</p>
-                        </details>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-cogs"></i> 2. 🔥 最強タッグで再出撃＆覚醒を狙え！</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-content">
-                        <p>ページ中ほどの「再出撃シミュレーション」で、自機＆相方を選んでチームを編成！🤝 残りコストを指定しボタンを押せば、再出撃後のHPをズバリ予測！✨</p>
-                        <p>さらに「覚醒ゲージ予測」で、撃墜後の覚醒チャンスも逃さない！⚡️ 計算詳細は同セクション内で確認可能。結果はXやURLでシェアしよう！<i class="fas fa-share-alt"></i></p>
-                        <details class="guide-details">
-                            <summary>💡 シミュレーションと予測の詳細手順を見る</summary>
-                            <p><strong>チーム再出撃シミュレーション手順:</strong></p>
-                            <ul>
-                                <li><strong>自機と相方を選択:</strong> ドロップダウンからチームメンバーを選択。選択機体はミニカード表示、チーム合計コストも自動計算されます。</li>
-                                <li><strong>指定キャラ撃墜後の残りコスト:</strong> チームの残り総力コストを選択します。</li>
-                                <li><strong>シミュレーション結果確認:</strong> 自機・相方を選択すると結果が即時に反映されます。表示したい再出撃対象は切り替えボタンで変更できます。</li>
-                            </ul>
-                            <p><strong>覚醒ゲージ予測手順:</strong></p>
-                            <ul>
-                                <li>「再出撃シミュレーション」結果表示エリアの下にある「覚醒ゲージ予測」セクションで行います。</li>
-                                <li><strong>撃墜直前の状況入力:</strong> 「覚醒が溜まるか調べたい覚醒ゲージ」と「覚醒が溜まるか調べたい体力」（残りHP）を入力します。</li>
-                                <li><strong>各種ボーナス考慮:</strong> 「再出撃直後のゲージ量にする」「与ダメージ考慮」「相方撃墜考慮」のチェックボックスとドロップダウンで条件を設定。</li>
-                                <li><strong>結果確認:</strong> 「予測覚醒ゲージ」と「覚醒使用可否」が表示されます。「覚醒ゲージ計算の詳細」では計算の内訳も確認可能です。</li>
-                            </ul>
-                        </details>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <button class="accordion-header" aria-expanded="false">
-                        <span><i class="fas fa-users"></i> 3. 🛡️ チームの粘り強さ、徹底解剖！</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </button>
-                    <div class="accordion-content">
-                        <p>「再出撃シミュレーション」でチームを組むと、その下の「チーム合計体力予測」セクション（初期表示で展開）が自動更新！📈 様々な撃墜シナリオでのチーム総体力を丸裸にします。</p>
-                        <p>理想的な落ち方から最悪パターンまで、チームの限界を把握！💪💔 詳細な撃墜順序も確認可能。結果はXやURLでシェア！<i class="fas fa-share-alt"></i></p>
-                        <details class="guide-details">
-                            <summary>💡 予測シナリオと詳細確認方法を見る</summary>
-                            <p><strong>予測シナリオの概要:</strong></p>
-                            <ul>
-                                <li><strong>チーム合計体力(最高):</strong> 高コスト機から落ちる大よそ理想的なケース。</li>
-                                <li><strong>チーム合計体力(妥協):</strong> 低コスト機から落ちるケース。</li>
-                                <li><strong>チーム合計体力(爆弾):</strong> 低コスト機のみが連続撃墜されるケース。</li>
-                                <li><strong>チーム合計体力(最低):</strong> 一方の機体のみが連続撃墜される最も非効率なケース。</li>
-                            </ul>
-                            <p><strong>詳細確認:</strong> 各シナリオの下にある「撃墜順序と獲得HP」と書かれたアコーディオンヘッダー（▼マークの部分）をクリックすると、そのシナリオにおける詳細な撃墜の進行と、各段階での獲得HP、残りチームコストの内訳を確認できます。</p>
-                        </details>
-                    </div>
-                </div>
+        <section class="history-overview" aria-labelledby="historyOverviewHeading">
+            <div class="history-overview__intro">
+                <h2 class="history-overview__title" id="historyOverviewHeading">最近のシミュレーション</h2>
+                <p class="history-overview__lead">直近で試した機体や条件を振り返り、ワンクリックで再適用できます。</p>
             </div>
-        </div>
+            <div class="history-overview__grid">
+                <article class="history-card history-card--recent" aria-labelledby="recentCharactersHeading">
+                    <div class="history-card__header">
+                        <h3 class="history-card__title" id="recentCharactersHeading">最近シミュレーションしたキャラ</h3>
+                        <div class="history-card__actions">
+                            <button type="button" class="history-action-button" id="showRecentCardsButton" aria-pressed="false">
+                                カード一覧で確認
+                            </button>
+                            <button type="button" class="history-action-button history-action-button--secondary" id="resetRecentFilterButton" hidden>
+                                すべて表示
+                            </button>
+                        </div>
+                    </div>
+                    <p class="history-card__description">Web版では広いレイアウトを活かして、直近のシミュレーションで使った機体をカード形式で確認できます。</p>
+                    <div class="recent-character-grid" id="recentCharactersGrid" aria-live="polite">
+                        <p class="history-empty">まだ計算履歴がありません</p>
+                    </div>
+                </article>
+
+                <article class="history-card history-card--log" aria-labelledby="simulationHistoryHeading">
+                    <div class="history-card__header">
+                        <h3 class="history-card__title" id="simulationHistoryHeading">シミュレーション履歴</h3>
+                        <button type="button" class="history-action-button history-action-button--danger" id="clearSimulationHistoryButton" disabled>
+                            履歴をクリア
+                        </button>
+                    </div>
+                    <p class="history-card__description">過去に実行したシミュレーション条件を一覧表示します。クリックすると同じ条件で再計算できます。</p>
+                    <div class="history-list" id="simulationHistoryList" aria-live="polite">
+                        <p class="history-empty">まだ計算履歴がありません</p>
+                    </div>
+                </article>
+            </div>
+        </section>
 
         <!-- 再出撃シミュレーションセクションをアコーディオン化 -->
         <div id="redeploy-simulation-section">

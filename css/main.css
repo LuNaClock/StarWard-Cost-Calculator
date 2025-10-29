@@ -20,6 +20,7 @@
 @import url('sections/header.css?v=1.4');
 @import url('sections/character-grid.css?v=1.4');
 @import url('sections/simulation.css?v=1.4');
+@import url('sections/history.css?v=1.4');
 @import url('sections/footer.css?v=1.4');
 
 /* デバッグ用スタイルを削除 */ 

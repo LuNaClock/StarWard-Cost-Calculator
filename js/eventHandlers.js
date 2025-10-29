@@ -1,7 +1,16 @@
 import * as DOM from './domElements.js';
 import * as State from './state.js';
 import * as UI from './ui.js';
-import { applyFiltersAndSearch, processTeamHpCombinations, processSimulateRedeploy, processAwakeningGaugeCalculation } from './app.js';
+import {
+    applyFiltersAndSearch,
+    processTeamHpCombinations,
+    processSimulateRedeploy,
+    processAwakeningGaugeCalculation,
+    showRecentCharacterScope,
+    resetCharacterScope,
+    clearSimulationHistory,
+    applyHistoryEntryByIndex
+} from './app.js';
 import { MAX_TEAM_COST } from '../data.js';
 import * as Sharing from './sharing.js'; 
 import { accordionManager } from './accordion.js';
@@ -9,6 +18,13 @@ import { accordionManager } from './accordion.js';
 let isComposing = false;
 let searchTimeoutLocal;
 const VALID_REDEPLOY_TYPES = new Set(['player', 'partner']);
+
+function resolveHistoryIndex(event) {
+    const trigger = event.target.closest('[data-history-index]');
+    if (!trigger) return null;
+    const parsed = Number(trigger.dataset.historyIndex);
+    return Number.isNaN(parsed) ? null : parsed;
+}
 
 function resolveRedeployTarget(preferredTarget) {
     const playerChar = State.getSelectedPlayerChar();
@@ -57,6 +73,27 @@ function autoUpdateRedeploySimulation(preferredTarget) {
     State.setRedeployTarget(target);
     UI.setRedeployTargetSelection(target);
     processSimulateRedeploy(target);
+}
+
+function handleHistoryTriggerClick(event) {
+    const index = resolveHistoryIndex(event);
+    if (index === null) {
+        return;
+    }
+    event.preventDefault();
+    applyHistoryEntryByIndex(index);
+}
+
+function handleClearHistoryClick() {
+    clearSimulationHistory();
+}
+
+function handleShowRecentCardsClick() {
+    showRecentCharacterScope({ focusCards: true });
+}
+
+function handleResetRecentFilterClick() {
+    resetCharacterScope({ focusCards: true });
 }
 
 function handleCharacterSearchInput() {
@@ -404,5 +441,11 @@ export function setupEventListeners() {
 
     if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.addEventListener('click', handleCopyRedeployUrl);
     if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.addEventListener('click', handleCopyTotalHpUrl);
+
+    if (DOM.historyList) DOM.historyList.addEventListener('click', handleHistoryTriggerClick);
+    if (DOM.recentCharactersGrid) DOM.recentCharactersGrid.addEventListener('click', handleHistoryTriggerClick);
+    if (DOM.clearHistoryButton) DOM.clearHistoryButton.addEventListener('click', handleClearHistoryClick);
+    if (DOM.showRecentCardsButton) DOM.showRecentCardsButton.addEventListener('click', handleShowRecentCardsClick);
+    if (DOM.resetRecentFilterButton) DOM.resetRecentFilterButton.addEventListener('click', handleResetRecentFilterClick);
 
 }

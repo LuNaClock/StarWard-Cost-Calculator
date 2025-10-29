@@ -218,55 +218,6 @@ h1 {
     }
 }
 
-/* ----- 使い方ガイド（旧description）のスタイル ----- */
-.usage-guide-container {
-    background-color: var(--card-background);
-    padding: 30px;
-    margin-bottom: 50px;
-    border-radius: 12px;
-    box-shadow: var(--soft-shadow);
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-    position: relative;
-    overflow: hidden; /* 背景アニメーション用 */
-    border: 1px solid rgba(0, 191, 255, 0.2);
-    will-change: transform, box-shadow; /* will-changeを追加 */
-}
-
-    .usage-guide-container:hover {
-        transform: translateY(-8px); /* ホバー時の浮遊感を強調 */
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
-        border-color: var(--primary-light);
-    }
-
-    .usage-guide-container h2 {
-        color: var(--primary-dark);
-        font-size: 2.2em;
-        font-weight: 700;
-        margin-top: 0;
-        margin-bottom: 30px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-        text-shadow: 1px 1px 5px rgba(0,0,0,0.15);
-        position: relative;
-        z-index: 1;
-    }
-
-    .usage-guide-container .guide-intro {
-        font-size: 1.15em;
-        color: #555;
-        margin-bottom: 35px;
-        text-align: center;
-        line-height: 1.8;
-        position: relative;
-        z-index: 1;
-        max-width: 70ch;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
 /* ----- アコーディオンのスタイル ----- */
 .accordion {
     border: 1px solid var(--primary-light); /* SF感のあるボーダー */
@@ -2260,8 +2211,8 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
   h1 {
       font-size: 2.5em; 
   }
-  .usage-guide-container h2, .simulation-container h2 {
-      font-size: 1.8em; 
+  .simulation-container h2 {
+      font-size: 1.8em;
   }
   .character-header {
       padding: 15px 20px;
@@ -2305,7 +2256,7 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     h1 {
         font-size: 2em;
     }
-     .usage-guide-container h2, .simulation-container h2 {
+     .simulation-container h2 {
       font-size: 1.5em;
     }
     .character-grid {
@@ -2448,56 +2399,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 
 .accordion-content details[open] summary {
     margin-bottom: 10px; /* summaryと内容の間に余白を追加 */
-}
-
-.guide-details { /* detailsタグ自体へのスタイル */
-    background-color: #f8f9fa; /* 少し明るい背景色 */
-    border: 1px solid #dee2e6;
-    border-radius: .25rem; /* 4px */
-    padding: 1rem; /* 15px or 16px depending on root font-size */
-    color: var(--text-color); 
-}
-
-.guide-details summary {
-    font-weight: bold;
-    cursor: pointer;
-    color: var(--primary-dark);
-    padding: 0.5rem 0; /* summaryにも少しパディング */
-    position: relative; /* For custom marker or pseudo-elements if needed */
-}
-
-.guide-details summary:hover {
-    color: var(--primary-light);
-}
-
-.guide-details summary::marker {
-    color: var(--primary-dark); /* Trying to style the marker */
-}
-.guide-details summary:hover::marker {
-    color: var(--primary-light); /* Trying to style the marker on hover */
-}
-
-
-.usage-guide-container .accordion-item .accordion-content details p,
-.usage-guide-container .accordion-item .accordion-content details ul {
-    margin-bottom: 0.75rem; /* details内の段落やリストの下に余白 */
-    color: var(--text-color);
-    font-size: 0.95em; /* 少し小さくして本文と区別 */
-    line-height: 1.6;
-}
-
-.usage-guide-container .accordion-item .accordion-content details ul {
-    padding-left: 20px; /* list items indent */
-    list-style-type: disc; /* Ensure list style is visible */
-}
-.usage-guide-container .accordion-item .accordion-content details ul li {
-    margin-bottom: 0.5rem; /* Space between list items */
-}
-
-
-.usage-guide-container .accordion-item .accordion-content details p:last-child,
-.usage-guide-container .accordion-item .accordion-content details ul:last-child {
-    margin-bottom: 0; /* Last element in details has no bottom margin */
 }
 
 @keyframes card-entry {
