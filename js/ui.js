@@ -836,16 +836,52 @@ export function displayTotalTeamHpResults(scenarios) {
         if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.style.display = 'flex';     
     } else return;
 
+    const formatNote = (rawNote = '') => {
+        if (!rawNote) return '';
+        let processedNote = rawNote;
+        const regexToReplace = /(\(\d+\.\d+コスト換算\), 消費後実質コストオーバー\((\d+\.\d+)換算\))/;
+        processedNote = processedNote.replace(regexToReplace, (_, __, overCost) => `コストオーバー (${overCost}コスト換算)`);
+        processedNote = processedNote.replace(/,\s*最終残りコスト0のためHP0/g, '、最終残りコスト0のためHP0');
+        processedNote = processedNote.replace(/,\s*$/, '');
+        return processedNote.trim();
+    };
+
     const generateListItems = (sequence) => {
         const fragment = document.createDocumentFragment();
         sequence?.forEach(item => {
             const li = document.createElement('li');
-            const charTypeDisplay = item.charType ? ` (${item.charType})` : '';
-            let processedNote = item.note;
-            const regexToReplace = /\((\d+\.\d+)コスト換算\), 消費後実質コストオーバー\((\d+\.\d+)換算\)/;
-            processedNote = processedNote.replace(regexToReplace, `コストオーバー($2換算)`);
-            const remainingCostDisplay = item.remainingCost !== undefined ? `, 残り: ${item.remainingCost}` : '';
-            li.textContent = `${item.turn}落ち: ${item.charName}${charTypeDisplay} - ${item.hpGained.toLocaleString()} HP獲得 (${processedNote}${remainingCostDisplay})`;
+            const remainingCostValue = (item.remainingCost !== undefined && item.remainingCost !== null)
+                ? Number.parseFloat(item.remainingCost)
+                : undefined;
+            const hasValidRemainingCost = typeof remainingCostValue === 'number' && !Number.isNaN(remainingCostValue);
+            const remainingCostDisplay = hasValidRemainingCost ? `残り: ${item.remainingCost}` : '';
+            const processedNote = formatNote(item.note);
+
+            if (item.turn === 0) {
+                const details = [];
+                if (processedNote) details.push(processedNote);
+                if (remainingCostDisplay) details.push(remainingCostDisplay);
+                const detailText = details.length ? ` (${details.join(', ')})` : '';
+                li.textContent = `試合開始時: ${item.hpGained.toLocaleString()} HP加算${detailText}`;
+            } else {
+                const charNameDisplay = item.charName || '';
+                const shouldShowCompletionMessage = (item.hpGained <= 0) && (
+                    (hasValidRemainingCost && remainingCostValue <= 0) ||
+                    processedNote.includes('最終残りコスト0のためHP0') ||
+                    processedNote.includes('チームコスト0のため出撃不可')
+                );
+
+                if (shouldShowCompletionMessage) {
+                    li.textContent = `${item.turn}落ち(${charNameDisplay}): 残りコストが0になる為、計算終了`;
+                } else {
+                    const details = [];
+                    if (processedNote) details.push(processedNote);
+                    if (remainingCostDisplay) details.push(remainingCostDisplay);
+                    const detailText = details.length ? ` (${details.join(', ')})` : '';
+                    li.textContent = `${item.turn}落ち(${charNameDisplay}): ${item.hpGained.toLocaleString()} HP加算${detailText}`;
+                }
+            }
+
             fragment.appendChild(li);
         });
         return fragment;
