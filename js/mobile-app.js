@@ -623,16 +623,15 @@ function createScenarioListItem(step) {
   }
 
   const noteTexts = [];
-  const originalNote = typeof step.note === 'string' ? step.note.trim() : '';
-  if (originalNote) {
-    noteTexts.push(originalNote);
-  }
-
   const remainingCostNumber = Number(step.remainingCost);
-  if (!Number.isNaN(remainingCostNumber) && remainingCostNumber <= 0) {
-    const completionNote = '残りコスト0の為、計算終了';
-    if (!noteTexts.includes(completionNote)) {
-      noteTexts.push(completionNote);
+  const shouldShowCompletionOnly = !Number.isNaN(remainingCostNumber) && remainingCostNumber <= 0;
+
+  if (shouldShowCompletionOnly) {
+    noteTexts.push('残りコスト0の為、計算終了');
+  } else {
+    const originalNote = typeof step.note === 'string' ? step.note.trim() : '';
+    if (originalNote) {
+      noteTexts.push(originalNote);
     }
   }
 

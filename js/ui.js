@@ -428,7 +428,7 @@ export function generateCharacterCards(charactersToDisplay) {
                 // Stats
                 const stats = document.createElement('div');
                 stats.className = 'character-stats';
-                stats.appendChild(createTextElement('span', 'character-stat-label', '本来の耐久値:'));
+                stats.appendChild(createTextElement('span', 'character-stat-label', '本来の体力:'));
                 stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
                 body.appendChild(stats);
 
@@ -463,7 +463,7 @@ export function generateCharacterCards(charactersToDisplay) {
 
                 const tbody = document.createElement('tbody');
                 const trBody = document.createElement('tr');
-                trBody.appendChild(createTextElement('td', '', '耐久値'));
+                trBody.appendChild(createTextElement('td', '', '体力'));
                 costOverHPs.forEach(hp => {
                     const td = createTextElement('td', '', hp.toLocaleString());
                     td.dataset.redeployHp = hp;
@@ -632,7 +632,7 @@ export function generateSelectedCharacterCards() {
         // Stats
         const stats = document.createElement('div');
         stats.className = 'character-stats';
-        stats.appendChild(createTextElement('span', 'character-stat-label', '本来の耐久値:'));
+        stats.appendChild(createTextElement('span', 'character-stat-label', '本来の体力:'));
         stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
         body.appendChild(stats);
 
@@ -667,7 +667,7 @@ export function generateSelectedCharacterCards() {
 
         const tbody = document.createElement('tbody');
         const trBody = document.createElement('tr');
-        trBody.appendChild(createTextElement('td', '', '耐久値'));
+        trBody.appendChild(createTextElement('td', '', '体力'));
         costOverHPs.forEach(hp => {
             const td = createTextElement('td', '', hp.toLocaleString());
             td.dataset.redeployHp = hp;
@@ -805,16 +805,16 @@ export function displayTotalTeamHpResults(scenarios) {
     if (!scenarios || !selectedPlayerChar || !selectedPartnerChar) { 
          gsap.to(DOM.totalHpDisplayArea, { opacity: 0, y: 20, duration: 0.3, ease: "power2.in", onComplete: () => {
             if(DOM.totalHpDisplayArea) DOM.totalHpDisplayArea.classList.remove('active'); 
-            if (DOM.highestHpScenarioTitleSpan) DOM.highestHpScenarioTitleSpan.textContent = 'チーム合計耐久値(最高)';
+            if (DOM.highestHpScenarioTitleSpan) DOM.highestHpScenarioTitleSpan.textContent = 'チーム合計体力(最高)';
             if (DOM.idealGainedHpSpan) DOM.idealGainedHpSpan.textContent = '--';
             if (DOM.idealSequenceList) DOM.idealSequenceList.innerHTML = '';
-            if (DOM.compromiseHpScenarioTitleSpan) DOM.compromiseHpScenarioTitleSpan.textContent = 'チーム合計耐久値(妥協)';
+            if (DOM.compromiseHpScenarioTitleSpan) DOM.compromiseHpScenarioTitleSpan.textContent = 'チーム合計体力(妥協)';
             if (DOM.minGainedHpSpan) DOM.minGainedHpSpan.textContent = '--';
             if (DOM.minSequenceList) DOM.minSequenceList.innerHTML = '';
-            if (DOM.bombHpScenarioTitleSpan) DOM.bombHpScenarioTitleSpan.textContent = 'チーム合計耐久値(爆弾)';
+            if (DOM.bombHpScenarioTitleSpan) DOM.bombHpScenarioTitleSpan.textContent = 'チーム合計体力(爆弾)';
             if (DOM.bombGainedHpSpan) DOM.bombGainedHpSpan.textContent = '--';
             if (DOM.bombSequenceList) DOM.bombSequenceList.innerHTML = '';
-            if (DOM.lowestHpScenarioTitleSpan) DOM.lowestHpScenarioTitleSpan.textContent = 'チーム合計耐久値(最低)';
+            if (DOM.lowestHpScenarioTitleSpan) DOM.lowestHpScenarioTitleSpan.textContent = 'チーム合計体力(最低)';
             if (DOM.lowestGainedHpSpan) DOM.lowestGainedHpSpan.textContent = '--';
             if (DOM.lowestSequenceList) DOM.lowestSequenceList.innerHTML = '';
             

@@ -97,7 +97,6 @@ describe('createScenarioListItem', () => {
     });
 
     const notes = Array.from(item.querySelectorAll('.scenario-step-note')).map((el) => el.textContent);
-    expect(notes).toContain('再出撃完了');
-    expect(notes).toContain('残りコスト0の為、計算終了');
+    expect(notes).toEqual(['残りコスト0の為、計算終了']);
   });
 });
