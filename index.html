@@ -268,11 +268,17 @@
                                         <p class="input-helper">※被弾を想定しない場合は、数値を0にしてください。</p>
                                     </div>
                                     <label class="checkbox-field">
-                                        <input type="checkbox" id="ownDown"> 再出撃時のゲージ量加算
-                                        <p class="input-helper">※被撃墜直後のゲージ量を計算したい場合にチェック</p>
+                                        <span class="checkbox-field__control">
+                                            <input type="checkbox" id="ownDown">
+                                            <span class="checkbox-field__label">再出撃時のゲージ量加算</span>
+                                        </span>
+                                        <span class="checkbox-field__helper input-helper">※被撃墜直後のゲージ量を計算したい場合にチェック</span>
                                     </label>
                                     <label class="checkbox-field">
-                                        <input type="checkbox" id="damageBonus"> ズンダ時のゲージ量加算
+                                        <span class="checkbox-field__control">
+                                            <input type="checkbox" id="damageBonus">
+                                            <span class="checkbox-field__label">ズンダ時のゲージ量加算</span>
+                                        </span>
                                     </label>
                                     <div class="form-field" data-field="bonus-select" hidden>
                                         <label for="bonusSelect">ズンダ時のゲージ量加算</label>
@@ -284,7 +290,10 @@
                                         </select>
                                     </div>
                                     <label class="checkbox-field">
-                                        <input type="checkbox" id="shieldBonus"> 盾成功時のゲージ量加算
+                                        <span class="checkbox-field__control">
+                                            <input type="checkbox" id="shieldBonus">
+                                            <span class="checkbox-field__label">盾成功時のゲージ量加算</span>
+                                        </span>
                                     </label>
                                     <div class="form-field" data-field="shield-bonus-select" hidden>
                                         <label for="shieldBonusSelect">盾成功時のゲージ量加算</label>
@@ -296,7 +305,10 @@
                                         </select>
                                     </div>
                                     <label class="checkbox-field">
-                                        <input type="checkbox" id="partnerDown"> 相方被撃墜時のゲージ量加算
+                                        <span class="checkbox-field__control">
+                                            <input type="checkbox" id="partnerDown">
+                                            <span class="checkbox-field__label">相方被撃墜時のゲージ量加算</span>
+                                        </span>
                                     </label>
                                 </div>
                                 <div class="inline-result" id="awakeningInlineResults" aria-live="polite" hidden>

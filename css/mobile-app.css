@@ -1585,8 +1585,9 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
 }
 
 .checkbox-field {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
   gap: var(--space-2);
   font-size: 14px;
   padding: var(--space-3);
@@ -1598,6 +1599,13 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.checkbox-field__control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  grid-column: 1 / -1;
+}
+
 .checkbox-field:focus-within {
   border-color: rgba(34, 211, 238, 0.55);
   box-shadow: 0 14px 28px rgba(8, 14, 24, 0.42);
@@ -1606,6 +1614,10 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
 .checkbox-field input {
   width: 20px;
   height: 20px;
+}
+
+.checkbox-field__helper {
+  grid-column: 1 / -1;
 }
 
 .section-toggle {
