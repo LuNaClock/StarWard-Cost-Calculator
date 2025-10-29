@@ -545,6 +545,16 @@ export function populateRemainingCostSelect(maxTeamCost) {
     }
 }
 
+export function setRedeployTargetSelection(target) {
+    if (!DOM.redeployTargetChips) return;
+    const validTarget = target === 'partner' ? 'partner' : 'player';
+    const buttons = DOM.redeployTargetChips.querySelectorAll('button[data-target]');
+    buttons.forEach(button => {
+        const isActive = button.dataset.target === validTarget;
+        button.setAttribute('aria-pressed', String(isActive));
+    });
+}
+
 export function generateSelectedCharacterCards() {
     const playerChar = getSelectedPlayerChar();
     const partnerChar = getSelectedPartnerChar();

@@ -2,6 +2,7 @@ const appState = {
     selectedPlayerChar: null,
     selectedPartnerChar: null,
     currentlySimulatingCharType: null, // 'player' or 'partner'
+    redeployTarget: 'player',
     characters: [], // processed character data
 };
 
@@ -45,6 +46,16 @@ export function setCurrentlySimulatingCharType(type) {
     } else {
         // console.warn("Invalid type for currentlySimulatingCharType:", type);
         appState.currentlySimulatingCharType = null; // Fallback
+    }
+}
+
+export function getRedeployTarget() {
+    return appState.redeployTarget;
+}
+
+export function setRedeployTarget(type) {
+    if (type === 'player' || type === 'partner') {
+        appState.redeployTarget = type;
     }
 }
 

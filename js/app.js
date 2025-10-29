@@ -73,6 +73,8 @@ export function processTeamHpCombinations() {
 
 export function processSimulateRedeploy(charType) {
     State.setCurrentlySimulatingCharType(charType);
+    State.setRedeployTarget(charType);
+    UI.setRedeployTargetSelection(charType);
 
     const selectedPlayer = State.getSelectedPlayerChar();
     const selectedPartner = State.getSelectedPartnerChar();

@@ -3,11 +3,61 @@ import * as State from './state.js';
 import * as UI from './ui.js';
 import { applyFiltersAndSearch, processTeamHpCombinations, processSimulateRedeploy, processAwakeningGaugeCalculation } from './app.js';
 import { MAX_TEAM_COST } from '../data.js';
-import * as Sharing from './sharing.js'; 
+import * as Sharing from './sharing.js';
 import { accordionManager } from './accordion.js';
 
 let isComposing = false;
 let searchTimeoutLocal;
+const VALID_REDEPLOY_TYPES = new Set(['player', 'partner']);
+
+function resolveRedeployTarget(preferredTarget) {
+    const playerChar = State.getSelectedPlayerChar();
+    const partnerChar = State.getSelectedPartnerChar();
+
+    let target = preferredTarget;
+    if (!VALID_REDEPLOY_TYPES.has(target)) {
+        target = State.getRedeployTarget();
+    }
+    if (!VALID_REDEPLOY_TYPES.has(target)) {
+        target = State.getCurrentlySimulatingCharType() || 'player';
+    }
+
+    if (target === 'partner' && !partnerChar && playerChar) {
+        target = 'player';
+    } else if (target === 'player' && !playerChar && partnerChar) {
+        target = 'partner';
+    }
+
+    if (!playerChar || !partnerChar) {
+        return null;
+    }
+
+    return VALID_REDEPLOY_TYPES.has(target) ? target : 'player';
+}
+
+function autoUpdateRedeploySimulation(preferredTarget) {
+    const playerChar = State.getSelectedPlayerChar();
+    const partnerChar = State.getSelectedPartnerChar();
+
+    if (!playerChar || !partnerChar) {
+        State.setCurrentlySimulatingCharType(null);
+        const fallbackTarget = playerChar ? 'player' : partnerChar ? 'partner' : 'player';
+        State.setRedeployTarget(fallbackTarget);
+        UI.setRedeployTargetSelection(fallbackTarget);
+        UI.resetSimulationResultsUI();
+        return;
+    }
+
+    const target = resolveRedeployTarget(preferredTarget);
+    if (!target) {
+        UI.resetSimulationResultsUI();
+        return;
+    }
+
+    State.setRedeployTarget(target);
+    UI.setRedeployTargetSelection(target);
+    processSimulateRedeploy(target);
+}
 
 function handleCharacterSearchInput() {
     if (!isComposing) {
@@ -64,6 +114,7 @@ function handlePlayerCharSelectChange(event) {
     UI.updateSelectedCharactersDisplay();
     UI.resetSimulationResultsUI();
     processTeamHpCombinations();
+    autoUpdateRedeploySimulation();
 }
 
 function handlePartnerCharSelectChange(event) {
@@ -73,10 +124,25 @@ function handlePartnerCharSelectChange(event) {
     UI.updateSelectedCharactersDisplay();
     UI.resetSimulationResultsUI();
     processTeamHpCombinations();
+    autoUpdateRedeploySimulation();
 }
 
 function handleAwakeningInputChange() {
     processAwakeningGaugeCalculation();
+}
+
+function handleRedeployTargetChange(event) {
+    const button = event.target.closest('button[data-target]');
+    if (!button) return;
+
+    const target = VALID_REDEPLOY_TYPES.has(button.dataset.target) ? button.dataset.target : 'player';
+    State.setRedeployTarget(target);
+    UI.setRedeployTargetSelection(target);
+    autoUpdateRedeploySimulation(target);
+}
+
+function handleRemainingCostChange() {
+    autoUpdateRedeploySimulation();
 }
 
 function handleDamageDealtCheckboxChange(event) {
@@ -263,8 +329,8 @@ export function setupEventListeners() {
     // Redeploy Simulation
     if (DOM.playerCharSelect) DOM.playerCharSelect.addEventListener('change', handlePlayerCharSelectChange);
     if (DOM.partnerCharSelect) DOM.partnerCharSelect.addEventListener('change', handlePartnerCharSelectChange);
-    if (DOM.simulatePlayerRedeployBtn) DOM.simulatePlayerRedeployBtn.addEventListener('click', () => processSimulateRedeploy('player'));
-    if (DOM.simulatePartnerRedeployBtn) DOM.simulatePartnerRedeployBtn.addEventListener('click', () => processSimulateRedeploy('partner'));
+    if (DOM.redeployTargetChips) DOM.redeployTargetChips.addEventListener('click', handleRedeployTargetChange);
+    if (DOM.remainingTeamCostInput) DOM.remainingTeamCostInput.addEventListener('change', handleRemainingCostChange);
 
     // Awakening Gauge Inputs
     const awakeningInputs = [

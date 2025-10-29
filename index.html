@@ -682,14 +682,18 @@
                             <!-- 選択された自機と相方のミニカードがここに表示される -->
                         </div>
 
+                        <div class="simulation-input-group" id="redeployTargetGroup">
+                            <span class="input-label" id="redeployTargetLabel"><i class="fas fa-sync-alt"></i> 再出撃する機体:</span>
+                            <div class="chip-row" role="radiogroup" aria-labelledby="redeployTargetLabel" id="redeployTargetChips">
+                                <button class="filter-chip" type="button" data-target="player" aria-pressed="true">自機</button>
+                                <button class="filter-chip" type="button" data-target="partner" aria-pressed="false">相方</button>
+                            </div>
+                            <p class="input-helper">選択した機体を自動で再出撃計算します</p>
+                        </div>
+
                         <div class="simulation-input-group">
                             <label for="remainingTeamCostInput"><i class="fas fa-coins"></i> 指定キャラ撃墜後の残りコスト:</label>
                             <select id="remainingTeamCostInput" class="select-dropdown"></select>
-                        </div>
-
-                        <div class="simulation-buttons">
-                            <button id="simulatePlayerRedeploy" class="simulation-button">自機が再出撃した場合</button>
-                            <button id="simulatePartnerRedeploy" class="simulation-button">相方が再出撃した場合</button>
                         </div>
 
                         <div class="simulation-results" id="simulationResults">
