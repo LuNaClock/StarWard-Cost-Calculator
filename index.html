@@ -677,13 +677,24 @@
                             <!-- 選択された自機と相方のミニカードがここに表示される -->
                         </div>
 
-                        <div class="simulation-input-group" id="redeployTargetGroup">
-                            <span class="input-label" id="redeployTargetLabel"><i class="fas fa-sync-alt"></i> 再出撃する機体:</span>
-                            <div class="chip-row" role="radiogroup" aria-labelledby="redeployTargetLabel" id="redeployTargetChips">
-                                <button class="filter-chip" type="button" data-target="player" aria-pressed="true">自機</button>
-                                <button class="filter-chip" type="button" data-target="partner" aria-pressed="false">相方</button>
+                        <div class="redeploy-target-control" id="redeployTargetGroup">
+                            <div class="redeploy-target-control__header">
+                                <span class="redeploy-target-control__label" id="redeployTargetLabel">
+                                    <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                                    再出撃する機体を選択
+                                </span>
+                                <p class="redeploy-target-control__helper">選択した機体を自動で再出撃計算します</p>
                             </div>
-                            <p class="input-helper">選択した機体を自動で再出撃計算します</p>
+                            <div class="redeploy-target-toggle" role="radiogroup" aria-labelledby="redeployTargetLabel" id="redeployTargetChips">
+                                <button class="redeploy-target-button" type="button" data-target="player" aria-pressed="true">
+                                    <i class="fas fa-user-astronaut" aria-hidden="true"></i>
+                                    <span class="redeploy-target-button__text">自機</span>
+                                </button>
+                                <button class="redeploy-target-button" type="button" data-target="partner" aria-pressed="false">
+                                    <i class="fas fa-user-friends" aria-hidden="true"></i>
+                                    <span class="redeploy-target-button__text">相方</span>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="team-cost-display">
