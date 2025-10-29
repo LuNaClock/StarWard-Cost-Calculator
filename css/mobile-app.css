@@ -637,7 +637,8 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
 
 .history-character--active .history-character__result {
   background: linear-gradient(135deg, rgba(248, 250, 252, 0.95), rgba(165, 243, 252, 0.85));
-  color: #082f49;
+  color: #0f172a;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
   box-shadow: 0 8px 16px rgba(8, 14, 24, 0.35), inset 0 0 0 1px rgba(14, 116, 144, 0.35);
 }
 
