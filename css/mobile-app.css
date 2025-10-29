@@ -716,6 +716,12 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   color: var(--muted);
 }
 
+.history-character--active .history-character__text > .history-character__result {
+  /* quick-label のフォールバックカラーより優先して読みやすさを確保 */
+  color: #0f172a;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
 .quick-value {
   font-weight: 700;
   color: var(--accent);
