@@ -52,6 +52,10 @@
                 <section id="home" class="screen" role="tabpanel" aria-labelledby="tab-home">
                     <article class="panel hero-card">
                         <div class="hero-content">
+                            <p class="panel-subtitle hero-description">
+                                最近のシミュレーションで計算したキャラクターのカードをまとめて確認できます。<br>
+                                元々の体力やコストオーバー時の体力を確認したい場合に役立ちます。
+                            </p>
                             <div class="hero-actions">
                                 <button class="cta-secondary" data-nav-target="#cards" data-card-scope="recent">
                                     最近シミュレーションしたキャラを確認する
@@ -62,9 +66,13 @@
 
                     <article class="panel">
                         <div class="panel-header">
-                            <h2 class="panel-title">最近の計算</h2>
+                            <h2 class="panel-title">シミュレーション履歴</h2>
                             <button class="cta-secondary" data-action="clear-history">履歴をクリア</button>
                         </div>
+                        <p class="panel-subtitle panel-description">
+                            直近に行ったシミュレーションの条件や結果が時系列で表示されます。<br>
+                            各履歴をタップすると同じ条件でシミュレーションを再現できます。
+                        </p>
                         <div class="quick-list" id="recentList" aria-live="polite">
                             <p class="panel-subtitle">まだ計算履歴がありません</p>
                         </div>
@@ -79,7 +87,7 @@
                             <div class="quick-item" data-nav-target="#sim">
                                 <div class="quick-label">
                                     <span>コスト再出撃シミュレーター</span>
-                                    <span>自機/相方・残りコスト・覚醒条件</span>
+                                    <span>自機/相方・残りコスト・覚醒ゲージ予測</span>
                                 </div>
                                 <span class="quick-value">開く</span>
                             </div>

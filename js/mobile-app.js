@@ -852,7 +852,7 @@ function calculateRemainingTeamCost(totalCost, maxCost) {
   return Number.isFinite(roundedRemaining) ? roundedRemaining : 0;
 }
 
-function updateSelectedSummaries() {
+function updateSelectedSummaries({ persistHistory = true } = {}) {
   const selection = getSelectedCharacters();
   const { player, partner } = selection;
   dom.playerCost.textContent = player ? player.cost.toFixed(1) : '--';
@@ -873,7 +873,7 @@ function updateSelectedSummaries() {
   renderTeamSummary(selection);
   renderSelectedCharacterDetails(selection);
 
-  performSimulation({ commitInputs: true });
+  performSimulation({ commitInputs: true, persistHistory });
 }
 
 function getSelectedCharacterByRole(role) {
@@ -897,6 +897,18 @@ function resolveRedeployTarget(selection = getSelectedCharacters()) {
   return state.redeployTarget === 'partner' ? partner : player;
 }
 
+function setRedeployTarget(target) {
+  const normalized = target === 'partner' ? 'partner' : 'player';
+  state.redeployTarget = normalized;
+  if (!dom.redeployChips) {
+    return;
+  }
+  dom.redeployChips.querySelectorAll('button[data-value]').forEach((chip) => {
+    const isActive = chip.dataset.value === normalized;
+    chip.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
 function setupRedeployChips() {
   if (!dom.redeployChips) {
     return;
@@ -904,15 +916,10 @@ function setupRedeployChips() {
   dom.redeployChips.addEventListener('click', (event) => {
     const button = event.target.closest('button[data-value]');
     if (!button) return;
-    dom.redeployChips.querySelectorAll('button[data-value]').forEach((chip) => {
-      const isActive = chip === button;
-      chip.setAttribute('aria-pressed', String(isActive));
-      if (isActive) {
-        state.redeployTarget = chip.dataset.value;
-      }
-    });
+    setRedeployTarget(button.dataset.value);
     updateSelectedSummaries();
   });
+  setRedeployTarget(state.redeployTarget);
 }
 
 function setupBonusToggle() {
@@ -1162,8 +1169,10 @@ function performSimulation({
       timestamp: new Date().toISOString(),
       hp: calculatedHp,
       cost: allocatedCost,
-      gauge: finalGauge,
-      awaken: awakenText
+      playerId: selection.player?.id ?? null,
+      playerName: selection.player?.name || null,
+      partnerId: selection.partner?.id ?? null,
+      partnerName: selection.partner?.name || null
     };
     const entryKey = getHistoryKey(historyEntry);
     state.history = [historyEntry, ...state.history.filter((entry) => getHistoryKey(entry) !== entryKey)].slice(0, 5);
@@ -1199,25 +1208,39 @@ function renderHistory() {
     dom.recentList.appendChild(empty);
   } else {
     state.history.forEach((entry) => {
-      const matchedCharacter =
-        typeof entry.characterId === 'number'
-          ? state.characters.find((char) => char.id === entry.characterId)
-          : null;
-      const characterName = matchedCharacter?.name || entry.name || '--';
-      const rolePrefix = entry.role === 'partner'
-        ? '相方: '
-        : entry.role === 'player'
-          ? '自機: '
-          : '';
+      const playerInfo = resolveHistoryCharacterInfo(entry, 'player');
+      const partnerInfo = resolveHistoryCharacterInfo(entry, 'partner');
       const item = document.createElement('div');
-      item.className = 'quick-item';
-      item.innerHTML = `
-        <div class="quick-label">
-          <span>${rolePrefix}${characterName}</span>
-          <span>${formatDate(entry.timestamp)} / 覚醒 ${entry.gauge}%</span>
-        </div>
-        <span class="quick-value">${entry.hp.toLocaleString()} HP</span>
-      `;
+      item.className = 'quick-item quick-item--history';
+      item.tabIndex = 0;
+      item.setAttribute('role', 'button');
+      item.setAttribute('title', 'この履歴を再適用');
+
+      const label = document.createElement('div');
+      label.className = 'quick-label history-label';
+
+      const characterRow = document.createElement('div');
+      characterRow.className = 'history-characters';
+      characterRow.append(
+        createHistoryCharacterBadge('自機', playerInfo, 'player', entry.role === 'player'),
+        createHistoryCharacterBadge('相方', partnerInfo, 'partner', entry.role === 'partner')
+      );
+      label.appendChild(characterRow);
+
+      const handleActivate = (event) => {
+        if (event.type === 'keydown') {
+          const key = event.key;
+          if (key !== 'Enter' && key !== ' ') {
+            return;
+          }
+          event.preventDefault();
+        }
+        applyHistoryEntry(entry);
+      };
+
+      item.append(label);
+      item.addEventListener('click', handleActivate);
+      item.addEventListener('keydown', handleActivate);
       dom.recentList.appendChild(item);
     });
   }
@@ -1228,10 +1251,162 @@ function renderHistory() {
   updateCardScopeNotice();
 }
 
-function formatDate(iso) {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '--';
-  return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+function resolveHistoryCharacterInfo(entry, role) {
+  const resolvedId = resolveHistoryCharacterId(entry, role);
+  const nameCandidates = [];
+  const nameKey = role === 'partner' ? 'partnerName' : 'playerName';
+  if (typeof entry[nameKey] === 'string' && entry[nameKey]) {
+    nameCandidates.push(entry[nameKey]);
+  }
+  if (entry.role === role && typeof entry.name === 'string' && entry.name) {
+    nameCandidates.push(entry.name);
+  }
+
+  let matched = null;
+  if (typeof resolvedId === 'number') {
+    matched = state.characters.find((char) => char.id === resolvedId) || null;
+  }
+  if (!matched) {
+    for (const candidate of nameCandidates) {
+      matched = state.characters.find((char) => char.name === candidate) || null;
+      if (matched) {
+        break;
+      }
+    }
+  }
+
+  const displayName = matched?.name || nameCandidates.find((name) => typeof name === 'string' && name) || '--';
+
+  return {
+    id: typeof resolvedId === 'number' ? resolvedId : undefined,
+    name: displayName || '--',
+    image: matched?.image || null
+  };
+}
+
+function createHistoryCharacterBadge(label, info, roleKey, isActive = false) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'history-character';
+  if (isActive) {
+    wrapper.classList.add('history-character--active');
+  }
+  if (roleKey) {
+    wrapper.dataset.role = roleKey;
+  }
+  const hasName = info.name && info.name !== '--';
+  const baseTitle = hasName ? `${label}: ${info.name}` : label;
+  const emphasisTitle = isActive ? `${baseTitle}（選択キャラ）` : baseTitle;
+  wrapper.setAttribute('title', emphasisTitle);
+  wrapper.setAttribute('aria-label', emphasisTitle);
+  wrapper.setAttribute('aria-current', isActive ? 'true' : 'false');
+
+  const thumb = document.createElement('div');
+  thumb.className = 'history-character__thumb';
+  if (info.image) {
+    const img = document.createElement('img');
+    img.src = info.image;
+    img.alt = `${label}: ${info.name}`;
+    img.loading = 'lazy';
+    thumb.appendChild(img);
+  } else {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'history-character__placeholder';
+    const text = typeof info.name === 'string' && info.name !== '--' ? info.name.slice(0, 2) : '?';
+    placeholder.textContent = text;
+    thumb.appendChild(placeholder);
+  }
+
+  const textWrapper = document.createElement('div');
+  textWrapper.className = 'history-character__text';
+
+  const roleSpan = document.createElement('span');
+  roleSpan.className = 'history-character__role';
+  roleSpan.textContent = label;
+
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'history-character__name';
+  nameSpan.textContent = info.name;
+
+  textWrapper.append(roleSpan, nameSpan);
+
+  if (isActive) {
+    const resultTag = document.createElement('span');
+    resultTag.className = 'history-character__result';
+    resultTag.textContent = '選択キャラ';
+    textWrapper.appendChild(resultTag);
+  }
+
+  wrapper.append(thumb, textWrapper);
+  return wrapper;
+}
+
+function resolveHistoryCharacterId(entry, role) {
+  if (!entry || typeof entry !== 'object') {
+    return undefined;
+  }
+  const idKey = role === 'partner' ? 'partnerId' : 'playerId';
+  if (Object.prototype.hasOwnProperty.call(entry, idKey)) {
+    const storedId = entry[idKey];
+    if (typeof storedId === 'number') {
+      return storedId;
+    }
+    return null;
+  }
+
+  if (entry.role === role && typeof entry.characterId === 'number') {
+    return entry.characterId;
+  }
+
+  const nameKey = role === 'partner' ? 'partnerName' : 'playerName';
+  const fallbackNames = [];
+  if (typeof entry[nameKey] === 'string' && entry[nameKey]) {
+    fallbackNames.push(entry[nameKey]);
+  }
+  if (entry.role === role && typeof entry.name === 'string' && entry.name) {
+    fallbackNames.push(entry.name);
+  }
+
+  for (const candidate of fallbackNames) {
+    const matched = state.characters.find((char) => char.name === candidate);
+    if (matched) {
+      return matched.id;
+    }
+  }
+
+  return undefined;
+}
+
+function applyHistoryEntry(entry) {
+  if (!entry) {
+    return;
+  }
+
+  const playerId = resolveHistoryCharacterId(entry, 'player');
+  const partnerId = resolveHistoryCharacterId(entry, 'partner');
+
+  const nextSelection = {
+    playerId: typeof playerId === 'undefined' ? state.selected.playerId : playerId,
+    partnerId: typeof partnerId === 'undefined' ? state.selected.partnerId : partnerId
+  };
+
+  state.selected.playerId = nextSelection.playerId;
+  state.selected.partnerId = nextSelection.partnerId;
+
+  pickerTypes.forEach((type) => {
+    resetPickerSearch(type);
+    updatePickerDisplay(type);
+    closePicker(type);
+  });
+
+  const desiredRedeployTarget = entry.role === 'partner' ? 'partner' : 'player';
+  setRedeployTarget(desiredRedeployTarget);
+
+  renderCards();
+  updateSelectedSummaries({ persistHistory: false });
+
+  if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
+    window.location.hash = '#sim';
+  }
 }
 
 function persistHistory() {
@@ -1357,6 +1532,40 @@ function createCharacterCardElement(char, { selectedRoles = [] } = {}) {
   return card;
 }
 
+function collectRecentCharacterIdentifiers(historyEntries) {
+  const ids = new Set();
+  const names = new Set();
+
+  if (!Array.isArray(historyEntries)) {
+    return { ids, names };
+  }
+
+  historyEntries.forEach((entry) => {
+    if (!entry || typeof entry !== 'object') {
+      return;
+    }
+
+    const { characterId, playerId, partnerId, name, playerName, partnerName } = entry;
+
+    [characterId, playerId, partnerId].forEach((value) => {
+      if (typeof value === 'number' && Number.isFinite(value)) {
+        ids.add(value);
+      }
+    });
+
+    [name, playerName, partnerName].forEach((value) => {
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (trimmed) {
+          names.add(trimmed);
+        }
+      }
+    });
+  });
+
+  return { ids, names };
+}
+
 function renderCards() {
   if (!dom.cardGrid) {
     return;
@@ -1365,9 +1574,17 @@ function renderCards() {
   const query = state.search.toLowerCase();
   const hiraQuery = toHiragana(query);
   const isRecentScope = state.cardScope === 'recent';
-  const recentNames = isRecentScope ? new Set(state.history.map((entry) => entry.name)) : null;
+  const { ids: recentIds, names: recentNames } = isRecentScope
+    ? collectRecentCharacterIdentifiers(state.history)
+    : { ids: null, names: null };
 
-  if (isRecentScope && recentNames && recentNames.size === 0) {
+  if (
+    isRecentScope &&
+    recentIds &&
+    recentNames &&
+    recentIds.size === 0 &&
+    recentNames.size === 0
+  ) {
     const emptyRecent = document.createElement('p');
     emptyRecent.className = 'panel-subtitle';
     emptyRecent.textContent = '最近の計算履歴がまだありません';
@@ -1376,7 +1593,13 @@ function renderCards() {
   }
 
   const filtered = state.characters.filter((char) => {
-    if (isRecentScope && recentNames && !recentNames.has(char.name)) {
+    if (
+      isRecentScope &&
+      recentIds &&
+      recentNames &&
+      !recentIds.has(char.id) &&
+      !recentNames.has(char.name)
+    ) {
       return false;
     }
     if (state.costFilter !== 'all' && char.costKey !== state.costFilter) {
@@ -1632,5 +1855,6 @@ export {
   hasNativeLazyLoadingSupport,
   isIosSafari,
   isIosChromium,
-  calculateRemainingTeamCost
+  calculateRemainingTeamCost,
+  collectRecentCharacterIdentifiers
 };
