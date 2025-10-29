@@ -54,16 +54,27 @@ export function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeam
         calculatedHpGained = Math.round(originalHp * (effectiveCostForHpCalculation / charFullCost));
     }
     
+    let costOverConversionValue = null;
+
     if (currentTeamCostRemaining >= charFullCost) {
         costActuallyConsumed = charFullCost;
         if (effectiveCostForHpCalculation < charFullCost && effectiveCostForHpCalculation >= 0) {
-            noteParts.push(`コストオーバー (${effectiveCostForHpCalculation.toFixed(1)}コスト換算)`);
+            costOverConversionValue = effectiveCostForHpCalculation;
+            noteParts.push("コストオーバー");
         }
     } else {
         costActuallyConsumed = currentTeamCostRemaining;
-        noteParts.push(`コストオーバー (${currentTeamCostRemaining.toFixed(1)}コスト換算)`);
+        costOverConversionValue = currentTeamCostRemaining;
+        noteParts.push("コストオーバー");
     }
     teamCostAfterConsumption = Math.max(0.0, currentTeamCostRemaining - costActuallyConsumed);
+
+    if (costOverConversionValue !== null) {
+        const costOverIndex = noteParts.findIndex(part => part.includes("コストオーバー"));
+        if (costOverIndex !== -1) {
+            noteParts[costOverIndex] = `${noteParts[costOverIndex]} (${costOverConversionValue.toFixed(1)}コスト換算)`;
+        }
+    }
 
     if (isTeamHpScenario && currentTeamCostRemaining >= charFullCost && costActuallyConsumed === charFullCost && teamCostAfterConsumption < charFullCost && teamCostAfterConsumption > 0.0001) {
         const hasCostOverNote = noteParts.some(part => part.includes("コストオーバー"));
