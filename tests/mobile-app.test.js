@@ -143,6 +143,43 @@ describe('collectRecentCharacterIdentifiers', () => {
     expect(names.has('')).toBe(false);
   });
 
+  it('重複や不正値を適切に除外しつつ識別子を集約する', async () => {
+    const { collectRecentCharacterIdentifiers } = await import('../js/mobile-app.js');
+    const history = [
+      {
+        characterId: 5,
+        playerId: 5,
+        partnerId: 6,
+        name: 'セイ',
+        playerName: '自機セイ',
+        partnerName: '相方ロイ'
+      },
+      {
+        characterId: 5,
+        playerId: 7,
+        partnerId: 6,
+        name: 'セイ',
+        playerName: '自機ヒロ',
+        partnerName: '相方ロイ'
+      },
+      {
+        characterId: Number.POSITIVE_INFINITY,
+        playerId: Number.NaN,
+        partnerId: Number.NEGATIVE_INFINITY,
+        name: '',
+        playerName: '   ',
+        partnerName: null
+      }
+    ];
+
+    const { ids, names } = collectRecentCharacterIdentifiers(history);
+
+    expect(Array.from(ids)).toEqual(expect.arrayContaining([5, 6, 7]));
+    expect(ids.size).toBe(3);
+    expect(Array.from(names)).toEqual(expect.arrayContaining(['セイ', '自機セイ', '相方ロイ', '自機ヒロ']));
+    expect(names.size).toBe(4);
+  });
+
   it('不正な履歴データを渡した場合でも空集合を返す', async () => {
     const { collectRecentCharacterIdentifiers } = await import('../js/mobile-app.js');
     const { ids, names } = collectRecentCharacterIdentifiers(undefined);
