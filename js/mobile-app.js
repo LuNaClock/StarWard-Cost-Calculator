@@ -1222,8 +1222,8 @@ function renderHistory() {
       const characterRow = document.createElement('div');
       characterRow.className = 'history-characters';
       characterRow.append(
-        createHistoryCharacterBadge('自機', playerInfo),
-        createHistoryCharacterBadge('相方', partnerInfo)
+        createHistoryCharacterBadge('自機', playerInfo, entry.role === 'player'),
+        createHistoryCharacterBadge('相方', partnerInfo, entry.role === 'partner')
       );
       label.appendChild(characterRow);
 
@@ -1284,10 +1284,17 @@ function resolveHistoryCharacterInfo(entry, role) {
   };
 }
 
-function createHistoryCharacterBadge(label, info) {
+function createHistoryCharacterBadge(label, info, isActive = false) {
   const wrapper = document.createElement('div');
   wrapper.className = 'history-character';
-  wrapper.setAttribute('title', info.name && info.name !== '--' ? `${label}: ${info.name}` : label);
+  if (isActive) {
+    wrapper.classList.add('history-character--active');
+  }
+  const hasName = info.name && info.name !== '--';
+  const baseTitle = hasName ? `${label}: ${info.name}` : label;
+  const emphasisTitle = isActive ? `${baseTitle}（結果）` : baseTitle;
+  wrapper.setAttribute('title', emphasisTitle);
+  wrapper.setAttribute('aria-label', emphasisTitle);
 
   const thumb = document.createElement('div');
   thumb.className = 'history-character__thumb';
@@ -1317,6 +1324,13 @@ function createHistoryCharacterBadge(label, info) {
   nameSpan.textContent = info.name;
 
   textWrapper.append(roleSpan, nameSpan);
+
+  if (isActive) {
+    const resultTag = document.createElement('span');
+    resultTag.className = 'history-character__result';
+    resultTag.textContent = '結果';
+    textWrapper.appendChild(resultTag);
+  }
 
   wrapper.append(thumb, textWrapper);
   return wrapper;
