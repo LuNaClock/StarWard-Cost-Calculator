@@ -261,7 +261,7 @@
                         </div>
                         <div class="section-group">
                             <button class="section-toggle" type="button" aria-expanded="false" data-collapse="#sim-awakening">
-                                計算内容
+                                覚醒ゲージ量を計算する
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                     <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
@@ -309,9 +309,9 @@
                                         <label for="shieldBonusSelect">盾成功時のゲージ量加算</label>
                                         <select id="shieldBonusSelect">
                                             <option value="0">なし</option>
-                                            <option value="3">約+3% (盾成功1回分)</option>
-                                            <option value="6">約+6% (盾成功2回分)</option>
-                                            <option value="9">約+9% (盾成功3回分)</option>
+                                            <option value="3">約3% (盾成功1回分)</option>
+                                            <option value="6">約6% (盾成功2回分)</option>
+                                            <option value="9">約9% (盾成功3回分)</option>
                                         </select>
                                     </div>
                                     <label class="checkbox-field">
@@ -390,14 +390,14 @@
                                 </span>
                                 <span class="panel-title__text">チーム合計体力予測</span>
                             </h3>
-                            <p class="panel-subtitle" data-role="team-summary-empty">「自機」と「相方」を選択すると、理想/妥協/爆弾/最低シナリオ別の合計体力が表示されます。</p>
+                            <p class="panel-subtitle" data-role="team-summary-empty">理想/妥協/爆弾/最低パターン別の合計体力が表示されます。</p>
                         </div>
                         <details class="info-details" data-role="team-summary-guide">
                             <summary>チーム合計体力予測の見方</summary>
-                            <p>「再出撃シミュレーション」でチームを組むと、ここに表示される4つのシナリオが自動更新され、撃墜順序による合計体力の差を確認できます。</p>
-                            <p>理想的な落ち方から最悪パターンまでを一度に把握し、どの展開でも粘り強く戦えるかをチェックしましょう。</p>
+                            <p>「再出撃シミュレーション」でチームを組むと、表示される4つのシナリオが自動で更新され、撃墜順序による合計体力の差を確認できます。</p>
+                            <p>理想的な落ち方から最悪なパターンまで一度に把握し、実践に活かしましょう。</p>
                             <div class="info-details__section">
-                                <h4>各シナリオの概要</h4>
+                                <h4>各パターンの概要</h4>
                                 <ul>
                                     <li><strong>チーム合計体力(理想):</strong> 高コスト機から撃墜される理想的なケース。</li>
                                     <li><strong>チーム合計体力(妥協):</strong> 低コスト機から撃墜されるケース。</li>
@@ -405,14 +405,14 @@
                                     <li><strong>チーム合計体力(最低):</strong> 片方の機体だけが落ち続ける最も非効率なケース。</li>
                                 </ul>
                             </div>
-                            <p class="info-details__note">各カードの「撃墜順序と獲得HP」をタップすると、撃墜の進行や各段階での獲得体力・残りコストの内訳を確認できます。</p>
+                            <p class="info-details__note">各カードの「撃墜順序と総体力」をタップすると、撃墜順や各段階での体力・残りコストの内訳を確認できます。</p>
                         </details>
                         <div class="team-summary-grid" data-role="team-summary-grid" hidden>
                             <div class="team-summary-card" data-scenario="ideal">
                                 <p class="team-summary-title" data-role="title">チーム合計体力(理想)</p>
                                 <p class="team-summary-value" data-role="value">--</p>
                                 <details class="scenario-details">
-                                    <summary>撃墜順序と獲得HP</summary>
+                                    <summary>撃墜順序と総体力</summary>
                                     <ul class="scenario-list" data-role="list"></ul>
                                 </details>
                             </div>
@@ -420,7 +420,7 @@
                                 <p class="team-summary-title" data-role="title">チーム合計体力(妥協)</p>
                                 <p class="team-summary-value" data-role="value">--</p>
                                 <details class="scenario-details">
-                                    <summary>撃墜順序と獲得HP</summary>
+                                    <summary>撃墜順序と総体力</summary>
                                     <ul class="scenario-list" data-role="list"></ul>
                                 </details>
                             </div>
@@ -428,7 +428,7 @@
                                 <p class="team-summary-title" data-role="title">チーム合計体力(爆弾)</p>
                                 <p class="team-summary-value" data-role="value">--</p>
                                 <details class="scenario-details">
-                                    <summary>撃墜順序と獲得HP</summary>
+                                    <summary>撃墜順序と総体力</summary>
                                     <ul class="scenario-list" data-role="list"></ul>
                                 </details>
                             </div>
@@ -436,7 +436,7 @@
                                 <p class="team-summary-title" data-role="title">チーム合計体力(最低)</p>
                                 <p class="team-summary-value" data-role="value">--</p>
                                 <details class="scenario-details">
-                                    <summary>撃墜順序と獲得HP</summary>
+                                    <summary>撃墜順序と総体力</summary>
                                     <ul class="scenario-list" data-role="list"></ul>
                                 </details>
                             </div>
