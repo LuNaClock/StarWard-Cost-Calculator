@@ -493,6 +493,38 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   pointer-events: none;
 }
 
+.quick-item--history {
+  cursor: pointer;
+}
+
+.quick-item--history::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: var(--space-3);
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: translateY(-50%) rotate(-45deg);
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.quick-item--history:hover,
+.quick-item--history:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(34, 211, 238, 0.6);
+  box-shadow: 0 18px 34px rgba(8, 14, 24, 0.45);
+  background: linear-gradient(130deg, rgba(37, 99, 235, 0.35), rgba(15, 23, 42, 0.9));
+  outline: none;
+}
+
+.quick-item--history:hover::after,
+.quick-item--history:focus-visible::after {
+  opacity: 1;
+}
+
 .quick-item[data-nav-target] {
   cursor: pointer;
 }

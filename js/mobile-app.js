@@ -1244,9 +1244,10 @@ function renderHistory() {
         ? `自機: ${playerName} / 相方: ${partnerName}`
         : `${rolePrefix}${characterName}`;
       const item = document.createElement('div');
-      item.className = 'quick-item';
+      item.className = 'quick-item quick-item--history';
       item.tabIndex = 0;
       item.setAttribute('role', 'button');
+      item.setAttribute('title', 'この履歴を再適用');
       item.innerHTML = `
         <div class="quick-label">
           <span>${primaryLabel}</span>
