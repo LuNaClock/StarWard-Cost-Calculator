@@ -105,7 +105,7 @@
                     <article class="panel">
                         <div class="panel-header">
                             <h2 class="panel-title">シミュレーター</h2>
-                            <p class="panel-subtitle">チーム構成と覚醒条件を入力</p>
+                            <p class="panel-subtitle">チーム構成を入力</p>
                         </div>
                         <div class="section-group">
                             <button class="section-toggle" type="button" aria-expanded="true" data-collapse="#sim-team">
@@ -204,6 +204,52 @@
                                 </div>
                             </div>
 
+                        </div>
+                    </article>
+
+                    <section class="results-panel-group" id="simResults" hidden aria-label="シミュレーション結果">
+                        <article class="results-panel results-panel--redeploy" id="simRedeployResults">
+                            <h3 class="panel-title">再出撃結果</h3>
+                            <div class="results-section" role="group" aria-label="再出撃計算の概要">
+                                <div class="results-grid">
+                                    <div class="result-figure">
+                                        <span>再出撃体力</span>
+                                        <strong data-bind="result-hp">0</strong>
+                                    </div>
+                                    <div class="result-figure">
+                                        <span>消費コスト</span>
+                                        <strong data-bind="result-cost">0</strong>
+                                    </div>
+                                </div>
+                                <div class="hp-bar" aria-hidden="true">
+                                    <span data-bind="result-hp-bar" style="width: 0%"></span>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="results-panel results-panel--awakening" id="simAwakeningResults">
+                            <h3 class="panel-title">覚醒ゲージ予測</h3>
+                            <div class="results-section" role="group" aria-label="覚醒ゲージの計算結果">
+                                <div class="results-grid">
+                                    <div class="result-figure">
+                                        <span>覚醒ゲージ予測</span>
+                                        <strong data-bind="result-gauge">0%</strong>
+                                    </div>
+                                    <div class="result-figure">
+                                        <span>覚醒可否</span>
+                                        <strong data-bind="result-awaken">--</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        <p class="panel-subtitle results-history-note">履歴に保存しました</p>
+                    </section>
+
+                    <article class="panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">覚醒条件</h2>
+                            <p class="panel-subtitle">覚醒ゲージ予測の前提を設定</p>
+                        </div>
+                        <div class="section-group">
                             <button class="section-toggle" type="button" aria-expanded="false" data-collapse="#sim-awakening">
                                 覚醒条件
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -313,43 +359,6 @@
                             </div>
                         </div>
                     </article>
-
-                    <section class="results-panel-group" id="simResults" hidden aria-label="シミュレーション結果">
-                        <article class="results-panel results-panel--redeploy" id="simRedeployResults">
-                            <h3 class="panel-title">再出撃結果</h3>
-                            <div class="results-section" role="group" aria-label="再出撃計算の概要">
-                                <div class="results-grid">
-                                    <div class="result-figure">
-                                        <span>再出撃体力</span>
-                                        <strong data-bind="result-hp">0</strong>
-                                    </div>
-                                    <div class="result-figure">
-                                        <span>消費コスト</span>
-                                        <strong data-bind="result-cost">0</strong>
-                                    </div>
-                                </div>
-                                <div class="hp-bar" aria-hidden="true">
-                                    <span data-bind="result-hp-bar" style="width: 0%"></span>
-                                </div>
-                            </div>
-                        </article>
-                        <article class="results-panel results-panel--awakening" id="simAwakeningResults">
-                            <h3 class="panel-title">覚醒ゲージ予測</h3>
-                            <div class="results-section" role="group" aria-label="覚醒ゲージの計算結果">
-                                <div class="results-grid">
-                                    <div class="result-figure">
-                                        <span>覚醒ゲージ予測</span>
-                                        <strong data-bind="result-gauge">0%</strong>
-                                    </div>
-                                    <div class="result-figure">
-                                        <span>覚醒可否</span>
-                                        <strong data-bind="result-awaken">--</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                        <p class="panel-subtitle results-history-note">履歴に保存しました</p>
-                    </section>
 
                     <article class="panel team-summary" id="teamSummaryPanel">
                         <div class="panel-header">
