@@ -1781,34 +1781,27 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 
 /* === ここから修正箇所 === */
 .total-hp-grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 25px;
     margin-bottom: 25px;
-    align-items: flex-start;
-    justify-content: center;
+    align-items: stretch;
+    justify-items: stretch;
+    grid-auto-flow: row;
+    grid-auto-columns: minmax(0, 1fr);
+    width: 100%;
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .total-hp-grid > .total-hp-scenario {
-    flex: 1 1 400px;
-    max-width: calc(50% - 12.5px);
-    min-width: 0;
-    box-sizing: border-box;
+    margin-bottom: 0;
 }
 
 @media (max-width: 920px) {
-    .total-hp-grid > .total-hp-scenario {
-        flex-basis: 300px;
-    }
-}
-
-@media (max-width: 680px) {
-    .total-hp-grid > .total-hp-scenario {
-        flex-basis: 100%;
-        max-width: 100%;
+    .total-hp-grid {
+        grid-template-columns: 1fr;
     }
 }
 

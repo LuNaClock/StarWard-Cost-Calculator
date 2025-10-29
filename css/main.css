@@ -1,25 +1,25 @@
-/* StarWard Cost Calculator - メインCSSファイル - v1.3 */
+/* StarWard Cost Calculator - メインCSSファイル - v1.4 */
 
 /* 基本スタイル */
-@import url('base/variables.css?v=1.3');
-@import url('base/animations.css?v=1.3');
-@import url('base/reset.css?v=1.3');
+@import url('base/variables.css?v=1.4');
+@import url('base/animations.css?v=1.4');
+@import url('base/reset.css?v=1.4');
 
 /* レイアウト */
-@import url('layout/grid.css?v=1.3');
-@import url('layout/responsive.css?v=1.3');
+@import url('layout/grid.css?v=1.4');
+@import url('layout/responsive.css?v=1.4');
 
 /* コンポーネント */
-@import url('components/accordion.css?v=1.3');
-@import url('components/buttons.css?v=1.3');
-@import url('components/cards.css?v=1.3');
-@import url('components/forms.css?v=1.3');
-@import url('components/tables.css?v=1.3');
+@import url('components/accordion.css?v=1.4');
+@import url('components/buttons.css?v=1.4');
+@import url('components/cards.css?v=1.4');
+@import url('components/forms.css?v=1.4');
+@import url('components/tables.css?v=1.4');
 
 /* セクション */
-@import url('sections/header.css?v=1.3');
-@import url('sections/character-grid.css?v=1.3');
-@import url('sections/simulation.css?v=1.3');
-@import url('sections/footer.css?v=1.3');
+@import url('sections/header.css?v=1.4');
+@import url('sections/character-grid.css?v=1.4');
+@import url('sections/simulation.css?v=1.4');
+@import url('sections/footer.css?v=1.4');
 
 /* デバッグ用スタイルを削除 */ 
