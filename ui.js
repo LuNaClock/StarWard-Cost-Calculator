@@ -697,7 +697,6 @@ export function openAccordionWithAnimation(headerElement, contentElement, isTota
 export function initPageAnimations() {
     const tl = gsap.timeline({ defaults: { opacity: 0, ease: "power3.out", overwrite: true } });
     tl.from("h1", { y: -50, duration: 1, scale: 0.8, delay: 0.5 })
-        .from(".usage-guide-container", { y: 50, duration: 0.8 }, "-=0.5")
         .from(".simulation-container", { y: 50, duration: 0.8 }, "-=0.4")
         .from(".controls-container", { y: 50, duration: 0.7 }, "-=0.4")
         .add(initSearchIconPulseAnimation);
