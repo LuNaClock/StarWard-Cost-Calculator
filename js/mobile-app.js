@@ -1222,23 +1222,10 @@ function renderHistory() {
       const characterRow = document.createElement('div');
       characterRow.className = 'history-characters';
       characterRow.append(
-        createHistoryCharacterBadge('自機', playerInfo),
-        createHistoryCharacterBadge('相方', partnerInfo)
+        createHistoryCharacterBadge('自機', playerInfo, 'player', entry.role === 'player'),
+        createHistoryCharacterBadge('相方', partnerInfo, 'partner', entry.role === 'partner')
       );
       label.appendChild(characterRow);
-
-      const timestamp = document.createElement('span');
-      timestamp.className = 'history-timestamp';
-      timestamp.textContent = formatDate(entry.timestamp);
-      label.appendChild(timestamp);
-
-      const value = document.createElement('span');
-      value.className = 'quick-value';
-      if (typeof entry.hp === 'number' && Number.isFinite(entry.hp)) {
-        value.textContent = `${entry.hp.toLocaleString()} HP`;
-      } else {
-        value.textContent = '--';
-      }
 
       const handleActivate = (event) => {
         if (event.type === 'keydown') {
@@ -1251,7 +1238,7 @@ function renderHistory() {
         applyHistoryEntry(entry);
       };
 
-      item.append(label, value);
+      item.append(label);
       item.addEventListener('click', handleActivate);
       item.addEventListener('keydown', handleActivate);
       dom.recentList.appendChild(item);
@@ -1262,12 +1249,6 @@ function renderHistory() {
     renderCards();
   }
   updateCardScopeNotice();
-}
-
-function formatDate(iso) {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '--';
-  return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 }
 
 function resolveHistoryCharacterInfo(entry, role) {
@@ -1303,10 +1284,21 @@ function resolveHistoryCharacterInfo(entry, role) {
   };
 }
 
-function createHistoryCharacterBadge(label, info) {
+function createHistoryCharacterBadge(label, info, roleKey, isActive = false) {
   const wrapper = document.createElement('div');
   wrapper.className = 'history-character';
-  wrapper.setAttribute('title', info.name && info.name !== '--' ? `${label}: ${info.name}` : label);
+  if (isActive) {
+    wrapper.classList.add('history-character--active');
+  }
+  if (roleKey) {
+    wrapper.dataset.role = roleKey;
+  }
+  const hasName = info.name && info.name !== '--';
+  const baseTitle = hasName ? `${label}: ${info.name}` : label;
+  const emphasisTitle = isActive ? `${baseTitle}（選択キャラ）` : baseTitle;
+  wrapper.setAttribute('title', emphasisTitle);
+  wrapper.setAttribute('aria-label', emphasisTitle);
+  wrapper.setAttribute('aria-current', isActive ? 'true' : 'false');
 
   const thumb = document.createElement('div');
   thumb.className = 'history-character__thumb';
@@ -1336,6 +1328,13 @@ function createHistoryCharacterBadge(label, info) {
   nameSpan.textContent = info.name;
 
   textWrapper.append(roleSpan, nameSpan);
+
+  if (isActive) {
+    const resultTag = document.createElement('span');
+    resultTag.className = 'history-character__result';
+    resultTag.textContent = '選択キャラ';
+    textWrapper.appendChild(resultTag);
+  }
 
   wrapper.append(thumb, textWrapper);
   return wrapper;
