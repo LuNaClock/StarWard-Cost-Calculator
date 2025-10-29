@@ -65,3 +65,39 @@ describe('createCharacterAvatar', () => {
     expect(img.hasAttribute('loading')).toBe(false);
   });
 });
+
+describe('createScenarioListItem', () => {
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
+  it('omits consumption details for the opening step', async () => {
+    const { createScenarioListItem } = await import('../js/mobile-app.js');
+    const item = createScenarioListItem({
+      turn: 0,
+      charName: '初期HP',
+      hpGained: 5000,
+      remainingCost: '6.0',
+      note: '開始状態'
+    });
+
+    expect(item.querySelector('.scenario-step-meta')).toBeNull();
+  });
+
+  it('adds a completion note when the remaining cost reaches zero', async () => {
+    const { createScenarioListItem } = await import('../js/mobile-app.js');
+    const item = createScenarioListItem({
+      turn: 2,
+      charName: 'テスト',
+      charType: '自機',
+      hpGained: 1200,
+      costConsumed: 2,
+      remainingCost: '0',
+      note: '再出撃完了'
+    });
+
+    const notes = Array.from(item.querySelectorAll('.scenario-step-note')).map((el) => el.textContent);
+    expect(notes).toContain('再出撃完了');
+    expect(notes).toContain('残りコスト0の為、計算終了');
+  });
+});

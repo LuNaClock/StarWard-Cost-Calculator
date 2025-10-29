@@ -24,9 +24,9 @@ export function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeam
     const originalHp = charToRedeploy.hp;
     let calculatedHpGained = 0;
     let costActuallyConsumed = 0;
-    let finalNote = "";
     let teamCostAfterConsumption = currentTeamCostRemaining;
-    let initialNotePart = "";
+    const noteParts = [];
+    let finalNote = "";
 
     if (currentTeamCostRemaining < 0.001) {
         calculatedHpGained = 0;
@@ -54,38 +54,44 @@ export function calculateRedeployEffect(charToRedeploy, partnerChar, currentTeam
         calculatedHpGained = Math.round(originalHp * (effectiveCostForHpCalculation / charFullCost));
     }
     
+    let costOverConversionValue = null;
+
     if (currentTeamCostRemaining >= charFullCost) {
-        costActuallyConsumed = charFullCost; 
+        costActuallyConsumed = charFullCost;
         if (effectiveCostForHpCalculation < charFullCost && effectiveCostForHpCalculation >= 0) {
-            initialNotePart = `コストオーバー (${effectiveCostForHpCalculation.toFixed(1)}コスト換算)`;
-        } else {
-            initialNotePart = `(${charFullCost.toFixed(1)}コスト換算)`;
+            costOverConversionValue = effectiveCostForHpCalculation;
+            noteParts.push("コストオーバー");
         }
     } else {
-        costActuallyConsumed = currentTeamCostRemaining; 
-        initialNotePart = `コストオーバー (${currentTeamCostRemaining.toFixed(1)}コスト換算)`;
+        costActuallyConsumed = currentTeamCostRemaining;
+        costOverConversionValue = currentTeamCostRemaining;
+        noteParts.push("コストオーバー");
     }
-    teamCostAfterConsumption = Math.max(0.0, currentTeamCostRemaining - costActuallyConsumed); 
+    teamCostAfterConsumption = Math.max(0.0, currentTeamCostRemaining - costActuallyConsumed);
 
-    finalNote = initialNotePart;
+    if (costOverConversionValue !== null) {
+        const costOverIndex = noteParts.findIndex(part => part.includes("コストオーバー"));
+        if (costOverIndex !== -1) {
+            noteParts[costOverIndex] = `${noteParts[costOverIndex]} (${costOverConversionValue.toFixed(1)}コスト換算)`;
+        }
+    }
 
     if (isTeamHpScenario && currentTeamCostRemaining >= charFullCost && costActuallyConsumed === charFullCost && teamCostAfterConsumption < charFullCost && teamCostAfterConsumption > 0.0001) {
-        if (!finalNote.includes("コストオーバー")) { 
-             finalNote += `, 消費後実質コストオーバー(${teamCostAfterConsumption.toFixed(1)}換算)`;
+        const hasCostOverNote = noteParts.some(part => part.includes("コストオーバー"));
+        if (!hasCostOverNote) {
+            noteParts.push(`消費後実質コストオーバー(${teamCostAfterConsumption.toFixed(1)}換算)`);
         }
     }
 
     if (teamCostAfterConsumption < 0.001) {
-        if (finalNote && !finalNote.endsWith(", ") && finalNote.length > 0 && !finalNote.endsWith(" ")) {
-             finalNote += ", ";
-        } else if (!finalNote) {
-            finalNote = "";
-        }
-        if (!finalNote.includes("最終残りコスト0のためHP0")) {
-             finalNote += "最終残りコスト0のためHP0";
+        const hasZeroCostNote = noteParts.some(part => part.includes("最終残りコスト0のためHP0"));
+        if (!hasZeroCostNote) {
+            noteParts.push("最終残りコスト0のためHP0");
         }
     }
-    
+
+    finalNote = noteParts.join(", ");
+
     if (currentTeamCostRemaining < 0.001 && costActuallyConsumed == 0 && finalNote !== "チームコスト0のため出撃不可") {
          finalNote = "チームコスト0のため出撃不可";
          calculatedHpGained = 0;

@@ -1439,7 +1439,13 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
 .team-summary-grid {
   display: grid;
   gap: var(--space-3);
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 768px) {
+  .team-summary-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .team-summary-card {
