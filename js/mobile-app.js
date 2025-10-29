@@ -1222,8 +1222,8 @@ function renderHistory() {
       const characterRow = document.createElement('div');
       characterRow.className = 'history-characters';
       characterRow.append(
-        createHistoryCharacterBadge('自機', playerInfo, entry.role === 'player'),
-        createHistoryCharacterBadge('相方', partnerInfo, entry.role === 'partner')
+        createHistoryCharacterBadge('自機', playerInfo, 'player', entry.role === 'player'),
+        createHistoryCharacterBadge('相方', partnerInfo, 'partner', entry.role === 'partner')
       );
       label.appendChild(characterRow);
 
@@ -1284,17 +1284,21 @@ function resolveHistoryCharacterInfo(entry, role) {
   };
 }
 
-function createHistoryCharacterBadge(label, info, isActive = false) {
+function createHistoryCharacterBadge(label, info, roleKey, isActive = false) {
   const wrapper = document.createElement('div');
   wrapper.className = 'history-character';
   if (isActive) {
     wrapper.classList.add('history-character--active');
+  }
+  if (roleKey) {
+    wrapper.dataset.role = roleKey;
   }
   const hasName = info.name && info.name !== '--';
   const baseTitle = hasName ? `${label}: ${info.name}` : label;
   const emphasisTitle = isActive ? `${baseTitle}（結果）` : baseTitle;
   wrapper.setAttribute('title', emphasisTitle);
   wrapper.setAttribute('aria-label', emphasisTitle);
+  wrapper.setAttribute('aria-current', isActive ? 'true' : 'false');
 
   const thumb = document.createElement('div');
   thumb.className = 'history-character__thumb';
