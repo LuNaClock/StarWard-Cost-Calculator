@@ -324,6 +324,11 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   color: var(--muted);
 }
 
+.panel-description {
+  margin: 0 0 var(--space-3);
+  line-height: 1.6;
+}
+
 .panel--spotlight {
   border: 1px solid rgba(56, 189, 248, 0.4);
   box-shadow: 0 20px 36px rgba(13, 148, 136, 0.2), 0 0 0 1px rgba(14, 165, 233, 0.25);
@@ -415,6 +420,13 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
+}
+
+.hero-description {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.6;
+  max-width: 28ch;
 }
 
 .cta-secondary {
