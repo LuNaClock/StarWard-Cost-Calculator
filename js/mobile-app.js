@@ -607,30 +607,41 @@ function createScenarioListItem(step) {
   header.append(title, value);
   item.appendChild(header);
 
-  const meta = document.createElement('div');
-  meta.className = 'scenario-step-meta';
   if (step.turn !== 0) {
+    const meta = document.createElement('div');
+    meta.className = 'scenario-step-meta';
+
     const consumed = document.createElement('span');
     consumed.textContent = `消費: ${formatCostValue(step.costConsumed ?? 0)}`;
     meta.appendChild(consumed);
+
+    const remaining = document.createElement('span');
+    remaining.textContent = `残り: ${formatCostValue(step.remainingCost ?? '')}`;
+    meta.appendChild(remaining);
+
+    item.appendChild(meta);
   }
-  const remaining = document.createElement('span');
-  remaining.textContent = `残り: ${formatCostValue(step.remainingCost ?? '')}`;
-  meta.appendChild(remaining);
-  item.appendChild(meta);
+
+  const noteTexts = [];
+  const originalNote = typeof step.note === 'string' ? step.note.trim() : '';
+  if (originalNote) {
+    noteTexts.push(originalNote);
+  }
 
   const remainingCostNumber = Number(step.remainingCost);
-  let noteText = step.note;
   if (!Number.isNaN(remainingCostNumber) && remainingCostNumber <= 0) {
-    noteText = '残りコスト0の為、計算終了';
+    const completionNote = '残りコスト0の為、計算終了';
+    if (!noteTexts.includes(completionNote)) {
+      noteTexts.push(completionNote);
+    }
   }
 
-  if (noteText) {
+  noteTexts.forEach((text) => {
     const note = document.createElement('p');
     note.className = 'scenario-step-note';
-    note.textContent = noteText;
+    note.textContent = text;
     item.appendChild(note);
-  }
+  });
 
   return item;
 }
@@ -1614,6 +1625,7 @@ init();
 
 export {
   createCharacterAvatar,
+  createScenarioListItem,
   hasNativeLazyLoadingSupport,
   isIosSafari,
   isIosChromium,
