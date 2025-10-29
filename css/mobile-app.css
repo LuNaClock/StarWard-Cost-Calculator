@@ -426,7 +426,6 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   margin: 0;
   color: var(--text);
   line-height: 1.6;
-  max-width: 28ch;
 }
 
 .cta-secondary {

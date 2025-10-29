@@ -1532,6 +1532,40 @@ function createCharacterCardElement(char, { selectedRoles = [] } = {}) {
   return card;
 }
 
+function collectRecentCharacterIdentifiers(historyEntries) {
+  const ids = new Set();
+  const names = new Set();
+
+  if (!Array.isArray(historyEntries)) {
+    return { ids, names };
+  }
+
+  historyEntries.forEach((entry) => {
+    if (!entry || typeof entry !== 'object') {
+      return;
+    }
+
+    const { characterId, playerId, partnerId, name, playerName, partnerName } = entry;
+
+    [characterId, playerId, partnerId].forEach((value) => {
+      if (typeof value === 'number' && Number.isFinite(value)) {
+        ids.add(value);
+      }
+    });
+
+    [name, playerName, partnerName].forEach((value) => {
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (trimmed) {
+          names.add(trimmed);
+        }
+      }
+    });
+  });
+
+  return { ids, names };
+}
+
 function renderCards() {
   if (!dom.cardGrid) {
     return;
@@ -1540,9 +1574,17 @@ function renderCards() {
   const query = state.search.toLowerCase();
   const hiraQuery = toHiragana(query);
   const isRecentScope = state.cardScope === 'recent';
-  const recentNames = isRecentScope ? new Set(state.history.map((entry) => entry.name)) : null;
+  const { ids: recentIds, names: recentNames } = isRecentScope
+    ? collectRecentCharacterIdentifiers(state.history)
+    : { ids: null, names: null };
 
-  if (isRecentScope && recentNames && recentNames.size === 0) {
+  if (
+    isRecentScope &&
+    recentIds &&
+    recentNames &&
+    recentIds.size === 0 &&
+    recentNames.size === 0
+  ) {
     const emptyRecent = document.createElement('p');
     emptyRecent.className = 'panel-subtitle';
     emptyRecent.textContent = '最近の計算履歴がまだありません';
@@ -1551,7 +1593,13 @@ function renderCards() {
   }
 
   const filtered = state.characters.filter((char) => {
-    if (isRecentScope && recentNames && !recentNames.has(char.name)) {
+    if (
+      isRecentScope &&
+      recentIds &&
+      recentNames &&
+      !recentIds.has(char.id) &&
+      !recentNames.has(char.name)
+    ) {
       return false;
     }
     if (state.costFilter !== 'all' && char.costKey !== state.costFilter) {
@@ -1807,5 +1855,6 @@ export {
   hasNativeLazyLoadingSupport,
   isIosSafari,
   isIosChromium,
-  calculateRemainingTeamCost
+  calculateRemainingTeamCost,
+  collectRecentCharacterIdentifiers
 };
