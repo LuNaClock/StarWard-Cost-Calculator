@@ -1227,14 +1227,6 @@ function renderHistory() {
       );
       label.appendChild(characterRow);
 
-      const value = document.createElement('span');
-      value.className = 'quick-value history-value';
-      if (typeof entry.hp === 'number' && Number.isFinite(entry.hp)) {
-        value.textContent = `${entry.hp.toLocaleString()} HP`;
-      } else {
-        value.textContent = '--';
-      }
-
       const handleActivate = (event) => {
         if (event.type === 'keydown') {
           const key = event.key;
@@ -1246,7 +1238,7 @@ function renderHistory() {
         applyHistoryEntry(entry);
       };
 
-      item.append(label, value);
+      item.append(label);
       item.addEventListener('click', handleActivate);
       item.addEventListener('keydown', handleActivate);
       dom.recentList.appendChild(item);
