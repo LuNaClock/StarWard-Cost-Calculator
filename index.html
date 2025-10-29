@@ -246,12 +246,12 @@
 
                     <article class="panel">
                         <div class="panel-header">
-                            <h2 class="panel-title">覚醒条件</h2>
-                            <p class="panel-subtitle">覚醒ゲージ予測の前提を設定</p>
+                            <h2 class="panel-title">覚醒ゲージ予測</h2>
+                            <p class="panel-subtitle">覚醒ゲージ量の計算が出来ます</p>
                         </div>
                         <div class="section-group">
                             <button class="section-toggle" type="button" aria-expanded="false" data-collapse="#sim-awakening">
-                                覚醒条件
+                                計算内容
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                     <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
@@ -265,11 +265,11 @@
                                     <div class="form-field">
                                         <label for="damageTaken">想定被ダメージ量</label>
                                         <input id="damageTaken" type="number" inputmode="numeric" min="0" value="0">
-                                        <p class="input-helper">※被撃墜直後のゲージ量を知りたい場合、
-                                            「再出撃時のゲージ量加算」にチェックを入れてください。</p>
+                                        <p class="input-helper">※被弾を想定しない場合は、数値を0にしてください。</p>
                                     </div>
                                     <label class="checkbox-field">
                                         <input type="checkbox" id="ownDown"> 再出撃時のゲージ量加算
+                                        <p class="input-helper">※被撃墜直後のゲージ量を計算したい場合にチェック</p>
                                     </label>
                                     <label class="checkbox-field">
                                         <input type="checkbox" id="damageBonus"> ズンダ時のゲージ量加算
