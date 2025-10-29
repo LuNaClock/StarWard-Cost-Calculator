@@ -852,7 +852,7 @@ function calculateRemainingTeamCost(totalCost, maxCost) {
   return Number.isFinite(roundedRemaining) ? roundedRemaining : 0;
 }
 
-function updateSelectedSummaries() {
+function updateSelectedSummaries({ persistHistory = true } = {}) {
   const selection = getSelectedCharacters();
   const { player, partner } = selection;
   dom.playerCost.textContent = player ? player.cost.toFixed(1) : '--';
@@ -873,7 +873,7 @@ function updateSelectedSummaries() {
   renderTeamSummary(selection);
   renderSelectedCharacterDetails(selection);
 
-  performSimulation({ commitInputs: true });
+  performSimulation({ commitInputs: true, persistHistory });
 }
 
 function getSelectedCharacterByRole(role) {
@@ -897,6 +897,18 @@ function resolveRedeployTarget(selection = getSelectedCharacters()) {
   return state.redeployTarget === 'partner' ? partner : player;
 }
 
+function setRedeployTarget(target) {
+  const normalized = target === 'partner' ? 'partner' : 'player';
+  state.redeployTarget = normalized;
+  if (!dom.redeployChips) {
+    return;
+  }
+  dom.redeployChips.querySelectorAll('button[data-value]').forEach((chip) => {
+    const isActive = chip.dataset.value === normalized;
+    chip.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
 function setupRedeployChips() {
   if (!dom.redeployChips) {
     return;
@@ -904,15 +916,10 @@ function setupRedeployChips() {
   dom.redeployChips.addEventListener('click', (event) => {
     const button = event.target.closest('button[data-value]');
     if (!button) return;
-    dom.redeployChips.querySelectorAll('button[data-value]').forEach((chip) => {
-      const isActive = chip === button;
-      chip.setAttribute('aria-pressed', String(isActive));
-      if (isActive) {
-        state.redeployTarget = chip.dataset.value;
-      }
-    });
+    setRedeployTarget(button.dataset.value);
     updateSelectedSummaries();
   });
+  setRedeployTarget(state.redeployTarget);
 }
 
 function setupBonusToggle() {
@@ -1238,6 +1245,8 @@ function renderHistory() {
         : `${rolePrefix}${characterName}`;
       const item = document.createElement('div');
       item.className = 'quick-item';
+      item.tabIndex = 0;
+      item.setAttribute('role', 'button');
       item.innerHTML = `
         <div class="quick-label">
           <span>${primaryLabel}</span>
@@ -1245,6 +1254,18 @@ function renderHistory() {
         </div>
         <span class="quick-value">${entry.hp.toLocaleString()} HP</span>
       `;
+      const handleActivate = (event) => {
+        if (event.type === 'keydown') {
+          const key = event.key;
+          if (key !== 'Enter' && key !== ' ') {
+            return;
+          }
+          event.preventDefault();
+        }
+        applyHistoryEntry(entry);
+      };
+      item.addEventListener('click', handleActivate);
+      item.addEventListener('keydown', handleActivate);
       dom.recentList.appendChild(item);
     });
   }
@@ -1259,6 +1280,75 @@ function formatDate(iso) {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return '--';
   return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
+
+function resolveHistoryCharacterId(entry, role) {
+  if (!entry || typeof entry !== 'object') {
+    return undefined;
+  }
+  const idKey = role === 'partner' ? 'partnerId' : 'playerId';
+  if (Object.prototype.hasOwnProperty.call(entry, idKey)) {
+    const storedId = entry[idKey];
+    if (typeof storedId === 'number') {
+      return storedId;
+    }
+    return null;
+  }
+
+  if (entry.role === role && typeof entry.characterId === 'number') {
+    return entry.characterId;
+  }
+
+  const nameKey = role === 'partner' ? 'partnerName' : 'playerName';
+  const fallbackNames = [];
+  if (typeof entry[nameKey] === 'string' && entry[nameKey]) {
+    fallbackNames.push(entry[nameKey]);
+  }
+  if (entry.role === role && typeof entry.name === 'string' && entry.name) {
+    fallbackNames.push(entry.name);
+  }
+
+  for (const candidate of fallbackNames) {
+    const matched = state.characters.find((char) => char.name === candidate);
+    if (matched) {
+      return matched.id;
+    }
+  }
+
+  return undefined;
+}
+
+function applyHistoryEntry(entry) {
+  if (!entry) {
+    return;
+  }
+
+  const playerId = resolveHistoryCharacterId(entry, 'player');
+  const partnerId = resolveHistoryCharacterId(entry, 'partner');
+
+  const nextSelection = {
+    playerId: typeof playerId === 'undefined' ? state.selected.playerId : playerId,
+    partnerId: typeof partnerId === 'undefined' ? state.selected.partnerId : partnerId
+  };
+
+  state.selected.playerId = nextSelection.playerId;
+  state.selected.partnerId = nextSelection.partnerId;
+
+  pickerTypes.forEach((type) => {
+    resetPickerSearch(type);
+    updatePickerDisplay(type);
+    closePicker(type);
+  });
+
+  const desiredRedeployTarget = entry.role === 'partner' ? 'partner' : 'player';
+  setRedeployTarget(desiredRedeployTarget);
+
+  renderCards();
+  updateSelectedSummaries({ persistHistory: false });
+
+  if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
+    window.location.hash = '#sim';
+  }
 }
 
 function persistHistory() {
