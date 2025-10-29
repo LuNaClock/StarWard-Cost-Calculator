@@ -550,7 +550,7 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
 .history-character--active::after {
   content: '';
   position: absolute;
-  inset: -6px;
+  inset: 24px;
   border-radius: inherit;
   background: radial-gradient(circle at 20% 20%, rgba(224, 242, 254, 0.75), transparent 60%),
     radial-gradient(circle at 80% 80%, rgba(186, 230, 253, 0.6), transparent 65%);
