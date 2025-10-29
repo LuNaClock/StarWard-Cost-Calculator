@@ -57,13 +57,45 @@ function handleCharacterCardClick(event) {
     }
 }
 
+function autoSimulateRedeploy(preferredType = null) {
+    const playerChar = State.getSelectedPlayerChar();
+    const partnerChar = State.getSelectedPartnerChar();
+
+    if (!playerChar || !partnerChar) {
+        UI.resetSimulationResultsUI();
+        return;
+    }
+
+    let targetType = preferredType && (preferredType === 'player' || preferredType === 'partner')
+        ? preferredType
+        : UI.getActiveRedeployTargetType();
+
+    if (targetType !== 'player' && targetType !== 'partner') {
+        targetType = 'player';
+    }
+
+    UI.updateRedeployTargetButtons(targetType);
+    processSimulateRedeploy(targetType);
+}
+
+function handleRedeployTargetToggleClick(event) {
+    const button = event.target.closest('[data-redeploy-target]');
+    if (!button) return;
+
+    const targetType = button.dataset.redeployTarget;
+    if (targetType !== 'player' && targetType !== 'partner') return;
+
+    UI.updateRedeployTargetButtons(targetType);
+    processSimulateRedeploy(targetType);
+}
+
 function handlePlayerCharSelectChange(event) {
     State.setSelectedPlayerChar(event.target.value);
     UI.syncCharacterPickerSelection('player');
     UI.updateTeamCostDisplay(MAX_TEAM_COST);
     UI.updateSelectedCharactersDisplay();
-    UI.resetSimulationResultsUI();
     processTeamHpCombinations();
+    autoSimulateRedeploy('player');
 }
 
 function handlePartnerCharSelectChange(event) {
@@ -71,8 +103,8 @@ function handlePartnerCharSelectChange(event) {
     UI.syncCharacterPickerSelection('partner');
     UI.updateTeamCostDisplay(MAX_TEAM_COST);
     UI.updateSelectedCharactersDisplay();
-    UI.resetSimulationResultsUI();
     processTeamHpCombinations();
+    autoSimulateRedeploy('partner');
 }
 
 function handleAwakeningInputChange() {
@@ -273,8 +305,11 @@ export function setupEventListeners() {
     // Redeploy Simulation
     if (DOM.playerCharSelect) DOM.playerCharSelect.addEventListener('change', handlePlayerCharSelectChange);
     if (DOM.partnerCharSelect) DOM.partnerCharSelect.addEventListener('change', handlePartnerCharSelectChange);
-    if (DOM.simulatePlayerRedeployBtn) DOM.simulatePlayerRedeployBtn.addEventListener('click', () => processSimulateRedeploy('player'));
-    if (DOM.simulatePartnerRedeployBtn) DOM.simulatePartnerRedeployBtn.addEventListener('click', () => processSimulateRedeploy('partner'));
+    if (DOM.redeployTargetToggle) DOM.redeployTargetToggle.addEventListener('click', handleRedeployTargetToggleClick);
+    if (Array.isArray(DOM.redeployTargetButtons) && DOM.redeployTargetButtons.length > 0) {
+        const initialTarget = UI.getActiveRedeployTargetType() || 'player';
+        UI.updateRedeployTargetButtons(initialTarget);
+    }
 
     // Awakening Gauge Inputs
     const awakeningInputs = [

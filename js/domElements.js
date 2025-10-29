@@ -29,8 +29,8 @@ export const partnerCharSelect = document.getElementById('partnerCharSelect');
 export const totalTeamCostSpan = document.getElementById('totalTeamCost');
 export const selectedCharsDisplay = document.getElementById('selectedCharsDisplay');
 export const remainingTeamCostInput = document.getElementById('remainingTeamCostInput');
-export const simulatePlayerRedeployBtn = document.getElementById('simulatePlayerRedeploy');
-export const simulatePartnerRedeployBtn = document.getElementById('simulatePartnerRedeploy');
+export const redeployTargetToggle = document.getElementById('redeployTargetToggle');
+export const redeployTargetButtons = redeployTargetToggle ? Array.from(redeployTargetToggle.querySelectorAll('[data-redeploy-target]')) : [];
 
 // Redeploy Simulation Results
 export const simulationResultsDiv = document.getElementById('simulationResults');
