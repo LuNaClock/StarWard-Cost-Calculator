@@ -443,7 +443,6 @@ export function setupEventListeners() {
     if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.addEventListener('click', handleCopyTotalHpUrl);
 
     if (DOM.historyList) DOM.historyList.addEventListener('click', handleHistoryTriggerClick);
-    if (DOM.recentCharactersGrid) DOM.recentCharactersGrid.addEventListener('click', handleHistoryTriggerClick);
     if (DOM.clearHistoryButton) DOM.clearHistoryButton.addEventListener('click', handleClearHistoryClick);
     if (DOM.showRecentCardsButton) DOM.showRecentCardsButton.addEventListener('click', handleShowRecentCardsClick);
     if (DOM.resetRecentFilterButton) DOM.resetRecentFilterButton.addEventListener('click', handleResetRecentFilterClick);

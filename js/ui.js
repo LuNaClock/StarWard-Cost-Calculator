@@ -499,13 +499,6 @@ function formatHpValue(value) {
     return `${Math.round(value).toLocaleString()} HP`;
 }
 
-function formatCostValue(value) {
-    if (!Number.isFinite(value)) {
-        return '--';
-    }
-    return value.toFixed(1);
-}
-
 function createAvatarThumbnail(name, image, className) {
     const wrapper = document.createElement('div');
     wrapper.className = className;
@@ -606,19 +599,7 @@ function createHistoryEntryElement(entry, index) {
         createHistoryCharacterBadge('相方', partnerInfo, entry.role === 'partner')
     );
 
-    const details = document.createElement('div');
-    details.className = 'history-entry__details';
-
-    const hpValue = document.createElement('span');
-    hpValue.className = 'history-entry__value';
-    hpValue.textContent = formatHpValue(entry.hp);
-
-    const costValue = document.createElement('span');
-    costValue.textContent = `残コスト ${formatCostValue(entry.remainingCost ?? entry.cost)}`;
-
-    details.append(hpValue, costValue);
-
-    content.append(charactersRow, details);
+    content.appendChild(charactersRow);
 
     const cta = document.createElement('span');
     cta.className = 'history-entry__cta';
@@ -627,58 +608,9 @@ function createHistoryEntryElement(entry, index) {
     button.append(content, cta);
 
     const roleLabel = entry.role === 'partner' ? '相方' : '自機';
-    button.setAttribute('aria-label', `${roleLabel}の再出撃結果を再適用 (${formatHpValue(entry.hp)}, 残コスト ${formatCostValue(entry.remainingCost ?? entry.cost)})`);
+    button.setAttribute('aria-label', `${roleLabel}の再出撃結果を再適用 (${formatHpValue(entry.hp)})`);
 
     return button;
-}
-
-function createRecentCharacterCard(entry, index) {
-    const targetRole = entry.role === 'partner' ? 'partner' : 'player';
-    const roleLabel = targetRole === 'partner' ? '相方' : '自機';
-    const info = resolveHistoryCharacterInfo(entry, targetRole);
-
-    const card = document.createElement('article');
-    card.className = 'recent-character-card';
-    card.dataset.historyIndex = index.toString();
-
-    const thumb = createAvatarThumbnail(info.name, info.image, 'recent-character-card__thumb');
-    const body = document.createElement('div');
-    body.className = 'recent-character-card__body';
-
-    const name = document.createElement('h4');
-    name.className = 'recent-character-card__name';
-    name.textContent = info.name || '--';
-
-    const meta = document.createElement('p');
-    meta.className = 'recent-character-card__meta';
-    const segments = [];
-    if (Number.isFinite(info.cost)) {
-        segments.push(`コスト ${info.cost.toFixed(1)}`);
-    }
-    segments.push(`${roleLabel}としてシミュレーション`);
-    meta.textContent = segments.join(' / ');
-
-    const statRow = document.createElement('div');
-    statRow.className = 'recent-character-card__stat';
-    const statLabel = document.createElement('span');
-    statLabel.textContent = '直近の再出撃体力';
-    const statValue = document.createElement('strong');
-    statValue.textContent = formatHpValue(entry.hp);
-    statRow.append(statLabel, statValue);
-
-    const actions = document.createElement('div');
-    actions.className = 'recent-character-card__actions';
-    const applyButton = document.createElement('button');
-    applyButton.type = 'button';
-    applyButton.className = 'recent-character-card__apply';
-    applyButton.dataset.historyIndex = index.toString();
-    applyButton.textContent = 'この条件を再適用';
-    actions.appendChild(applyButton);
-
-    body.append(name, meta, statRow, actions);
-    card.append(thumb, body);
-
-    return card;
 }
 
 export function renderSimulationHistory(historyEntries = []) {
@@ -710,37 +642,44 @@ export function renderSimulationHistory(historyEntries = []) {
 }
 
 export function renderRecentCharacterCards(historyEntries = []) {
-    if (!DOM.recentCharactersGrid) {
+    if (!DOM.recentCharactersSummary) {
         return;
     }
 
-    DOM.recentCharactersGrid.innerHTML = '';
-
     if (!Array.isArray(historyEntries) || historyEntries.length === 0) {
-        const empty = document.createElement('p');
-        empty.className = 'history-empty';
-        empty.textContent = 'まだ計算履歴がありません';
-        DOM.recentCharactersGrid.appendChild(empty);
+        DOM.recentCharactersSummary.textContent = 'まだ計算履歴がありません';
         return;
     }
 
     const seen = new Set();
-    historyEntries.forEach((entry, index) => {
-        const key = getHistoryEntryKey(entry);
-        if (seen.has(key)) {
+    const names = [];
+
+    historyEntries.forEach((entry) => {
+        const targetRole = entry.role === 'partner' ? 'partner' : 'player';
+        const info = resolveHistoryCharacterInfo(entry, targetRole);
+        const displayName = info?.name || '不明なキャラ';
+        const entryKey = getHistoryEntryKey(entry);
+        const uniqueKey = entryKey ? `${targetRole}:${entryKey}` : `${targetRole}:${displayName}`;
+
+        if (seen.has(uniqueKey)) {
             return;
         }
-        seen.add(key);
-        const card = createRecentCharacterCard(entry, index);
-        DOM.recentCharactersGrid.appendChild(card);
+
+        seen.add(uniqueKey);
+        names.push(displayName);
     });
 
-    if (!seen.size) {
-        const empty = document.createElement('p');
-        empty.className = 'history-empty';
-        empty.textContent = '最近のシミュレーションに該当するキャラがありません';
-        DOM.recentCharactersGrid.appendChild(empty);
+    if (!names.length) {
+        DOM.recentCharactersSummary.textContent = '最近のシミュレーションに該当するキャラがありません';
+        return;
     }
+
+    const displayNames = names.slice(0, 3);
+    const extraCount = names.length - displayNames.length;
+    const baseText = `直近でシミュレーションしたキャラ: ${displayNames.join(' / ')}`;
+    DOM.recentCharactersSummary.textContent = extraCount > 0
+        ? `${baseText} ほか ${extraCount} 件`
+        : baseText;
 }
 
 export function updateRecentCardScopeControls({ hasHistory, isRecentScope }) {
