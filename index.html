@@ -555,7 +555,7 @@
                             <ul>
                                 <li><strong>自機と相方を選択:</strong> ドロップダウンからチームメンバーを選択。選択機体はミニカード表示、チーム合計コストも自動計算されます。</li>
                                 <li><strong>指定キャラ撃墜後の残りコスト:</strong> チームの残り総力コストを選択します。</li>
-                                <li><strong>シミュレーション実行:</strong> 「自機が再出撃した場合」または「相方が再出撃した場合」ボタンで結果表示。再出撃機体の情報とHPバーを確認できます。</li>
+                                <li><strong>シミュレーション結果確認:</strong> 自機・相方を選択すると結果が即時に反映されます。表示したい再出撃対象は切り替えボタンで変更できます。</li>
                             </ul>
                             <p><strong>覚醒ゲージ予測手順:</strong></p>
                             <ul>
@@ -682,14 +682,18 @@
                             <!-- 選択された自機と相方のミニカードがここに表示される -->
                         </div>
 
+                        <div class="simulation-input-group" id="redeployTargetGroup">
+                            <span class="input-label" id="redeployTargetLabel"><i class="fas fa-sync-alt"></i> 再出撃する機体:</span>
+                            <div class="chip-row" role="radiogroup" aria-labelledby="redeployTargetLabel" id="redeployTargetChips">
+                                <button class="filter-chip" type="button" data-target="player" aria-pressed="true">自機</button>
+                                <button class="filter-chip" type="button" data-target="partner" aria-pressed="false">相方</button>
+                            </div>
+                            <p class="input-helper">選択した機体を自動で再出撃計算します</p>
+                        </div>
+
                         <div class="simulation-input-group">
                             <label for="remainingTeamCostInput"><i class="fas fa-coins"></i> 指定キャラ撃墜後の残りコスト:</label>
                             <select id="remainingTeamCostInput" class="select-dropdown"></select>
-                        </div>
-
-                        <div class="simulation-buttons">
-                            <button id="simulatePlayerRedeploy" class="simulation-button">自機が再出撃した場合</button>
-                            <button id="simulatePartnerRedeploy" class="simulation-button">相方が再出撃した場合</button>
                         </div>
 
                         <div class="simulation-results" id="simulationResults">

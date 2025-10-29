@@ -121,6 +121,19 @@ body[data-theme="dark"] .character-picker-selected-icon.is-placeholder {
     font-size: 1em;
 }
 
+.input-label {
+    display: block;
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 1em;
+    letter-spacing: 0.03em;
+}
+
+body[data-theme="dark"] .input-label {
+    color: var(--surface-contrast-color);
+}
+
 .select-wrapper label i {
     color: var(--accent-orange);
     margin-right: 8px;
