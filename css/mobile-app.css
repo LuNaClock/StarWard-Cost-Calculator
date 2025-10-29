@@ -1588,6 +1588,7 @@ body[data-view-mode="desktop"][data-theme="dark"] .view-switcher {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: start;
+  justify-items: start;
   gap: var(--space-2);
   font-size: 14px;
   padding: var(--space-3);
