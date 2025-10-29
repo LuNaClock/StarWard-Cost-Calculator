@@ -221,7 +221,7 @@ function calculateTeamHpScenariosInternal(selectedPlayerChar, selectedPartnerCha
             currentHpForHighest += bestSub_h.totalHp; let subTurnCounter = currentTurn_highest; bestSub_h.sequence.forEach(item => { highestSequence.push({ ...item, turn: subTurnCounter++ }); });
         }
     }
-    const idealScenario = { name: `チーム合計耐久値(理想) (${firstFallChar_highest.name}先落ち→${secondFallChar_highest.name}後落ち後最適化)`, totalHp: currentHpForHighest, sequence: highestSequence };
+    const idealScenario = { name: `チーム合計体力(理想) (${firstFallChar_highest.name}先落ち→${secondFallChar_highest.name}後落ち後最適化)`, totalHp: currentHpForHighest, sequence: highestSequence };
 
     // Compromise HP Scenario
     let firstFallChar_compromise, secondFallChar_compromise;
@@ -252,7 +252,7 @@ function calculateTeamHpScenariosInternal(selectedPlayerChar, selectedPartnerCha
             currentHpForCompromise += bestSub_c.totalHp; let subTurnCounter_c = currentTurn_compromise; bestSub_c.sequence.forEach(item => { compromiseSequence.push({ ...item, turn: subTurnCounter_c++ }); });
         }
     }
-    const compromiseScenario = { name: `チーム合計耐久値(妥協) (${firstFallChar_compromise.name}先落ち→${secondFallChar_compromise.name}後落ち後最適化)`, totalHp: currentHpForCompromise, sequence: compromiseSequence };
+    const compromiseScenario = { name: `チーム合計体力(妥協) (${firstFallChar_compromise.name}先落ち→${secondFallChar_compromise.name}後落ち後最適化)`, totalHp: currentHpForCompromise, sequence: compromiseSequence };
 
     // Bomb Scenario
     let fallingChar_bomb;
@@ -263,7 +263,7 @@ function calculateTeamHpScenariosInternal(selectedPlayerChar, selectedPartnerCha
     const bombTotalHp = selectedPlayerChar.hp + selectedPartnerChar.hp + bombFallResult.totalHp;
     let bombSequence = [ { turn: 0, charName: "初期HP", charType: "", charCost: 0, hpGained: selectedPlayerChar.hp + selectedPartnerChar.hp, costConsumed: 0, remainingCost: MAX_TEAM_COST.toFixed(1), note: `${selectedPlayerChar.name} (${selectedPlayerChar.hp.toLocaleString()}) + ${selectedPartnerChar.name} (${selectedPartnerChar.hp.toLocaleString()})` } ];
     bombFallResult.sequence.forEach(item => { bombSequence.push(item); });
-    const bombScenario = { name: `チーム合計耐久値(爆弾) (${fallingChar_bomb.name}のみ連続撃墜)`, totalHp: bombTotalHp, sequence: bombSequence };
+    const bombScenario = { name: `チーム合計体力(爆弾) (${fallingChar_bomb.name}のみ連続撃墜)`, totalHp: bombTotalHp, sequence: bombSequence };
 
     // Lowest HP Scenario (one character takes all hits)
     const playerFocusRedeploys = simulateMinimumSequence(selectedPlayerChar, IS_TEAM_SCENARIO, selectedPlayerChar);
@@ -278,9 +278,9 @@ function calculateTeamHpScenariosInternal(selectedPlayerChar, selectedPartnerCha
 
     let lowestScenario;
     if (lowestPlayerFocusTotalHp <= lowestPartnerFocusTotalHp) {
-        lowestScenario = { name: `チーム合計耐久値(最低/${selectedPlayerChar.name}集中狙い)`, totalHp: lowestPlayerFocusTotalHp, sequence: lowestPlayerFocusSequence };
+        lowestScenario = { name: `チーム合計体力(最低/${selectedPlayerChar.name}集中狙い)`, totalHp: lowestPlayerFocusTotalHp, sequence: lowestPlayerFocusSequence };
     } else {
-        lowestScenario = { name: `チーム合計耐久値(最低/${selectedPartnerChar.name}集中狙い)`, totalHp: lowestPartnerFocusTotalHp, sequence: lowestPartnerFocusSequence };
+        lowestScenario = { name: `チーム合計体力(最低/${selectedPartnerChar.name}集中狙い)`, totalHp: lowestPartnerFocusTotalHp, sequence: lowestPartnerFocusSequence };
     }
     return { idealScenario, compromiseScenario, bombScenario, lowestScenario };
 }
