@@ -271,9 +271,9 @@
                                     <p>覚醒ゲージは以下の要素に基づいて計算されます。</p>
                                     <div class="info-details__section">
                                         <h4>基礎増加（被ダメージ）</h4>
-                                        <p>受けたダメージ量に応じてゲージが増加します。本来の耐久値に対する割合が重要です。</p>
-                                        <p class="info-details__formula"><strong>増加量 = (被ダメージ量 / 本来の耐久値) × 100 × 約0.598</strong></p>
-                                        <p class="info-details__tip">例: 耐久値3000の機体が1500ダメージで撃墜された場合、(1500 / 3000) × 100 × 約0.598 ≒ 約29.9% 増加します。</p>
+                                        <p>受けたダメージ量に応じてゲージが増加します。本来の体力に対する割合が重要です。</p>
+                                        <p class="info-details__formula"><strong>増加量 = (被ダメージ量 / 本来の体力) × 100 × 約0.598</strong></p>
+                                        <p class="info-details__tip">例: 体力3000の機体が1500ダメージで撃墜された場合、(1500 / 3000) × 100 × 約0.598 ≒ 約29.9% 増加します。</p>
                                     </div>
                                     <div class="info-details__section">
                                         <h4>再出撃直後のゲージ量（最低保証値）</h4>
@@ -283,7 +283,7 @@
                                             <li>コスト2.0: 約20%</li>
                                             <li>コスト1.5: 約15%</li>
                                         </ul>
-                                        <p class="info-details__tip">撃墜時に最大耐久値を超えるダメージを受けた分も加算されるため、実際の値とは誤差が生じる場合があります。</p>
+                                        <p class="info-details__tip">撃墜時に最大体力を超えるダメージを受けた分も加算されるため、実際の値とは誤差が生じる場合があります。</p>
                                     </div>
                                     <div class="info-details__section">
                                         <h4>与ダメージ考慮</h4>
@@ -320,7 +320,7 @@
                             <div class="results-section" role="group" aria-label="再出撃計算の概要">
                                 <div class="results-grid">
                                     <div class="result-figure">
-                                        <span>再出撃耐久値</span>
+                                        <span>再出撃体力</span>
                                         <strong data-bind="result-hp">0</strong>
                                     </div>
                                     <div class="result-figure">
@@ -353,27 +353,27 @@
 
                     <article class="panel team-summary" id="teamSummaryPanel">
                         <div class="panel-header">
-                            <h3 class="panel-title">チーム合計耐久力予測</h3>
-                            <p class="panel-subtitle" data-role="team-summary-empty">「自機」と「相方」を選択すると、理想/妥協/爆弾/最低シナリオ別の合計耐久力が表示されます。</p>
+                            <h3 class="panel-title">チーム合計体力予測</h3>
+                            <p class="panel-subtitle" data-role="team-summary-empty">「自機」と「相方」を選択すると、理想/妥協/爆弾/最低シナリオ別の合計体力が表示されます。</p>
                         </div>
                         <details class="info-details" data-role="team-summary-guide">
-                            <summary>チーム合計耐久力予測の見方</summary>
-                            <p>「再出撃シミュレーション」でチームを組むと、ここに表示される4つのシナリオが自動更新され、撃墜順序による合計耐久力の差を確認できます。</p>
+                            <summary>チーム合計体力予測の見方</summary>
+                            <p>「再出撃シミュレーション」でチームを組むと、ここに表示される4つのシナリオが自動更新され、撃墜順序による合計体力の差を確認できます。</p>
                             <p>理想的な落ち方から最悪パターンまでを一度に把握し、どの展開でも粘り強く戦えるかをチェックしましょう。</p>
                             <div class="info-details__section">
                                 <h4>各シナリオの概要</h4>
                                 <ul>
-                                    <li><strong>チーム合計耐久値(理想):</strong> 高コスト機から撃墜される理想的なケース。</li>
-                                    <li><strong>チーム合計耐久値(妥協):</strong> 低コスト機から撃墜されるケース。</li>
-                                    <li><strong>チーム合計耐久値(爆弾):</strong> 低コスト機のみが連続で撃墜されるケース。</li>
-                                    <li><strong>チーム合計耐久値(最低):</strong> 片方の機体だけが落ち続ける最も非効率なケース。</li>
+                                    <li><strong>チーム合計体力(理想):</strong> 高コスト機から撃墜される理想的なケース。</li>
+                                    <li><strong>チーム合計体力(妥協):</strong> 低コスト機から撃墜されるケース。</li>
+                                    <li><strong>チーム合計体力(爆弾):</strong> 低コスト機のみが連続で撃墜されるケース。</li>
+                                    <li><strong>チーム合計体力(最低):</strong> 片方の機体だけが落ち続ける最も非効率なケース。</li>
                                 </ul>
                             </div>
-                            <p class="info-details__note">各カードの「撃墜順序と獲得HP」をタップすると、撃墜の進行や各段階での獲得耐久値・残りコストの内訳を確認できます。</p>
+                            <p class="info-details__note">各カードの「撃墜順序と獲得HP」をタップすると、撃墜の進行や各段階での獲得体力・残りコストの内訳を確認できます。</p>
                         </details>
                         <div class="team-summary-grid" data-role="team-summary-grid" hidden>
                             <div class="team-summary-card" data-scenario="ideal">
-                                <p class="team-summary-title" data-role="title">チーム合計耐久値(理想)</p>
+                                <p class="team-summary-title" data-role="title">チーム合計体力(理想)</p>
                                 <p class="team-summary-value" data-role="value">--</p>
                                 <details class="scenario-details">
                                     <summary>撃墜順序と獲得HP</summary>
@@ -381,7 +381,7 @@
                                 </details>
                             </div>
                             <div class="team-summary-card" data-scenario="compromise">
-                                <p class="team-summary-title" data-role="title">チーム合計耐久値(妥協)</p>
+                                <p class="team-summary-title" data-role="title">チーム合計体力(妥協)</p>
                                 <p class="team-summary-value" data-role="value">--</p>
                                 <details class="scenario-details">
                                     <summary>撃墜順序と獲得HP</summary>
@@ -389,7 +389,7 @@
                                 </details>
                             </div>
                             <div class="team-summary-card" data-scenario="bomb">
-                                <p class="team-summary-title" data-role="title">チーム合計耐久値(爆弾)</p>
+                                <p class="team-summary-title" data-role="title">チーム合計体力(爆弾)</p>
                                 <p class="team-summary-value" data-role="value">--</p>
                                 <details class="scenario-details">
                                     <summary>撃墜順序と獲得HP</summary>
@@ -397,7 +397,7 @@
                                 </details>
                             </div>
                             <div class="team-summary-card" data-scenario="lowest">
-                                <p class="team-summary-title" data-role="title">チーム合計耐久値(最低)</p>
+                                <p class="team-summary-title" data-role="title">チーム合計体力(最低)</p>
                                 <p class="team-summary-value" data-role="value">--</p>
                                 <details class="scenario-details">
                                     <summary>撃墜順序と獲得HP</summary>
@@ -410,7 +410,7 @@
                     <article class="panel selected-characters" id="selectedCharactersPanel">
                         <div class="panel-header">
                             <h3 class="panel-title">選択キャラクター詳細</h3>
-                            <p class="panel-subtitle" data-role="selected-empty">選択した機体の基礎耐久値と残コスト別の再出撃耐久を確認できます。</p>
+                            <p class="panel-subtitle" data-role="selected-empty">選択した機体の基礎体力と残コスト別の再出撃耐久を確認できます。</p>
                         </div>
                         <div class="selected-character-grid card-grid" id="selectedCharacterGrid" hidden></div>
                     </article>
@@ -520,7 +520,7 @@
 
         <div class="usage-guide-container">
             <h2><i class="fas fa-question-circle"></i> ツールの使い方ガイド</h2>
-            <p class="guide-intro">このツールは、コストオーバーが起こって再出撃した際の耐久値の計算に加え、チームの総耐久力予測、覚醒ゲージの予測が可能です。この使い方ガイド自体はクリックで内容を開閉できます。主要な機能である「再出撃シミュレーション」と「チーム合計耐久力予測」も開閉が出来、初期状態では開いています。以下のポイントをチェックして、本ツールを使いこなそう！</p>
+            <p class="guide-intro">このツールは、コストオーバーが起こって再出撃した際の体力の計算に加え、チームの総体力予測、覚醒ゲージの予測が可能です。この使い方ガイド自体はクリックで内容を開閉できます。主要な機能である「再出撃シミュレーション」と「チーム合計体力予測」も開閉が出来、初期状態では開いています。以下のポイントをチェックして、本ツールを使いこなそう！</p>
 
             <div class="accordion">
                 <div class="accordion-item">
@@ -529,14 +529,14 @@
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
-                        <p>ページ下部の検索・フィルターで、お目当てのキャラを瞬時に発見！🔍 表示されたキャラカードでHP・コストをチェックし、再出撃時の耐久値も一目でわかります。💪</p>
-                        <p>カード内の「再出撃時耐久値」をクリックするとHPバーが連動！残りHPのヤバさが視覚的に分かります。📉</p>
+                        <p>ページ下部の検索・フィルターで、お目当てのキャラを瞬時に発見！🔍 表示されたキャラカードでHP・コストをチェックし、再出撃時の体力も一目でわかります。💪</p>
+                        <p>カード内の「再出撃時体力」をクリックするとHPバーが連動！残りHPのヤバさが視覚的に分かります。📉</p>
                         <details class="guide-details">
                             <summary>💡 詳細な操作方法と計算式を見る</summary>
                             <p><strong>検索・フィルタリング:</strong> ページ下部にある「キャラクター名検索」ボックス、コスト別「フィルター」ボタン、表示順「並び替え」ボタンで、キャラクターグリッドの表示をカスタマイズできます。</p>
-                            <p><strong>個別耐久値の確認:</strong> 各キャラクターカードには、基本情報（HP、コスト）と、コストオーバー時の「再出撃時耐久値」が表示されています。</p>
-                            <p class="formula"><strong>計算式:</strong> 再出撃時耐久値 = 本来の耐久値 × (残りコスト ÷ キャラクターのコスト)</p>
-                            <p><strong>HPバーリセット:</strong> HPバー表示を100%に戻したい場合は、キャラクターカードの「本来の耐久値」の数値部分をクリックしてください。</p>
+                            <p><strong>個別体力の確認:</strong> 各キャラクターカードには、基本情報（HP、コスト）と、コストオーバー時の「再出撃時体力」が表示されています。</p>
+                            <p class="formula"><strong>計算式:</strong> 再出撃時体力 = 本来の体力 × (残りコスト ÷ キャラクターのコスト)</p>
+                            <p><strong>HPバーリセット:</strong> HPバー表示を100%に戻したい場合は、キャラクターカードの「本来の体力」の数値部分をクリックしてください。</p>
                         </details>
                     </div>
                 </div>
@@ -560,7 +560,7 @@
                             <p><strong>覚醒ゲージ予測手順:</strong></p>
                             <ul>
                                 <li>「再出撃シミュレーション」結果表示エリアの下にある「覚醒ゲージ予測」セクションで行います。</li>
-                                <li><strong>撃墜直前の状況入力:</strong> 「覚醒が溜まるか調べたい覚醒ゲージ」と「覚醒が溜まるか調べたい耐久値」（残りHP）を入力します。</li>
+                                <li><strong>撃墜直前の状況入力:</strong> 「覚醒が溜まるか調べたい覚醒ゲージ」と「覚醒が溜まるか調べたい体力」（残りHP）を入力します。</li>
                                 <li><strong>各種ボーナス考慮:</strong> 「再出撃直後のゲージ量にする」「与ダメージ考慮」「相方撃墜考慮」のチェックボックスとドロップダウンで条件を設定。</li>
                                 <li><strong>結果確認:</strong> 「予測覚醒ゲージ」と「覚醒使用可否」が表示されます。「覚醒ゲージ計算の詳細」では計算の内訳も確認可能です。</li>
                             </ul>
@@ -574,16 +574,16 @@
                         <i class="fas fa-chevron-down accordion-icon"></i>
                     </button>
                     <div class="accordion-content">
-                        <p>「再出撃シミュレーション」でチームを組むと、その下の「チーム合計耐久力予測」セクション（初期表示で展開）が自動更新！📈 様々な撃墜シナリオでのチーム総耐久力を丸裸にします。</p>
+                        <p>「再出撃シミュレーション」でチームを組むと、その下の「チーム合計体力予測」セクション（初期表示で展開）が自動更新！📈 様々な撃墜シナリオでのチーム総体力を丸裸にします。</p>
                         <p>理想的な落ち方から最悪パターンまで、チームの限界を把握！💪💔 詳細な撃墜順序も確認可能。結果はXやURLでシェア！<i class="fas fa-share-alt"></i></p>
                         <details class="guide-details">
                             <summary>💡 予測シナリオと詳細確認方法を見る</summary>
                             <p><strong>予測シナリオの概要:</strong></p>
                             <ul>
-                                <li><strong>チーム合計耐久値(最高):</strong> 高コスト機から落ちる大よそ理想的なケース。</li>
-                                <li><strong>チーム合計耐久値(妥協):</strong> 低コスト機から落ちるケース。</li>
-                                <li><strong>チーム合計耐久値(爆弾):</strong> 低コスト機のみが連続撃墜されるケース。</li>
-                                <li><strong>チーム合計耐久値(最低):</strong> 一方の機体のみが連続撃墜される最も非効率なケース。</li>
+                                <li><strong>チーム合計体力(最高):</strong> 高コスト機から落ちる大よそ理想的なケース。</li>
+                                <li><strong>チーム合計体力(妥協):</strong> 低コスト機から落ちるケース。</li>
+                                <li><strong>チーム合計体力(爆弾):</strong> 低コスト機のみが連続撃墜されるケース。</li>
+                                <li><strong>チーム合計体力(最低):</strong> 一方の機体のみが連続撃墜される最も非効率なケース。</li>
                             </ul>
                             <p><strong>詳細確認:</strong> 各シナリオの下にある「撃墜順序と獲得HP」と書かれたアコーディオンヘッダー（▼マークの部分）をクリックすると、そのシナリオにおける詳細な撃墜の進行と、各段階での獲得HP、残りチームコストの内訳を確認できます。</p>
                         </details>
@@ -601,7 +601,7 @@
                 </button>
                 <div class="accordion-content" id="redeploy-simulation-content">
                     <div class="simulation-container">
-                        <p class="guide-intro">自機と相方を選択し、現在のチーム残りコストを入力することで、どちらかの機体が再出撃した場合の耐久値をシミュレーションできます。</p>
+                        <p class="guide-intro">自機と相方を選択し、現在のチーム残りコストを入力することで、どちらかの機体が再出撃した場合の体力をシミュレーションできます。</p>
                         <div class="character-select-group">
                             <div class="select-wrapper">
                                 <label for="playerCharPickerToggle"><i class="fas fa-user-astronaut"></i> 自機:</label>
@@ -716,13 +716,13 @@
                                     <span class="info-label">機体コスト:</span> <span id="redeployCharCost" class="info-value">--</span>
                                 </div>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">本来の耐久値:</span> <span id="redeployOriginalHp" class="info-value">--</span>
+                                    <span class="info-label">本来の体力:</span> <span id="redeployOriginalHp" class="info-value">--</span>
                                 </div>
                                 <div class="redeploy-char-info">
                                     <span class="info-label">再出撃時コスト消費:</span> <span id="redeployCostConsumed" class="info-value">--</span>
                                 </div>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">再出撃時耐久値:</span> <span id="redeployCalculatedHp" class="info-value">--</span>
+                                    <span class="info-label">再出撃時体力:</span> <span id="redeployCalculatedHp" class="info-value">--</span>
                                 </div>
                             </div>
                             <div class="hp-bar-container simulation-hp-bar">
@@ -807,13 +807,13 @@
 
                                             <div class="gauge-section">
                                                 <h5><i class="fas fa-heartbeat"></i> 基礎増加（被ダメージ）</h5>
-                                                <p>受けたダメージ量に応じて増加します。本来の耐久値に対するダメージ割合が重要です。</p>
-                                                <p class="formula small-formula"><strong>増加量 = (被ダメージ量 / 本来の耐久値) × 100 × 約<span id="avgGaugeCoeffValue"></span></strong></p>
-                                                <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: 例として、耐久値3000の機体が1500ダメージ受けて撃墜された場合、(1500/3000)*100*約<span id="avgGaugeCoeffExampleValue"></span> = 約29.9% 増加します。</p>
+                                                <p>受けたダメージ量に応じて増加します。本来の体力に対するダメージ割合が重要です。</p>
+                                                <p class="formula small-formula"><strong>増加量 = (被ダメージ量 / 本来の体力) × 100 × 約<span id="avgGaugeCoeffValue"></span></strong></p>
+                                                <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: 例として、体力3000の機体が1500ダメージ受けて撃墜された場合、(1500/3000)*100*約<span id="avgGaugeCoeffExampleValue"></span> = 約29.9% 増加します。</p>
                                             </div>
                                             <div class="gauge-section">
                                                 <h5><i class="fas fa-rocket"></i> 再出撃直後のゲージ量（最低保証値）</h5>
-                                                <p>「再出撃直後のゲージ量にする」にチェックを入れると、撃墜によって増加する覚醒ゲージが加算されます。このボーナスは自機のコストによって異なり、ツール内では計測した範囲での最低保証値を適用しています。撃墜された際に耐久値以上のダメージを受けるとその分も加算される為、実際には誤差が発生しやすいです。</p>
+                                                <p>「再出撃直後のゲージ量にする」にチェックを入れると、撃墜によって増加する覚醒ゲージが加算されます。このボーナスは自機のコストによって異なり、ツール内では計測した範囲での最低保証値を適用しています。撃墜された際に体力以上のダメージを受けるとその分も加算される為、実際には誤差が発生しやすいです。</p>
                                                 <ul>
                                                     <li>コスト3.0 / 2.5: 約<span id="ownDownBonus30"></span>%</li>
                                                     <li>コスト2.0: 約<span id="ownDownBonus20"></span>%</li>
@@ -870,25 +870,25 @@
             </div>
         </div>
 
-        <!-- チーム合計耐久力予測セクションをアコーディオン化 -->
+        <!-- チーム合計体力予測セクションをアコーディオン化 -->
         <div class="main-section-accordion" id="total-hp-accordion">
             <div class="accordion-item">
                 <button class="accordion-header main-section-accordion-header" aria-expanded="false">
-                    <span><i class="fas fa-medal"></i> チーム合計耐久力予測</span>
+                    <span><i class="fas fa-medal"></i> チーム合計体力予測</span>
                     <i class="fas fa-chevron-down accordion-icon"></i>
                 </button>
                 <div class="accordion-content main-section-accordion-content">
                     <div class="total-hp-display-area" id="totalHpDisplayArea">
                         <p class="total-hp-summary">
                             選択された<span class="cost-value-small" id="selectedPlayerCharNameSummary">自機</span>と<span class="cost-value-small" id="selectedPartnerCharNameSummary">相方</span>の組み合わせで、
-                            高コストから落ちた場合(理想)、低コストから落ちた場合(妥協)、低コストのみ落ちた場合(爆弾)、最も非効率的な落ち方をした場合の合計耐久力を予測します。
+                            高コストから落ちた場合(理想)、低コストから落ちた場合(妥協)、低コストのみ落ちた場合(爆弾)、最も非効率的な落ち方をした場合の合計体力を予測します。
                         </p>
 
                         <div class="total-hp-grid">
                             <div class="total-hp-scenario">
-                                <h4 id="highestHpScenarioTitleParent"><i class="fas fa-chart-line"></i> <span id="highestHpScenarioTitle">チーム合計耐久値(最高)</span></h4>
+                                <h4 id="highestHpScenarioTitleParent"><i class="fas fa-chart-line"></i> <span id="highestHpScenarioTitle">チーム合計体力(最高)</span></h4>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">合計獲得耐久値:</span> <span id="idealGainedHp" class="info-value">--</span>
+                                    <span class="info-label">合計獲得体力:</span> <span id="idealGainedHp" class="info-value">--</span>
                                 </div>
                                 <button class="total-hp-accordion-header" aria-expanded="false">
                                     <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
@@ -898,9 +898,9 @@
                             </div>
 
                             <div class="total-hp-scenario">
-                                <h4 id="compromiseHpScenarioTitleParent"><i class="fas fa-chart-area"></i> <span id="compromiseHpScenarioTitle">チーム合計耐久値(妥協)</span></h4>
+                                <h4 id="compromiseHpScenarioTitleParent"><i class="fas fa-chart-area"></i> <span id="compromiseHpScenarioTitle">チーム合計体力(妥協)</span></h4>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">合計獲得耐久値:</span> <span id="minGainedHpSpan" class="info-value">--</span>
+                                    <span class="info-label">合計獲得体力:</span> <span id="minGainedHpSpan" class="info-value">--</span>
                                 </div>
                                 <button class="total-hp-accordion-header" aria-expanded="false">
                                     <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
@@ -910,9 +910,9 @@
                             </div>
 
                             <div class="total-hp-scenario">
-                                <h4 id="bombHpScenarioTitleParent"><i class="fas fa-bomb"></i> <span id="bombHpScenarioTitle">チーム合計耐久値(爆弾)</span></h4>
+                                <h4 id="bombHpScenarioTitleParent"><i class="fas fa-bomb"></i> <span id="bombHpScenarioTitle">チーム合計体力(爆弾)</span></h4>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">合計獲得耐久値:</span> <span id="bombGainedHp" class="info-value">--</span>
+                                    <span class="info-label">合計獲得体力:</span> <span id="bombGainedHp" class="info-value">--</span>
                                 </div>
                                 <button class="total-hp-accordion-header" aria-expanded="false">
                                     <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
@@ -922,9 +922,9 @@
                             </div>
 
                             <div class="total-hp-scenario">
-                                <h4 id="lowestHpScenarioTitleParent"><i class="fas fa-arrow-down"></i> <span id="lowestHpScenarioTitle">チーム合計耐久値(最低)</span></h4>
+                                <h4 id="lowestHpScenarioTitleParent"><i class="fas fa-arrow-down"></i> <span id="lowestHpScenarioTitle">チーム合計体力(最低)</span></h4>
                                 <div class="redeploy-char-info">
-                                    <span class="info-label">合計獲得耐久値:</span> <span id="lowestGainedHp" class="info-value">--</span>
+                                    <span class="info-label">合計獲得体力:</span> <span id="lowestGainedHp" class="info-value">--</span>
                                 </div>
                                 <button class="total-hp-accordion-header" aria-expanded="false">
                                     <span class="total-hp-accordion-title">撃墜順序と獲得HP</span>
@@ -984,8 +984,8 @@
                         <button class="filter-button active" data-sort="name">名前順</button>
                         <button class="filter-button" data-sort="cost-asc">コスト <i class="fas fa-arrow-down"></i></button>
                         <button class="filter-button" data-sort="cost-desc">コスト <i class="fas fa-arrow-up"></i></button>
-                        <button class="filter-button" data-sort="hp-asc">耐久値 <i class="fas fa-arrow-down"></i></button>
-                        <button class="filter-button" data-sort="hp-desc">耐久値 <i class="fas fa-arrow-up"></i></button>
+                        <button class="filter-button" data-sort="hp-asc">体力 <i class="fas fa-arrow-down"></i></button>
+                        <button class="filter-button" data-sort="hp-desc">体力 <i class="fas fa-arrow-up"></i></button>
                     </div>
                 </div>
             </div>

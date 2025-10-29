@@ -1726,7 +1726,7 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     margin-top: 20px;
 }
 
-/* ----- 新規追加: 合計耐久力表示エリア ----- */
+/* ----- 新規追加: 合計体力表示エリア ----- */
 .total-hp-display-area {
     margin-top: 50px;
     padding: 30px;

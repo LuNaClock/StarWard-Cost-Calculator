@@ -134,7 +134,7 @@ export function processSimulateRedeploy(charType) {
     // シミュレーション実行後、関連するアコーディオンを開く
     if (DOM.totalHpMainAccordionHeader && DOM.totalHpMainAccordionContent) {
         accordionManager.openAccordion(DOM.totalHpMainAccordionHeader);
-        // 「チーム合計耐久力予測」のアコーディオンが完全に開いた後に更新
+        // 「チーム合計体力予測」のアコーディオンが完全に開いた後に更新
         UI.updateTeamCostDisplay(MAX_TEAM_COST); // シミュレーション結果を元に更新
         processTeamHpCombinations(); // シミュレーション結果を元に更新
         
@@ -261,7 +261,7 @@ function setupInitialEventListeners() {
 function handleTeamChange() {
     UI.updateTeamCostDisplay();
     UI.updateSelectedCharactersDisplay();
-    processTeamHpCombinations(); // チーム変更時に合計耐久力も再計算・表示
+    processTeamHpCombinations(); // チーム変更時に合計体力も再計算・表示
 }
 
 function handleTotalHpCalculation() {
