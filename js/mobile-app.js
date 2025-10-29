@@ -1227,13 +1227,8 @@ function renderHistory() {
       );
       label.appendChild(characterRow);
 
-      const timestamp = document.createElement('span');
-      timestamp.className = 'history-timestamp';
-      timestamp.textContent = formatDate(entry.timestamp);
-      label.appendChild(timestamp);
-
       const value = document.createElement('span');
-      value.className = 'quick-value';
+      value.className = 'quick-value history-value';
       if (typeof entry.hp === 'number' && Number.isFinite(entry.hp)) {
         value.textContent = `${entry.hp.toLocaleString()} HP`;
       } else {
@@ -1262,12 +1257,6 @@ function renderHistory() {
     renderCards();
   }
   updateCardScopeNotice();
-}
-
-function formatDate(iso) {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '--';
-  return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 }
 
 function resolveHistoryCharacterInfo(entry, role) {
