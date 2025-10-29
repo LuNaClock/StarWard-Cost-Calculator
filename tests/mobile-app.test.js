@@ -100,3 +100,54 @@ describe('createScenarioListItem', () => {
     expect(notes).toEqual(['残りコスト0の為、計算終了']);
   });
 });
+
+describe('collectRecentCharacterIdentifiers', () => {
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
+  it('収集したIDと名前に自機・相方の両方を含める', async () => {
+    const { collectRecentCharacterIdentifiers } = await import('../js/mobile-app.js');
+    const history = [
+      {
+        characterId: 1,
+        name: 'メイン機',
+        playerId: 10,
+        playerName: '自機A',
+        partnerId: 20,
+        partnerName: '相方B'
+      },
+      {
+        characterId: null,
+        name: '  ',
+        playerId: 30,
+        playerName: ' 自機C ',
+        partnerId: undefined,
+        partnerName: ' 相方D '
+      },
+      null
+    ];
+
+    const { ids, names } = collectRecentCharacterIdentifiers(history);
+
+    expect(ids).toBeInstanceOf(Set);
+    expect(names).toBeInstanceOf(Set);
+    expect(ids.size).toBe(4);
+    expect(Array.from(ids)).toEqual(expect.arrayContaining([1, 10, 20, 30]));
+    expect(names.size).toBe(5);
+    expect(names.has('メイン機')).toBe(true);
+    expect(names.has('自機A')).toBe(true);
+    expect(names.has('相方B')).toBe(true);
+    expect(names.has('自機C')).toBe(true);
+    expect(names.has('相方D')).toBe(true);
+    expect(names.has('')).toBe(false);
+  });
+
+  it('不正な履歴データを渡した場合でも空集合を返す', async () => {
+    const { collectRecentCharacterIdentifiers } = await import('../js/mobile-app.js');
+    const { ids, names } = collectRecentCharacterIdentifiers(undefined);
+
+    expect(ids.size).toBe(0);
+    expect(names.size).toBe(0);
+  });
+});
