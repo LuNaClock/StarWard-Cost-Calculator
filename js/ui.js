@@ -345,6 +345,23 @@ export function syncCharacterPickerSelection(type) {
     renderCharacterPicker(type);
 }
 
+export function updateRedeployTargetButtons(activeType) {
+    if (!Array.isArray(DOM.redeployTargetButtons) || DOM.redeployTargetButtons.length === 0) return;
+
+    DOM.redeployTargetButtons.forEach(button => {
+        const buttonType = button.dataset.redeployTarget;
+        const isActive = buttonType === activeType;
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        button.classList.toggle('is-active', isActive);
+    });
+}
+
+export function getActiveRedeployTargetType() {
+    if (!Array.isArray(DOM.redeployTargetButtons) || DOM.redeployTargetButtons.length === 0) return null;
+    const activeButton = DOM.redeployTargetButtons.find(button => button.getAttribute('aria-pressed') === 'true');
+    return activeButton ? activeButton.dataset.redeployTarget || null : null;
+}
+
 function createTextElement(tag, className, textContent) {
     const element = document.createElement(tag);
     if (className) element.className = className;
@@ -543,6 +560,16 @@ export function populateRemainingCostSelect(maxTeamCost) {
         option.textContent = cost.toFixed(1);
         DOM.remainingTeamCostInput.appendChild(option);
     }
+}
+
+export function setRedeployTargetSelection(target) {
+    if (!DOM.redeployTargetChips) return;
+    const validTarget = target === 'partner' ? 'partner' : 'player';
+    const buttons = DOM.redeployTargetChips.querySelectorAll('button[data-target]');
+    buttons.forEach(button => {
+        const isActive = button.dataset.target === validTarget;
+        button.setAttribute('aria-pressed', String(isActive));
+    });
 }
 
 export function generateSelectedCharacterCards() {

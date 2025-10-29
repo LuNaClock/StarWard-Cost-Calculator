@@ -29,8 +29,7 @@ export const partnerCharSelect = document.getElementById('partnerCharSelect');
 export const totalTeamCostSpan = document.getElementById('totalTeamCost');
 export const selectedCharsDisplay = document.getElementById('selectedCharsDisplay');
 export const remainingTeamCostInput = document.getElementById('remainingTeamCostInput');
-export const simulatePlayerRedeployBtn = document.getElementById('simulatePlayerRedeploy');
-export const simulatePartnerRedeployBtn = document.getElementById('simulatePartnerRedeploy');
+export const redeployTargetChips = document.getElementById('redeployTargetChips');
 
 // Redeploy Simulation Results
 export const simulationResultsDiv = document.getElementById('simulationResults');

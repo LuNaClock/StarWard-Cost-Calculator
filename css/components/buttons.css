@@ -197,6 +197,43 @@ body[data-theme="dark"] .theme-toggle__button[aria-pressed="true"] {
     margin: 25px 0;
 }
 
+.chip-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-chip {
+    appearance: none;
+    border: 1px solid var(--light-grey-border);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-color);
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.filter-chip:hover,
+.filter-chip:focus-visible {
+    outline: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 191, 255, 0.25);
+    border-color: rgba(0, 191, 255, 0.65);
+}
+
+.filter-chip[aria-pressed="true"] {
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.9), rgba(0, 150, 200, 0.85));
+    border-color: rgba(0, 191, 255, 0.8);
+    color: var(--surface-contrast-color);
+    box-shadow: 0 12px 24px rgba(0, 191, 255, 0.35);
+    transform: translateY(-2px);
+}
+
 .simulation-button { /* This is a base class for simulation and share buttons */
     background-color: var(--primary-light);
     color: var(--surface-contrast-color);

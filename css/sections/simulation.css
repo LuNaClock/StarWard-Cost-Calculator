@@ -1,5 +1,153 @@
 /* シミュレーションセクション */
 
+/* 再出撃対象の切り替え */
+.redeploy-target-control {
+    margin: 28px 0;
+    padding: 24px;
+    border-radius: 18px;
+    background-color: var(--card-background);
+    box-shadow: var(--soft-shadow);
+    border: 1px solid rgba(0, 191, 255, 0.18);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.redeploy-target-control__header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.redeploy-target-control__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+}
+
+.redeploy-target-control__label i {
+    font-size: 1.2rem;
+    color: var(--primary-light);
+}
+
+.redeploy-target-control__helper {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.redeploy-target-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+}
+
+.redeploy-target-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px 28px;
+    min-width: 180px;
+    min-height: 64px;
+    border-radius: 20px;
+    border: 2px solid rgba(0, 191, 255, 0.35);
+    background: rgba(0, 191, 255, 0.1);
+    color: var(--primary-dark);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+    transition: background-color var(--transition-speed), color var(--transition-speed), box-shadow var(--transition-speed), transform var(--transition-speed);
+    cursor: pointer;
+    box-shadow: 0 12px 24px rgba(0, 191, 255, 0.15);
+}
+
+.redeploy-target-button i {
+    font-size: 1.2rem;
+    color: var(--primary-light);
+}
+
+.redeploy-target-button:hover,
+.redeploy-target-button:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 32px rgba(0, 191, 255, 0.35);
+}
+
+.redeploy-target-button[aria-pressed="true"] {
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.9), rgba(72, 61, 139, 0.92));
+    color: var(--card-background);
+    border-color: rgba(0, 191, 255, 0.75);
+    box-shadow: 0 20px 40px rgba(0, 191, 255, 0.38);
+}
+
+.redeploy-target-button[aria-pressed="true"] i {
+    color: var(--card-background);
+}
+
+.redeploy-target-button__text {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+@media (max-width: 768px) {
+    .redeploy-target-control {
+        padding: 20px;
+    }
+
+    .redeploy-target-toggle {
+        gap: 12px;
+    }
+
+    .redeploy-target-button {
+        flex: 1 1 140px;
+        min-width: 0;
+        padding: 14px 18px;
+    }
+}
+
+body[data-theme="dark"] .redeploy-target-control {
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(59, 130, 246, 0.35);
+}
+
+body[data-theme="dark"] .redeploy-target-control__label {
+    color: var(--surface-contrast-color);
+}
+
+body[data-theme="dark"] .redeploy-target-control__helper {
+    color: rgba(226, 232, 240, 0.8);
+}
+
+body[data-theme="dark"] .redeploy-target-button {
+    background: rgba(30, 64, 175, 0.25);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: var(--surface-contrast-color);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.55);
+}
+
+body[data-theme="dark"] .redeploy-target-button i {
+    color: rgba(191, 219, 254, 0.95);
+}
+
+body[data-theme="dark"] .redeploy-target-button:hover,
+body[data-theme="dark"] .redeploy-target-button:focus-visible {
+    box-shadow: 0 18px 36px rgba(59, 130, 246, 0.45);
+}
+
+body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(129, 140, 248, 0.9));
+    border-color: rgba(165, 180, 252, 0.95);
+    color: #0b1120;
+}
+
+body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
+    color: #0b1120;
+}
+
 /* シミュレーション結果 */
 .simulation-results {
     background-color: var(--card-background);

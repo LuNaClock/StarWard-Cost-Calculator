@@ -555,7 +555,7 @@
                             <ul>
                                 <li><strong>自機と相方を選択:</strong> ドロップダウンからチームメンバーを選択。選択機体はミニカード表示、チーム合計コストも自動計算されます。</li>
                                 <li><strong>指定キャラ撃墜後の残りコスト:</strong> チームの残り総力コストを選択します。</li>
-                                <li><strong>シミュレーション実行:</strong> 「自機が再出撃した場合」または「相方が再出撃した場合」ボタンで結果表示。再出撃機体の情報とHPバーを確認できます。</li>
+                                <li><strong>シミュレーション結果確認:</strong> 自機・相方を選択すると結果が即時に反映されます。表示したい再出撃対象は切り替えボタンで変更できます。</li>
                             </ul>
                             <p><strong>覚醒ゲージ予測手順:</strong></p>
                             <ul>
@@ -673,23 +673,37 @@
                             </div>
                         </div>
 
+                        <div class="selected-characters-display" id="selectedCharsDisplay">
+                            <!-- 選択された自機と相方のミニカードがここに表示される -->
+                        </div>
+
+                        <div class="redeploy-target-control" id="redeployTargetGroup">
+                            <div class="redeploy-target-control__header">
+                                <span class="redeploy-target-control__label" id="redeployTargetLabel">
+                                    <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                                    再出撃する機体を選択
+                                </span>
+                            </div>
+                            <div class="redeploy-target-toggle" role="radiogroup" aria-labelledby="redeployTargetLabel" id="redeployTargetChips">
+                                <button class="redeploy-target-button" type="button" data-target="player" aria-pressed="true">
+                                    <i class="fas fa-user-astronaut" aria-hidden="true"></i>
+                                    <span class="redeploy-target-button__text">自機</span>
+                                </button>
+                                <button class="redeploy-target-button" type="button" data-target="partner" aria-pressed="false">
+                                    <i class="fas fa-user-friends" aria-hidden="true"></i>
+                                    <span class="redeploy-target-button__text">相方</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="team-cost-display">
                             <span class="cost-label"><i class="fas fa-users-cog"></i> チーム合計コスト:</span>
                             <span id="totalTeamCost" class="cost-value">0.0</span>
                         </div>
 
-                        <div class="selected-characters-display" id="selectedCharsDisplay">
-                            <!-- 選択された自機と相方のミニカードがここに表示される -->
-                        </div>
-
                         <div class="simulation-input-group">
                             <label for="remainingTeamCostInput"><i class="fas fa-coins"></i> 指定キャラ撃墜後の残りコスト:</label>
                             <select id="remainingTeamCostInput" class="select-dropdown"></select>
-                        </div>
-
-                        <div class="simulation-buttons">
-                            <button id="simulatePlayerRedeploy" class="simulation-button">自機が再出撃した場合</button>
-                            <button id="simulatePartnerRedeploy" class="simulation-button">相方が再出撃した場合</button>
                         </div>
 
                         <div class="simulation-results" id="simulationResults">
