@@ -131,6 +131,11 @@ function handleShieldSuccessCheckboxChange(event) {
     processAwakeningGaugeCalculation();
 }
 
+function handleRemainingTeamCostChange() {
+    const activeTarget = UI.getActiveRedeployTargetType();
+    autoSimulateRedeploy(activeTarget);
+}
+
 function handleShareRedeployResult() {
     const playerChar = State.getSelectedPlayerChar();
     const partnerChar = State.getSelectedPartnerChar();
@@ -306,6 +311,7 @@ export function setupEventListeners() {
     if (DOM.playerCharSelect) DOM.playerCharSelect.addEventListener('change', handlePlayerCharSelectChange);
     if (DOM.partnerCharSelect) DOM.partnerCharSelect.addEventListener('change', handlePartnerCharSelectChange);
     if (DOM.redeployTargetToggle) DOM.redeployTargetToggle.addEventListener('click', handleRedeployTargetToggleClick);
+    if (DOM.remainingTeamCostInput) DOM.remainingTeamCostInput.addEventListener('change', handleRemainingTeamCostChange);
     if (Array.isArray(DOM.redeployTargetButtons) && DOM.redeployTargetButtons.length > 0) {
         const initialTarget = UI.getActiveRedeployTargetType() || 'player';
         UI.updateRedeployTargetButtons(initialTarget);
