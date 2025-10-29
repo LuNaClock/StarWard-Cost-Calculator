@@ -1163,7 +1163,11 @@ function performSimulation({
       hp: calculatedHp,
       cost: allocatedCost,
       gauge: finalGauge,
-      awaken: awakenText
+      awaken: awakenText,
+      playerId: selection.player?.id ?? null,
+      playerName: selection.player?.name || null,
+      partnerId: selection.partner?.id ?? null,
+      partnerName: selection.partner?.name || null
     };
     const entryKey = getHistoryKey(historyEntry);
     state.history = [historyEntry, ...state.history.filter((entry) => getHistoryKey(entry) !== entryKey)].slice(0, 5);
@@ -1198,22 +1202,45 @@ function renderHistory() {
     empty.textContent = 'まだ計算履歴がありません';
     dom.recentList.appendChild(empty);
   } else {
+    const resolveCharacterName = (id, fallbackName) => {
+      if (typeof id === 'number') {
+        const found = state.characters.find((char) => char.id === id);
+        if (found) {
+          return found.name;
+        }
+      }
+      if (fallbackName) {
+        return fallbackName;
+      }
+      return '--';
+    };
+
     state.history.forEach((entry) => {
       const matchedCharacter =
         typeof entry.characterId === 'number'
           ? state.characters.find((char) => char.id === entry.characterId)
           : null;
       const characterName = matchedCharacter?.name || entry.name || '--';
+      const playerName = resolveCharacterName(entry.playerId, entry.playerName);
+      const partnerName = resolveCharacterName(entry.partnerId, entry.partnerName);
+      const hasPairInfo =
+        entry.playerId !== undefined
+          || entry.playerName !== undefined
+          || entry.partnerId !== undefined
+          || entry.partnerName !== undefined;
       const rolePrefix = entry.role === 'partner'
         ? '相方: '
         : entry.role === 'player'
           ? '自機: '
           : '';
+      const primaryLabel = hasPairInfo
+        ? `自機: ${playerName} / 相方: ${partnerName}`
+        : `${rolePrefix}${characterName}`;
       const item = document.createElement('div');
       item.className = 'quick-item';
       item.innerHTML = `
         <div class="quick-label">
-          <span>${rolePrefix}${characterName}</span>
+          <span>${primaryLabel}</span>
           <span>${formatDate(entry.timestamp)} / 覚醒 ${entry.gauge}%</span>
         </div>
         <span class="quick-value">${entry.hp.toLocaleString()} HP</span>
