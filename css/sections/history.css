@@ -211,16 +211,16 @@ body[data-theme="light"] .history-action-button--secondary {
 
 .recent-character-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+    gap: 20px;
 }
 
 .recent-character-card {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 16px;
+    gap: 20px;
     align-items: center;
-    padding: 18px;
+    padding: 22px 20px;
     border-radius: 20px;
     border: 1px solid rgba(148, 163, 184, 0.18);
     background: rgba(15, 23, 42, 0.35);
@@ -241,8 +241,8 @@ body[data-theme="light"] .recent-character-card {
 }
 
 .recent-character-card__thumb {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
     border-radius: 18px;
     overflow: hidden;
     position: relative;
