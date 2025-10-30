@@ -558,11 +558,14 @@ function resolveHistoryCharacterInfo(entry, role) {
     };
 }
 
-function createHistoryCharacterBadge(label, info, isActive) {
+function createHistoryCharacterBadge(label, info, roleKey, isActive) {
     const wrapper = document.createElement('div');
     wrapper.className = 'history-character';
     if (isActive) {
         wrapper.classList.add('history-character--active');
+    }
+    if (roleKey) {
+        wrapper.dataset.role = roleKey;
     }
 
     const thumb = createAvatarThumbnail(info.name, info.image, 'history-character__thumb');
@@ -603,13 +606,13 @@ function createHistoryEntryElement(entry, index) {
     const partnerInfo = resolveHistoryCharacterInfo(entry, 'partner');
 
     charactersGrid.append(
-        createHistoryCharacterBadge('自機', playerInfo, entry.role !== 'partner'),
-        createHistoryCharacterBadge('相方', partnerInfo, entry.role === 'partner')
+        createHistoryCharacterBadge('自機', playerInfo, 'player', entry.role !== 'partner'),
+        createHistoryCharacterBadge('相方', partnerInfo, 'partner', entry.role === 'partner')
     );
 
     const cta = document.createElement('span');
     cta.className = 'history-entry__cta';
-    cta.innerHTML = '<i class="fas fa-redo"></i>';
+    cta.innerHTML = '<i class="fas fa-arrow-right"></i>';
 
     button.append(charactersGrid, cta);
 

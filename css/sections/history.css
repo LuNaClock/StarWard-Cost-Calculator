@@ -343,11 +343,23 @@
     box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.18);
 }
 
+.history-character[data-role="partner"] {
+    background: linear-gradient(135deg, rgba(248, 113, 113, 0.28), rgba(244, 63, 94, 0.32));
+    border-color: rgba(248, 113, 113, 0.45);
+    box-shadow: inset 0 0 0 1px rgba(254, 226, 226, 0.25);
+}
+
 
 .history-character--active {
     background: linear-gradient(135deg, rgba(56, 189, 248, 0.55), rgba(14, 165, 233, 0.6));
     border-color: rgba(56, 189, 248, 0.75);
     box-shadow: 0 18px 32px rgba(14, 165, 233, 0.42);
+}
+
+.history-character[data-role="partner"].history-character--active {
+    background: linear-gradient(135deg, rgba(251, 113, 133, 0.62), rgba(244, 63, 94, 0.68));
+    border-color: rgba(251, 113, 133, 0.78);
+    box-shadow: 0 20px 36px rgba(244, 63, 94, 0.45);
 }
 
 
@@ -386,6 +398,14 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: rgba(226, 232, 240, 0.75);
+}
+
+.history-character[data-role="partner"] .history-character__role {
+    color: rgba(254, 202, 202, 0.95);
+}
+
+.history-character[data-role="partner"].history-character--active .history-character__role {
+    color: rgba(255, 241, 242, 0.98);
 }
 
 
