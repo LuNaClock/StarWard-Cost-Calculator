@@ -560,18 +560,11 @@
                 <article class="history-card history-card--recent" aria-labelledby="recentCharactersHeading">
                     <div class="history-card__header">
                         <h3 class="history-card__title" id="recentCharactersHeading">最近シミュレーションしたキャラ</h3>
-                        <div class="history-card__actions">
-                            <button type="button" class="history-action-button" id="showRecentCardsButton" aria-pressed="false">
-                                カード一覧で確認
-                            </button>
-                            <button type="button" class="history-action-button history-action-button--secondary" id="resetRecentFilterButton" hidden>
-                                すべて表示
-                            </button>
-                        </div>
                     </div>
-                    <p class="history-card__description">Web版では広いレイアウトを活かして、直近のシミュレーションで使った機体をカード形式で確認できます。</p>
-                    <div class="recent-character-grid" id="recentCharactersGrid" aria-live="polite">
-                        <p class="history-empty">まだ計算履歴がありません</p>
+                    <div class="history-card__body history-card__body--cta">
+                        <button type="button" class="history-card__cta-button" id="showRecentCardsButton" data-nav-target="#cards" data-card-scope="recent" aria-pressed="false">
+                            最近シミュレーションしたキャラを確認する
+                        </button>
                     </div>
                 </article>
 
