@@ -1312,7 +1312,7 @@ function createHistoryCharacterBadge(label, info, roleKey, isActive = false) {
   }
   const hasName = info.name && info.name !== '--';
   const baseTitle = hasName ? `${label}: ${info.name}` : label;
-  const emphasisTitle = isActive ? `${baseTitle}（選択キャラ）` : baseTitle;
+  const emphasisTitle = isActive ? `${baseTitle}（再出撃対象）` : baseTitle;
   wrapper.setAttribute('title', emphasisTitle);
   wrapper.setAttribute('aria-label', emphasisTitle);
   wrapper.setAttribute('aria-current', isActive ? 'true' : 'false');
@@ -1349,7 +1349,7 @@ function createHistoryCharacterBadge(label, info, roleKey, isActive = false) {
   if (isActive) {
     const resultTag = document.createElement('span');
     resultTag.className = 'history-character__result';
-    resultTag.textContent = '選択キャラ';
+    resultTag.textContent = '再出撃対象';
     textWrapper.appendChild(resultTag);
   }
 
