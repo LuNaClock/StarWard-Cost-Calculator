@@ -1823,26 +1823,6 @@ function sortCharacters(a, b, sortKey) {
   }
 }
 
-function setupSettings() {
-  const themeSelect = document.getElementById('themeSelect');
-  if (!themeSelect || !appRoot) {
-    return;
-  }
-  const systemPreference = window.matchMedia('(prefers-color-scheme: dark)');
-  const applyTheme = () => {
-    const theme = themeSelect.value;
-    const resolvedTheme = theme === 'system' ? (systemPreference.matches ? 'dark' : 'light') : theme;
-    appRoot.dataset.theme = resolvedTheme;
-  };
-  themeSelect.addEventListener('change', applyTheme);
-  if (typeof systemPreference.addEventListener === 'function') {
-    systemPreference.addEventListener('change', applyTheme);
-  } else if (typeof systemPreference.addListener === 'function') {
-    systemPreference.addListener(applyTheme);
-  }
-  applyTheme();
-}
-
 function init() {
   if (!appRoot) {
     return;
@@ -1856,7 +1836,6 @@ function init() {
   setupBonusToggle();
   setupSimulationAutoUpdate();
   setupFilters();
-  setupSettings();
   setupHistoryControls();
   loadHistory();
   renderHistory();

@@ -369,6 +369,14 @@ export function applyHistoryEntryByIndex(index) {
     UI.setRedeployTargetSelection(target);
     UI.updateRedeployTargetButtons(target);
 
+    const playerChar = State.getSelectedPlayerChar();
+    const partnerChar = State.getSelectedPartnerChar();
+    if (playerChar && partnerChar) {
+        UI.updateTeamCostDisplay(MAX_TEAM_COST);
+        UI.updateSelectedCharactersDisplay();
+        processTeamHpCombinations();
+    }
+
     const costValue = typeof entry.remainingCost === 'number'
         ? entry.remainingCost
         : typeof entry.cost === 'number'
