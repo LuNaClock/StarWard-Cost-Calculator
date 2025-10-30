@@ -1,5 +1,5 @@
 const HISTORY_STORAGE_KEY = 'starward-desktop-history-v1';
-const HISTORY_LIMIT = 6;
+const HISTORY_LIMIT = 3;
 const HISTORY_DUPLICATE_LIMIT = 3;
 
 const appState = {

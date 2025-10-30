@@ -49,13 +49,13 @@ describe('デスクトップ履歴管理', () => {
     const { addHistoryEntry, getHistory } = stateModule;
 
     const baseTime = Date.now();
-    for (let i = 0; i < 6; i += 1) {
+    for (let i = 0; i < 3; i += 1) {
       const timestamp = new Date(baseTime + i).toISOString();
       expect(addHistoryEntry({ characterId: i, role: 'player', timestamp })).toBe(true);
     }
 
-    expect(getHistory()).toHaveLength(6);
-    expect(getHistory()[0].characterId).toBe(5);
+    expect(getHistory()).toHaveLength(3);
+    expect(getHistory()[0].characterId).toBe(2);
 
     const additionalTimestamps = [
       new Date(baseTime + 100).toISOString(),
@@ -75,14 +75,14 @@ describe('デスクトップ履歴管理', () => {
     });
 
     const history = getHistory();
-    expect(history).toHaveLength(6);
+    expect(history).toHaveLength(3);
     expect(history.slice(0, 3).map((entry) => entry.characterId)).toEqual([3, 3, 3]);
     expect(history[0].timestamp).toBe(additionalTimestamps[2]);
     expect(history.filter((entry) => entry.characterId === 3)).toHaveLength(3);
 
     const persisted = getStoredHistory();
     expect(persisted).not.toBeNull();
-    expect(persisted).toHaveLength(6);
+    expect(persisted).toHaveLength(3);
     expect(persisted.filter((entry) => entry.characterId === 3)).toHaveLength(3);
   });
 

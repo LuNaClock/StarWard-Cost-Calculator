@@ -285,6 +285,16 @@ body[data-theme="light"] .recent-character-card__apply {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: clamp(16px, 2vw, 24px);
+    justify-content: center;
+    align-items: stretch;
+    margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+    .history-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-width: 1080px;
+    }
 }
 
 .history-entry {

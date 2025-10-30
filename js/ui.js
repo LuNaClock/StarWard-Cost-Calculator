@@ -13,6 +13,7 @@ export function hideLoading() {
 
 const CHARACTER_PICKER_TYPES = ['player', 'partner'];
 const MAX_RECENT_CHARACTER_CARDS = 3;
+const MAX_SIMULATION_HISTORY_ITEMS = 3;
 
 const characterPickerRefs = {
     player: buildCharacterPickerRefs('player'),
@@ -683,7 +684,9 @@ export function renderSimulationHistory(historyEntries = []) {
         return;
     }
 
-    historyEntries.forEach((entry, index) => {
+    const renderableHistory = historyEntries.slice(0, MAX_SIMULATION_HISTORY_ITEMS);
+
+    renderableHistory.forEach((entry, index) => {
         const item = createHistoryEntryElement(entry, index);
         DOM.historyList.appendChild(item);
     });
