@@ -556,32 +556,36 @@
                 <h2 class="history-overview__title" id="historyOverviewHeading">最近のシミュレーション</h2>
                 <p class="history-overview__lead">直近で試した機体や条件を振り返り、ワンクリックで再適用できます。</p>
             </div>
-            <div class="history-overview__grid">
-                <article class="history-card history-card--recent" aria-labelledby="recentCharactersHeading">
-                    <h3 class="history-card__title" id="recentCharactersHeading">最近シミュレーションしたキャラ</h3>
-                    <p class="history-card__description">直近で計算したキャラクターのカードを一覧で確認できます。</p>
-                    <div class="history-card__actions">
-                        <button type="button" class="history-action-button history-card__cta" id="showRecentCardsButton" aria-pressed="false">
-                            最近シミュレーションしたキャラを確認する
-                        </button>
-                        <button type="button" class="history-action-button history-action-button--secondary" id="resetRecentFilterButton" hidden>
-                            全キャラクターを表示する
-                        </button>
-                    </div>
-                </article>
+            <div class="history-overview__layout">
+                <section class="history-overview__panel history-overview__panel--recent" aria-labelledby="recentCharactersHeading">
+                    <article class="history-card history-card--recent" aria-labelledby="recentCharactersHeading">
+                        <h3 class="history-card__title" id="recentCharactersHeading">最近シミュレーションしたキャラ</h3>
+                        <p class="history-card__description">直近で計算したキャラクターのカードを一覧で確認できます。</p>
+                        <div class="history-card__actions">
+                            <button type="button" class="history-action-button history-card__cta" id="showRecentCardsButton" aria-pressed="false">
+                                最近シミュレーションしたキャラを確認する
+                            </button>
+                            <button type="button" class="history-action-button history-action-button--secondary" id="resetRecentFilterButton" hidden>
+                                全キャラクターを表示する
+                            </button>
+                        </div>
+                    </article>
+                </section>
 
-                <article class="history-card history-card--log" aria-labelledby="simulationHistoryHeading">
-                    <div class="history-card__header">
-                        <h3 class="history-card__title" id="simulationHistoryHeading">シミュレーション履歴</h3>
-                        <button type="button" class="history-action-button history-action-button--danger" id="clearSimulationHistoryButton" disabled>
-                            履歴をクリア
-                        </button>
-                    </div>
-                    <p class="history-card__description">過去に実行したシミュレーション条件を一覧表示します。クリックすると同じ条件で再計算できます。</p>
-                    <div class="history-list" id="simulationHistoryList" aria-live="polite">
-                        <p class="history-empty">まだ計算履歴がありません</p>
-                    </div>
-                </article>
+                <section class="history-overview__panel history-overview__panel--log" aria-labelledby="simulationHistoryHeading">
+                    <article class="history-card history-card--log" aria-labelledby="simulationHistoryHeading">
+                        <div class="history-card__header">
+                            <h3 class="history-card__title" id="simulationHistoryHeading">シミュレーション履歴</h3>
+                            <button type="button" class="history-action-button history-action-button--danger" id="clearSimulationHistoryButton" disabled>
+                                履歴をクリア
+                            </button>
+                        </div>
+                        <p class="history-card__description">過去に実行したシミュレーション条件を一覧表示します。クリックすると同じ条件で再計算できます。</p>
+                        <div class="history-list" id="simulationHistoryList" aria-live="polite">
+                            <p class="history-empty">まだ計算履歴がありません</p>
+                        </div>
+                    </article>
+                </section>
             </div>
         </section>
 
