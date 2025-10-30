@@ -13,6 +13,8 @@ import { toHiragana } from './utils.js';
 import { calculateTeamHpScenariosForCharacters } from './calculator.js';
 
 const HISTORY_KEY = 'starward-mobile-history-v1';
+const HISTORY_LIMIT = 5;
+const HISTORY_DUPLICATE_LIMIT = 3;
 const appRoot = document.querySelector('.mobile-app');
 
 const state = {
@@ -1052,19 +1054,35 @@ function getHistoryKey(entry) {
   return `misc:${entry.role ?? ''}:${entry.timestamp ?? ''}`;
 }
 
-function dedupeHistory(entries) {
+function normalizeHistoryEntry(entry) {
+  if (!entry || typeof entry !== 'object') {
+    return null;
+  }
+  const normalized = { ...entry };
+  if (!normalized.timestamp) {
+    normalized.timestamp = new Date().toISOString();
+  }
+  return normalized;
+}
+
+function normalizeHistoryCollection(entries) {
   if (!Array.isArray(entries)) {
     return [];
   }
-  const seen = new Set();
+  const counts = new Map();
   const result = [];
   entries.forEach((entry) => {
-    const key = getHistoryKey(entry);
-    if (seen.has(key)) {
+    const normalized = normalizeHistoryEntry(entry);
+    if (!normalized) {
       return;
     }
-    seen.add(key);
-    result.push(entry);
+    const key = getHistoryKey(normalized);
+    const count = counts.get(key) ?? 0;
+    if (count >= HISTORY_DUPLICATE_LIMIT) {
+      return;
+    }
+    counts.set(key, count + 1);
+    result.push(normalized);
   });
   return result;
 }
@@ -1174,8 +1192,7 @@ function performSimulation({
       partnerId: selection.partner?.id ?? null,
       partnerName: selection.partner?.name || null
     };
-    const entryKey = getHistoryKey(historyEntry);
-    state.history = [historyEntry, ...state.history.filter((entry) => getHistoryKey(entry) !== entryKey)].slice(0, 5);
+    state.history = normalizeHistoryCollection([historyEntry, ...state.history]).slice(0, HISTORY_LIMIT);
     persistHistory();
     renderHistory();
   }
@@ -1423,7 +1440,7 @@ function loadHistory() {
     if (!saved) return;
     const parsed = JSON.parse(saved);
     if (Array.isArray(parsed)) {
-      state.history = dedupeHistory(parsed).slice(0, 5);
+      state.history = normalizeHistoryCollection(parsed).slice(0, HISTORY_LIMIT);
     }
   } catch (error) {
     console.warn('Failed to load history', error);

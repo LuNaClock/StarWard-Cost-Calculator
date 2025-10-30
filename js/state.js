@@ -1,5 +1,6 @@
 const HISTORY_STORAGE_KEY = 'starward-desktop-history-v1';
 const HISTORY_LIMIT = 6;
+const HISTORY_DUPLICATE_LIMIT = 3;
 
 const appState = {
     selectedPlayerChar: null,
@@ -22,15 +23,18 @@ function getHistoryKey(entry) {
     return `misc:${entry.role ?? ''}:${entry.timestamp ?? ''}`;
 }
 
-function dedupeHistory(entries) {
+function normalizeHistoryCollection(entries) {
     if (!Array.isArray(entries)) return [];
-    const seen = new Set();
+    const counts = new Map();
     const result = [];
     entries.forEach((entry) => {
-        const key = getHistoryKey(entry);
-        if (seen.has(key)) return;
-        seen.add(key);
-        result.push(entry);
+        const normalized = normalizeHistoryEntry(entry);
+        if (!normalized) return;
+        const key = getHistoryKey(normalized);
+        const count = counts.get(key) ?? 0;
+        if (count >= HISTORY_DUPLICATE_LIMIT) return;
+        counts.set(key, count + 1);
+        result.push(normalized);
     });
     return result;
 }
@@ -145,18 +149,16 @@ export function hasHistory() {
 }
 
 export function setHistory(entries) {
-    const normalized = Array.isArray(entries) ? dedupeHistory(entries) : [];
+    const normalized = Array.isArray(entries) ? normalizeHistoryCollection(entries) : [];
     appState.history = normalized.slice(0, HISTORY_LIMIT);
     safePersistHistory();
 }
 
 export function addHistoryEntry(entry) {
-    const normalized = normalizeHistoryEntry(entry);
-    if (!normalized) return false;
+    const normalizedEntry = normalizeHistoryEntry(entry);
+    if (!normalizedEntry) return false;
 
-    const entryKey = getHistoryKey(normalized);
-    const filtered = appState.history.filter((item) => getHistoryKey(item) !== entryKey);
-    const nextHistory = [normalized, ...filtered].slice(0, HISTORY_LIMIT);
+    const nextHistory = normalizeHistoryCollection([normalizedEntry, ...appState.history]).slice(0, HISTORY_LIMIT);
 
     const changed = nextHistory.length !== appState.history.length || nextHistory.some((item, index) => {
         const current = appState.history[index];
@@ -193,7 +195,7 @@ export function loadHistoryFromStorage() {
         }
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-            appState.history = dedupeHistory(parsed).slice(0, HISTORY_LIMIT);
+            appState.history = normalizeHistoryCollection(parsed).slice(0, HISTORY_LIMIT);
         } else {
             appState.history = [];
         }

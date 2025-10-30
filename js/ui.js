@@ -12,6 +12,7 @@ export function hideLoading() {
 }
 
 const CHARACTER_PICKER_TYPES = ['player', 'partner'];
+const MAX_RECENT_CHARACTER_CARDS = 3;
 
 const characterPickerRefs = {
     player: buildCharacterPickerRefs('player'),
@@ -707,18 +708,18 @@ export function renderRecentCharacterCards(historyEntries = []) {
         return;
     }
 
-    const seen = new Set();
-    historyEntries.forEach((entry, index) => {
-        const key = getHistoryEntryKey(entry);
-        if (seen.has(key)) {
-            return;
+    let renderedCount = 0;
+    for (let index = 0; index < historyEntries.length && renderedCount < MAX_RECENT_CHARACTER_CARDS; index += 1) {
+        const entry = historyEntries[index];
+        if (!entry || typeof entry !== 'object') {
+            continue;
         }
-        seen.add(key);
         const card = createRecentCharacterCard(entry, index);
         DOM.recentCharactersGrid.appendChild(card);
-    });
+        renderedCount += 1;
+    }
 
-    if (!seen.size) {
+    if (!renderedCount) {
         const empty = document.createElement('p');
         empty.className = 'history-empty';
         empty.textContent = '最近のシミュレーションに該当するキャラがありません';

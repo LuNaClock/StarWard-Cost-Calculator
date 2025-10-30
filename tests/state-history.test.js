@@ -45,7 +45,7 @@ function getStoredHistory() {
 }
 
 describe('デスクトップ履歴管理', () => {
-  it('履歴エントリを追加すると最新が先頭に保持され重複が排除される', () => {
+  it('履歴エントリを追加すると最新順に保持され、同一キャラも最大3件まで保存される', () => {
     const { addHistoryEntry, getHistory } = stateModule;
 
     const baseTime = Date.now();
@@ -57,18 +57,33 @@ describe('デスクトップ履歴管理', () => {
     expect(getHistory()).toHaveLength(6);
     expect(getHistory()[0].characterId).toBe(5);
 
-    const replacementTimestamp = new Date(baseTime + 100).toISOString();
-    expect(addHistoryEntry({ characterId: 3, role: 'player', timestamp: replacementTimestamp })).toBe(true);
+    const additionalTimestamps = [
+      new Date(baseTime + 100).toISOString(),
+      new Date(baseTime + 101).toISOString(),
+      new Date(baseTime + 102).toISOString()
+    ];
+
+    additionalTimestamps.forEach((timestamp, index) => {
+      expect(
+        addHistoryEntry({
+          characterId: 3,
+          role: 'player',
+          timestamp,
+          hp: 900 + index
+        })
+      ).toBe(true);
+    });
 
     const history = getHistory();
     expect(history).toHaveLength(6);
-    expect(history[0].characterId).toBe(3);
-    expect(history[0].timestamp).toBe(replacementTimestamp);
-    expect(history.filter((entry) => entry.characterId === 3)).toHaveLength(1);
+    expect(history.slice(0, 3).map((entry) => entry.characterId)).toEqual([3, 3, 3]);
+    expect(history[0].timestamp).toBe(additionalTimestamps[2]);
+    expect(history.filter((entry) => entry.characterId === 3)).toHaveLength(3);
 
     const persisted = getStoredHistory();
     expect(persisted).not.toBeNull();
     expect(persisted).toHaveLength(6);
+    expect(persisted.filter((entry) => entry.characterId === 3)).toHaveLength(3);
   });
 
   it('localStorageの壊れたデータを読み込む際も安全に初期化できる', () => {
