@@ -592,42 +592,25 @@ function createHistoryEntryElement(entry, index) {
     button.className = 'history-entry';
     button.dataset.historyIndex = index.toString();
 
-    const content = document.createElement('div');
-    content.className = 'history-entry__content';
-
-    const charactersRow = document.createElement('div');
-    charactersRow.className = 'history-entry__characters';
+    const charactersGrid = document.createElement('div');
+    charactersGrid.className = 'history-entry__characters-grid';
 
     const playerInfo = resolveHistoryCharacterInfo(entry, 'player');
     const partnerInfo = resolveHistoryCharacterInfo(entry, 'partner');
 
-    charactersRow.append(
+    charactersGrid.append(
         createHistoryCharacterBadge('自機', playerInfo, entry.role !== 'partner'),
         createHistoryCharacterBadge('相方', partnerInfo, entry.role === 'partner')
     );
-
-    const details = document.createElement('div');
-    details.className = 'history-entry__details';
-
-    const hpValue = document.createElement('span');
-    hpValue.className = 'history-entry__value';
-    hpValue.textContent = formatHpValue(entry.hp);
-
-    const costValue = document.createElement('span');
-    costValue.textContent = `残コスト ${formatCostValue(entry.remainingCost ?? entry.cost)}`;
-
-    details.append(hpValue, costValue);
-
-    content.append(charactersRow, details);
 
     const cta = document.createElement('span');
     cta.className = 'history-entry__cta';
     cta.innerHTML = '<i class="fas fa-redo"></i>';
 
-    button.append(content, cta);
+    button.append(charactersGrid, cta);
 
     const roleLabel = entry.role === 'partner' ? '相方' : '自機';
-    button.setAttribute('aria-label', `${roleLabel}の再出撃結果を再適用 (${formatHpValue(entry.hp)}, 残コスト ${formatCostValue(entry.remainingCost ?? entry.cost)})`);
+    button.setAttribute('aria-label', `${roleLabel}の再出撃結果を再適用`);
 
     return button;
 }
