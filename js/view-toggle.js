@@ -1,8 +1,20 @@
 const STORAGE_KEY = 'starward-preferred-view';
+const MOBILE_BREAKPOINT_QUERY = '(max-width: 900px)';
 const body = document.body;
 const desktopContainer = document.querySelector('.desktop-app');
 const mobileContainer = document.querySelector('.mobile-app');
 const toggleButtons = document.querySelectorAll('[data-view-mode]');
+const mobileBreakpoint = window.matchMedia
+  ? window.matchMedia(MOBILE_BREAKPOINT_QUERY)
+  : null;
+
+function isMobileViewport() {
+  if (mobileBreakpoint) {
+    return mobileBreakpoint.matches;
+  }
+
+  return window.innerWidth <= 900;
+}
 
 function getStoredPreference() {
   try {
@@ -21,33 +33,39 @@ function setStoredPreference(value) {
 }
 
 function applyViewMode(mode, { skipSave = false } = {}) {
-  const normalized = mode === 'mobile' ? 'mobile' : 'desktop';
+  const normalized = mode === 'mobile' || mode === 'desktop' ? mode : 'auto';
 
   if (body) {
     body.dataset.viewMode = normalized;
   }
 
-  const showMobile = normalized === 'mobile';
-  const showDesktop = !showMobile;
+  const useMobileLayout =
+    normalized === 'mobile' || (normalized === 'auto' && isMobileViewport());
+  const useDesktopLayout =
+    normalized === 'desktop' || (normalized === 'auto' && !isMobileViewport());
 
   if (mobileContainer) {
-    mobileContainer.toggleAttribute('hidden', !showMobile);
-    mobileContainer.setAttribute('aria-hidden', String(!showMobile));
+    mobileContainer.toggleAttribute('hidden', !useMobileLayout);
+    mobileContainer.setAttribute('aria-hidden', String(!useMobileLayout));
   }
 
   if (desktopContainer) {
-    desktopContainer.toggleAttribute('hidden', !showDesktop);
-    desktopContainer.setAttribute('aria-hidden', String(!showDesktop));
+    desktopContainer.toggleAttribute('hidden', !useDesktopLayout);
+    desktopContainer.setAttribute('aria-hidden', String(!useDesktopLayout));
   }
 
+  const activeVisualMode = useMobileLayout ? 'mobile' : 'desktop';
+
   toggleButtons.forEach((button) => {
-    const isActive = button.dataset.viewMode === normalized;
+    const isActive = button.dataset.viewMode === activeVisualMode;
     button.setAttribute('aria-pressed', String(isActive));
   });
 
-  if (!skipSave) {
+  if (!skipSave && normalized !== 'auto') {
     setStoredPreference(normalized);
   }
+
+  return activeVisualMode;
 }
 
 function resolveInitialMode() {
@@ -56,15 +74,19 @@ function resolveInitialMode() {
     return stored;
   }
 
-  if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) {
-    return 'mobile';
-  }
-
-  return 'desktop';
+  return 'auto';
 }
 
 const initialMode = resolveInitialMode();
 applyViewMode(initialMode, { skipSave: true });
+
+if (mobileBreakpoint) {
+  mobileBreakpoint.addEventListener('change', () => {
+    if (body?.dataset.viewMode === 'auto') {
+      applyViewMode('auto', { skipSave: true });
+    }
+  });
+}
 
 toggleButtons.forEach((button) => {
   button.addEventListener('click', () => {
