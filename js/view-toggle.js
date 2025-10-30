@@ -4,6 +4,8 @@ const body = document.body;
 const desktopContainer = document.querySelector('.desktop-app');
 const mobileContainer = document.querySelector('.mobile-app');
 const toggleButtons = document.querySelectorAll('[data-view-mode]');
+const floatingSwitcher = document.querySelector('.view-switcher--floating');
+const settingsSwitcher = document.querySelector('.view-switcher--settings');
 const mobileBreakpoint = window.matchMedia
   ? window.matchMedia(MOBILE_BREAKPOINT_QUERY)
   : null;
@@ -60,6 +62,18 @@ function applyViewMode(mode, { skipSave = false } = {}) {
     const isActive = button.dataset.viewMode === activeVisualMode;
     button.setAttribute('aria-pressed', String(isActive));
   });
+
+  if (floatingSwitcher) {
+    const shouldHideFloating = useMobileLayout;
+    floatingSwitcher.toggleAttribute('hidden', shouldHideFloating);
+    floatingSwitcher.setAttribute('aria-hidden', String(shouldHideFloating));
+  }
+
+  if (settingsSwitcher) {
+    const shouldShowSettings = useMobileLayout;
+    settingsSwitcher.toggleAttribute('hidden', !shouldShowSettings);
+    settingsSwitcher.setAttribute('aria-hidden', String(!shouldShowSettings));
+  }
 
   if (!skipSave && normalized !== 'auto') {
     setStoredPreference(normalized);
