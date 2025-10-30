@@ -606,19 +606,7 @@ function createHistoryEntryElement(entry, index) {
         createHistoryCharacterBadge('相方', partnerInfo, entry.role === 'partner')
     );
 
-    const details = document.createElement('div');
-    details.className = 'history-entry__details';
-
-    const hpValue = document.createElement('span');
-    hpValue.className = 'history-entry__value';
-    hpValue.textContent = formatHpValue(entry.hp);
-
-    const costValue = document.createElement('span');
-    costValue.textContent = `残コスト ${formatCostValue(entry.remainingCost ?? entry.cost)}`;
-
-    details.append(hpValue, costValue);
-
-    content.append(charactersRow, details);
+    content.append(charactersRow);
 
     const cta = document.createElement('span');
     cta.className = 'history-entry__cta';
@@ -627,7 +615,11 @@ function createHistoryEntryElement(entry, index) {
     button.append(content, cta);
 
     const roleLabel = entry.role === 'partner' ? '相方' : '自機';
-    button.setAttribute('aria-label', `${roleLabel}の再出撃結果を再適用 (${formatHpValue(entry.hp)}, 残コスト ${formatCostValue(entry.remainingCost ?? entry.cost)})`);
+    const playerName = playerInfo.name || '未選択';
+    const partnerName = partnerInfo.name || '未選択';
+    const hpText = formatHpValue(entry.hp);
+    const costText = formatCostValue(entry.remainingCost ?? entry.cost);
+    button.setAttribute('aria-label', `${roleLabel}の再出撃結果を再適用 (自機: ${playerName}, 相方: ${partnerName}, 予測耐久 ${hpText}, 残コスト ${costText})`);
 
     return button;
 }
