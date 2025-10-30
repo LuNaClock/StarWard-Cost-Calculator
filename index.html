@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="css/mobile-app.css">
 </head>
 <body data-view-mode="auto" data-theme="dark">
-    <div class="view-switcher" role="group" aria-label="表示切替">
+    <div class="view-switcher view-switcher--floating" role="group" aria-label="表示切替" hidden aria-hidden="true">
         <button type="button" class="view-switcher__button" data-view-mode="desktop" aria-pressed="true">
             Web版
         </button>
@@ -490,6 +490,18 @@
                             <p class="panel-subtitle">お好みの表示にカスタマイズ</p>
                         </div>
                         <div class="setting-group">
+                            <div class="setting-item setting-item--view-mode">
+                                <h3 class="setting-item__title">表示モード</h3>
+                                <p class="setting-item__description">Web版とモバイル版を切り替えできます。</p>
+                                <div class="view-switcher view-switcher--settings" role="group" aria-label="表示切替" hidden aria-hidden="true">
+                                    <button type="button" class="view-switcher__button" data-view-mode="desktop" aria-pressed="false">
+                                        Web版
+                                    </button>
+                                    <button type="button" class="view-switcher__button" data-view-mode="mobile" aria-pressed="true">
+                                        モバイル版
+                                    </button>
+                                </div>
+                            </div>
                             <div class="setting-item">
                                 <p>現在はダークテーマのみ利用できます。</p>
                             </div>
