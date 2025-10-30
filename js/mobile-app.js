@@ -91,7 +91,6 @@ const pickerRefs = {
   player: null,
   partner: null
 };
-let activePickerPositionFrame = null;
 
 function initializeScenarioBindings() {
   const cards = Array.from(document.querySelectorAll('.team-summary-card[data-scenario]'));
@@ -295,7 +294,6 @@ function renderPickerList(type) {
   const filters = state.pickerFilters[type] || { search: '', cost: 'all' };
   const query = filters.search.trim().toLowerCase();
   const hiraQuery = toHiragana(query);
-  const shouldReposition = state.activePicker === type;
   const filtered = state.characters.filter((char) => {
     if (filters.cost !== 'all' && char.costKey !== filters.cost) {
       return false;
@@ -336,9 +334,6 @@ function renderPickerList(type) {
     emptyMessage.className = 'character-picker-empty';
     emptyMessage.textContent = '該当するキャラクターが見つかりません';
     list.appendChild(emptyMessage);
-    if (shouldReposition) {
-      positionPickerPanel(type);
-    }
     return;
   }
 
@@ -368,10 +363,6 @@ function renderPickerList(type) {
     item.appendChild(info);
     list.appendChild(item);
   });
-
-  if (shouldReposition) {
-    positionPickerPanel(type);
-  }
 }
 
 function closePicker(type) {
@@ -384,7 +375,6 @@ function closePicker(type) {
     refs.toggle.setAttribute('aria-expanded', 'false');
   }
   if (refs.panel) {
-    resetPickerPanelPosition(refs.panel);
     refs.panel.hidden = true;
   }
   if (state.activePicker === type) {
@@ -428,115 +418,6 @@ function openPicker(type) {
     });
   }
   renderPickerList(type);
-}
-
-function getViewportMetrics() {
-  const viewport = typeof window !== 'undefined' ? window.visualViewport : null;
-  if (viewport) {
-    return {
-      width: viewport.width,
-      height: viewport.height,
-      left: viewport.offsetLeft,
-      top: viewport.offsetTop
-    };
-  }
-  const docEl = typeof document !== 'undefined' ? document.documentElement : null;
-  return {
-    width: typeof window !== 'undefined' ? window.innerWidth || docEl?.clientWidth || 0 : 0,
-    height: typeof window !== 'undefined' ? window.innerHeight || docEl?.clientHeight || 0 : 0,
-    left: 0,
-    top: 0
-  };
-}
-
-function positionPickerPanel(type) {
-  const refs = pickerRefs[type];
-  if (!refs?.panel || !refs.toggle) {
-    return;
-  }
-  if (!appRoot || !refs.container || !appRoot.contains(refs.container)) {
-    return;
-  }
-
-  const panel = refs.panel;
-  const toggleRect = refs.toggle.getBoundingClientRect();
-  const { width: viewportWidth, height: viewportHeight, left: viewportLeft, top: viewportTop } = getViewportMetrics();
-  if (!viewportWidth || !viewportHeight) {
-    return;
-  }
-
-  const gap = 12;
-  const maxUsableWidth = Math.max(0, viewportWidth - gap * 2);
-  let desiredWidth = toggleRect.width;
-  if (desiredWidth <= 0 || desiredWidth > maxUsableWidth) {
-    desiredWidth = maxUsableWidth || viewportWidth;
-  }
-  let left = viewportLeft + toggleRect.left;
-  if (left + desiredWidth > viewportLeft + viewportWidth - gap) {
-    left = viewportLeft + viewportWidth - desiredWidth - gap;
-  }
-  if (left < viewportLeft + gap) {
-    left = viewportLeft + gap;
-  }
-
-  panel.style.setProperty('--picker-panel-left', `${Math.round(left)}px`);
-  panel.style.setProperty('--picker-panel-width', `${Math.round(desiredWidth)}px`);
-  const maxHeight = Math.max(240, viewportHeight - gap * 2);
-  panel.style.setProperty('--picker-panel-max-height', `${Math.round(maxHeight)}px`);
-  panel.style.setProperty('--picker-panel-translate-x', '0px');
-  panel.style.setProperty('--picker-panel-translate-y', '0px');
-  panel.style.setProperty('--picker-panel-open-translate-y', '0px');
-
-  // Force layout with updated dimensions before calculating vertical placement
-  const panelHeight = panel.offsetHeight;
-  let top = viewportTop + toggleRect.bottom + gap;
-  let placement = 'below';
-  const lowerBound = viewportTop + viewportHeight - gap;
-
-  if (top + panelHeight > lowerBound) {
-    const aboveTop = viewportTop + toggleRect.top - gap - panelHeight;
-    if (aboveTop >= viewportTop + gap) {
-      top = aboveTop;
-      placement = 'above';
-    } else {
-      top = Math.max(viewportTop + gap, lowerBound - panelHeight);
-      placement = top < viewportTop + toggleRect.top ? 'above' : 'below';
-    }
-  }
-
-  panel.style.setProperty('--picker-panel-top', `${Math.round(top)}px`);
-  panel.classList.toggle('is-above', placement === 'above');
-}
-
-function resetPickerPanelPosition(panel) {
-  if (!panel) {
-    return;
-  }
-  [
-    '--picker-panel-top',
-    '--picker-panel-left',
-    '--picker-panel-width',
-    '--picker-panel-max-height',
-    '--picker-panel-translate-x',
-    '--picker-panel-translate-y',
-    '--picker-panel-open-translate-y'
-  ].forEach((property) => {
-    panel.style.removeProperty(property);
-  });
-  panel.classList.remove('is-above');
-}
-
-function handleActivePickerViewportChange() {
-  if (!state.activePicker) {
-    return;
-  }
-  if (activePickerPositionFrame) {
-    cancelAnimationFrame(activePickerPositionFrame);
-  }
-  activePickerPositionFrame = requestAnimationFrame(() => {
-    activePickerPositionFrame = null;
-    positionPickerPanel(state.activePicker);
-  });
 }
 
 function togglePicker(type) {
@@ -642,13 +523,6 @@ function initializePickers() {
   if (hasPicker) {
     document.addEventListener('click', handlePickerOutsideClick);
     document.addEventListener('keydown', handlePickerKeydown);
-    window.addEventListener('resize', handleActivePickerViewportChange);
-    window.addEventListener('scroll', handleActivePickerViewportChange, { passive: true });
-    window.addEventListener('orientationchange', handleActivePickerViewportChange);
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleActivePickerViewportChange);
-      window.visualViewport.addEventListener('scroll', handleActivePickerViewportChange);
-    }
   }
 }
 
