@@ -66,12 +66,31 @@ body[data-view-mode="mobile"] .desktop-app {
   display: none;
 }
 
+body[data-view-mode="auto"] .mobile-app {
+  display: none;
+}
+
+body[data-view-mode="auto"] .desktop-app {
+  display: block;
+}
+
 body[data-view-mode="desktop"] .mobile-app {
   display: none;
 }
 
 body[data-view-mode="desktop"] .desktop-app {
   display: block;
+}
+
+@media (max-width: 900px) {
+  body[data-view-mode="auto"] .mobile-app {
+    display: flex;
+    align-items: stretch;
+  }
+
+  body[data-view-mode="auto"] .desktop-app {
+    display: none;
+  }
 }
 
 
