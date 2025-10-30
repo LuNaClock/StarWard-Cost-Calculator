@@ -4,6 +4,11 @@ export const characterSearchInput = document.getElementById('characterSearch');
 export const searchIcon = document.querySelector('.search-icon');
 export const costFilterButtons = document.querySelectorAll('#costFilter .filter-button');
 export const sortFilterButtons = document.querySelectorAll('#sortFilter .filter-button');
+export const recentCharactersGrid = document.getElementById('recentCharactersGrid');
+export const showRecentCardsButton = document.getElementById('showRecentCardsButton');
+export const resetRecentFilterButton = document.getElementById('resetRecentFilterButton');
+export const clearHistoryButton = document.getElementById('clearSimulationHistoryButton');
+export const historyList = document.getElementById('simulationHistoryList');
 
 // Accordions
 export const mainAccordionHeaders = document.querySelectorAll('.accordion-header:not(.sub-accordion-header)');

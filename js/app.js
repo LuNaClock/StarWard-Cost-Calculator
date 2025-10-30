@@ -9,8 +9,10 @@ import * as Sharing from './sharing.js';
 import { initAccordions, accordionManager } from './accordion.js';
 
 function initializeCharacterData() {
-    const processedData = rawCharacterData.map(char => {
-        let yomi_hiragana, yomi_katakana;
+    const processedData = rawCharacterData.map((char, index) => {
+        let yomi_hiragana;
+        let yomi_katakana;
+
         if (kanjiNameReadings[char.name]) {
             yomi_hiragana = kanjiNameReadings[char.name].hiragana;
             yomi_katakana = kanjiNameReadings[char.name].katakana;
@@ -18,9 +20,33 @@ function initializeCharacterData() {
             yomi_hiragana = Utils.toHiragana(char.name);
             yomi_katakana = Utils.toKatakana(char.name);
         }
-        return { ...char, yomi_hiragana, yomi_katakana };
+
+        const costValue = Number(char.cost) || 0;
+        const costKey = costValue.toFixed(1);
+
+        return {
+            ...char,
+            id: index,
+            cost: costValue,
+            costKey,
+            yomi_hiragana,
+            yomi_katakana,
+            hira: yomi_hiragana.toLowerCase(),
+            kata: yomi_katakana
+        };
     });
+
     State.initializeCharacterData(processedData);
+}
+
+function syncHistoryUI() {
+    const history = State.getHistory();
+    UI.renderSimulationHistory(history);
+    UI.renderRecentCharacterCards(history);
+    UI.updateRecentCardScopeControls({
+        hasHistory: history.length > 0,
+        isRecentScope: State.getCardScope() === 'recent'
+    });
 }
 
 export function applyFiltersAndSearch() {
@@ -32,38 +58,79 @@ export function applyFiltersAndSearch() {
     const activeCostFilterEl = document.querySelector('#costFilter .active');
     const activeSortFilterEl = document.querySelector('#sortFilter .active');
 
-    if (!activeCostFilterEl || !activeSortFilterEl) {
-        // console.warn("Filter buttons not found, skipping filter application.");
-        UI.generateCharacterCards(State.getCharacters()); // Show all if filters are missing
-        return;
-    }
+    const activeCostFilter = activeCostFilterEl?.dataset.cost ?? 'all';
+    const activeSortFilter = activeSortFilterEl?.dataset.sort ?? 'name';
 
-    const activeCostFilter = activeCostFilterEl.dataset.cost;
-    const activeSortFilter = activeSortFilterEl.dataset.sort;
+    const scope = State.getCardScope();
+    const historyIdentifiers = scope === 'recent' ? State.getRecentCharacterIdentifiers() : { ids: null, names: null };
+    const hasRecentFilterTargets = scope !== 'recent' || (historyIdentifiers.ids?.size || historyIdentifiers.names?.size);
 
     let filteredCharacters = [...State.getCharacters()];
 
     if (searchTermInputVal) {
-        filteredCharacters = filteredCharacters.filter(c => {
-            const nameLower = c.name.toLowerCase();
-            const yomiHiraLower = c.yomi_hiragana.toLowerCase();
-            const yomiKataLower = c.yomi_katakana.toLowerCase();
-            return nameLower.includes(inputRawLower) || nameLower.includes(inputHiragana) || nameLower.includes(inputKatakana) ||
-                   yomiHiraLower.includes(inputRawLower) || yomiHiraLower.includes(inputHiragana) || yomiHiraLower.includes(inputKatakana) ||
-                   yomiKataLower.includes(inputRawLower) || yomiKataLower.includes(inputHiragana) || yomiKataLower.includes(inputKatakana);
+        filteredCharacters = filteredCharacters.filter((character) => {
+            const nameLower = character.name.toLowerCase();
+            const hiraLower = character.yomi_hiragana.toLowerCase();
+            const kataLower = character.yomi_katakana.toLowerCase();
+            return (
+                nameLower.includes(inputRawLower) ||
+                nameLower.includes(inputHiragana) ||
+                nameLower.includes(inputKatakana) ||
+                hiraLower.includes(inputRawLower) ||
+                hiraLower.includes(inputHiragana) ||
+                hiraLower.includes(inputKatakana) ||
+                kataLower.includes(inputRawLower) ||
+                kataLower.includes(inputHiragana) ||
+                kataLower.includes(inputKatakana)
+            );
         });
     }
+
     if (activeCostFilter !== 'all') {
-        filteredCharacters = filteredCharacters.filter(c => c.cost.toString() === activeCostFilter);
+        filteredCharacters = filteredCharacters.filter((character) => character.cost.toString() === activeCostFilter);
     }
+
+    if (scope === 'recent') {
+        filteredCharacters = filteredCharacters.filter((character) => {
+            if (!hasRecentFilterTargets) {
+                return false;
+            }
+            const matchById = typeof character.id === 'number' && historyIdentifiers.ids?.has(character.id);
+            const matchByName = historyIdentifiers.names?.has(character.name);
+            return matchById || matchByName;
+        });
+    }
+
     switch (activeSortFilter) {
-        case 'name': filteredCharacters.sort((a, b) => a.name.localeCompare(b.name, 'ja')); break;
-        case 'hp-asc': filteredCharacters.sort((a, b) => a.hp - b.hp || a.name.localeCompare(b.name, 'ja')); break;
-        case 'hp-desc': filteredCharacters.sort((a, b) => b.hp - a.hp || a.name.localeCompare(b.name, 'ja')); break;
-        case 'cost-asc': filteredCharacters.sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name, 'ja')); break;
-        case 'cost-desc': filteredCharacters.sort((a, b) => b.cost - a.cost || a.name.localeCompare(b.name, 'ja')); break;
+        case 'name':
+            filteredCharacters.sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+            break;
+        case 'hp-asc':
+            filteredCharacters.sort((a, b) => a.hp - b.hp || a.name.localeCompare(b.name, 'ja'));
+            break;
+        case 'hp-desc':
+            filteredCharacters.sort((a, b) => b.hp - a.hp || a.name.localeCompare(b.name, 'ja'));
+            break;
+        case 'cost-asc':
+            filteredCharacters.sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name, 'ja'));
+            break;
+        case 'cost-desc':
+            filteredCharacters.sort((a, b) => b.cost - a.cost || a.name.localeCompare(b.name, 'ja'));
+            break;
+        default:
+            break;
     }
-    UI.generateCharacterCards(filteredCharacters);
+
+    let emptyMessage = '該当するキャラクターが見つかりません';
+    if (scope === 'recent') {
+        emptyMessage = State.hasHistory()
+            ? '最近のシミュレーションに該当するキャラが見つかりません'
+            : '最近のシミュレーション履歴がまだありません';
+    } else if (searchTermInputVal) {
+        emptyMessage = '検索条件に一致するキャラが見つかりません';
+    }
+
+    UI.generateCharacterCards(filteredCharacters, { emptyMessage });
 }
 
 export function processTeamHpCombinations() {
@@ -128,8 +195,32 @@ export function processSimulateRedeploy(charType) {
         DOM.beforeShotdownHpInput.dataset.characterCost = charToRedeploy.cost.toFixed(1);
         DOM.beforeShotdownHpInput.dataset.characterName = charToRedeploy.name;
     }
-    
-    processAwakeningGaugeCalculation(); 
+
+    processAwakeningGaugeCalculation();
+
+    if (Number.isFinite(calculatedHp)) {
+        const normalizedRemainingCost = Number.isFinite(allocatedCostForThisRedeploy)
+            ? Math.max(0, Math.min(MAX_TEAM_COST, allocatedCostForThisRedeploy))
+            : null;
+
+        const historyEntry = {
+            role: currentSimulatingCharType === 'partner' ? 'partner' : 'player',
+            characterId: typeof charToRedeploy.id === 'number' ? charToRedeploy.id : null,
+            name: charToRedeploy.name,
+            timestamp: new Date().toISOString(),
+            hp: calculatedHp,
+            cost: actualCostConsumed,
+            remainingCost: normalizedRemainingCost,
+            playerId: typeof selectedPlayer.id === 'number' ? selectedPlayer.id : null,
+            playerName: selectedPlayer.name,
+            partnerId: typeof selectedPartner.id === 'number' ? selectedPartner.id : null,
+            partnerName: selectedPartner.name
+        };
+
+        State.addHistoryEntry(historyEntry);
+    }
+
+    syncHistoryUI();
 
     // シミュレーション実行後、関連するアコーディオンを開く
     if (DOM.totalHpMainAccordionHeader && DOM.totalHpMainAccordionContent) {
@@ -217,21 +308,111 @@ export function processAwakeningGaugeCalculation() {
     UI.updateAwakeningGaugeUI(result);
 }
 
+export function showRecentCharacterScope({ focusCards = true } = {}) {
+    if (!State.hasHistory()) {
+        syncHistoryUI();
+        return;
+    }
+
+    State.setCardScope('recent');
+    applyFiltersAndSearch();
+    syncHistoryUI();
+
+    if (focusCards && DOM.characterGrid) {
+        DOM.characterGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+export function resetCharacterScope({ focusCards = false } = {}) {
+    State.setCardScope('all');
+    applyFiltersAndSearch();
+    syncHistoryUI();
+
+    if (focusCards && DOM.characterGrid) {
+        DOM.characterGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+export function clearSimulationHistory() {
+    const cleared = State.clearHistory();
+    if (State.getCardScope() === 'recent' && cleared) {
+        State.setCardScope('all');
+    }
+
+    applyFiltersAndSearch();
+    syncHistoryUI();
+}
+
+export function applyHistoryEntryByIndex(index) {
+    const history = State.getHistory();
+    const entry = history[index];
+    if (!entry) {
+        return;
+    }
+
+    const playerIndex = typeof entry.playerId === 'number'
+        ? State.findCharacterIndexById(entry.playerId)
+        : State.findCharacterIndexByName(entry.playerName);
+    if (playerIndex >= 0) {
+        UI.selectCharacterFromPicker('player', playerIndex);
+    }
+
+    const partnerIndex = typeof entry.partnerId === 'number'
+        ? State.findCharacterIndexById(entry.partnerId)
+        : State.findCharacterIndexByName(entry.partnerName);
+    if (partnerIndex >= 0) {
+        UI.selectCharacterFromPicker('partner', partnerIndex);
+    }
+
+    const target = entry.role === 'partner' ? 'partner' : 'player';
+    State.setRedeployTarget(target);
+    UI.setRedeployTargetSelection(target);
+    UI.updateRedeployTargetButtons(target);
+
+    const playerChar = State.getSelectedPlayerChar();
+    const partnerChar = State.getSelectedPartnerChar();
+    if (playerChar && partnerChar) {
+        UI.updateTeamCostDisplay(MAX_TEAM_COST);
+        UI.updateSelectedCharactersDisplay();
+        processTeamHpCombinations();
+    }
+
+    const costValue = typeof entry.remainingCost === 'number'
+        ? entry.remainingCost
+        : typeof entry.cost === 'number'
+            ? entry.cost
+            : null;
+
+    if (DOM.remainingTeamCostInput && costValue !== null && Number.isFinite(costValue)) {
+        const clamped = Math.max(0, Math.min(MAX_TEAM_COST, costValue));
+        DOM.remainingTeamCostInput.value = clamped.toFixed(1);
+        DOM.remainingTeamCostInput.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+        processSimulateRedeploy(target);
+    }
+
+    if (DOM.redeploySimulationSection) {
+        DOM.redeploySimulationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
 function initializePage() {
     // アコーディオンを最初に初期化
     initAccordions();
-    
+
     initializeCharacterData();
+    State.loadHistoryFromStorage();
+    syncHistoryUI();
     UI.populateCharacterSelects();
     UI.populateRemainingCostSelect(MAX_TEAM_COST);
     UI.setAwakeningDetailsConstants();
 
     EventHandlers.setupEventListeners();
-    Sharing.parseUrlAndRestoreState(); 
+    Sharing.parseUrlAndRestoreState();
 
     // ページアニメーションは無効化したまま
     // UI.initPageAnimations();
-    applyFiltersAndSearch(); 
+    applyFiltersAndSearch();
 
     // 初期キャラクター情報をカードに設定
     const player = State.getSelectedPlayerChar();
