@@ -25,6 +25,8 @@ const characterPickerState = {
     partner: { cost: 'all', searchTerm: '', filteredIndices: [] }
 };
 
+let teamHpDisplayRenderToken = 0;
+
 function buildCharacterPickerRefs(type) {
     const container = document.querySelector(`.character-picker[data-role="${type}"]`);
     if (!container) return null;
@@ -1063,40 +1065,54 @@ export function resetSimulationResultsUI() {
 export function displayTotalTeamHpResults(scenarios) {
     const selectedPlayerChar = getSelectedPlayerChar();
     const selectedPartnerChar = getSelectedPartnerChar();
+    const renderToken = ++teamHpDisplayRenderToken;
 
-    if (!scenarios || !selectedPlayerChar || !selectedPartnerChar) { 
-         gsap.to(DOM.totalHpDisplayArea, { opacity: 0, y: 20, duration: 0.3, ease: "power2.in", onComplete: () => {
-            if(DOM.totalHpDisplayArea) DOM.totalHpDisplayArea.classList.remove('active'); 
-            if (DOM.highestHpScenarioTitleSpan) DOM.highestHpScenarioTitleSpan.textContent = 'チーム合計体力(最高)';
-            if (DOM.idealGainedHpSpan) DOM.idealGainedHpSpan.textContent = '--';
-            if (DOM.idealSequenceList) DOM.idealSequenceList.innerHTML = '';
-            if (DOM.compromiseHpScenarioTitleSpan) DOM.compromiseHpScenarioTitleSpan.textContent = 'チーム合計体力(妥協)';
-            if (DOM.minGainedHpSpan) DOM.minGainedHpSpan.textContent = '--';
-            if (DOM.minSequenceList) DOM.minSequenceList.innerHTML = '';
-            if (DOM.bombHpScenarioTitleSpan) DOM.bombHpScenarioTitleSpan.textContent = 'チーム合計体力(爆弾)';
-            if (DOM.bombGainedHpSpan) DOM.bombGainedHpSpan.textContent = '--';
-            if (DOM.bombSequenceList) DOM.bombSequenceList.innerHTML = '';
-            if (DOM.lowestHpScenarioTitleSpan) DOM.lowestHpScenarioTitleSpan.textContent = 'チーム合計体力(最低)';
-            if (DOM.lowestGainedHpSpan) DOM.lowestGainedHpSpan.textContent = '--';
-            if (DOM.lowestSequenceList) DOM.lowestSequenceList.innerHTML = '';
-            
-            if (DOM.shareTotalHpResultBtn) DOM.shareTotalHpResultBtn.style.display = 'none';
-            if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.style.display = 'none';
-        }});
+    if (!scenarios || !selectedPlayerChar || !selectedPartnerChar) {
+        if (!DOM.totalHpDisplayArea) return;
+
+        gsap.to(DOM.totalHpDisplayArea, {
+            opacity: 0,
+            y: 20,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+                if (renderToken !== teamHpDisplayRenderToken) return;
+                if (DOM.totalHpDisplayArea) DOM.totalHpDisplayArea.classList.remove('active');
+                if (DOM.highestHpScenarioTitleSpan) DOM.highestHpScenarioTitleSpan.textContent = 'チーム合計体力(最高)';
+                if (DOM.idealGainedHpSpan) DOM.idealGainedHpSpan.textContent = '--';
+                if (DOM.idealSequenceList) DOM.idealSequenceList.innerHTML = '';
+                if (DOM.compromiseHpScenarioTitleSpan) DOM.compromiseHpScenarioTitleSpan.textContent = 'チーム合計体力(妥協)';
+                if (DOM.minGainedHpSpan) DOM.minGainedHpSpan.textContent = '--';
+                if (DOM.minSequenceList) DOM.minSequenceList.innerHTML = '';
+                if (DOM.bombHpScenarioTitleSpan) DOM.bombHpScenarioTitleSpan.textContent = 'チーム合計体力(爆弾)';
+                if (DOM.bombGainedHpSpan) DOM.bombGainedHpSpan.textContent = '--';
+                if (DOM.bombSequenceList) DOM.bombSequenceList.innerHTML = '';
+                if (DOM.lowestHpScenarioTitleSpan) DOM.lowestHpScenarioTitleSpan.textContent = 'チーム合計体力(最低)';
+                if (DOM.lowestGainedHpSpan) DOM.lowestGainedHpSpan.textContent = '--';
+                if (DOM.lowestSequenceList) DOM.lowestSequenceList.innerHTML = '';
+
+                if (DOM.shareTotalHpResultBtn) DOM.shareTotalHpResultBtn.style.display = 'none';
+                if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.style.display = 'none';
+            }
+        });
         return;
     }
 
     const { idealScenario, compromiseScenario, bombScenario, lowestScenario } = scenarios;
 
+    if (DOM.totalHpDisplayArea) {
+        gsap.killTweensOf(DOM.totalHpDisplayArea);
+    } else {
+        return;
+    }
+
     if (DOM.selectedPlayerCharNameSummary && selectedPlayerChar) DOM.selectedPlayerCharNameSummary.textContent = selectedPlayerChar.name;
     if (DOM.selectedPartnerCharNameSummary && selectedPartnerChar) DOM.selectedPartnerCharNameSummary.textContent = selectedPartnerChar.name;
 
-    if (DOM.totalHpDisplayArea) {
-        DOM.totalHpDisplayArea.classList.add('active'); 
-        gsap.fromTo(DOM.totalHpDisplayArea, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
-        if (DOM.shareTotalHpResultBtn) DOM.shareTotalHpResultBtn.style.display = 'flex'; 
-        if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.style.display = 'flex';     
-    } else return;
+    DOM.totalHpDisplayArea.classList.add('active');
+    gsap.fromTo(DOM.totalHpDisplayArea, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
+    if (DOM.shareTotalHpResultBtn) DOM.shareTotalHpResultBtn.style.display = 'flex';
+    if (DOM.copyTotalHpUrlBtn) DOM.copyTotalHpUrlBtn.style.display = 'flex';
 
     const formatNote = (rawNote = '') => {
         if (!rawNote) return '';
