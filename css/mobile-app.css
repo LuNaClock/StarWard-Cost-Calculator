@@ -82,7 +82,7 @@ body[data-view-mode="desktop"] .desktop-app {
   display: block;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   body[data-view-mode="auto"] .mobile-app {
     display: flex;
     align-items: stretch;
