@@ -1,53 +1,37 @@
-.history-overview {
+.recent-simulations {
     margin-top: 48px;
-    margin-bottom: 48px;
+    margin-bottom: 32px;
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 24px;
 }
 
-.history-overview__intro {
+.recent-simulations__intro {
     display: flex;
     flex-direction: column;
     gap: 12px;
     max-width: 720px;
 }
 
-.history-overview__title {
+.recent-simulations__title {
     font-size: clamp(1.75rem, 2.4vw, 2.1rem);
     letter-spacing: 0.03em;
     font-weight: 700;
     color: var(--surface-contrast-color);
 }
 
-.history-overview__lead {
+.recent-simulations__lead {
     margin: 0;
     color: var(--text-secondary);
     line-height: 1.6;
     font-size: 0.95rem;
 }
 
-.history-overview__layout {
-    display: grid;
-    gap: 28px;
-    grid-template-columns: 1fr;
-}
-
-.history-overview__panel {
+.history-overview {
+    margin-bottom: 48px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
-
-.history-overview__panel > .history-card {
-    height: auto;
-}
-
-@media (min-width: 1080px) {
-    .history-overview__layout {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        align-items: start;
-    }
 }
 
 .history-card {
@@ -298,8 +282,8 @@ body[data-theme="light"] .recent-character-card__apply {
 }
 
 .history-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: clamp(16px, 2vw, 24px);
 }
 
