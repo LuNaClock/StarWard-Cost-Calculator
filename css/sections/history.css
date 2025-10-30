@@ -303,7 +303,7 @@ body[data-theme="light"] .recent-character-card__apply {
     border: 1px solid rgba(37, 99, 235, 0.35);
     border-radius: 26px;
     padding: clamp(20px, 3vw, 28px) clamp(24px, 4vw, 36px);
-    /* padding-left: clamp(28px, 4vw, 44px); */
+    padding-left: clamp(28px, 4vw, 44px);
     background: linear-gradient(135deg, rgba(37, 99, 235, 0.34), rgba(15, 23, 42, 0.92));
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
