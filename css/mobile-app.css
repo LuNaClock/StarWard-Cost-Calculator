@@ -114,14 +114,16 @@ body[data-view-mode="desktop"] .desktop-app {
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.28);
 }
 
-body[data-view-mode="desktop"] .view-switcher--floating {
+body[data-view-mode="desktop"] .view-switcher--floating,
+body[data-view-mode="auto"] .view-switcher--floating {
   background: rgba(241, 245, 249, 0.92);
   color: #0f172a;
   border-color: rgba(100, 116, 139, 0.25);
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
 }
 
-body[data-view-mode="desktop"][data-theme="dark"] .view-switcher--floating {
+body[data-view-mode="desktop"][data-theme="dark"] .view-switcher--floating,
+body[data-view-mode="auto"][data-theme="dark"] .view-switcher--floating {
   background: rgba(15, 23, 42, 0.88);
   color: #e2e8f0;
   border-color: rgba(59, 130, 246, 0.45);
