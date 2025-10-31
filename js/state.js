@@ -23,13 +23,52 @@ function getHistoryKey(entry) {
     return `misc:${entry.role ?? ''}:${entry.timestamp ?? ''}`;
 }
 
+function formatCharacterIdentifier(id, name) {
+    if (typeof id === 'number' && Number.isFinite(id)) {
+        return `id:${id}`;
+    }
+    if (typeof name === 'string') {
+        const trimmed = name.trim();
+        if (trimmed) {
+            return `name:${trimmed}`;
+        }
+    }
+    return '';
+}
+
+function getHistoryCombinationKey(entry) {
+    if (!entry || typeof entry !== 'object') {
+        return '';
+    }
+
+    const playerKey = formatCharacterIdentifier(entry.playerId, entry.playerName);
+    const partnerKey = formatCharacterIdentifier(entry.partnerId, entry.partnerName);
+
+    if (!playerKey || !partnerKey) {
+        return '';
+    }
+
+    const targetKey = formatCharacterIdentifier(entry.characterId, entry.name);
+    const roleKey = entry.role === 'partner' ? 'partner' : 'player';
+
+    return `${roleKey}|player:${playerKey}|partner:${partnerKey}|target:${targetKey}`;
+}
+
 function normalizeHistoryCollection(entries) {
     if (!Array.isArray(entries)) return [];
     const counts = new Map();
+    const combinationKeys = new Set();
     const result = [];
     entries.forEach((entry) => {
         const normalized = normalizeHistoryEntry(entry);
         if (!normalized) return;
+        const combinationKey = getHistoryCombinationKey(normalized);
+        if (combinationKey) {
+            if (combinationKeys.has(combinationKey)) {
+                return;
+            }
+            combinationKeys.add(combinationKey);
+        }
         const key = getHistoryKey(normalized);
         const count = counts.get(key) ?? 0;
         if (count >= HISTORY_DUPLICATE_LIMIT) return;
@@ -158,7 +197,12 @@ export function addHistoryEntry(entry) {
     const normalizedEntry = normalizeHistoryEntry(entry);
     if (!normalizedEntry) return false;
 
-    const nextHistory = normalizeHistoryCollection([normalizedEntry, ...appState.history]).slice(0, HISTORY_LIMIT);
+    const combinationKey = getHistoryCombinationKey(normalizedEntry);
+    const existingHistory = combinationKey
+        ? appState.history.filter((item) => getHistoryCombinationKey(item) !== combinationKey)
+        : appState.history;
+
+    const nextHistory = normalizeHistoryCollection([normalizedEntry, ...existingHistory]).slice(0, HISTORY_LIMIT);
 
     const changed = nextHistory.length !== appState.history.length || nextHistory.some((item, index) => {
         const current = appState.history[index];
