@@ -87,6 +87,14 @@ function updateCharacterPickerSelectionDisplay(type, character) {
     const refs = characterPickerRefs[type];
     if (!refs) return;
 
+    const isEmpty = !character;
+    if (refs.toggle) {
+        refs.toggle.classList.toggle('is-empty', isEmpty);
+    }
+    if (refs.container) {
+        refs.container.classList.toggle('is-empty', isEmpty);
+    }
+
     if (refs.selectedIcon) {
         refs.selectedIcon.innerHTML = '';
         if (character) {
