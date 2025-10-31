@@ -207,7 +207,7 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
 }
 
 .redeploy-char-info .info-label {
-    color: var(--primary-dark);
+    color: var(--primary-light);
     font-weight: 600;
     font-size: 1em;
 }
@@ -221,12 +221,10 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
 
 #redeployCalculatedHp.low-hp-value {
     color: var(--hp-medium);
-    animation: pulse 2s infinite;
 }
 
 #redeployCalculatedHp.red-value {
     color: var(--hp-low);
-    animation: pulse 1.5s infinite;
 }
 
 .simulation-hp-bar { /* シミュレーション結果のHPバー */
@@ -238,18 +236,6 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
     position: relative;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
     margin: 10px 0;
-}
-
-.simulation-hp-percentage { /* シミュレーション結果の割合表示 */
-    position: absolute;
-    top: -25px;
-    right: 0;
-    background-color: var(--primary-dark);
-    color: var(--card-background);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8em;
-    font-weight: 600;
 }
 
 .simulation-note {
@@ -477,15 +463,23 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
 }
 
 .awakening-possible {
-    color: var(--hp-high);
+    color: #16a34a;
     font-weight: 700;
-    font-size: 1.1em;
 }
 
 .awakening-not-possible {
-    color: var(--hp-low);
+    color: #dc2626;
     font-weight: 700;
-    font-size: 1.1em;
+}
+
+.redeploy-char-info .info-value.awakening-possible,
+#awakeningAvailability.awakening-possible {
+    color: #16a34a;
+}
+
+.redeploy-char-info .info-value.awakening-not-possible,
+#awakeningAvailability.awakening-not-possible {
+    color: #dc2626;
 }
 
 .awakening-simulation-area .simulation-input-group label {

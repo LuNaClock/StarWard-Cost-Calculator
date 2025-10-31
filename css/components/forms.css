@@ -141,7 +141,7 @@ body[data-theme="dark"] .input-label {
 
 .select-dropdown { 
     width: 100%;
-    padding: 12px 15px;
+    padding: 12px 0;
     border: 2px solid var(--light-grey-border);
     border-radius: 25px;
     background-color: var(--card-background);
@@ -189,6 +189,8 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     cursor: pointer;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     transition: all var(--transition-speed);
+    position: relative;
+    overflow: visible;
 }
 
 .character-picker-toggle:focus-visible,
@@ -251,6 +253,58 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     border-color: var(--primary-light);
     box-shadow: 0 10px 25px rgba(0, 191, 255, 0.28);
     transform: translateY(-2px);
+}
+
+.character-picker-toggle::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 32px;
+    border: 2px solid transparent;
+    opacity: 0;
+    transition: opacity var(--transition-speed);
+    pointer-events: none;
+    transform: scale(1);
+}
+
+.character-picker.is-empty .character-picker-toggle {
+    border-color: var(--primary-light);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12), 0 0 0 3px rgba(56, 189, 248, 0.35);
+}
+
+.character-picker.open.is-empty .character-picker-toggle {
+    box-shadow: 0 10px 25px rgba(0, 191, 255, 0.28), 0 0 0 3px rgba(56, 189, 248, 0.4);
+}
+
+.character-picker.is-empty .character-picker-toggle::after {
+    border-color: rgba(56, 189, 248, 0.5);
+    opacity: 1;
+    animation: character-picker-attention 2.4s ease-in-out infinite;
+}
+
+.character-picker.is-empty .character-picker-label {
+    color: var(--primary-light);
+    font-weight: 700;
+}
+
+.character-picker.is-empty .character-picker-selected-name {
+    color: var(--primary-light);
+}
+
+.character-picker.is-empty .character-picker-selected-icon.is-placeholder {
+    background: rgba(56, 189, 248, 0.18);
+    color: var(--primary-dark);
+}
+
+@keyframes character-picker-attention {
+    0%, 100% {
+        opacity: 0.45;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.05);
+    }
 }
 
 .character-picker-panel {

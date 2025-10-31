@@ -60,13 +60,13 @@ function autoUpdateRedeploySimulation(preferredTarget) {
         const fallbackTarget = playerChar ? 'player' : partnerChar ? 'partner' : 'player';
         State.setRedeployTarget(fallbackTarget);
         UI.setRedeployTargetSelection(fallbackTarget);
-        UI.resetSimulationResultsUI();
+        UI.resetSimulationResultsUI({ animate: false });
         return;
     }
 
     const target = resolveRedeployTarget(preferredTarget);
     if (!target) {
-        UI.resetSimulationResultsUI();
+        UI.resetSimulationResultsUI({ animate: false });
         return;
     }
 
@@ -149,7 +149,7 @@ function autoSimulateRedeploy(preferredType = null) {
     const partnerChar = State.getSelectedPartnerChar();
 
     if (!playerChar || !partnerChar) {
-        UI.resetSimulationResultsUI();
+        UI.resetSimulationResultsUI({ animate: false });
         return;
     }
 

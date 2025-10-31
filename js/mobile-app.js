@@ -13,7 +13,7 @@ import { toHiragana } from './utils.js';
 import { calculateTeamHpScenariosForCharacters } from './calculator.js';
 
 const HISTORY_KEY = 'starward-mobile-history-v1';
-const HISTORY_LIMIT = 5;
+const HISTORY_LIMIT = 3;
 const HISTORY_DUPLICATE_LIMIT = 3;
 const appRoot = document.querySelector('.mobile-app');
 
@@ -67,6 +67,11 @@ const dom = {
   selectedCharacterGrid: document.getElementById('selectedCharacterGrid'),
   resultHp: document.querySelector('[data-bind="result-hp"]'),
   resultCost: document.querySelector('[data-bind="result-cost"]'),
+  resultUnit: document.querySelector('[data-bind="result-unit"]'),
+  resultBaseCost: document.querySelector('[data-bind="result-base-cost"]'),
+  resultOriginalHp: document.querySelector('[data-bind="result-original-hp"]'),
+  resultCostDetail: document.querySelector('[data-bind="result-cost-detail"]'),
+  resultHpDetail: document.querySelector('[data-bind="result-hp-detail"]'),
   resultGauge: document.querySelector('[data-bind="result-gauge"]'),
   resultAwaken: document.querySelector('[data-bind="result-awaken"]'),
   resultHpBar: document.querySelector('[data-bind="result-hp-bar"]'),
@@ -221,6 +226,13 @@ function updatePickerDisplay(type) {
     return;
   }
   const selectedCharacter = getSelectedCharacterByRole(type);
+  const isEmpty = !selectedCharacter;
+  if (refs.toggle) {
+    refs.toggle.classList.toggle('is-empty', isEmpty);
+  }
+  if (refs.container) {
+    refs.container.classList.toggle('is-empty', isEmpty);
+  }
   if (refs.selectedIcon) {
     refs.selectedIcon.innerHTML = '';
     if (selectedCharacter) {
@@ -1026,11 +1038,27 @@ function clearSimulationResults() {
   if (dom.resultCost) {
     dom.resultCost.textContent = '--';
   }
+  if (dom.resultUnit) {
+    dom.resultUnit.textContent = '--';
+  }
+  if (dom.resultBaseCost) {
+    dom.resultBaseCost.textContent = '--';
+  }
+  if (dom.resultOriginalHp) {
+    dom.resultOriginalHp.textContent = '--';
+  }
+  if (dom.resultCostDetail) {
+    dom.resultCostDetail.textContent = '--';
+  }
+  if (dom.resultHpDetail) {
+    dom.resultHpDetail.textContent = '--';
+  }
   if (dom.resultGauge) {
     dom.resultGauge.textContent = '--';
   }
   if (dom.resultAwaken) {
     dom.resultAwaken.textContent = '--';
+    dom.resultAwaken.classList.remove('awakening-possible', 'awakening-not-possible');
   }
   if (dom.resultHpBar) {
     dom.resultHpBar.style.width = '0%';
@@ -1158,15 +1186,39 @@ function performSimulation({
   const isReadyToAwaken = finalGauge >= AWAKENING_THRESHOLD;
   const awakenText = isReadyToAwaken ? '覚醒可能' : '不可';
 
-  dom.resultHp.textContent = `${calculatedHp.toLocaleString()} HP`;
-  dom.resultCost.textContent = `${allocatedCost.toFixed(1)} コスト`;
+  const baseHpText = `${calculatedHp.toLocaleString()} HP`;
+  const hpRatio = targetChar.hp > 0
+    ? clamp(Math.round((calculatedHp / targetChar.hp) * 100), 0, 999)
+    : 0;
+  const hpDisplayText = `${baseHpText}(${hpRatio}%)`;
+  const costConsumedText = `${allocatedCost.toFixed(1)} コスト`;
+
+  dom.resultHp.textContent = hpDisplayText;
+  dom.resultCost.textContent = costConsumedText;
+  if (dom.resultHpDetail) {
+    dom.resultHpDetail.textContent = hpDisplayText;
+  }
+  if (dom.resultCostDetail) {
+    dom.resultCostDetail.textContent = costConsumedText;
+  }
+  if (dom.resultUnit) {
+    dom.resultUnit.textContent = targetChar.name;
+  }
+  if (dom.resultBaseCost) {
+    dom.resultBaseCost.textContent = `${targetChar.cost.toFixed(1)} コスト`;
+  }
+  if (dom.resultOriginalHp) {
+    dom.resultOriginalHp.textContent = `${targetChar.hp.toLocaleString()} HP`;
+  }
   if (dom.resultGauge) {
     dom.resultGauge.textContent = `${finalGauge}%`;
   }
   if (dom.resultAwaken) {
     dom.resultAwaken.textContent = awakenText;
+    dom.resultAwaken.classList.remove('awakening-possible', 'awakening-not-possible');
+    dom.resultAwaken.classList.add(isReadyToAwaken ? 'awakening-possible' : 'awakening-not-possible');
   }
-  dom.resultHpBar.style.width = `${Math.min(100, Math.round((calculatedHp / targetChar.hp) * 100))}%`;
+  dom.resultHpBar.style.width = `${Math.min(100, hpRatio)}%`;
   dom.simResults.hidden = false;
 
   applyInlineAwakeningState({
