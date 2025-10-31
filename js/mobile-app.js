@@ -13,7 +13,7 @@ import { toHiragana } from './utils.js';
 import { calculateTeamHpScenariosForCharacters } from './calculator.js';
 
 const HISTORY_KEY = 'starward-mobile-history-v1';
-const HISTORY_LIMIT = 5;
+const HISTORY_LIMIT = 3;
 const HISTORY_DUPLICATE_LIMIT = 3;
 const appRoot = document.querySelector('.mobile-app');
 
@@ -226,6 +226,13 @@ function updatePickerDisplay(type) {
     return;
   }
   const selectedCharacter = getSelectedCharacterByRole(type);
+  const isEmpty = !selectedCharacter;
+  if (refs.toggle) {
+    refs.toggle.classList.toggle('is-empty', isEmpty);
+  }
+  if (refs.container) {
+    refs.container.classList.toggle('is-empty', isEmpty);
+  }
   if (refs.selectedIcon) {
     refs.selectedIcon.innerHTML = '';
     if (selectedCharacter) {
@@ -1051,6 +1058,7 @@ function clearSimulationResults() {
   }
   if (dom.resultAwaken) {
     dom.resultAwaken.textContent = '--';
+    dom.resultAwaken.classList.remove('awakening-possible', 'awakening-not-possible');
   }
   if (dom.resultHpBar) {
     dom.resultHpBar.style.width = '0%';
@@ -1207,6 +1215,8 @@ function performSimulation({
   }
   if (dom.resultAwaken) {
     dom.resultAwaken.textContent = awakenText;
+    dom.resultAwaken.classList.remove('awakening-possible', 'awakening-not-possible');
+    dom.resultAwaken.classList.add(isReadyToAwaken ? 'awakening-possible' : 'awakening-not-possible');
   }
   dom.resultHpBar.style.width = `${Math.min(100, hpRatio)}%`;
   dom.simResults.hidden = false;
