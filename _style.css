@@ -1897,20 +1897,20 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 }
 
 .awakening-possible {
-    color: #16a34a !important; /* 鮮やかな緑で可視化 */
-    text-shadow: 0 0 8px rgba(22, 163, 74, 0.35) !important;
+    color: #16a34a;
     font-weight: bold;
 }
 .awakening-not-possible {
-    color: #dc2626 !important; /* 鮮やかな赤で可視化 */
-    text-shadow: 0 0 8px rgba(220, 38, 38, 0.35) !important;
+    color: #dc2626;
     font-weight: bold;
 }
-.redeploy-char-info .info-value.awakening-possible {
-    color: #16a34a !important;
+.redeploy-char-info .info-value.awakening-possible,
+#awakeningAvailability.awakening-possible {
+    color: #16a34a;
 }
-.redeploy-char-info .info-value.awakening-not-possible {
-    color: #dc2626 !important;
+.redeploy-char-info .info-value.awakening-not-possible,
+#awakeningAvailability.awakening-not-possible {
+    color: #dc2626;
 }
 .awakening-simulation-area .simulation-input-group label {
      margin-bottom: 8px;

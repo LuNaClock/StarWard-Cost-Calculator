@@ -465,20 +465,20 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
 .awakening-possible {
     color: #16a34a;
     font-weight: 700;
-    font-size: 1.1em;
 }
 
 .awakening-not-possible {
     color: #dc2626;
     font-weight: 700;
-    font-size: 1.1em;
 }
 
-.redeploy-char-info .info-value.awakening-possible {
+.redeploy-char-info .info-value.awakening-possible,
+#awakeningAvailability.awakening-possible {
     color: #16a34a;
 }
 
-.redeploy-char-info .info-value.awakening-not-possible {
+.redeploy-char-info .info-value.awakening-not-possible,
+#awakeningAvailability.awakening-not-possible {
     color: #dc2626;
 }
 
