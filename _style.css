@@ -1897,13 +1897,13 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
 }
 
 .awakening-possible {
-    color: var(--hp-high) !important; /* Greenish color, !important to override other styles */
-    text-shadow: 0 0 8px rgba(40, 167, 69, 0.5) !important;
+    color: #16a34a !important; /* 鮮やかな緑で可視化 */
+    text-shadow: 0 0 8px rgba(22, 163, 74, 0.35) !important;
     font-weight: bold;
 }
 .awakening-not-possible {
-    color: var(--hp-low) !important; /* Reddish color, !important to override other styles */
-    text-shadow: 0 0 8px rgba(220, 53, 69, 0.5) !important;
+    color: #dc2626 !important; /* 鮮やかな赤で可視化 */
+    text-shadow: 0 0 8px rgba(220, 38, 38, 0.35) !important;
     font-weight: bold;
 }
 .awakening-simulation-area .simulation-input-group label {

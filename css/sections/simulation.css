@@ -463,13 +463,13 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
 }
 
 .awakening-possible {
-    color: var(--hp-high);
+    color: #16a34a;
     font-weight: 700;
     font-size: 1.1em;
 }
 
 .awakening-not-possible {
-    color: var(--hp-low);
+    color: #dc2626;
     font-weight: 700;
     font-size: 1.1em;
 }
