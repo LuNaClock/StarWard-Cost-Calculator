@@ -1,6 +1,6 @@
 /* フッターセクション */
 
-footer {
+.footer {
     text-align: center;
     margin-top: 50px;
     padding: 20px;
@@ -10,15 +10,30 @@ footer {
     background-color: var(--card-background);
     border-radius: 10px;
     box-shadow: var(--soft-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
 }
 
-footer a {
+.footer__text {
+    margin: 0;
+}
+
+.footer__accent {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.footer__link {
     color: var(--primary-light);
     text-decoration: none;
     transition: var(--transition-speed);
+    font-weight: 600;
 }
 
-footer a:hover {
+.footer__link:hover,
+.footer__link:focus-visible {
     color: var(--accent-orange);
     text-shadow: 0 0 5px var(--accent-orange);
-} 
+}
