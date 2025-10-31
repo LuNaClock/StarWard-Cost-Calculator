@@ -234,6 +234,28 @@
                                         <strong data-bind="result-cost">0</strong>
                                     </div>
                                 </div>
+                                <dl class="results-details" aria-label="再出撃詳細">
+                                    <div class="results-details__item">
+                                        <dt class="results-details__label">再出撃機体</dt>
+                                        <dd class="results-details__value" data-bind="result-unit">--</dd>
+                                    </div>
+                                    <div class="results-details__item">
+                                        <dt class="results-details__label">機体コスト</dt>
+                                        <dd class="results-details__value" data-bind="result-base-cost">--</dd>
+                                    </div>
+                                    <div class="results-details__item">
+                                        <dt class="results-details__label">本来の体力</dt>
+                                        <dd class="results-details__value" data-bind="result-original-hp">--</dd>
+                                    </div>
+                                    <div class="results-details__item">
+                                        <dt class="results-details__label">再出撃時コスト消費</dt>
+                                        <dd class="results-details__value" data-bind="result-cost-detail">--</dd>
+                                    </div>
+                                    <div class="results-details__item">
+                                        <dt class="results-details__label">再出撃時体力</dt>
+                                        <dd class="results-details__value" data-bind="result-hp-detail">--</dd>
+                                    </div>
+                                </dl>
                                 <div class="hp-bar" aria-hidden="true">
                                     <span data-bind="result-hp-bar" style="width: 0%"></span>
                                 </div>
@@ -549,10 +571,6 @@
         <h1 class="title-sf-effect">星の翼 総合耐久・覚醒シミュレーター</h1>
 
         <section class="recent-simulations" aria-labelledby="recentSimulationsHeading">
-            <div class="recent-simulations__intro">
-                <h2 class="recent-simulations__title" id="recentSimulationsHeading">最近のシミュレーション</h2>
-                <p class="recent-simulations__lead">直近で試した機体や条件を振り返り、ワンクリックで再適用できます。</p>
-            </div>
             <article class="history-card history-card--recent" aria-labelledby="recentCharactersHeading">
                 <h3 class="history-card__title" id="recentCharactersHeading">最近シミュレーションしたキャラ</h3>
                 <p class="history-card__description">直近で計算したキャラクターのカードを一覧で確認できます。</p>
