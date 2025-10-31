@@ -86,6 +86,70 @@ describe('デスクトップ履歴管理', () => {
     expect(persisted.filter((entry) => entry.characterId === 3)).toHaveLength(3);
   });
 
+  it('同一の自機と相方の組み合わせで役割も一致する履歴は既存を維持する', () => {
+    const { addHistoryEntry, getHistory } = stateModule;
+
+    const baseEntry = {
+      role: 'player',
+      characterId: 1,
+      name: 'スター',
+      playerId: 1,
+      playerName: 'スター',
+      partnerId: 2,
+      partnerName: 'リサ',
+      hp: 1000,
+      timestamp: '2024-02-01T00:00:00.000Z'
+    };
+
+    expect(addHistoryEntry(baseEntry)).toBe(true);
+
+    const updatedEntry = {
+      ...baseEntry,
+      hp: 1200,
+      timestamp: '2024-02-01T01:00:00.000Z'
+    };
+
+    expect(addHistoryEntry(updatedEntry)).toBe(false);
+
+    const history = getHistory();
+    expect(history).toHaveLength(1);
+    expect(history[0].hp).toBe(1000);
+    expect(history[0].timestamp).toBe('2024-02-01T00:00:00.000Z');
+  });
+
+  it('役割が異なる場合は同じ組み合わせでも別履歴として保持される', () => {
+    const { addHistoryEntry, getHistory } = stateModule;
+
+    const playerEntry = {
+      role: 'player',
+      characterId: 1,
+      name: 'スター',
+      playerId: 1,
+      playerName: 'スター',
+      partnerId: 2,
+      partnerName: 'リサ',
+      hp: 1000,
+      timestamp: '2024-02-01T00:00:00.000Z'
+    };
+
+    const partnerEntry = {
+      ...playerEntry,
+      role: 'partner',
+      characterId: 2,
+      name: 'リサ',
+      hp: 800,
+      timestamp: '2024-02-01T01:00:00.000Z'
+    };
+
+    expect(addHistoryEntry(playerEntry)).toBe(true);
+    expect(addHistoryEntry(partnerEntry)).toBe(true);
+
+    const history = getHistory();
+    expect(history).toHaveLength(2);
+    expect(history[0].role).toBe('partner');
+    expect(history[1].role).toBe('player');
+  });
+
   it('localStorageの壊れたデータを読み込む際も安全に初期化できる', () => {
     const { loadHistoryFromStorage, getHistory } = stateModule;
 
