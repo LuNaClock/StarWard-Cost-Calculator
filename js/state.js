@@ -12,6 +12,58 @@ const appState = {
     cardScope: 'all'
 };
 
+function getCharacterIdentifier(id, name) {
+    if (typeof id === 'number' && Number.isFinite(id)) {
+        return `id:${id}`;
+    }
+    if (typeof name === 'string') {
+        const trimmed = name.trim();
+        if (trimmed) {
+            return `name:${trimmed}`;
+        }
+    }
+    return null;
+}
+
+function resolveRoleCharacterKey(entry, role) {
+    if (!entry || typeof entry !== 'object') {
+        return null;
+    }
+
+    if (role === 'player') {
+        const key = getCharacterIdentifier(entry.playerId, entry.playerName);
+        if (key) {
+            return key;
+        }
+        if (entry.role === 'player') {
+            return getCharacterIdentifier(entry.characterId, entry.name);
+        }
+    }
+
+    if (role === 'partner') {
+        const key = getCharacterIdentifier(entry.partnerId, entry.partnerName);
+        if (key) {
+            return key;
+        }
+        if (entry.role === 'partner') {
+            return getCharacterIdentifier(entry.characterId, entry.name);
+        }
+    }
+
+    return null;
+}
+
+function getHistoryCombinationKey(entry) {
+    const playerKey = resolveRoleCharacterKey(entry, 'player');
+    const partnerKey = resolveRoleCharacterKey(entry, 'partner');
+
+    if (playerKey && partnerKey) {
+        return `${playerKey}|${partnerKey}`;
+    }
+
+    return null;
+}
+
 function getHistoryKey(entry) {
     if (!entry || typeof entry !== 'object') return '';
     if (entry.characterId !== null && entry.characterId !== undefined) {
@@ -26,10 +78,20 @@ function getHistoryKey(entry) {
 function normalizeHistoryCollection(entries) {
     if (!Array.isArray(entries)) return [];
     const counts = new Map();
+    const combinationKeys = new Set();
     const result = [];
     entries.forEach((entry) => {
         const normalized = normalizeHistoryEntry(entry);
         if (!normalized) return;
+
+        const combinationKey = getHistoryCombinationKey(normalized);
+        if (combinationKey) {
+            if (combinationKeys.has(combinationKey)) {
+                return;
+            }
+            combinationKeys.add(combinationKey);
+        }
+
         const key = getHistoryKey(normalized);
         const count = counts.get(key) ?? 0;
         if (count >= HISTORY_DUPLICATE_LIMIT) return;

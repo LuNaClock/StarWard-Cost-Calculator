@@ -120,4 +120,39 @@ describe('デスクトップ履歴管理', () => {
     expect(names.has('アルト')).toBe(true);
     expect(names.size).toBe(3);
   });
+
+  it('同一の自機・相方組み合わせは最新の1件に統合される', () => {
+    const { addHistoryEntry, getHistory } = stateModule;
+
+    const baseTime = Date.now();
+    const firstEntry = {
+      role: 'player',
+      characterId: 1,
+      playerId: 1,
+      playerName: 'カリン',
+      partnerId: 2,
+      partnerName: 'ユイ',
+      hp: 800,
+      timestamp: new Date(baseTime).toISOString(),
+    };
+
+    const secondEntry = {
+      role: 'partner',
+      characterId: 2,
+      playerId: 1,
+      playerName: 'カリン',
+      partnerId: 2,
+      partnerName: 'ユイ',
+      hp: 920,
+      timestamp: new Date(baseTime + 1000).toISOString(),
+    };
+
+    expect(addHistoryEntry(firstEntry)).toBe(true);
+    expect(addHistoryEntry(secondEntry)).toBe(true);
+
+    const history = getHistory();
+    expect(history).toHaveLength(1);
+    expect(history[0].hp).toBe(920);
+    expect(history[0].role).toBe('partner');
+  });
 });
