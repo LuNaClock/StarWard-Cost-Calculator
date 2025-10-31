@@ -87,6 +87,10 @@ function updateCharacterPickerSelectionDisplay(type, character) {
     const refs = characterPickerRefs[type];
     if (!refs) return;
 
+    if (refs.container) {
+        refs.container.classList.toggle('has-selection', Boolean(character));
+    }
+
     if (refs.selectedIcon) {
         refs.selectedIcon.innerHTML = '';
         if (character) {

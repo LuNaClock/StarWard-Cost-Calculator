@@ -13,7 +13,7 @@ import { toHiragana } from './utils.js';
 import { calculateTeamHpScenariosForCharacters } from './calculator.js';
 
 const HISTORY_KEY = 'starward-mobile-history-v1';
-const HISTORY_LIMIT = 5;
+const HISTORY_LIMIT = 3;
 const HISTORY_DUPLICATE_LIMIT = 3;
 const appRoot = document.querySelector('.mobile-app');
 
@@ -226,6 +226,9 @@ function updatePickerDisplay(type) {
     return;
   }
   const selectedCharacter = getSelectedCharacterByRole(type);
+  if (refs.container) {
+    refs.container.classList.toggle('has-selection', Boolean(selectedCharacter));
+  }
   if (refs.selectedIcon) {
     refs.selectedIcon.innerHTML = '';
     if (selectedCharacter) {
