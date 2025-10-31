@@ -207,7 +207,7 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
 }
 
 .redeploy-char-info .info-label {
-    color: var(--primary-dark);
+    color: var(--primary-light);
     font-weight: 600;
     font-size: 1em;
 }
@@ -221,12 +221,10 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
 
 #redeployCalculatedHp.low-hp-value {
     color: var(--hp-medium);
-    animation: pulse 2s infinite;
 }
 
 #redeployCalculatedHp.red-value {
     color: var(--hp-low);
-    animation: pulse 1.5s infinite;
 }
 
 .simulation-hp-bar { /* シミュレーション結果のHPバー */
