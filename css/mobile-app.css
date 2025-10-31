@@ -1828,6 +1828,25 @@ body[data-view-mode="auto"][data-theme="dark"] .view-switcher--floating {
   color: var(--muted);
 }
 
+.setting-item__accent {
+  color: #f8fafc;
+  font-weight: 600;
+}
+
+.setting-item__link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.setting-item__link:hover,
+.setting-item__link:focus-visible {
+  color: #bae6fd;
+  text-decoration: underline;
+  outline: none;
+}
+
 .setting-item label {
   font-size: 14px;
   color: var(--muted);
