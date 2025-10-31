@@ -1051,6 +1051,7 @@ function clearSimulationResults() {
   }
   if (dom.resultAwaken) {
     dom.resultAwaken.textContent = '--';
+    dom.resultAwaken.classList.remove('awakening-possible', 'awakening-not-possible');
   }
   if (dom.resultHpBar) {
     dom.resultHpBar.style.width = '0%';
@@ -1207,6 +1208,8 @@ function performSimulation({
   }
   if (dom.resultAwaken) {
     dom.resultAwaken.textContent = awakenText;
+    dom.resultAwaken.classList.remove('awakening-possible', 'awakening-not-possible');
+    dom.resultAwaken.classList.add(isReadyToAwaken ? 'awakening-possible' : 'awakening-not-possible');
   }
   dom.resultHpBar.style.width = `${Math.min(100, hpRatio)}%`;
   dom.simResults.hidden = false;
