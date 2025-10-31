@@ -1662,15 +1662,6 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     height: 16px; /* 太く */
 }
 
-.simulation-hp-percentage { /* シミュレーション結果の割合表示 */
-    font-size: 1.5em; /* 大きく */
-    margin-top: 10px; /* 上のバーとの間隔 */
-    color: var(--primary-dark); /* 暗い色 */
-    text-shadow: none; /* デフォルトの影を解除 */
-    font-family: 'Orbitron', sans-serif; /* SFフォント */
-    font-weight: 700;
-}
-
 .simulation-note {
     color: var(--medium-grey);
     font-size: 0.9em;

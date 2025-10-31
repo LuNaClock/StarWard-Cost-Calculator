@@ -1038,7 +1038,6 @@ export function resetSimulationResultsUI() {
             if (DOM.redeployCostConsumedSpan) DOM.redeployCostConsumedSpan.textContent = '--';
             if (DOM.redeployCalculatedHpSpan) DOM.redeployCalculatedHpSpan.textContent = '--';
             if (DOM.simulationHpBarFill) { DOM.simulationHpBarFill.style.transform = 'scaleX(0)'; DOM.simulationHpBarFill.classList.remove('hp-bar-low-pulse');}
-            if (DOM.simulationHpPercentageDisplay) { DOM.simulationHpPercentageDisplay.classList.remove('show'); DOM.simulationHpPercentageDisplay.textContent = '';}
             if (DOM.redeployCalculatedHpSpan) { DOM.redeployCalculatedHpSpan.classList.remove('low-hp-value', 'red-value');}
 
             if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'none';
@@ -1188,14 +1187,20 @@ export function displayTotalTeamHpResults(scenarios) {
 
 export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualCostConsumed) {
     if (!charToRedeploy) return;
-    
+
     DOM.redeployCharNameSpan.textContent = charToRedeploy.name;
     DOM.redeployCharCostSpan.textContent = charToRedeploy.cost.toFixed(1);
     DOM.redeployOriginalHpSpan.textContent = charToRedeploy.hp.toLocaleString();
     DOM.redeployCostConsumedSpan.textContent = actualCostConsumed.toFixed(1);
-    DOM.redeployCalculatedHpSpan.textContent = calculatedHp.toLocaleString();
 
     const originalHpValue = charToRedeploy.hp;
+    const hpPercentage = originalHpValue > 0 ? (calculatedHp / originalHpValue) : 0;
+    const percentageLabel = Number.isFinite(hpPercentage) && originalHpValue > 0
+        ? `${Math.round(hpPercentage * 100)}%`
+        : (calculatedHp <= 0 ? '0%' : '--%');
+
+    DOM.redeployCalculatedHpSpan.textContent = `${calculatedHp.toLocaleString()} (${percentageLabel})`;
+
     DOM.redeployCalculatedHpSpan.classList.remove('red-value', 'low-hp-value');
     if (originalHpValue > 0 && calculatedHp < originalHpValue && calculatedHp > 0) {
         DOM.redeployCalculatedHpSpan.classList.add('red-value');
@@ -1203,26 +1208,21 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
         DOM.redeployCalculatedHpSpan.classList.add('red-value');
     }
 
-    const hpPercentage = originalHpValue > 0 ? (calculatedHp / originalHpValue) : 0;
-    if (DOM.simulationHpBarFill && DOM.simulationHpPercentageDisplay) {
+    if (DOM.simulationHpBarFill) {
         gsap.to(DOM.simulationHpBarFill, {
-            scaleX: hpPercentage, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true,
-            onUpdate: () => { DOM.simulationHpPercentageDisplay.textContent = `${Math.round(gsap.getProperty(DOM.simulationHpBarFill, "scaleX") * 100)}%`; },
-            onComplete: () => { DOM.simulationHpPercentageDisplay.textContent = `${Math.round(hpPercentage * 100)}%`; }
+            scaleX: hpPercentage, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true
         });
 
         if (hpPercentage <= 0.3) DOM.simulationHpBarFill.classList.add('hp-bar-low-pulse');
         else DOM.simulationHpBarFill.classList.remove('hp-bar-low-pulse');
-
-        DOM.simulationHpPercentageDisplay.classList.add('show');
     }
 
-    if (DOM.simulationResultsDiv) { 
-        DOM.simulationResultsDiv.classList.add('active'); 
+    if (DOM.simulationResultsDiv) {
+        DOM.simulationResultsDiv.classList.add('active');
         gsap.fromTo(DOM.simulationResultsDiv, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", onComplete: () => {
             if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'block';
-            if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.style.display = 'flex'; 
-            if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.style.display = 'flex';     
+            if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.style.display = 'flex';
+            if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.style.display = 'flex';
         }});
     }
 }
