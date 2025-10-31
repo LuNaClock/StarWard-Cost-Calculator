@@ -141,7 +141,7 @@ body[data-theme="dark"] .input-label {
 
 .select-dropdown { 
     width: 100%;
-    padding: 12px 15px;
+    padding: 12px 0;
     border: 2px solid var(--light-grey-border);
     border-radius: 25px;
     background-color: var(--card-background);

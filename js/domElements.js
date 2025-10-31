@@ -44,7 +44,6 @@ export const redeployOriginalHpSpan = document.getElementById('redeployOriginalH
 export const redeployCostConsumedSpan = document.getElementById('redeployCostConsumed');
 export const redeployCalculatedHpSpan = document.getElementById('redeployCalculatedHp');
 export const simulationHpBarFill = simulationResultsDiv?.querySelector('.hp-bar-fill');
-export const simulationHpPercentageDisplay = simulationResultsDiv?.querySelector('.hp-percentage-display');
 export const redeployPredictionResultsSection = document.querySelector('#simulationResults h3');
 
 // New element for full character cards in Redeploy Simulation

@@ -26,6 +26,10 @@ const characterPickerState = {
 };
 
 let teamHpDisplayRenderToken = 0;
+let simulationResultsRenderToken = 0;
+let simulationResultsResetTween = null;
+let simulationResultsRevealTween = null;
+let simulationResultsHpBarTween = null;
 
 function buildCharacterPickerRefs(type) {
     const container = document.querySelector(`.character-picker[data-role="${type}"]`);
@@ -1027,40 +1031,92 @@ export function updateTeamCostDisplay(maxTeamCost) {
     }
 }
 
-export function resetSimulationResultsUI() {
-    gsap.to(DOM.simulationResultsDiv, {
-        opacity: 0, y: 20, duration: 0.3, ease: "power2.in",
-        onComplete: () => {
-            if (DOM.simulationResultsDiv) DOM.simulationResultsDiv.classList.remove('active');
-            if (DOM.redeployCharNameSpan) DOM.redeployCharNameSpan.textContent = '--';
-            if (DOM.redeployCharCostSpan) DOM.redeployCharCostSpan.textContent = '--';
-            if (DOM.redeployOriginalHpSpan) DOM.redeployOriginalHpSpan.textContent = '--';
-            if (DOM.redeployCostConsumedSpan) DOM.redeployCostConsumedSpan.textContent = '--';
-            if (DOM.redeployCalculatedHpSpan) DOM.redeployCalculatedHpSpan.textContent = '--';
-            if (DOM.simulationHpBarFill) { DOM.simulationHpBarFill.style.transform = 'scaleX(0)'; DOM.simulationHpBarFill.classList.remove('hp-bar-low-pulse');}
-            if (DOM.simulationHpPercentageDisplay) { DOM.simulationHpPercentageDisplay.classList.remove('show'); DOM.simulationHpPercentageDisplay.textContent = '';}
-            if (DOM.redeployCalculatedHpSpan) { DOM.redeployCalculatedHpSpan.classList.remove('low-hp-value', 'red-value');}
+export function resetSimulationResultsUI({ animate = true } = {}) {
+    const resetToken = ++simulationResultsRenderToken;
 
-            if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'none';
-            if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = "0";
-            if (DOM.beforeShotdownHpInput) { DOM.beforeShotdownHpInput.value = "0"; DOM.beforeShotdownHpInput.style.borderColor = '';}
-            if(DOM.considerOwnDownCheckbox) DOM.considerOwnDownCheckbox.checked = false;
-            if (DOM.considerDamageDealtCheckbox) {
-                DOM.considerDamageDealtCheckbox.checked = false;
-                if(DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
-                if(DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0";
-            }
-            if (DOM.considerShieldSuccessCheckbox) {
-                DOM.considerShieldSuccessCheckbox.checked = false;
-                if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'none';
-                if (DOM.shieldSuccessAwakeningBonusSelect) DOM.shieldSuccessAwakeningBonusSelect.value = "0";
-            }
-            if (DOM.considerPartnerDownCheckbox) DOM.considerPartnerDownCheckbox.checked = false;
-            if (DOM.predictedAwakeningGaugeSpan) DOM.predictedAwakeningGaugeSpan.textContent = '--';
-            if (DOM.awakeningAvailabilitySpan) { DOM.awakeningAvailabilitySpan.textContent = '--'; DOM.awakeningAvailabilitySpan.className = 'info-value';}
-            
-            if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.style.display = 'none';
-            if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.style.display = 'none';
+    const applyResetState = () => {
+        if (resetToken !== simulationResultsRenderToken) return;
+
+        simulationResultsResetTween = null;
+        simulationResultsRevealTween = null;
+        simulationResultsHpBarTween = null;
+
+        if (DOM.simulationResultsDiv) DOM.simulationResultsDiv.classList.remove('active');
+        if (DOM.redeployCharNameSpan) DOM.redeployCharNameSpan.textContent = '--';
+        if (DOM.redeployCharCostSpan) DOM.redeployCharCostSpan.textContent = '--';
+        if (DOM.redeployOriginalHpSpan) DOM.redeployOriginalHpSpan.textContent = '--';
+        if (DOM.redeployCostConsumedSpan) DOM.redeployCostConsumedSpan.textContent = '--';
+        if (DOM.redeployCalculatedHpSpan) DOM.redeployCalculatedHpSpan.textContent = '--';
+        if (DOM.simulationHpBarFill) {
+            DOM.simulationHpBarFill.style.transform = 'scaleX(0)';
+            DOM.simulationHpBarFill.classList.remove('hp-bar-low-pulse');
+        }
+        if (DOM.redeployCalculatedHpSpan) {
+            DOM.redeployCalculatedHpSpan.classList.remove('low-hp-value', 'red-value');
+        }
+
+        if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'none';
+        if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = "0";
+        if (DOM.beforeShotdownHpInput) {
+            DOM.beforeShotdownHpInput.value = "0";
+            DOM.beforeShotdownHpInput.style.borderColor = '';
+        }
+        if (DOM.considerOwnDownCheckbox) DOM.considerOwnDownCheckbox.checked = false;
+        if (DOM.considerDamageDealtCheckbox) {
+            DOM.considerDamageDealtCheckbox.checked = false;
+            if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
+            if (DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0";
+        }
+        if (DOM.considerShieldSuccessCheckbox) {
+            DOM.considerShieldSuccessCheckbox.checked = false;
+            if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'none';
+            if (DOM.shieldSuccessAwakeningBonusSelect) DOM.shieldSuccessAwakeningBonusSelect.value = "0";
+        }
+        if (DOM.considerPartnerDownCheckbox) DOM.considerPartnerDownCheckbox.checked = false;
+        if (DOM.predictedAwakeningGaugeSpan) DOM.predictedAwakeningGaugeSpan.textContent = '--';
+        if (DOM.awakeningAvailabilitySpan) {
+            DOM.awakeningAvailabilitySpan.textContent = '--';
+            DOM.awakeningAvailabilitySpan.className = 'info-value';
+        }
+
+        if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.style.display = 'none';
+        if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.style.display = 'none';
+    };
+
+    if (!DOM.simulationResultsDiv) {
+        applyResetState();
+        return;
+    }
+
+    if (simulationResultsResetTween) {
+        simulationResultsResetTween.kill();
+        simulationResultsResetTween = null;
+    }
+    if (simulationResultsRevealTween) {
+        simulationResultsRevealTween.kill();
+        simulationResultsRevealTween = null;
+    }
+    if (simulationResultsHpBarTween) {
+        simulationResultsHpBarTween.kill();
+        simulationResultsHpBarTween = null;
+    }
+
+    gsap.killTweensOf(DOM.simulationResultsDiv);
+    if (DOM.simulationHpBarFill) gsap.killTweensOf(DOM.simulationHpBarFill);
+
+    if (!animate) {
+        applyResetState();
+        return;
+    }
+
+    simulationResultsResetTween = gsap.to(DOM.simulationResultsDiv, {
+        opacity: 0,
+        y: 20,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+            simulationResultsResetTween = null;
+            applyResetState();
         }
     });
 }
@@ -1188,14 +1244,42 @@ export function displayTotalTeamHpResults(scenarios) {
 
 export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualCostConsumed) {
     if (!charToRedeploy) return;
-    
+
+    const renderToken = ++simulationResultsRenderToken;
+
+    if (simulationResultsResetTween) {
+        simulationResultsResetTween.kill();
+        simulationResultsResetTween = null;
+    }
+    if (simulationResultsRevealTween) {
+        simulationResultsRevealTween.kill();
+        simulationResultsRevealTween = null;
+    }
+    if (simulationResultsHpBarTween) {
+        simulationResultsHpBarTween.kill();
+        simulationResultsHpBarTween = null;
+    }
+
+    if (DOM.simulationResultsDiv) {
+        gsap.killTweensOf(DOM.simulationResultsDiv);
+    }
+    if (DOM.simulationHpBarFill) {
+        gsap.killTweensOf(DOM.simulationHpBarFill);
+    }
+
     DOM.redeployCharNameSpan.textContent = charToRedeploy.name;
     DOM.redeployCharCostSpan.textContent = charToRedeploy.cost.toFixed(1);
     DOM.redeployOriginalHpSpan.textContent = charToRedeploy.hp.toLocaleString();
     DOM.redeployCostConsumedSpan.textContent = actualCostConsumed.toFixed(1);
-    DOM.redeployCalculatedHpSpan.textContent = calculatedHp.toLocaleString();
 
     const originalHpValue = charToRedeploy.hp;
+    const hpPercentage = originalHpValue > 0 ? (calculatedHp / originalHpValue) : 0;
+    const percentageLabel = Number.isFinite(hpPercentage) && originalHpValue > 0
+        ? `${Math.round(hpPercentage * 100)}%`
+        : (calculatedHp <= 0 ? '0%' : '--%');
+
+    DOM.redeployCalculatedHpSpan.textContent = `${calculatedHp.toLocaleString()} (${percentageLabel})`;
+
     DOM.redeployCalculatedHpSpan.classList.remove('red-value', 'low-hp-value');
     if (originalHpValue > 0 && calculatedHp < originalHpValue && calculatedHp > 0) {
         DOM.redeployCalculatedHpSpan.classList.add('red-value');
@@ -1203,27 +1287,38 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
         DOM.redeployCalculatedHpSpan.classList.add('red-value');
     }
 
-    const hpPercentage = originalHpValue > 0 ? (calculatedHp / originalHpValue) : 0;
-    if (DOM.simulationHpBarFill && DOM.simulationHpPercentageDisplay) {
-        gsap.to(DOM.simulationHpBarFill, {
-            scaleX: hpPercentage, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true,
-            onUpdate: () => { DOM.simulationHpPercentageDisplay.textContent = `${Math.round(gsap.getProperty(DOM.simulationHpBarFill, "scaleX") * 100)}%`; },
-            onComplete: () => { DOM.simulationHpPercentageDisplay.textContent = `${Math.round(hpPercentage * 100)}%`; }
+    if (DOM.simulationHpBarFill) {
+        simulationResultsHpBarTween = gsap.to(DOM.simulationHpBarFill, {
+            scaleX: hpPercentage, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true
+        });
+        simulationResultsHpBarTween.eventCallback('onComplete', () => {
+            if (renderToken !== simulationResultsRenderToken) return;
+            simulationResultsHpBarTween = null;
         });
 
         if (hpPercentage <= 0.3) DOM.simulationHpBarFill.classList.add('hp-bar-low-pulse');
         else DOM.simulationHpBarFill.classList.remove('hp-bar-low-pulse');
-
-        DOM.simulationHpPercentageDisplay.classList.add('show');
     }
 
-    if (DOM.simulationResultsDiv) { 
-        DOM.simulationResultsDiv.classList.add('active'); 
-        gsap.fromTo(DOM.simulationResultsDiv, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", onComplete: () => {
-            if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'block';
-            if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.style.display = 'flex'; 
-            if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.style.display = 'flex';     
-        }});
+    if (DOM.simulationResultsDiv) {
+        DOM.simulationResultsDiv.classList.add('active');
+        simulationResultsRevealTween = gsap.fromTo(
+            DOM.simulationResultsDiv,
+            { opacity: 0, y: 20 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.4,
+                ease: "power2.out",
+                onComplete: () => {
+                    if (renderToken !== simulationResultsRenderToken) return;
+                    simulationResultsRevealTween = null;
+                    if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'block';
+                    if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.style.display = 'flex';
+                    if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.style.display = 'flex';
+                }
+            }
+        );
     }
 }
 
