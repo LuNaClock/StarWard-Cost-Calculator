@@ -1178,13 +1178,17 @@ function performSimulation({
   const isReadyToAwaken = finalGauge >= AWAKENING_THRESHOLD;
   const awakenText = isReadyToAwaken ? '覚醒可能' : '不可';
 
-  const hpText = `${calculatedHp.toLocaleString()} HP`;
+  const baseHpText = `${calculatedHp.toLocaleString()} HP`;
+  const hpRatio = targetChar.hp > 0
+    ? clamp(Math.round((calculatedHp / targetChar.hp) * 100), 0, 999)
+    : 0;
+  const hpDisplayText = `${baseHpText}(${hpRatio}%)`;
   const costConsumedText = `${allocatedCost.toFixed(1)} コスト`;
 
-  dom.resultHp.textContent = hpText;
+  dom.resultHp.textContent = hpDisplayText;
   dom.resultCost.textContent = costConsumedText;
   if (dom.resultHpDetail) {
-    dom.resultHpDetail.textContent = hpText;
+    dom.resultHpDetail.textContent = hpDisplayText;
   }
   if (dom.resultCostDetail) {
     dom.resultCostDetail.textContent = costConsumedText;
@@ -1204,7 +1208,7 @@ function performSimulation({
   if (dom.resultAwaken) {
     dom.resultAwaken.textContent = awakenText;
   }
-  dom.resultHpBar.style.width = `${Math.min(100, Math.round((calculatedHp / targetChar.hp) * 100))}%`;
+  dom.resultHpBar.style.width = `${Math.min(100, hpRatio)}%`;
   dom.simResults.hidden = false;
 
   applyInlineAwakeningState({
