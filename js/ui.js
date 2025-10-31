@@ -27,6 +27,9 @@ const characterPickerState = {
 
 let teamHpDisplayRenderToken = 0;
 let simulationResultsRenderToken = 0;
+let simulationResultsResetTween = null;
+let simulationResultsRevealTween = null;
+let simulationResultsHpBarTween = null;
 
 function buildCharacterPickerRefs(type) {
     const container = document.querySelector(`.character-picker[data-role="${type}"]`);
@@ -1028,11 +1031,15 @@ export function updateTeamCostDisplay(maxTeamCost) {
     }
 }
 
-export function resetSimulationResultsUI() {
+export function resetSimulationResultsUI({ animate = true } = {}) {
     const resetToken = ++simulationResultsRenderToken;
 
     const applyResetState = () => {
         if (resetToken !== simulationResultsRenderToken) return;
+
+        simulationResultsResetTween = null;
+        simulationResultsRevealTween = null;
+        simulationResultsHpBarTween = null;
 
         if (DOM.simulationResultsDiv) DOM.simulationResultsDiv.classList.remove('active');
         if (DOM.redeployCharNameSpan) DOM.redeployCharNameSpan.textContent = '--';
@@ -1081,15 +1088,36 @@ export function resetSimulationResultsUI() {
         return;
     }
 
+    if (simulationResultsResetTween) {
+        simulationResultsResetTween.kill();
+        simulationResultsResetTween = null;
+    }
+    if (simulationResultsRevealTween) {
+        simulationResultsRevealTween.kill();
+        simulationResultsRevealTween = null;
+    }
+    if (simulationResultsHpBarTween) {
+        simulationResultsHpBarTween.kill();
+        simulationResultsHpBarTween = null;
+    }
+
     gsap.killTweensOf(DOM.simulationResultsDiv);
     if (DOM.simulationHpBarFill) gsap.killTweensOf(DOM.simulationHpBarFill);
 
-    gsap.to(DOM.simulationResultsDiv, {
+    if (!animate) {
+        applyResetState();
+        return;
+    }
+
+    simulationResultsResetTween = gsap.to(DOM.simulationResultsDiv, {
         opacity: 0,
         y: 20,
         duration: 0.3,
         ease: "power2.in",
-        onComplete: applyResetState
+        onComplete: () => {
+            simulationResultsResetTween = null;
+            applyResetState();
+        }
     });
 }
 
@@ -1219,6 +1247,19 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
 
     const renderToken = ++simulationResultsRenderToken;
 
+    if (simulationResultsResetTween) {
+        simulationResultsResetTween.kill();
+        simulationResultsResetTween = null;
+    }
+    if (simulationResultsRevealTween) {
+        simulationResultsRevealTween.kill();
+        simulationResultsRevealTween = null;
+    }
+    if (simulationResultsHpBarTween) {
+        simulationResultsHpBarTween.kill();
+        simulationResultsHpBarTween = null;
+    }
+
     if (DOM.simulationResultsDiv) {
         gsap.killTweensOf(DOM.simulationResultsDiv);
     }
@@ -1247,8 +1288,12 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
     }
 
     if (DOM.simulationHpBarFill) {
-        gsap.to(DOM.simulationHpBarFill, {
+        simulationResultsHpBarTween = gsap.to(DOM.simulationHpBarFill, {
             scaleX: hpPercentage, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true
+        });
+        simulationResultsHpBarTween.eventCallback('onComplete', () => {
+            if (renderToken !== simulationResultsRenderToken) return;
+            simulationResultsHpBarTween = null;
         });
 
         if (hpPercentage <= 0.3) DOM.simulationHpBarFill.classList.add('hp-bar-low-pulse');
@@ -1257,7 +1302,7 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
 
     if (DOM.simulationResultsDiv) {
         DOM.simulationResultsDiv.classList.add('active');
-        gsap.fromTo(
+        simulationResultsRevealTween = gsap.fromTo(
             DOM.simulationResultsDiv,
             { opacity: 0, y: 20 },
             {
@@ -1267,6 +1312,7 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
                 ease: "power2.out",
                 onComplete: () => {
                     if (renderToken !== simulationResultsRenderToken) return;
+                    simulationResultsRevealTween = null;
                     if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'block';
                     if (DOM.shareRedeployResultBtn) DOM.shareRedeployResultBtn.style.display = 'flex';
                     if (DOM.copyRedeployUrlBtn) DOM.copyRedeployUrlBtn.style.display = 'flex';
