@@ -474,6 +474,14 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
     font-size: 1.1em;
 }
 
+.redeploy-char-info .info-value.awakening-possible {
+    color: #16a34a;
+}
+
+.redeploy-char-info .info-value.awakening-not-possible {
+    color: #dc2626;
+}
+
 .awakening-simulation-area .simulation-input-group label {
     color: var(--primary-dark);
     font-weight: 600;

@@ -1906,6 +1906,12 @@ input[type="number"].select-dropdown::-webkit-inner-spin-button {
     text-shadow: 0 0 8px rgba(220, 38, 38, 0.35) !important;
     font-weight: bold;
 }
+.redeploy-char-info .info-value.awakening-possible {
+    color: #16a34a !important;
+}
+.redeploy-char-info .info-value.awakening-not-possible {
+    color: #dc2626 !important;
+}
 .awakening-simulation-area .simulation-input-group label {
      margin-bottom: 8px;
 }
