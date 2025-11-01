@@ -870,10 +870,29 @@ body[data-theme="dark"] .character-picker-search-input:focus {
     border: 1px solid rgba(0, 191, 255, 0.2);
 }
 
+
 .awakening-additional-options .checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.awakening-additional-options .checkbox-group__content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.awakening-additional-options .checkbox-group__control {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.awakening-additional-options .checkbox-group__helper {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
 }
 
 .awakening-additional-options .checkbox-group label {

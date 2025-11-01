@@ -777,13 +777,19 @@
                                 <div class="simulation-input-group">
                                     <label for="beforeShotdownHpInput"><i class="fas fa-heart-broken"></i> 想定被ダメージ量</label>
                                     <input type="number" id="beforeShotdownHpInput" class="select-dropdown" min="0" step="1" placeholder="例:300">
+                                    <p class="input-helper">※被弾を想定しない場合は、数値を0にしてください。</p>
                                 </div>
 
                                 <div class="awakening-additional-options">
                                     <div class="simulation-input-group checkbox-group">
                                         <i class="fas fa-crosshairs"></i>
-                                        <input type="checkbox" id="considerOwnDownCheckbox">
-                                        <label for="considerOwnDownCheckbox">再出撃時のゲージ量加算</label>
+                                        <div class="checkbox-group__content">
+                                            <div class="checkbox-group__control">
+                                                <input type="checkbox" id="considerOwnDownCheckbox">
+                                                <label for="considerOwnDownCheckbox">再出撃時のゲージ量加算</label>
+                                            </div>
+                                            <p class="input-helper checkbox-group__helper">※被撃墜直後のゲージ量を計算したい場合にチェック</p>
+                                        </div>
                                     </div>
 
                                     <div class="simulation-input-group checkbox-group has-dropdown">
