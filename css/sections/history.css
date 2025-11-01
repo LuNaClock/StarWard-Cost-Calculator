@@ -448,6 +448,11 @@
     font-size: clamp(0.85rem, 1.6vw, 1rem);
 }
 
+.history-entry__cta i::before {
+    position: relative;
+    left: 1px;
+}
+
 @media (max-width: 960px) {
     .history-entry {
         grid-template-columns: 1fr auto;
