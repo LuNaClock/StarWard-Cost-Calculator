@@ -357,11 +357,36 @@ export function calculateAwakeningGauge(inputs) {
     let finalPredictedGauge = gaugeBeforeShotdown + damageBasedGaugeIncrease + costBonusOnOwnDown + additionalGaugeFromDamageDealt + additionalGaugeFromShieldSuccess + additionalGaugeFromPartnerDown;
     finalPredictedGauge = Math.max(0, Math.min(100, Math.floor(finalPredictedGauge)));
 
+    const breakdown = {
+        baseGauge: gaugeBeforeShotdown,
+        damageIncrease: damageBasedGaugeIncrease,
+        validatedDamageTaken: actualDamageTaken,
+        originalMaxHp: originalCharActualMaxHp,
+        ownDown: {
+            enabled: considerOwnDown,
+            value: costBonusOnOwnDown
+        },
+        damageBonus: {
+            enabled: considerDamageDealt,
+            value: additionalGaugeFromDamageDealt
+        },
+        shieldBonus: {
+            enabled: considerShieldSuccess,
+            value: additionalGaugeFromShieldSuccess
+        },
+        partnerBonus: {
+            enabled: considerPartnerDown,
+            value: additionalGaugeFromPartnerDown
+        },
+        total: finalPredictedGauge
+    };
+
     return {
         finalPredictedGauge,
         isThresholdMet: finalPredictedGauge >= AWAKENING_THRESHOLD,
         error: false,
-        validatedDamageTaken: actualDamageTaken
+        validatedDamageTaken: actualDamageTaken,
+        breakdown
     };
 }
 

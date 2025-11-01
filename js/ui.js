@@ -1276,13 +1276,106 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
 }
 
 export function updateAwakeningGaugeUI(gaugeResult) {
-    if (!gaugeResult || !DOM.predictedAwakeningGaugeSpan || !DOM.awakeningAvailabilitySpan) return;
+    if (!DOM.predictedAwakeningGaugeSpan || !DOM.awakeningAvailabilitySpan) return;
+
+    const resetBreakdown = () => {
+        if (DOM.awakeningBreakdownDetails) {
+            DOM.awakeningBreakdownDetails.hidden = true;
+            DOM.awakeningBreakdownDetails.open = false;
+        }
+        if (DOM.awakeningDetailPreGaugeValue) DOM.awakeningDetailPreGaugeValue.textContent = '--%';
+        if (DOM.awakeningDetailDamageValue) DOM.awakeningDetailDamageValue.textContent = '+--%';
+        if (DOM.awakeningDetailDamageNote) DOM.awakeningDetailDamageNote.textContent = '想定被ダメージ: --';
+        if (DOM.awakeningDetailOwnDownValue) DOM.awakeningDetailOwnDownValue.textContent = '+--%';
+        if (DOM.awakeningDetailOwnDownStatus) DOM.awakeningDetailOwnDownStatus.textContent = '未適用';
+        if (DOM.awakeningDetailDamageBonusValue) DOM.awakeningDetailDamageBonusValue.textContent = '+--%';
+        if (DOM.awakeningDetailDamageBonusStatus) DOM.awakeningDetailDamageBonusStatus.textContent = '未適用';
+        if (DOM.awakeningDetailShieldBonusValue) DOM.awakeningDetailShieldBonusValue.textContent = '+--%';
+        if (DOM.awakeningDetailShieldBonusStatus) DOM.awakeningDetailShieldBonusStatus.textContent = '未適用';
+        if (DOM.awakeningDetailPartnerBonusValue) DOM.awakeningDetailPartnerBonusValue.textContent = '+--%';
+        if (DOM.awakeningDetailPartnerBonusStatus) DOM.awakeningDetailPartnerBonusStatus.textContent = '未適用';
+        if (DOM.awakeningDetailTotalValue) DOM.awakeningDetailTotalValue.textContent = '--%';
+    };
+
+    const formatSignedPercentage = (value) => {
+        if (!Number.isFinite(value)) return '+--%';
+        const rounded = Math.round(value);
+        const sign = rounded >= 0 ? '+' : '';
+        return `${sign}${rounded}%`;
+    };
+
+    const formatBasePercentage = (value) => {
+        if (!Number.isFinite(value)) return '--%';
+        return `${Math.round(value)}%`;
+    };
+
+    const applyBreakdown = (breakdown) => {
+        if (!DOM.awakeningBreakdownDetails) return;
+        if (!breakdown) {
+            resetBreakdown();
+            return;
+        }
+        DOM.awakeningBreakdownDetails.hidden = false;
+
+        if (DOM.awakeningDetailPreGaugeValue) {
+            DOM.awakeningDetailPreGaugeValue.textContent = formatBasePercentage(breakdown.baseGauge);
+        }
+        if (DOM.awakeningDetailDamageValue) {
+            DOM.awakeningDetailDamageValue.textContent = formatSignedPercentage(breakdown.damageIncrease);
+        }
+        if (DOM.awakeningDetailDamageNote) {
+            if (Number.isFinite(breakdown.validatedDamageTaken) && Number.isFinite(breakdown.originalMaxHp)) {
+                const taken = Math.round(breakdown.validatedDamageTaken);
+                const maxHp = Math.round(breakdown.originalMaxHp);
+                const percent = maxHp > 0 ? Math.round((taken / maxHp) * 100) : 0;
+                DOM.awakeningDetailDamageNote.textContent = `想定被ダメージ: ${taken.toLocaleString()} / ${maxHp.toLocaleString()} (${percent}%)`;
+            } else {
+                DOM.awakeningDetailDamageNote.textContent = '想定被ダメージ: --';
+            }
+        }
+        if (DOM.awakeningDetailOwnDownValue) {
+            DOM.awakeningDetailOwnDownValue.textContent = formatSignedPercentage(breakdown.ownDown?.value ?? 0);
+        }
+        if (DOM.awakeningDetailOwnDownStatus) {
+            DOM.awakeningDetailOwnDownStatus.textContent = breakdown.ownDown?.enabled ? '適用' : '未適用';
+        }
+        if (DOM.awakeningDetailDamageBonusValue) {
+            DOM.awakeningDetailDamageBonusValue.textContent = formatSignedPercentage(breakdown.damageBonus?.value ?? 0);
+        }
+        if (DOM.awakeningDetailDamageBonusStatus) {
+            DOM.awakeningDetailDamageBonusStatus.textContent = breakdown.damageBonus?.enabled ? '適用' : '未適用';
+        }
+        if (DOM.awakeningDetailShieldBonusValue) {
+            DOM.awakeningDetailShieldBonusValue.textContent = formatSignedPercentage(breakdown.shieldBonus?.value ?? 0);
+        }
+        if (DOM.awakeningDetailShieldBonusStatus) {
+            DOM.awakeningDetailShieldBonusStatus.textContent = breakdown.shieldBonus?.enabled ? '適用' : '未適用';
+        }
+        if (DOM.awakeningDetailPartnerBonusValue) {
+            DOM.awakeningDetailPartnerBonusValue.textContent = formatSignedPercentage(breakdown.partnerBonus?.value ?? 0);
+        }
+        if (DOM.awakeningDetailPartnerBonusStatus) {
+            DOM.awakeningDetailPartnerBonusStatus.textContent = breakdown.partnerBonus?.enabled ? '適用' : '未適用';
+        }
+        if (DOM.awakeningDetailTotalValue) {
+            DOM.awakeningDetailTotalValue.textContent = formatBasePercentage(breakdown.total);
+        }
+    };
+
+    if (!gaugeResult) {
+        DOM.predictedAwakeningGaugeSpan.textContent = '--';
+        DOM.awakeningAvailabilitySpan.textContent = '--';
+        DOM.awakeningAvailabilitySpan.className = 'info-value';
+        resetBreakdown();
+        return;
+    }
 
     if (gaugeResult.error) {
         DOM.predictedAwakeningGaugeSpan.textContent = '---';
         DOM.awakeningAvailabilitySpan.textContent = '--';
         DOM.awakeningAvailabilitySpan.className = 'info-value';
         if(DOM.beforeShotdownHpInput) DOM.beforeShotdownHpInput.style.borderColor = 'red';
+        resetBreakdown();
         return;
     }
 
@@ -1295,7 +1388,7 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         }
     }
 
-    DOM.predictedAwakeningGaugeSpan.textContent = gaugeResult.finalPredictedGauge;
+    DOM.predictedAwakeningGaugeSpan.textContent = `${gaugeResult.finalPredictedGauge}`;
     DOM.awakeningAvailabilitySpan.classList.remove('awakening-possible', 'awakening-not-possible');
     if (gaugeResult.isThresholdMet) {
         DOM.awakeningAvailabilitySpan.textContent = '使用可能';
@@ -1304,6 +1397,8 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         DOM.awakeningAvailabilitySpan.textContent = '使用不可';
         DOM.awakeningAvailabilitySpan.classList.add('awakening-not-possible');
     }
+
+    applyBreakdown(gaugeResult.breakdown);
 }
 
 export function setAwakeningDetailsConstants() {
