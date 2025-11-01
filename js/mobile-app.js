@@ -1056,6 +1056,38 @@ function applyInlineAwakeningState({
   }
 }
 
+function getMobileBreakdownItemContainer(element) {
+  return element?.closest('.calc-breakdown__item') ?? null;
+}
+
+function resetOptionalBreakdownRow(valueEl, statusEl) {
+  if (valueEl) valueEl.textContent = '+--%';
+  if (statusEl) {
+    statusEl.textContent = '未適用';
+    statusEl.hidden = true;
+  }
+  const container = getMobileBreakdownItemContainer(valueEl);
+  if (container) container.hidden = true;
+}
+
+function updateOptionalBreakdownRow(valueEl, statusEl, { enabled, value, format }) {
+  if (typeof format !== 'function') {
+    return;
+  }
+  if (valueEl) valueEl.textContent = format(value ?? 0);
+  if (statusEl) {
+    statusEl.textContent = enabled ? '適用' : '未適用';
+    statusEl.hidden = !enabled;
+  }
+  const container = getMobileBreakdownItemContainer(valueEl);
+  if (container) {
+    const numericValue = Number(value);
+    const rounded = Number.isFinite(numericValue) ? Math.round(numericValue) : 0;
+    const shouldShow = enabled && rounded !== 0;
+    container.hidden = !shouldShow;
+  }
+}
+
 function resetAwakeningBreakdown() {
   if (dom.awakeningBreakdown) {
     dom.awakeningBreakdown.hidden = true;
@@ -1064,26 +1096,10 @@ function resetAwakeningBreakdown() {
   if (dom.awakeningBreakdownPreGauge) dom.awakeningBreakdownPreGauge.textContent = '--%';
   if (dom.awakeningBreakdownDamage) dom.awakeningBreakdownDamage.textContent = '+--%';
   if (dom.awakeningBreakdownDamageNote) dom.awakeningBreakdownDamageNote.textContent = '想定被ダメージ: --';
-  if (dom.awakeningBreakdownOwnDown) dom.awakeningBreakdownOwnDown.textContent = '+--%';
-  if (dom.awakeningBreakdownOwnDownStatus) {
-    dom.awakeningBreakdownOwnDownStatus.textContent = '未適用';
-    dom.awakeningBreakdownOwnDownStatus.hidden = true;
-  }
-  if (dom.awakeningBreakdownDamageBonus) dom.awakeningBreakdownDamageBonus.textContent = '+--%';
-  if (dom.awakeningBreakdownDamageBonusStatus) {
-    dom.awakeningBreakdownDamageBonusStatus.textContent = '未適用';
-    dom.awakeningBreakdownDamageBonusStatus.hidden = true;
-  }
-  if (dom.awakeningBreakdownShieldBonus) dom.awakeningBreakdownShieldBonus.textContent = '+--%';
-  if (dom.awakeningBreakdownShieldBonusStatus) {
-    dom.awakeningBreakdownShieldBonusStatus.textContent = '未適用';
-    dom.awakeningBreakdownShieldBonusStatus.hidden = true;
-  }
-  if (dom.awakeningBreakdownPartnerBonus) dom.awakeningBreakdownPartnerBonus.textContent = '+--%';
-  if (dom.awakeningBreakdownPartnerBonusStatus) {
-    dom.awakeningBreakdownPartnerBonusStatus.textContent = '未適用';
-    dom.awakeningBreakdownPartnerBonusStatus.hidden = true;
-  }
+  resetOptionalBreakdownRow(dom.awakeningBreakdownOwnDown, dom.awakeningBreakdownOwnDownStatus);
+  resetOptionalBreakdownRow(dom.awakeningBreakdownDamageBonus, dom.awakeningBreakdownDamageBonusStatus);
+  resetOptionalBreakdownRow(dom.awakeningBreakdownShieldBonus, dom.awakeningBreakdownShieldBonusStatus);
+  resetOptionalBreakdownRow(dom.awakeningBreakdownPartnerBonus, dom.awakeningBreakdownPartnerBonusStatus);
   if (dom.awakeningBreakdownTotal) dom.awakeningBreakdownTotal.textContent = '--%';
 }
 
@@ -1126,38 +1142,26 @@ function updateAwakeningBreakdown(breakdown) {
       dom.awakeningBreakdownDamageNote.textContent = '想定被ダメージ: --';
     }
   }
-  if (dom.awakeningBreakdownOwnDown) {
-    dom.awakeningBreakdownOwnDown.textContent = formatSigned(breakdown.ownDownValue ?? 0);
-  }
-  if (dom.awakeningBreakdownOwnDownStatus) {
-    const enabled = Boolean(breakdown.ownDownEnabled);
-    dom.awakeningBreakdownOwnDownStatus.textContent = enabled ? '適用' : '未適用';
-    dom.awakeningBreakdownOwnDownStatus.hidden = !enabled;
-  }
-  if (dom.awakeningBreakdownDamageBonus) {
-    dom.awakeningBreakdownDamageBonus.textContent = formatSigned(breakdown.damageBonusValue ?? 0);
-  }
-  if (dom.awakeningBreakdownDamageBonusStatus) {
-    const enabled = Boolean(breakdown.damageBonusEnabled);
-    dom.awakeningBreakdownDamageBonusStatus.textContent = enabled ? '適用' : '未適用';
-    dom.awakeningBreakdownDamageBonusStatus.hidden = !enabled;
-  }
-  if (dom.awakeningBreakdownShieldBonus) {
-    dom.awakeningBreakdownShieldBonus.textContent = formatSigned(breakdown.shieldBonusValue ?? 0);
-  }
-  if (dom.awakeningBreakdownShieldBonusStatus) {
-    const enabled = Boolean(breakdown.shieldBonusEnabled);
-    dom.awakeningBreakdownShieldBonusStatus.textContent = enabled ? '適用' : '未適用';
-    dom.awakeningBreakdownShieldBonusStatus.hidden = !enabled;
-  }
-  if (dom.awakeningBreakdownPartnerBonus) {
-    dom.awakeningBreakdownPartnerBonus.textContent = formatSigned(breakdown.partnerBonusValue ?? 0);
-  }
-  if (dom.awakeningBreakdownPartnerBonusStatus) {
-    const enabled = Boolean(breakdown.partnerBonusEnabled);
-    dom.awakeningBreakdownPartnerBonusStatus.textContent = enabled ? '適用' : '未適用';
-    dom.awakeningBreakdownPartnerBonusStatus.hidden = !enabled;
-  }
+  updateOptionalBreakdownRow(dom.awakeningBreakdownOwnDown, dom.awakeningBreakdownOwnDownStatus, {
+    enabled: Boolean(breakdown.ownDownEnabled),
+    value: breakdown.ownDownValue ?? 0,
+    format: formatSigned,
+  });
+  updateOptionalBreakdownRow(dom.awakeningBreakdownDamageBonus, dom.awakeningBreakdownDamageBonusStatus, {
+    enabled: Boolean(breakdown.damageBonusEnabled),
+    value: breakdown.damageBonusValue ?? 0,
+    format: formatSigned,
+  });
+  updateOptionalBreakdownRow(dom.awakeningBreakdownShieldBonus, dom.awakeningBreakdownShieldBonusStatus, {
+    enabled: Boolean(breakdown.shieldBonusEnabled),
+    value: breakdown.shieldBonusValue ?? 0,
+    format: formatSigned,
+  });
+  updateOptionalBreakdownRow(dom.awakeningBreakdownPartnerBonus, dom.awakeningBreakdownPartnerBonusStatus, {
+    enabled: Boolean(breakdown.partnerBonusEnabled),
+    value: breakdown.partnerBonusValue ?? 0,
+    format: formatSigned,
+  });
   if (dom.awakeningBreakdownTotal) {
     dom.awakeningBreakdownTotal.textContent = formatBase(breakdown.total);
   }
