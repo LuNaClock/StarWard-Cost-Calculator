@@ -1065,13 +1065,25 @@ function resetAwakeningBreakdown() {
   if (dom.awakeningBreakdownDamage) dom.awakeningBreakdownDamage.textContent = '+--%';
   if (dom.awakeningBreakdownDamageNote) dom.awakeningBreakdownDamageNote.textContent = '想定被ダメージ: --';
   if (dom.awakeningBreakdownOwnDown) dom.awakeningBreakdownOwnDown.textContent = '+--%';
-  if (dom.awakeningBreakdownOwnDownStatus) dom.awakeningBreakdownOwnDownStatus.textContent = '未適用';
+  if (dom.awakeningBreakdownOwnDownStatus) {
+    dom.awakeningBreakdownOwnDownStatus.textContent = '未適用';
+    dom.awakeningBreakdownOwnDownStatus.hidden = true;
+  }
   if (dom.awakeningBreakdownDamageBonus) dom.awakeningBreakdownDamageBonus.textContent = '+--%';
-  if (dom.awakeningBreakdownDamageBonusStatus) dom.awakeningBreakdownDamageBonusStatus.textContent = '未適用';
+  if (dom.awakeningBreakdownDamageBonusStatus) {
+    dom.awakeningBreakdownDamageBonusStatus.textContent = '未適用';
+    dom.awakeningBreakdownDamageBonusStatus.hidden = true;
+  }
   if (dom.awakeningBreakdownShieldBonus) dom.awakeningBreakdownShieldBonus.textContent = '+--%';
-  if (dom.awakeningBreakdownShieldBonusStatus) dom.awakeningBreakdownShieldBonusStatus.textContent = '未適用';
+  if (dom.awakeningBreakdownShieldBonusStatus) {
+    dom.awakeningBreakdownShieldBonusStatus.textContent = '未適用';
+    dom.awakeningBreakdownShieldBonusStatus.hidden = true;
+  }
   if (dom.awakeningBreakdownPartnerBonus) dom.awakeningBreakdownPartnerBonus.textContent = '+--%';
-  if (dom.awakeningBreakdownPartnerBonusStatus) dom.awakeningBreakdownPartnerBonusStatus.textContent = '未適用';
+  if (dom.awakeningBreakdownPartnerBonusStatus) {
+    dom.awakeningBreakdownPartnerBonusStatus.textContent = '未適用';
+    dom.awakeningBreakdownPartnerBonusStatus.hidden = true;
+  }
   if (dom.awakeningBreakdownTotal) dom.awakeningBreakdownTotal.textContent = '--%';
 }
 
@@ -1118,25 +1130,33 @@ function updateAwakeningBreakdown(breakdown) {
     dom.awakeningBreakdownOwnDown.textContent = formatSigned(breakdown.ownDownValue ?? 0);
   }
   if (dom.awakeningBreakdownOwnDownStatus) {
-    dom.awakeningBreakdownOwnDownStatus.textContent = breakdown.ownDownEnabled ? '適用' : '未適用';
+    const enabled = Boolean(breakdown.ownDownEnabled);
+    dom.awakeningBreakdownOwnDownStatus.textContent = enabled ? '適用' : '未適用';
+    dom.awakeningBreakdownOwnDownStatus.hidden = !enabled;
   }
   if (dom.awakeningBreakdownDamageBonus) {
     dom.awakeningBreakdownDamageBonus.textContent = formatSigned(breakdown.damageBonusValue ?? 0);
   }
   if (dom.awakeningBreakdownDamageBonusStatus) {
-    dom.awakeningBreakdownDamageBonusStatus.textContent = breakdown.damageBonusEnabled ? '適用' : '未適用';
+    const enabled = Boolean(breakdown.damageBonusEnabled);
+    dom.awakeningBreakdownDamageBonusStatus.textContent = enabled ? '適用' : '未適用';
+    dom.awakeningBreakdownDamageBonusStatus.hidden = !enabled;
   }
   if (dom.awakeningBreakdownShieldBonus) {
     dom.awakeningBreakdownShieldBonus.textContent = formatSigned(breakdown.shieldBonusValue ?? 0);
   }
   if (dom.awakeningBreakdownShieldBonusStatus) {
-    dom.awakeningBreakdownShieldBonusStatus.textContent = breakdown.shieldBonusEnabled ? '適用' : '未適用';
+    const enabled = Boolean(breakdown.shieldBonusEnabled);
+    dom.awakeningBreakdownShieldBonusStatus.textContent = enabled ? '適用' : '未適用';
+    dom.awakeningBreakdownShieldBonusStatus.hidden = !enabled;
   }
   if (dom.awakeningBreakdownPartnerBonus) {
     dom.awakeningBreakdownPartnerBonus.textContent = formatSigned(breakdown.partnerBonusValue ?? 0);
   }
   if (dom.awakeningBreakdownPartnerBonusStatus) {
-    dom.awakeningBreakdownPartnerBonusStatus.textContent = breakdown.partnerBonusEnabled ? '適用' : '未適用';
+    const enabled = Boolean(breakdown.partnerBonusEnabled);
+    dom.awakeningBreakdownPartnerBonusStatus.textContent = enabled ? '適用' : '未適用';
+    dom.awakeningBreakdownPartnerBonusStatus.hidden = !enabled;
   }
   if (dom.awakeningBreakdownTotal) {
     dom.awakeningBreakdownTotal.textContent = formatBase(breakdown.total);

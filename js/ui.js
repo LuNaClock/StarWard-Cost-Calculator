@@ -1287,13 +1287,25 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         if (DOM.awakeningDetailDamageValue) DOM.awakeningDetailDamageValue.textContent = '+--%';
         if (DOM.awakeningDetailDamageNote) DOM.awakeningDetailDamageNote.textContent = '想定被ダメージ: --';
         if (DOM.awakeningDetailOwnDownValue) DOM.awakeningDetailOwnDownValue.textContent = '+--%';
-        if (DOM.awakeningDetailOwnDownStatus) DOM.awakeningDetailOwnDownStatus.textContent = '未適用';
+        if (DOM.awakeningDetailOwnDownStatus) {
+            DOM.awakeningDetailOwnDownStatus.textContent = '未適用';
+            DOM.awakeningDetailOwnDownStatus.hidden = true;
+        }
         if (DOM.awakeningDetailDamageBonusValue) DOM.awakeningDetailDamageBonusValue.textContent = '+--%';
-        if (DOM.awakeningDetailDamageBonusStatus) DOM.awakeningDetailDamageBonusStatus.textContent = '未適用';
+        if (DOM.awakeningDetailDamageBonusStatus) {
+            DOM.awakeningDetailDamageBonusStatus.textContent = '未適用';
+            DOM.awakeningDetailDamageBonusStatus.hidden = true;
+        }
         if (DOM.awakeningDetailShieldBonusValue) DOM.awakeningDetailShieldBonusValue.textContent = '+--%';
-        if (DOM.awakeningDetailShieldBonusStatus) DOM.awakeningDetailShieldBonusStatus.textContent = '未適用';
+        if (DOM.awakeningDetailShieldBonusStatus) {
+            DOM.awakeningDetailShieldBonusStatus.textContent = '未適用';
+            DOM.awakeningDetailShieldBonusStatus.hidden = true;
+        }
         if (DOM.awakeningDetailPartnerBonusValue) DOM.awakeningDetailPartnerBonusValue.textContent = '+--%';
-        if (DOM.awakeningDetailPartnerBonusStatus) DOM.awakeningDetailPartnerBonusStatus.textContent = '未適用';
+        if (DOM.awakeningDetailPartnerBonusStatus) {
+            DOM.awakeningDetailPartnerBonusStatus.textContent = '未適用';
+            DOM.awakeningDetailPartnerBonusStatus.hidden = true;
+        }
         if (DOM.awakeningDetailTotalValue) DOM.awakeningDetailTotalValue.textContent = '--%';
     };
 
@@ -1337,25 +1349,33 @@ export function updateAwakeningGaugeUI(gaugeResult) {
             DOM.awakeningDetailOwnDownValue.textContent = formatSignedPercentage(breakdown.ownDown?.value ?? 0);
         }
         if (DOM.awakeningDetailOwnDownStatus) {
-            DOM.awakeningDetailOwnDownStatus.textContent = breakdown.ownDown?.enabled ? '適用' : '未適用';
+            const enabled = Boolean(breakdown.ownDown?.enabled);
+            DOM.awakeningDetailOwnDownStatus.textContent = enabled ? '適用' : '未適用';
+            DOM.awakeningDetailOwnDownStatus.hidden = !enabled;
         }
         if (DOM.awakeningDetailDamageBonusValue) {
             DOM.awakeningDetailDamageBonusValue.textContent = formatSignedPercentage(breakdown.damageBonus?.value ?? 0);
         }
         if (DOM.awakeningDetailDamageBonusStatus) {
-            DOM.awakeningDetailDamageBonusStatus.textContent = breakdown.damageBonus?.enabled ? '適用' : '未適用';
+            const enabled = Boolean(breakdown.damageBonus?.enabled);
+            DOM.awakeningDetailDamageBonusStatus.textContent = enabled ? '適用' : '未適用';
+            DOM.awakeningDetailDamageBonusStatus.hidden = !enabled;
         }
         if (DOM.awakeningDetailShieldBonusValue) {
             DOM.awakeningDetailShieldBonusValue.textContent = formatSignedPercentage(breakdown.shieldBonus?.value ?? 0);
         }
         if (DOM.awakeningDetailShieldBonusStatus) {
-            DOM.awakeningDetailShieldBonusStatus.textContent = breakdown.shieldBonus?.enabled ? '適用' : '未適用';
+            const enabled = Boolean(breakdown.shieldBonus?.enabled);
+            DOM.awakeningDetailShieldBonusStatus.textContent = enabled ? '適用' : '未適用';
+            DOM.awakeningDetailShieldBonusStatus.hidden = !enabled;
         }
         if (DOM.awakeningDetailPartnerBonusValue) {
             DOM.awakeningDetailPartnerBonusValue.textContent = formatSignedPercentage(breakdown.partnerBonus?.value ?? 0);
         }
         if (DOM.awakeningDetailPartnerBonusStatus) {
-            DOM.awakeningDetailPartnerBonusStatus.textContent = breakdown.partnerBonus?.enabled ? '適用' : '未適用';
+            const enabled = Boolean(breakdown.partnerBonus?.enabled);
+            DOM.awakeningDetailPartnerBonusStatus.textContent = enabled ? '適用' : '未適用';
+            DOM.awakeningDetailPartnerBonusStatus.hidden = !enabled;
         }
         if (DOM.awakeningDetailTotalValue) {
             DOM.awakeningDetailTotalValue.textContent = formatBasePercentage(breakdown.total);
