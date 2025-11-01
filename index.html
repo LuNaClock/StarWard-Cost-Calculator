@@ -522,8 +522,8 @@
                 <section id="settings" class="screen" role="tabpanel" aria-labelledby="tab-settings" hidden>
                     <article class="panel">
                         <div class="panel-header">
-                            <h2 class="panel-title">設定</h2>
-                            <p class="panel-subtitle">お好みの表示にカスタマイズ</p>
+                            <h2 class="panel-title">ツール情報</h2>
+                            <p class="panel-subtitle">ツールに関する情報を確認できます。</p>
                         </div>
                         <div class="setting-group">
                             <div class="setting-item setting-item--view-mode">
@@ -574,21 +574,21 @@
                         <path d="M4 7h16M7 4v6M12 4v6M17 4v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
                         <rect x="6" y="11" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.6"></rect>
                     </svg>
-                    Simulator
+                    シミュレーター
                 </button>
                 <button class="tab-button" id="tab-cards" role="tab" aria-controls="cards" aria-selected="false">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <rect x="4" y="4" width="7" height="16" rx="2" stroke="currentColor" stroke-width="1.6"></rect>
                         <rect x="13" y="7" width="7" height="13" rx="2" stroke="currentColor" stroke-width="1.6"></rect>
                     </svg>
-                    Cards
+                    キャラ体力一覧
                 </button>
                 <button class="tab-button" id="tab-settings" role="tab" aria-controls="settings" aria-selected="false">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"></circle>
                         <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06A1.65 1.65 0 0015 19.4a1.65 1.65 0 00-1 .6 1.65 1.65 0 00-.33 1.82l-.02.07a2 2 0 01-3.3 0l-.02-.07a1.65 1.65 0 00-.33-1.82 1.65 1.65 0 00-1-.6 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-.6-1 1.65 1.65 0 00-1.82-.33l-.07.02a2 2 0 010-3.3l.07-.02a1.65 1.65 0 001.82-.33 1.65 1.65 0 00.6-1 1.65 1.65 0 00-.6-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-.6 1.65 1.65 0 00.33-1.82l.02-.07a2 2 0 013.3 0l.02.07a1.65 1.65 0 00.33 1.82 1.65 1.65 0 001 .6 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.6 1 1.65 1.65 0 00.6 1.82z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
-                    Settings
+                    ツール情報
                 </button>
             </nav>
         </div>
@@ -777,6 +777,7 @@
                                 <div class="simulation-input-group">
                                     <label for="beforeShotdownHpInput"><i class="fas fa-heart-broken"></i> 想定被ダメージ量</label>
                                     <input type="number" id="beforeShotdownHpInput" class="select-dropdown" min="0" step="1" placeholder="例:300">
+                                    <p class="input-helper">※被弾を想定しない場合は、数値を0にしてください。</p>
                                 </div>
 
                                 <div class="awakening-additional-options">
@@ -998,7 +999,7 @@
 
         <div class="controls-container" aria-labelledby="cardControlsHeading">
             <div class="controls-header">
-                <h2 id="cardControlsHeading" class="controls-title"><i class="fas fa-id-card"></i> カード検索と絞り込み</h2>
+                <h2 id="cardControlsHeading" class="controls-title"><i class="fas fa-id-card"></i> キャラクター体力一覧</h2>
                 <p class="controls-description">キャラクターカード一覧を対象に、名前検索やコスト・体力順での並び替えが行えます。</p>
             </div>
 
