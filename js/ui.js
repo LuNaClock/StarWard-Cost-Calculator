@@ -1064,9 +1064,9 @@ export function resetSimulationResultsUI({ animate = true } = {}) {
         }
 
         if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'none';
-        if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = "0";
+        if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = '';
         if (DOM.beforeShotdownHpInput) {
-            DOM.beforeShotdownHpInput.value = "0";
+            DOM.beforeShotdownHpInput.value = '';
             DOM.beforeShotdownHpInput.style.borderColor = '';
         }
         if (DOM.considerOwnDownCheckbox) DOM.considerOwnDownCheckbox.checked = false;
@@ -1343,7 +1343,9 @@ export function updateAwakeningGaugeUI(gaugeResult) {
 
     if(DOM.beforeShotdownHpInput) {
         DOM.beforeShotdownHpInput.style.borderColor = '';
-        if (DOM.beforeShotdownHpInput.value !== gaugeResult.validatedDamageTaken.toString()) {
+        const currentValue = DOM.beforeShotdownHpInput.value;
+        const nextValue = gaugeResult.validatedDamageTaken.toString();
+        if (currentValue !== '' && currentValue !== nextValue) {
              DOM.beforeShotdownHpInput.value = gaugeResult.validatedDamageTaken;
         }
     }

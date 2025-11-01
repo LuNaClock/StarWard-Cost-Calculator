@@ -87,7 +87,7 @@ export function applyFiltersAndSearch() {
     }
 
     if (activeCostFilter !== 'all') {
-        filteredCharacters = filteredCharacters.filter((character) => character.cost.toString() === activeCostFilter);
+        filteredCharacters = filteredCharacters.filter((character) => character.costKey === activeCostFilter);
     }
 
     if (scope === 'recent') {
