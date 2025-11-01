@@ -4,18 +4,18 @@
 .controls-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 28px;
     margin-bottom: 50px;
+    align-items: stretch;
 }
 
 .controls-header,
 .search-container,
 .filter-container {
     width: 100%;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .controls-header {
