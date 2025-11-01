@@ -13,7 +13,23 @@
                    connect-src 'self';
                    img-src 'self' data: blob: assets:;
                    form-action 'none';">
-    <meta name="description" content="Starward Cost Calculator">
+    <meta name="description" content="『星の翼』の総合耐久・覚醒ゲージをシミュレーションできる無料ツール。チーム編成や残コスト、再出撃時の耐久力を素早く把握し、最適な立ち回りをサポートします。">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "星の翼 総合耐久・覚醒シミュレーター",
+        "description": "『星の翼』の総合耐久や覚醒ゲージを条件別に計算できる無料のコストシミュレーターです。",
+        "url": "https://starward-cost-calculator.example.com/",
+        "operatingSystem": "Web",
+        "applicationCategory": "GameApplication",
+        "inLanguage": "ja",
+        "author": {
+            "@type": "Person",
+            "name": "StarWard Cost Calculator Team"
+        }
+    }
+    </script>
     <title>星の翼 総合耐久・覚醒シミュレーター</title>
     <!-- Google Fonts - Noto Sans JP (標準用) をインポート -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
@@ -587,11 +603,11 @@
 
         <section class="recent-simulations" aria-labelledby="recentSimulationsHeading">
             <article class="history-card history-card--recent" aria-labelledby="recentCharactersHeading">
-                <h3 class="history-card__title" id="recentCharactersHeading">最近シミュレーションしたキャラ</h3>
+                <h3 class="history-card__title" id="recentCharactersHeading">最近シミュレーションしたキャラを確認する</h3>
                 <p class="history-card__description">直近で計算したキャラクターのカードを一覧で確認できます。</p>
                 <div class="history-card__actions">
                     <button type="button" class="history-action-button history-card__cta" id="showRecentCardsButton" aria-pressed="false">
-                        最近シミュレーションしたキャラを確認する
+                        最近シミュレーションしたキャラを確認
                     </button>
                     <button type="button" class="history-action-button history-action-button--secondary" id="resetRecentFilterButton" hidden>
                         全キャラクターを表示する
@@ -982,10 +998,18 @@
             </div>
         </div>
 
-        <div class="controls-container">
+        <div class="controls-container" aria-labelledby="cardControlsHeading">
+            <div class="controls-header">
+                <h2 id="cardControlsHeading" class="controls-title"><i class="fas fa-id-card"></i> カード検索と絞り込み</h2>
+                <p class="controls-description">キャラクターカード一覧を対象に、名前検索やコスト・体力順での並び替えが行えます。</p>
+            </div>
+
             <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="characterSearch" placeholder="キャラクター名で検索..." autocomplete="off">
+                <label for="characterSearch" class="search-label">キャラクターカードを名前で検索</label>
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                    <input type="text" id="characterSearch" placeholder="カード名で検索..." aria-label="表示中のキャラクターカードを検索" autocomplete="off">
+                </div>
             </div>
 
             <div class="filter-container">
@@ -993,10 +1017,10 @@
                     <span class="filter-label"><i class="fas fa-coins"></i> コスト:</span>
                     <div class="filter-buttons" id="costFilter">
                         <button class="filter-button active" data-cost="all">全て</button>
-                        <button class="filter-button" data-cost="1.5">1.5</button>
-                        <button class="filter-button" data-cost="2">2.0</button>
+                        <button class="filter-button" data-cost="3.0">3.0</button>
                         <button class="filter-button" data-cost="2.5">2.5</button>
-                        <button class="filter-button" data-cost="3">3.0</button>
+                        <button class="filter-button" data-cost="2.0">2.0</button>
+                        <button class="filter-button" data-cost="1.5">1.5</button>
                     </div>
                 </div>
 
@@ -1004,10 +1028,10 @@
                     <span class="filter-label"><i class="fas fa-sort"></i> 並び替え:</span>
                     <div class="filter-buttons" id="sortFilter">
                         <button class="filter-button active" data-sort="name">名前順</button>
-                        <button class="filter-button" data-sort="cost-asc">コスト <i class="fas fa-arrow-down"></i></button>
-                        <button class="filter-button" data-sort="cost-desc">コスト <i class="fas fa-arrow-up"></i></button>
-                        <button class="filter-button" data-sort="hp-asc">体力 <i class="fas fa-arrow-down"></i></button>
-                        <button class="filter-button" data-sort="hp-desc">体力 <i class="fas fa-arrow-up"></i></button>
+                        <button class="filter-button" data-sort="cost-desc" aria-label="コスト 高い順">コスト <i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+                        <button class="filter-button" data-sort="cost-asc" aria-label="コスト 低い順">コスト <i class="fas fa-arrow-down" aria-hidden="true"></i></button>
+                        <button class="filter-button" data-sort="hp-desc" aria-label="体力 高い順">体力 <i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+                        <button class="filter-button" data-sort="hp-asc" aria-label="体力 低い順">体力 <i class="fas fa-arrow-down" aria-hidden="true"></i></button>
                     </div>
                 </div>
             </div>

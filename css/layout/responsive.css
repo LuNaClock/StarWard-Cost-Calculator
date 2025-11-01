@@ -116,8 +116,29 @@
         font-size: 0.9em;
     }
 
+    .controls-container {
+        gap: 24px;
+    }
+
+    .controls-title {
+        font-size: 1.15em;
+    }
+
+    .controls-description {
+        font-size: 0.9em;
+        line-height: 1.6;
+    }
+
     .search-container {
         margin-bottom: 20px;
+    }
+
+    .search-label {
+        font-size: 0.9em;
+    }
+
+    .search-input-wrapper {
+        position: relative;
     }
 
     .filter-container {
@@ -126,12 +147,12 @@
 
     #characterSearch {
         font-size: 1em;
-        padding: 12px 12px 12px 45px;
+        padding: 12px 12px 12px 48px;
     }
 
     .search-icon {
         font-size: 1.1em;
-        left: 12px;
+        left: 14px;
     }
 
     .share-buttons-group .simulation-button { 
