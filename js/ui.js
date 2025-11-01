@@ -385,6 +385,129 @@ function createTextElement(tag, className, textContent) {
     return element;
 }
 
+function createCharacterImageSection(character) {
+    const imageContainer = document.createElement('div');
+    imageContainer.className = 'character-image';
+
+    const imgElement = document.createElement('img');
+    imgElement.alt = character.name;
+    imgElement.className = 'character-icon-img';
+
+    const initialSpan = createTextElement('span', 'initial', character.name?.charAt(0) || '?');
+
+    const showImage = () => {
+        imgElement.style.display = 'block';
+        initialSpan.style.display = 'none';
+    };
+    const showInitial = () => {
+        imgElement.style.display = 'none';
+        initialSpan.style.display = 'flex';
+    };
+
+    if (character.image) {
+        imgElement.onload = showImage;
+        imgElement.onerror = showInitial;
+        imgElement.src = character.image;
+
+        if (imgElement.complete && imgElement.naturalWidth > 0) {
+            showImage();
+        } else {
+            showInitial();
+        }
+    } else {
+        showInitial();
+    }
+
+    imageContainer.appendChild(imgElement);
+    imageContainer.appendChild(initialSpan);
+    return imageContainer;
+}
+
+function createStatsSection(character) {
+    const stats = document.createElement('div');
+    stats.className = 'character-stats';
+    stats.appendChild(createTextElement('span', 'character-stat-label', '本来の体力:'));
+    stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
+    return stats;
+}
+
+function getApplicableRemainingCosts(character) {
+    return costRemainingMap[character.cost.toFixed(1)] || [];
+}
+
+function calculateRedeployHpForDisplay(character, remainingCost) {
+    if (character.cost <= 0) return 0;
+    if (remainingCost >= character.cost) return character.hp;
+    if (remainingCost > 0) return Math.round(character.hp * (remainingCost / character.cost));
+    return 0;
+}
+
+function createCostTableSection(character, { tableLabel = '体力' } = {}) {
+    const table = document.createElement('table');
+    table.className = 'cost-table';
+
+    const remainingCosts = getApplicableRemainingCosts(character);
+
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    headerRow.appendChild(createTextElement('th', '', '残コスト'));
+    remainingCosts.forEach(cost => headerRow.appendChild(createTextElement('th', '', cost.toFixed(1))));
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    const bodyRow = document.createElement('tr');
+    bodyRow.appendChild(createTextElement('td', '', tableLabel));
+    remainingCosts.forEach(remainingCost => {
+        const hp = calculateRedeployHpForDisplay(character, remainingCost);
+        const cell = createTextElement('td', '', hp.toLocaleString());
+        cell.dataset.redeployHp = hp;
+        bodyRow.appendChild(cell);
+    });
+    tbody.appendChild(bodyRow);
+    table.appendChild(tbody);
+
+    return table;
+}
+
+function createHpBarSection() {
+    const fragment = document.createDocumentFragment();
+
+    const hpBarContainer = document.createElement('div');
+    hpBarContainer.className = 'hp-bar-container';
+
+    const hpBarFill = document.createElement('div');
+    hpBarFill.className = 'hp-bar-fill';
+    hpBarContainer.appendChild(hpBarFill);
+
+    fragment.appendChild(hpBarContainer);
+    fragment.appendChild(createTextElement('div', 'hp-percentage-display', ''));
+
+    return fragment;
+}
+
+function createCharacterCard(character, options = {}) {
+    const card = document.createElement('div');
+    card.className = 'character-card';
+    card.dataset.originalHp = character.hp;
+
+    const header = document.createElement('div');
+    header.className = 'character-header';
+    header.appendChild(createTextElement('span', '', character.name));
+    header.appendChild(createTextElement('span', 'character-cost', `コスト: ${character.cost.toFixed(1)}`));
+    card.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'character-body';
+    body.appendChild(createCharacterImageSection(character));
+    body.appendChild(createStatsSection(character));
+    body.appendChild(createHpBarSection());
+    body.appendChild(createCostTableSection(character, options));
+
+    card.appendChild(body);
+    return card;
+}
+
 export function generateCharacterCards(charactersToDisplay, { emptyMessage = '表示できるキャラクターがいません' } = {}) {
     showLoading();
     gsap.to(Array.from(DOM.characterGrid.children), {
@@ -399,97 +522,8 @@ export function generateCharacterCards(charactersToDisplay, { emptyMessage = '�
                 return;
             }
 
-            charactersToDisplay.forEach((character, index) => {
-                const card = document.createElement('div');
-                card.className = 'character-card';
-                card.dataset.originalHp = character.hp;
-
-                // Header
-                const header = document.createElement('div');
-                header.className = 'character-header';
-                const nameSpan = createTextElement('span', '', character.name);
-                const costSpan = createTextElement('span', 'character-cost', `コスト: ${character.cost.toFixed(1)}`);
-                header.appendChild(nameSpan);
-                header.appendChild(costSpan);
-                card.appendChild(header);
-
-                // Body
-                const body = document.createElement('div');
-                body.className = 'character-body';
-
-                // Image
-                const imageContainer = document.createElement('div');
-                imageContainer.className = 'character-image';
-                const imgElement = document.createElement('img');
-                imgElement.alt = character.name;
-                imgElement.className = 'character-icon-img';
-                const initialSpan = createTextElement('span', 'initial', character.name.charAt(0));
-                
-                if (character.image) {
-                    imgElement.onload = () => { imgElement.style.display = 'block'; initialSpan.style.display = 'none'; };
-                    imgElement.onerror = () => { imgElement.style.display = 'none'; initialSpan.style.display = 'flex'; };
-                    imgElement.src = character.image;
-                    if (imgElement.complete && imgElement.naturalWidth > 0) {
-                        imgElement.style.display = 'block'; initialSpan.style.display = 'none';
-                    } else if (!imgElement.complete) { // if not cached, default to initial until loaded
-                         imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
-                    }
-                } else {
-                    imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
-                }
-                imageContainer.appendChild(imgElement);
-                imageContainer.appendChild(initialSpan);
-                body.appendChild(imageContainer);
-
-                // Stats
-                const stats = document.createElement('div');
-                stats.className = 'character-stats';
-                stats.appendChild(createTextElement('span', 'character-stat-label', '本来の体力:'));
-                stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
-                body.appendChild(stats);
-
-                // HP Bar
-                const hpBarContainer = document.createElement('div');
-                hpBarContainer.className = 'hp-bar-container';
-                const hpBarFill = document.createElement('div');
-                hpBarFill.className = 'hp-bar-fill';
-                hpBarContainer.appendChild(hpBarFill);
-                body.appendChild(hpBarContainer);
-                body.appendChild(createTextElement('div', 'hp-percentage-display', ''));
-
-                // Cost Table
-                const table = document.createElement('table');
-                table.className = 'cost-table';
-                const applicableRemainingCosts = costRemainingMap[character.cost.toFixed(1)] || [];
-                const costOverHPs = applicableRemainingCosts.map(remainingCost => {
-                    let calculatedHpForDisplay;
-                    if (character.cost <= 0) calculatedHpForDisplay = 0;
-                    else if (remainingCost >= character.cost) calculatedHpForDisplay = character.hp;
-                    else if (remainingCost > 0) calculatedHpForDisplay = Math.round(character.hp * (remainingCost / character.cost));
-                    else calculatedHpForDisplay = 0;
-                    return calculatedHpForDisplay;
-                });
-
-                const thead = document.createElement('thead');
-                const trHead = document.createElement('tr');
-                trHead.appendChild(createTextElement('th', '', '残コスト'));
-                applicableRemainingCosts.forEach(cost => trHead.appendChild(createTextElement('th', '', cost.toFixed(1))));
-                thead.appendChild(trHead);
-                table.appendChild(thead);
-
-                const tbody = document.createElement('tbody');
-                const trBody = document.createElement('tr');
-                trBody.appendChild(createTextElement('td', '', '体力'));
-                costOverHPs.forEach(hp => {
-                    const td = createTextElement('td', '', hp.toLocaleString());
-                    td.dataset.redeployHp = hp;
-                    trBody.appendChild(td);
-                });
-                tbody.appendChild(trBody);
-                table.appendChild(tbody);
-                body.appendChild(table);
-
-                card.appendChild(body);
+            charactersToDisplay.forEach(character => {
+                const card = createCharacterCard(character);
                 DOM.characterGrid.appendChild(card);
             });
             hideLoading();
@@ -867,96 +901,7 @@ export function generateSelectedCharacterCards() {
     }
 
     charactersToDisplay.forEach(character => {
-        const card = document.createElement('div');
-        card.className = 'character-card'; // Use existing character-card style
-        card.dataset.originalHp = character.hp;
-
-        // Header
-        const header = document.createElement('div');
-        header.className = 'character-header';
-        const nameSpan = createTextElement('span', '', character.name);
-        const costSpan = createTextElement('span', 'character-cost', `コスト: ${character.cost.toFixed(1)}`);
-        header.appendChild(nameSpan);
-        header.appendChild(costSpan);
-        card.appendChild(header);
-
-        // Body
-        const body = document.createElement('div');
-        body.className = 'character-body';
-
-        // Image
-        const imageContainer = document.createElement('div');
-        imageContainer.className = 'character-image';
-        const imgElement = document.createElement('img');
-        imgElement.alt = character.name;
-        imgElement.className = 'character-icon-img';
-        const initialSpan = createTextElement('span', 'initial', character.name.charAt(0));
-        
-        if (character.image) {
-            imgElement.onload = () => { imgElement.style.display = 'block'; initialSpan.style.display = 'none'; };
-            imgElement.onerror = () => { imgElement.style.display = 'none'; initialSpan.style.display = 'flex'; };
-            imgElement.src = character.image;
-            if (imgElement.complete && imgElement.naturalWidth > 0) {
-                imgElement.style.display = 'block'; initialSpan.style.display = 'none';
-            } else if (!imgElement.complete) { // if not cached, default to initial until loaded
-                 imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
-            }
-        } else {
-            imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
-        }
-        imageContainer.appendChild(imgElement);
-        imageContainer.appendChild(initialSpan);
-        body.appendChild(imageContainer);
-
-        // Stats
-        const stats = document.createElement('div');
-        stats.className = 'character-stats';
-        stats.appendChild(createTextElement('span', 'character-stat-label', '本来の体力:'));
-        stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
-        body.appendChild(stats);
-
-        // HP Bar
-        const hpBarContainer = document.createElement('div');
-        hpBarContainer.className = 'hp-bar-container';
-        const hpBarFill = document.createElement('div');
-        hpBarFill.className = 'hp-bar-fill';
-        hpBarContainer.appendChild(hpBarFill);
-        body.appendChild(hpBarContainer);
-        body.appendChild(createTextElement('div', 'hp-percentage-display', ''));
-
-        // Cost Table
-        const table = document.createElement('table');
-        table.className = 'cost-table';
-        const applicableRemainingCosts = costRemainingMap[character.cost.toFixed(1)] || [];
-        const costOverHPs = applicableRemainingCosts.map(remainingCost => {
-            let calculatedHpForDisplay;
-            if (character.cost <= 0) calculatedHpForDisplay = 0;
-            else if (remainingCost >= character.cost) calculatedHpForDisplay = character.hp;
-            else if (remainingCost > 0) calculatedHpForDisplay = Math.round(character.hp * (remainingCost / character.cost));
-            else calculatedHpForDisplay = 0;
-            return calculatedHpForDisplay;
-        });
-
-        const thead = document.createElement('thead');
-        const trHead = document.createElement('tr');
-        trHead.appendChild(createTextElement('th', '', '残コスト'));
-        applicableRemainingCosts.forEach(cost => trHead.appendChild(createTextElement('th', '', cost.toFixed(1))));
-        thead.appendChild(trHead);
-        table.appendChild(thead);
-
-        const tbody = document.createElement('tbody');
-        const trBody = document.createElement('tr');
-        trBody.appendChild(createTextElement('td', '', '体力'));
-        costOverHPs.forEach(hp => {
-            const td = createTextElement('td', '', hp.toLocaleString());
-            td.dataset.redeployHp = hp;
-            trBody.appendChild(td);
-        });
-        tbody.appendChild(trBody);
-        table.appendChild(tbody);
-        body.appendChild(table);
-
-        card.appendChild(body);
+        const card = createCharacterCard(character);
         DOM.redeploySimulationSelectedCharactersGrid.appendChild(card);
 
         // Apply HP bar animation on load (initially 100%)
