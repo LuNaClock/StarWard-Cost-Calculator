@@ -128,18 +128,21 @@
                             </h2>
                             <p class="panel-subtitle">チーム構成を入力</p>
                         </div>
-                        <div class="section-group">
-                            <button class="section-toggle" type="button" aria-expanded="true" data-collapse="#sim-team">
-                                チーム情報
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </button>
-                            <div id="sim-team" class="collapse" data-open="true">
-                                <div class="input-list">
-                                    <div class="form-field">
-                                        <label for="mobilePlayerPickerToggle">自機</label>
-                                        <div class="character-picker" data-picker-role="player">
+                            <div class="section-group">
+                                <button class="section-toggle" type="button" aria-expanded="true" data-collapse="#sim-team">
+                                    チーム情報
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div id="sim-team" class="collapse" data-open="true">
+                                    <p class="panel-subtitle panel-description">
+                                        自機と相方を選択することで、どちらかの機体が再出撃した場合の体力をシミュレーションできます。
+                                    </p>
+                                    <div class="input-list">
+                                        <div class="form-field">
+                                            <label for="mobilePlayerPickerToggle">自機</label>
+                                            <div class="character-picker" data-picker-role="player">
                                             <button id="mobilePlayerPickerToggle" class="character-picker-toggle" type="button" data-picker-toggle="player" aria-expanded="false">
                                                 <div class="character-picker-toggle-content">
                                                     <div class="character-picker-selected-icon is-placeholder" data-picker-selected-icon="player">?</div>
@@ -307,11 +310,11 @@
                                     <label class="checkbox-field">
                                         <span class="checkbox-field__control">
                                             <input type="checkbox" id="damageBonus">
-                                            <span class="checkbox-field__label">ズンダ時のゲージ量加算</span>
+                                            <span class="checkbox-field__label">攻撃時のゲージ量加算</span>
                                         </span>
                                     </label>
                                     <div class="form-field" data-field="bonus-select" hidden>
-                                        <label for="bonusSelect">ズンダ時のゲージ量加算</label>
+                                        <label for="bonusSelect">攻撃時のゲージ量加算</label>
                                         <select id="bonusSelect">
                                             <option value="0">なし</option>
                                             <option value="3">約3% (ズンダ1回分)</option>
@@ -322,16 +325,16 @@
                                     <label class="checkbox-field">
                                         <span class="checkbox-field__control">
                                             <input type="checkbox" id="shieldBonus">
-                                            <span class="checkbox-field__label">盾成功時のゲージ量加算</span>
+                                            <span class="checkbox-field__label">シールド成功時のゲージ量加算</span>
                                         </span>
                                     </label>
                                     <div class="form-field" data-field="shield-bonus-select" hidden>
-                                        <label for="shieldBonusSelect">盾成功時のゲージ量加算</label>
+                                        <label for="shieldBonusSelect">シールド成功時のゲージ量加算</label>
                                         <select id="shieldBonusSelect">
                                             <option value="0">なし</option>
-                                            <option value="3">約3% (盾成功1回分)</option>
-                                            <option value="6">約6% (盾成功2回分)</option>
-                                            <option value="9">約9% (盾成功3回分)</option>
+                                            <option value="3">約3% (シールド成功1回分)</option>
+                                            <option value="6">約6% (シールド成功2回分)</option>
+                                            <option value="9">約9% (シールド成功3回分)</option>
                                         </select>
                                     </div>
                                     <label class="checkbox-field">
@@ -348,24 +351,83 @@
                                     </div>
                                     <div class="inline-result__body">
                                         <div class="inline-result__item">
-                                            <span class="inline-result__label">現在の予測値</span>
+                                            <span class="inline-result__label">予測覚醒ゲージ量</span>
                                             <strong class="inline-result__value" data-inline="gauge">--%</strong>
                                         </div>
-                                        <p class="inline-result__note">詳細は下部の結果セクションにも反映されます</p>
                                     </div>
                                 </div>
+                                <details id="awakeningBreakdownMobile" class="calc-breakdown" hidden>
+                                    <summary class="calc-breakdown__summary">
+                                        <span class="calc-breakdown__summary-text">
+                                            <i class="fas fa-list-ul" aria-hidden="true"></i>
+                                            計算内訳を表示
+                                        </span>
+                                    </summary>
+                                    <div class="calc-breakdown__content">
+                                        <dl class="calc-breakdown__list">
+                                            <div class="calc-breakdown__item">
+                                                <dt>被弾前の覚醒ゲージ量</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="pre-gauge">--%</span>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>被ダメージによる増加</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="damage">+--%</span>
+                                                    <small data-awakening-mobile="damage-note">想定被ダメージ: --</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>再出撃時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="own-down">+--%</span>
+                                                    <small data-awakening-mobile-status="own-down" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>攻撃時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="damage-bonus">+--%</span>
+                                                    <small data-awakening-mobile-status="damage-bonus" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>シールド成功時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="shield-bonus">+--%</span>
+                                                    <small data-awakening-mobile-status="shield-bonus" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>相方被撃墜時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="partner-bonus">+--%</span>
+                                                    <small data-awakening-mobile-status="partner-bonus" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item calc-breakdown__item--total">
+                                                <dt>合計</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="total">--%</span>
+                                                </dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                </details>
+
                                 <details class="info-details" data-role="awakening-guide">
-                                    <summary>覚醒ゲージ計算の詳細 (Web版と同じ説明)</summary>
+                                    <summary>覚醒ゲージ計算の詳細 </summary>
                                     <p>覚醒ゲージは以下の要素に基づいて計算されます。</p>
                                     <div class="info-details__section">
                                         <h4>基礎増加（被ダメージ）</h4>
-                                        <p>受けたダメージ量に応じてゲージが増加します。本来の体力に対する割合が重要です。</p>
-                                        <p class="info-details__formula"><strong>増加量 = (被ダメージ量 / 本来の体力) × 100 × 約0.598</strong></p>
-                                        <p class="info-details__tip">例: 体力3000の機体が1500ダメージで撃墜された場合、(1500 / 3000) × 100 × 約0.598 ≒ 約29.9% 増加します。</p>
+                                        <p>受けたダメージ量に応じてゲージが増加します。本来の体力に対する割合をもとにしています。</p>
+                                        <p class="info-details__formula"><strong>増加量 = (被ダメージ量 / 本来の体力) × 100 × 約0.598（3.0コスト） / 約0.640（2.5/2.0/1.5コスト）</strong></p>
+                                        <p class="info-details__tip">例: 体力3000の機体が1500ダメージを受けた場合、3.0コスト機体なら (1500 / 3000) × 100 × 約0.598 ≒ 約29.9% 増加、2.5/2.0/1.5コスト機体なら (1500 / 3000) × 100 × 約0.640 ≒ 約32.0% 増加します。</p>
                                     </div>
                                     <div class="info-details__section">
                                         <h4>再出撃直後のゲージ量（最低保証値）</h4>
-                                        <p>「再出撃直後ボーナスを加算」にチェックを入れると、撃墜による覚醒ゲージ増加分が加わります。自機コストに応じてツール内で計測した最低保証値を適用しています。</p>
+                                        <p>「再出撃直後ボーナスを加算」にチェックを入れると、被撃墜による覚醒ゲージ増加分が加わります。自機コストに応じてツール内で計測した最低保証値を適用しています。</p>
                                         <ul>
                                             <li>コスト3.0 / 2.5: 約22%</li>
                                             <li>コスト2.0: 約20%</li>
@@ -375,11 +437,11 @@
                                     </div>
                                     <div class="info-details__section">
                                         <h4>与ダメージ考慮</h4>
-                                        <p>「与ダメージボーナスを加算」にチェックを入れ、ドロップダウンから与ダメージ量に応じたボーナスを選ぶと、その分が加算されます。撃墜までに与えたダメージ量を模擬した項目です。</p>
+                                        <p>「与ダメージボーナスを加算」にチェックを入れ、ドロップダウンから与ダメージ量に応じたボーナスを選ぶと、その分が加算されます。</p>
                                     </div>
                                     <div class="info-details__section">
-                                        <h4>相方撃墜考慮</h4>
-                                        <p>「相方撃墜ボーナスを加算」にチェックを入れると、相方が撃墜されたときの覚醒ゲージ増加分が加わります。こちらも自機のコストごとに増加量が変わります。</p>
+                                        <h4>相方被撃墜考慮</h4>
+                                        <p>「相方被撃墜ボーナスを加算」にチェックを入れると、相方が被撃墜されたときの覚醒ゲージ増加分が加わります。こちらも自機のコストごとに増加量が変わります。</p>
                                         <ul>
                                             <li>コスト3.0: 約10%</li>
                                             <li>コスト2.5: 約9%</li>
@@ -387,13 +449,13 @@
                                             <li>コスト1.5: 約5%</li>
                                         </ul>
                                     </div>
-                                    <p>最終的な覚醒ゲージが50%以上になると覚醒を使用できます。計算結果は常に0%から100%の範囲に収まります。</p>
+                                    <p>最終的な覚醒ゲージが50%以上になると覚醒を使用できます。計算結果は常に0%から100%の範囲になります。</p>
                                     <div class="info-details__note">
                                         <h4>注意点</h4>
                                         <ul>
-                                            <li>被ダメージによる覚醒ゲージ増加率の係数は機体ごとに異なります。本ツールでは計測した平均的な係数を採用しています。</li>
+                                            <li>被ダメージによる覚醒ゲージ増加率の係数は機体ごとに異なります。本ツールではコスト帯ごとに数例ほど計測した平均的な係数を採用しています。</li>
                                             <li>再出撃直後のゲージ量は基本的に自機コスト依存ですが、一部機体では異なる数値が設定されている場合があります。</li>
-                                            <li>覚醒ゲージは小数点以下まで計算されていると推測され、ゲーム内表示と誤差が生じる可能性があります。</li>
+                                            <li>覚醒ゲージは小数点以下まで計算されていると推測されるため、ゲーム内の表示と多少の誤差が生じる可能性があります。</li>
                                         </ul>
                                         <p>以上の理由から、計算結果は目安としてご利用ください。</p>
                                     </div>
@@ -618,7 +680,7 @@
                 </button>
                 <div class="accordion-content" id="redeploy-simulation-content">
                     <div class="simulation-container">
-                        <p class="guide-intro">自機と相方を選択し、現在のチーム残りコストを入力することで、どちらかの機体が再出撃した場合の体力をシミュレーションできます。</p>
+                        <p class="guide-intro">自機と相方を選択することで、どちらかの機体が再出撃した場合の体力をシミュレーションできます。</p>
                         <div class="character-select-group">
                             <div class="select-wrapper">
                                 <label for="playerCharPickerToggle"><i class="fas fa-user-astronaut"></i> 自機:</label>
@@ -770,7 +832,7 @@
                                     <div class="simulation-input-group checkbox-group has-dropdown">
                                         <i class="fas fa-fist-raised"></i>
                                         <input type="checkbox" id="considerDamageDealtCheckbox">
-                                        <label for="considerDamageDealtCheckbox">ズンダ時のゲージ量加算</label>
+                                        <label for="considerDamageDealtCheckbox">攻撃時のゲージ量加算</label>
                                         <div class="select-dropdown-container" id="damageDealtOptionsContainer">
                                             <select id="damageDealtAwakeningBonusSelect" class="select-dropdown">
                                                 <option value="0">選択なし</option>
@@ -784,13 +846,13 @@
                                     <div class="simulation-input-group checkbox-group has-dropdown">
                                         <i class="fas fa-shield-alt"></i>
                                         <input type="checkbox" id="considerShieldSuccessCheckbox">
-                                        <label for="considerShieldSuccessCheckbox">盾成功時のゲージ量加算</label>
+                                        <label for="considerShieldSuccessCheckbox">シールド成功時のゲージ量加算</label>
                                         <div class="select-dropdown-container" id="shieldSuccessOptionsContainer">
                                             <select id="shieldSuccessAwakeningBonusSelect" class="select-dropdown">
                                                 <option value="0">選択なし</option>
-                                                <option value="3">約3% (盾成功1回分)</option>
-                                                <option value="6">約6% (盾成功2回分)</option>
-                                                <option value="9">約9% (盾成功3回分)</option>
+                                                <option value="3">約3% (シールド成功1回分)</option>
+                                                <option value="6">約6% (シールド成功2回分)</option>
+                                                <option value="9">約9% (シールド成功3回分)</option>
                                             </select>
                                         </div>
                                     </div>
@@ -804,7 +866,7 @@
 
                                 <div class="result-display-area" style="margin-top: 30px;">
                                     <div class="redeploy-char-info">
-                                        <span class="info-label">予測覚醒ゲージ:</span>
+                                        <span class="info-label">予測覚醒ゲージ量:</span>
                                         <span id="predictedAwakeningGauge" class="info-value">--</span>
                                     </div>
                                     <div class="redeploy-char-info">
@@ -812,6 +874,64 @@
                                         <span id="awakeningAvailability" class="info-value">--</span>
                                     </div>
                                 </div>
+
+                                <details id="awakeningBreakdownDetails" class="calculation-breakdown" hidden>
+                                    <summary class="calculation-breakdown__summary">
+                                        <i class="fas fa-list-ul" aria-hidden="true"></i>
+                                        <span>計算内訳を表示</span>
+                                    </summary>
+                                    <div class="calculation-breakdown__content">
+                                        <dl class="calculation-breakdown__list">
+                                            <div class="calculation-breakdown__item">
+                                                <dt>被弾前の覚醒ゲージ量</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailPreGaugeValue" class="calculation-breakdown__value">--%</span>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>被ダメージによる増加</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailDamageValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailDamageNote" class="calculation-breakdown__note">想定被ダメージ: --</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>再出撃時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailOwnDownValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailOwnDownStatus" class="calculation-breakdown__status" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>攻撃時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailDamageBonusValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailDamageBonusStatus" class="calculation-breakdown__status" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>シールド成功時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailShieldBonusValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailShieldBonusStatus" class="calculation-breakdown__status" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>相方被撃墜時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailPartnerBonusValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailPartnerBonusStatus" class="calculation-breakdown__status" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item calculation-breakdown__item--total">
+                                                <dt>合計</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailTotalValue" class="calculation-breakdown__value">--%</span>
+                                                </dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                </details>
 
                                 <div class="sub-accordion-container accordion">
                                     <div class="accordion-item">
@@ -824,9 +944,9 @@
 
                                             <div class="gauge-section">
                                                 <h5><i class="fas fa-heartbeat"></i> 基礎増加（被ダメージ）</h5>
-                                                <p>受けたダメージ量に応じて増加します。本来の体力に対するダメージ割合が重要です。</p>
-                                                <p class="formula small-formula"><strong>増加量 = (被ダメージ量 / 本来の体力) × 100 × 約<span id="avgGaugeCoeffValue"></span></strong></p>
-                                                <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: 例として、体力3000の機体が1500ダメージ受けて撃墜された場合、(1500/3000)*100*約<span id="avgGaugeCoeffExampleValue"></span> = 約29.9% 増加します。</p>
+                                                <p>受けたダメージ量に応じて増加します。本来の体力に対するダメージ割合をもとにしています。</p>
+                                                <p class="formula small-formula"><strong>増加量 = (被ダメージ量 / 本来の体力) × 100 × 約<span id="avgGaugeCoeffValue30"></span>（3.0コスト） / 約<span id="avgGaugeCoeffValueOthers"></span>（2.5/2.0/1.5コスト）</strong></p>
+                                                <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: 例として、体力3000の機体が1500ダメージ受けて撃墜された場合、(1500/3000)*100*約<span id="avgGaugeCoeffExample30"></span> ≒ 約29.9%（3.0コスト機体）増加します。2.5/2.0/1.5コスト機体の場合は (1500/3000)*100*約<span id="avgGaugeCoeffExampleOthers"></span> ≒ 約31.9% 増加します。</p>
                                             </div>
                                             <div class="gauge-section">
                                                 <h5><i class="fas fa-rocket"></i> 再出撃直後のゲージ量（最低保証値）</h5>
@@ -840,12 +960,12 @@
 
                                             <div class="gauge-section">
                                                 <h5><i class="fas fa-fist-raised"></i> 与ダメージ考慮</h5>
-                                                <p>「与ダメージ考慮」にチェックを入れ、ドロップダウンで与ダメージ量に応じたボーナスを選択すると、その分が加算されます。これは撃墜までに与えたダメージの量を模擬したものです。</p>
+                                                <p>「与ダメージ考慮」にチェックを入れ、ドロップダウンで与ダメージ量に応じたボーナスを選択すると、その分が加算されます。</p>
                                             </div>
 
                                             <div class="gauge-section">
-                                                <h5><i class="fas fa-user-slash"></i> 相方撃墜考慮</h5>
-                                                <p>「相方撃墜考慮」にチェックを入れると、相方が撃墜されたことによる覚醒ゲージ増加分が加算されます。このボーナスも自機のコストによって異なります。</p>
+                                                <h5><i class="fas fa-user-slash"></i> 相方被撃墜考慮</h5>
+                                                <p>「相方被撃墜考慮」にチェックを入れると、相方が撃墜されたことによる覚醒ゲージ増加分が加算されます。このボーナスも自機のコストによって異なります。</p>
                                                 <ul>
                                                     <li>コスト3.0: 約<span id="partnerDownBonus30"></span>%</li>
                                                     <li>コスト2.5: 約<span id="partnerDownBonus25"></span>%</li>
@@ -854,11 +974,8 @@
                                                 </ul>
                                             </div>
 
-                                            <p>最終的な覚醒ゲージが<span id="awakeningThresholdValue"></span>%以上で覚醒が使用可能となります。計算結果は常に0%から100%の範囲に収まります。</p>
+                                            <p>最終的な覚醒ゲージが<span id="awakeningThresholdValue"></span>%以上で覚醒が使用可能となります。計算結果は常に0%から100%の範囲になります。</p>
 
-                                            <div class="tip additional-note-block">
-                                                <i class="fas fa-exclamation-triangle"></i>
-                                                <div>
                                                     <h4>注意点:</h4>
                                                     <ul>
                                                         <li>被ダメージによる覚醒ゲージ増加率の係数は、各キャラクターによって異なります。このツールでは誤差を最小限にする為、自身で計測した平均的な係数を使用しています。</li>

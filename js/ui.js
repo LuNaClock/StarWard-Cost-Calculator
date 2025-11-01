@@ -1,5 +1,5 @@
 import * as DOM from './domElements.js';
-import { costRemainingMap, AVERAGE_GAUGE_COEFFICIENT, AWAKENING_BONUS_BY_COST, PARTNER_DOWN_AWAKENING_BONUS, AWAKENING_THRESHOLD } from '../data.js';
+import { costRemainingMap, AWAKENING_BONUS_BY_COST, PARTNER_DOWN_AWAKENING_BONUS, AWAKENING_THRESHOLD, getDamageGaugeCoefficient } from '../data.js';
 import { getCharacters, getSelectedPlayerChar, getSelectedPartnerChar } from './state.js';
 import * as Utils from './utils.js';
 
@@ -385,6 +385,129 @@ function createTextElement(tag, className, textContent) {
     return element;
 }
 
+function createCharacterImageSection(character) {
+    const imageContainer = document.createElement('div');
+    imageContainer.className = 'character-image';
+
+    const imgElement = document.createElement('img');
+    imgElement.alt = character.name;
+    imgElement.className = 'character-icon-img';
+
+    const initialSpan = createTextElement('span', 'initial', character.name?.charAt(0) || '?');
+
+    const showImage = () => {
+        imgElement.style.display = 'block';
+        initialSpan.style.display = 'none';
+    };
+    const showInitial = () => {
+        imgElement.style.display = 'none';
+        initialSpan.style.display = 'flex';
+    };
+
+    if (character.image) {
+        imgElement.onload = showImage;
+        imgElement.onerror = showInitial;
+        imgElement.src = character.image;
+
+        if (imgElement.complete && imgElement.naturalWidth > 0) {
+            showImage();
+        } else {
+            showInitial();
+        }
+    } else {
+        showInitial();
+    }
+
+    imageContainer.appendChild(imgElement);
+    imageContainer.appendChild(initialSpan);
+    return imageContainer;
+}
+
+function createStatsSection(character) {
+    const stats = document.createElement('div');
+    stats.className = 'character-stats';
+    stats.appendChild(createTextElement('span', 'character-stat-label', '本来の体力:'));
+    stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
+    return stats;
+}
+
+function getApplicableRemainingCosts(character) {
+    return costRemainingMap[character.cost.toFixed(1)] || [];
+}
+
+function calculateRedeployHpForDisplay(character, remainingCost) {
+    if (character.cost <= 0) return 0;
+    if (remainingCost >= character.cost) return character.hp;
+    if (remainingCost > 0) return Math.round(character.hp * (remainingCost / character.cost));
+    return 0;
+}
+
+function createCostTableSection(character, { tableLabel = '体力' } = {}) {
+    const table = document.createElement('table');
+    table.className = 'cost-table';
+
+    const remainingCosts = getApplicableRemainingCosts(character);
+
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    headerRow.appendChild(createTextElement('th', '', '残コスト'));
+    remainingCosts.forEach(cost => headerRow.appendChild(createTextElement('th', '', cost.toFixed(1))));
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    const bodyRow = document.createElement('tr');
+    bodyRow.appendChild(createTextElement('td', '', tableLabel));
+    remainingCosts.forEach(remainingCost => {
+        const hp = calculateRedeployHpForDisplay(character, remainingCost);
+        const cell = createTextElement('td', '', hp.toLocaleString());
+        cell.dataset.redeployHp = hp;
+        bodyRow.appendChild(cell);
+    });
+    tbody.appendChild(bodyRow);
+    table.appendChild(tbody);
+
+    return table;
+}
+
+function createHpBarSection() {
+    const fragment = document.createDocumentFragment();
+
+    const hpBarContainer = document.createElement('div');
+    hpBarContainer.className = 'hp-bar-container';
+
+    const hpBarFill = document.createElement('div');
+    hpBarFill.className = 'hp-bar-fill';
+    hpBarContainer.appendChild(hpBarFill);
+
+    fragment.appendChild(hpBarContainer);
+    fragment.appendChild(createTextElement('div', 'hp-percentage-display', ''));
+
+    return fragment;
+}
+
+function createCharacterCard(character, options = {}) {
+    const card = document.createElement('div');
+    card.className = 'character-card';
+    card.dataset.originalHp = character.hp;
+
+    const header = document.createElement('div');
+    header.className = 'character-header';
+    header.appendChild(createTextElement('span', '', character.name));
+    header.appendChild(createTextElement('span', 'character-cost', `コスト: ${character.cost.toFixed(1)}`));
+    card.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'character-body';
+    body.appendChild(createCharacterImageSection(character));
+    body.appendChild(createStatsSection(character));
+    body.appendChild(createHpBarSection());
+    body.appendChild(createCostTableSection(character, options));
+
+    card.appendChild(body);
+    return card;
+}
+
 export function generateCharacterCards(charactersToDisplay, { emptyMessage = '表示できるキャラクターがいません' } = {}) {
     showLoading();
     gsap.to(Array.from(DOM.characterGrid.children), {
@@ -399,97 +522,8 @@ export function generateCharacterCards(charactersToDisplay, { emptyMessage = '�
                 return;
             }
 
-            charactersToDisplay.forEach((character, index) => {
-                const card = document.createElement('div');
-                card.className = 'character-card';
-                card.dataset.originalHp = character.hp;
-
-                // Header
-                const header = document.createElement('div');
-                header.className = 'character-header';
-                const nameSpan = createTextElement('span', '', character.name);
-                const costSpan = createTextElement('span', 'character-cost', `コスト: ${character.cost.toFixed(1)}`);
-                header.appendChild(nameSpan);
-                header.appendChild(costSpan);
-                card.appendChild(header);
-
-                // Body
-                const body = document.createElement('div');
-                body.className = 'character-body';
-
-                // Image
-                const imageContainer = document.createElement('div');
-                imageContainer.className = 'character-image';
-                const imgElement = document.createElement('img');
-                imgElement.alt = character.name;
-                imgElement.className = 'character-icon-img';
-                const initialSpan = createTextElement('span', 'initial', character.name.charAt(0));
-                
-                if (character.image) {
-                    imgElement.onload = () => { imgElement.style.display = 'block'; initialSpan.style.display = 'none'; };
-                    imgElement.onerror = () => { imgElement.style.display = 'none'; initialSpan.style.display = 'flex'; };
-                    imgElement.src = character.image;
-                    if (imgElement.complete && imgElement.naturalWidth > 0) {
-                        imgElement.style.display = 'block'; initialSpan.style.display = 'none';
-                    } else if (!imgElement.complete) { // if not cached, default to initial until loaded
-                         imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
-                    }
-                } else {
-                    imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
-                }
-                imageContainer.appendChild(imgElement);
-                imageContainer.appendChild(initialSpan);
-                body.appendChild(imageContainer);
-
-                // Stats
-                const stats = document.createElement('div');
-                stats.className = 'character-stats';
-                stats.appendChild(createTextElement('span', 'character-stat-label', '本来の体力:'));
-                stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
-                body.appendChild(stats);
-
-                // HP Bar
-                const hpBarContainer = document.createElement('div');
-                hpBarContainer.className = 'hp-bar-container';
-                const hpBarFill = document.createElement('div');
-                hpBarFill.className = 'hp-bar-fill';
-                hpBarContainer.appendChild(hpBarFill);
-                body.appendChild(hpBarContainer);
-                body.appendChild(createTextElement('div', 'hp-percentage-display', ''));
-
-                // Cost Table
-                const table = document.createElement('table');
-                table.className = 'cost-table';
-                const applicableRemainingCosts = costRemainingMap[character.cost.toFixed(1)] || [];
-                const costOverHPs = applicableRemainingCosts.map(remainingCost => {
-                    let calculatedHpForDisplay;
-                    if (character.cost <= 0) calculatedHpForDisplay = 0;
-                    else if (remainingCost >= character.cost) calculatedHpForDisplay = character.hp;
-                    else if (remainingCost > 0) calculatedHpForDisplay = Math.round(character.hp * (remainingCost / character.cost));
-                    else calculatedHpForDisplay = 0;
-                    return calculatedHpForDisplay;
-                });
-
-                const thead = document.createElement('thead');
-                const trHead = document.createElement('tr');
-                trHead.appendChild(createTextElement('th', '', '残コスト'));
-                applicableRemainingCosts.forEach(cost => trHead.appendChild(createTextElement('th', '', cost.toFixed(1))));
-                thead.appendChild(trHead);
-                table.appendChild(thead);
-
-                const tbody = document.createElement('tbody');
-                const trBody = document.createElement('tr');
-                trBody.appendChild(createTextElement('td', '', '体力'));
-                costOverHPs.forEach(hp => {
-                    const td = createTextElement('td', '', hp.toLocaleString());
-                    td.dataset.redeployHp = hp;
-                    trBody.appendChild(td);
-                });
-                tbody.appendChild(trBody);
-                table.appendChild(tbody);
-                body.appendChild(table);
-
-                card.appendChild(body);
+            charactersToDisplay.forEach(character => {
+                const card = createCharacterCard(character);
                 DOM.characterGrid.appendChild(card);
             });
             hideLoading();
@@ -867,96 +901,7 @@ export function generateSelectedCharacterCards() {
     }
 
     charactersToDisplay.forEach(character => {
-        const card = document.createElement('div');
-        card.className = 'character-card'; // Use existing character-card style
-        card.dataset.originalHp = character.hp;
-
-        // Header
-        const header = document.createElement('div');
-        header.className = 'character-header';
-        const nameSpan = createTextElement('span', '', character.name);
-        const costSpan = createTextElement('span', 'character-cost', `コスト: ${character.cost.toFixed(1)}`);
-        header.appendChild(nameSpan);
-        header.appendChild(costSpan);
-        card.appendChild(header);
-
-        // Body
-        const body = document.createElement('div');
-        body.className = 'character-body';
-
-        // Image
-        const imageContainer = document.createElement('div');
-        imageContainer.className = 'character-image';
-        const imgElement = document.createElement('img');
-        imgElement.alt = character.name;
-        imgElement.className = 'character-icon-img';
-        const initialSpan = createTextElement('span', 'initial', character.name.charAt(0));
-        
-        if (character.image) {
-            imgElement.onload = () => { imgElement.style.display = 'block'; initialSpan.style.display = 'none'; };
-            imgElement.onerror = () => { imgElement.style.display = 'none'; initialSpan.style.display = 'flex'; };
-            imgElement.src = character.image;
-            if (imgElement.complete && imgElement.naturalWidth > 0) {
-                imgElement.style.display = 'block'; initialSpan.style.display = 'none';
-            } else if (!imgElement.complete) { // if not cached, default to initial until loaded
-                 imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
-            }
-        } else {
-            imgElement.style.display = 'none'; initialSpan.style.display = 'flex';
-        }
-        imageContainer.appendChild(imgElement);
-        imageContainer.appendChild(initialSpan);
-        body.appendChild(imageContainer);
-
-        // Stats
-        const stats = document.createElement('div');
-        stats.className = 'character-stats';
-        stats.appendChild(createTextElement('span', 'character-stat-label', '本来の体力:'));
-        stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
-        body.appendChild(stats);
-
-        // HP Bar
-        const hpBarContainer = document.createElement('div');
-        hpBarContainer.className = 'hp-bar-container';
-        const hpBarFill = document.createElement('div');
-        hpBarFill.className = 'hp-bar-fill';
-        hpBarContainer.appendChild(hpBarFill);
-        body.appendChild(hpBarContainer);
-        body.appendChild(createTextElement('div', 'hp-percentage-display', ''));
-
-        // Cost Table
-        const table = document.createElement('table');
-        table.className = 'cost-table';
-        const applicableRemainingCosts = costRemainingMap[character.cost.toFixed(1)] || [];
-        const costOverHPs = applicableRemainingCosts.map(remainingCost => {
-            let calculatedHpForDisplay;
-            if (character.cost <= 0) calculatedHpForDisplay = 0;
-            else if (remainingCost >= character.cost) calculatedHpForDisplay = character.hp;
-            else if (remainingCost > 0) calculatedHpForDisplay = Math.round(character.hp * (remainingCost / character.cost));
-            else calculatedHpForDisplay = 0;
-            return calculatedHpForDisplay;
-        });
-
-        const thead = document.createElement('thead');
-        const trHead = document.createElement('tr');
-        trHead.appendChild(createTextElement('th', '', '残コスト'));
-        applicableRemainingCosts.forEach(cost => trHead.appendChild(createTextElement('th', '', cost.toFixed(1))));
-        thead.appendChild(trHead);
-        table.appendChild(thead);
-
-        const tbody = document.createElement('tbody');
-        const trBody = document.createElement('tr');
-        trBody.appendChild(createTextElement('td', '', '体力'));
-        costOverHPs.forEach(hp => {
-            const td = createTextElement('td', '', hp.toLocaleString());
-            td.dataset.redeployHp = hp;
-            trBody.appendChild(td);
-        });
-        tbody.appendChild(trBody);
-        table.appendChild(tbody);
-        body.appendChild(table);
-
-        card.appendChild(body);
+        const card = createCharacterCard(character);
         DOM.redeploySimulationSelectedCharactersGrid.appendChild(card);
 
         // Apply HP bar animation on load (initially 100%)
@@ -1331,13 +1276,121 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
 }
 
 export function updateAwakeningGaugeUI(gaugeResult) {
-    if (!gaugeResult || !DOM.predictedAwakeningGaugeSpan || !DOM.awakeningAvailabilitySpan) return;
+    if (!DOM.predictedAwakeningGaugeSpan || !DOM.awakeningAvailabilitySpan) return;
+
+    const getBreakdownItemContainer = (element) => element?.closest('.calculation-breakdown__item') || null;
+
+    const resetOptionalBreakdownRow = (valueEl, statusEl) => {
+        if (valueEl) valueEl.textContent = '+--%';
+        if (statusEl) {
+            statusEl.textContent = '未適用';
+            statusEl.hidden = true;
+        }
+        const container = getBreakdownItemContainer(valueEl);
+        if (container) container.hidden = true;
+    };
+
+    const updateOptionalBreakdownRow = (valueEl, statusEl, { enabled, value }) => {
+        if (valueEl) valueEl.textContent = formatSignedPercentage(value ?? 0);
+        if (statusEl) {
+            statusEl.textContent = enabled ? '適用' : '未適用';
+            statusEl.hidden = !enabled;
+        }
+        const container = getBreakdownItemContainer(valueEl);
+        if (container) {
+            const numericValue = Number(value);
+            const rounded = Number.isFinite(numericValue) ? Math.round(numericValue) : 0;
+            const shouldShow = enabled && rounded !== 0;
+            container.hidden = !shouldShow;
+        }
+    };
+
+    const resetBreakdown = () => {
+        if (DOM.awakeningBreakdownDetails) {
+            DOM.awakeningBreakdownDetails.hidden = true;
+            DOM.awakeningBreakdownDetails.open = false;
+        }
+        if (DOM.awakeningDetailPreGaugeValue) DOM.awakeningDetailPreGaugeValue.textContent = '--%';
+        if (DOM.awakeningDetailDamageValue) DOM.awakeningDetailDamageValue.textContent = '+--%';
+        if (DOM.awakeningDetailDamageNote) DOM.awakeningDetailDamageNote.textContent = '想定被ダメージ: --';
+        resetOptionalBreakdownRow(DOM.awakeningDetailOwnDownValue, DOM.awakeningDetailOwnDownStatus);
+        resetOptionalBreakdownRow(DOM.awakeningDetailDamageBonusValue, DOM.awakeningDetailDamageBonusStatus);
+        resetOptionalBreakdownRow(DOM.awakeningDetailShieldBonusValue, DOM.awakeningDetailShieldBonusStatus);
+        resetOptionalBreakdownRow(DOM.awakeningDetailPartnerBonusValue, DOM.awakeningDetailPartnerBonusStatus);
+        if (DOM.awakeningDetailTotalValue) DOM.awakeningDetailTotalValue.textContent = '--%';
+    };
+
+    const formatSignedPercentage = (value) => {
+        if (!Number.isFinite(value)) return '+--%';
+        const rounded = Math.round(value);
+        const sign = rounded >= 0 ? '+' : '';
+        return `${sign}${rounded}%`;
+    };
+
+    const formatBasePercentage = (value) => {
+        if (!Number.isFinite(value)) return '--%';
+        return `${Math.round(value)}%`;
+    };
+
+    const applyBreakdown = (breakdown) => {
+        if (!DOM.awakeningBreakdownDetails) return;
+        if (!breakdown) {
+            resetBreakdown();
+            return;
+        }
+        DOM.awakeningBreakdownDetails.hidden = false;
+
+        if (DOM.awakeningDetailPreGaugeValue) {
+            DOM.awakeningDetailPreGaugeValue.textContent = formatBasePercentage(breakdown.baseGauge);
+        }
+        if (DOM.awakeningDetailDamageValue) {
+            DOM.awakeningDetailDamageValue.textContent = formatSignedPercentage(breakdown.damageIncrease);
+        }
+        if (DOM.awakeningDetailDamageNote) {
+            if (Number.isFinite(breakdown.validatedDamageTaken) && Number.isFinite(breakdown.originalMaxHp)) {
+                const taken = Math.round(breakdown.validatedDamageTaken);
+                const maxHp = Math.round(breakdown.originalMaxHp);
+                const percent = maxHp > 0 ? Math.round((taken / maxHp) * 100) : 0;
+                DOM.awakeningDetailDamageNote.textContent = `想定被ダメージ: ${taken.toLocaleString()} / ${maxHp.toLocaleString()} (${percent}%)`;
+            } else {
+                DOM.awakeningDetailDamageNote.textContent = '想定被ダメージ: --';
+            }
+        }
+        updateOptionalBreakdownRow(DOM.awakeningDetailOwnDownValue, DOM.awakeningDetailOwnDownStatus, {
+            enabled: Boolean(breakdown.ownDown?.enabled),
+            value: breakdown.ownDown?.value ?? 0
+        });
+        updateOptionalBreakdownRow(DOM.awakeningDetailDamageBonusValue, DOM.awakeningDetailDamageBonusStatus, {
+            enabled: Boolean(breakdown.damageBonus?.enabled),
+            value: breakdown.damageBonus?.value ?? 0
+        });
+        updateOptionalBreakdownRow(DOM.awakeningDetailShieldBonusValue, DOM.awakeningDetailShieldBonusStatus, {
+            enabled: Boolean(breakdown.shieldBonus?.enabled),
+            value: breakdown.shieldBonus?.value ?? 0
+        });
+        updateOptionalBreakdownRow(DOM.awakeningDetailPartnerBonusValue, DOM.awakeningDetailPartnerBonusStatus, {
+            enabled: Boolean(breakdown.partnerBonus?.enabled),
+            value: breakdown.partnerBonus?.value ?? 0
+        });
+        if (DOM.awakeningDetailTotalValue) {
+            DOM.awakeningDetailTotalValue.textContent = formatBasePercentage(breakdown.total);
+        }
+    };
+
+    if (!gaugeResult) {
+        DOM.predictedAwakeningGaugeSpan.textContent = '--';
+        DOM.awakeningAvailabilitySpan.textContent = '--';
+        DOM.awakeningAvailabilitySpan.className = 'info-value';
+        resetBreakdown();
+        return;
+    }
 
     if (gaugeResult.error) {
         DOM.predictedAwakeningGaugeSpan.textContent = '---';
         DOM.awakeningAvailabilitySpan.textContent = '--';
         DOM.awakeningAvailabilitySpan.className = 'info-value';
         if(DOM.beforeShotdownHpInput) DOM.beforeShotdownHpInput.style.borderColor = 'red';
+        resetBreakdown();
         return;
     }
 
@@ -1350,7 +1403,7 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         }
     }
 
-    DOM.predictedAwakeningGaugeSpan.textContent = gaugeResult.finalPredictedGauge;
+    DOM.predictedAwakeningGaugeSpan.textContent = `${gaugeResult.finalPredictedGauge}`;
     DOM.awakeningAvailabilitySpan.classList.remove('awakening-possible', 'awakening-not-possible');
     if (gaugeResult.isThresholdMet) {
         DOM.awakeningAvailabilitySpan.textContent = '使用可能';
@@ -1359,11 +1412,18 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         DOM.awakeningAvailabilitySpan.textContent = '使用不可';
         DOM.awakeningAvailabilitySpan.classList.add('awakening-not-possible');
     }
+
+    applyBreakdown(gaugeResult.breakdown);
 }
 
 export function setAwakeningDetailsConstants() {
-    if (DOM.avgGaugeCoeffValueSpan) DOM.avgGaugeCoeffValueSpan.textContent = AVERAGE_GAUGE_COEFFICIENT.toFixed(3);
-    if (DOM.avgGaugeCoeffExampleValueSpan) DOM.avgGaugeCoeffExampleValueSpan.textContent = AVERAGE_GAUGE_COEFFICIENT.toFixed(3);
+    const coeffForThirty = getDamageGaugeCoefficient(3.0).toFixed(3);
+    const coeffForOthers = getDamageGaugeCoefficient(2.5).toFixed(3);
+
+    if (DOM.avgGaugeCoeffValue30Span) DOM.avgGaugeCoeffValue30Span.textContent = coeffForThirty;
+    if (DOM.avgGaugeCoeffValueOthersSpan) DOM.avgGaugeCoeffValueOthersSpan.textContent = coeffForOthers;
+    if (DOM.avgGaugeCoeffExample30Span) DOM.avgGaugeCoeffExample30Span.textContent = coeffForThirty;
+    if (DOM.avgGaugeCoeffExampleOthersSpan) DOM.avgGaugeCoeffExampleOthersSpan.textContent = coeffForOthers;
     if (DOM.ownDownBonus30Span) DOM.ownDownBonus30Span.textContent = AWAKENING_BONUS_BY_COST["3.0"].toString();
     if (DOM.ownDownBonus20Span) DOM.ownDownBonus20Span.textContent = AWAKENING_BONUS_BY_COST["2.0"].toString();
     if (DOM.ownDownBonus15Span) DOM.ownDownBonus15Span.textContent = AWAKENING_BONUS_BY_COST["1.5"].toString();

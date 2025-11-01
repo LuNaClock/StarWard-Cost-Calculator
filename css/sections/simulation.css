@@ -537,3 +537,104 @@ body[data-theme="dark"] .desktop-app #beforeShotdownHpInput::placeholder {
         font-size: 0.9em;
     }
 } 
+.calculation-breakdown {
+    margin-top: 20px;
+    border: 1px solid var(--light-grey-border);
+    border-radius: 10px;
+    background-color: rgba(22, 32, 50, 0.6);
+    overflow: hidden;
+}
+
+.calculation-breakdown__summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    color: var(--primary-dark);
+    font-weight: 600;
+    background: rgba(56, 189, 248, 0.08);
+    transition: background 0.3s ease;
+}
+
+.calculation-breakdown__summary::-webkit-details-marker {
+    display: none;
+}
+
+.calculation-breakdown__summary:focus-visible {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 2px;
+}
+
+.calculation-breakdown__summary:hover {
+    background: rgba(56, 189, 248, 0.15);
+}
+
+.calculation-breakdown__summary i {
+    color: var(--primary-light);
+}
+
+.calculation-breakdown__content {
+    padding: 12px 16px 16px;
+    background: rgba(11, 17, 32, 0.65);
+}
+
+.calculation-breakdown__list {
+    margin: 0;
+    padding: 0;
+}
+
+.calculation-breakdown__item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(140px, auto);
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.calculation-breakdown__item:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+.calculation-breakdown__item--total {
+    border-top: 2px solid rgba(56, 189, 248, 0.45);
+    margin-top: 4px;
+    padding-top: 16px;
+}
+
+.calculation-breakdown__item dt {
+    margin: 0;
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.calculation-breakdown__item dd {
+    margin: 0;
+    text-align: right;
+}
+
+.calculation-breakdown__value {
+    display: block;
+    color: var(--primary-light);
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.calculation-breakdown__note,
+.calculation-breakdown__status {
+    display: block;
+    margin-top: 4px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.calculation-breakdown__item--total .calculation-breakdown__value {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 960px) {
+    .calculation-breakdown__item {
+        grid-template-columns: minmax(0, 1fr) minmax(120px, auto);
+    }
+}

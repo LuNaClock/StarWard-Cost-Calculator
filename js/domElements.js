@@ -63,10 +63,25 @@ export const shieldSuccessAwakeningBonusSelect = document.getElementById('shield
 export const considerPartnerDownCheckbox = document.getElementById('considerPartnerDownCheckbox');
 export const predictedAwakeningGaugeSpan = document.getElementById('predictedAwakeningGauge');
 export const awakeningAvailabilitySpan = document.getElementById('awakeningAvailability');
+export const awakeningBreakdownDetails = document.getElementById('awakeningBreakdownDetails');
+export const awakeningDetailPreGaugeValue = document.getElementById('awakeningDetailPreGaugeValue');
+export const awakeningDetailDamageValue = document.getElementById('awakeningDetailDamageValue');
+export const awakeningDetailDamageNote = document.getElementById('awakeningDetailDamageNote');
+export const awakeningDetailOwnDownValue = document.getElementById('awakeningDetailOwnDownValue');
+export const awakeningDetailOwnDownStatus = document.getElementById('awakeningDetailOwnDownStatus');
+export const awakeningDetailDamageBonusValue = document.getElementById('awakeningDetailDamageBonusValue');
+export const awakeningDetailDamageBonusStatus = document.getElementById('awakeningDetailDamageBonusStatus');
+export const awakeningDetailShieldBonusValue = document.getElementById('awakeningDetailShieldBonusValue');
+export const awakeningDetailShieldBonusStatus = document.getElementById('awakeningDetailShieldBonusStatus');
+export const awakeningDetailPartnerBonusValue = document.getElementById('awakeningDetailPartnerBonusValue');
+export const awakeningDetailPartnerBonusStatus = document.getElementById('awakeningDetailPartnerBonusStatus');
+export const awakeningDetailTotalValue = document.getElementById('awakeningDetailTotalValue');
 
 // Awakening Gauge Calculation Details (for dynamic value insertion)
-export const avgGaugeCoeffValueSpan = document.getElementById('avgGaugeCoeffValue');
-export const avgGaugeCoeffExampleValueSpan = document.getElementById('avgGaugeCoeffExampleValue');
+export const avgGaugeCoeffValue30Span = document.getElementById('avgGaugeCoeffValue30');
+export const avgGaugeCoeffValueOthersSpan = document.getElementById('avgGaugeCoeffValueOthers');
+export const avgGaugeCoeffExample30Span = document.getElementById('avgGaugeCoeffExample30');
+export const avgGaugeCoeffExampleOthersSpan = document.getElementById('avgGaugeCoeffExampleOthers');
 export const ownDownBonus30Span = document.getElementById('ownDownBonus30');
 export const ownDownBonus20Span = document.getElementById('ownDownBonus20');
 export const ownDownBonus15Span = document.getElementById('ownDownBonus15');

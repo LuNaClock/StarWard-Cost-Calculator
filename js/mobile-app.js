@@ -4,10 +4,10 @@ import {
   kanjiNameReadings,
   costRemainingMap,
   MAX_TEAM_COST,
-  AVERAGE_GAUGE_COEFFICIENT,
   AWAKENING_THRESHOLD,
   AWAKENING_BONUS_BY_COST,
-  PARTNER_DOWN_AWAKENING_BONUS
+  PARTNER_DOWN_AWAKENING_BONUS,
+  getDamageGaugeCoefficient
 } from '../data.js';
 import { toHiragana } from './utils.js';
 import { calculateTeamHpScenariosForCharacters } from './calculator.js';
@@ -78,6 +78,19 @@ const dom = {
   inlineAwakeningResults: document.getElementById('awakeningInlineResults'),
   inlineAwakeningGauge: document.querySelector('[data-inline="gauge"]'),
   inlineAwakeningStatus: document.querySelector('[data-inline="awaken"]'),
+  awakeningBreakdown: document.getElementById('awakeningBreakdownMobile'),
+  awakeningBreakdownPreGauge: document.querySelector('[data-awakening-mobile="pre-gauge"]'),
+  awakeningBreakdownDamage: document.querySelector('[data-awakening-mobile="damage"]'),
+  awakeningBreakdownDamageNote: document.querySelector('[data-awakening-mobile="damage-note"]'),
+  awakeningBreakdownOwnDown: document.querySelector('[data-awakening-mobile="own-down"]'),
+  awakeningBreakdownOwnDownStatus: document.querySelector('[data-awakening-mobile-status="own-down"]'),
+  awakeningBreakdownDamageBonus: document.querySelector('[data-awakening-mobile="damage-bonus"]'),
+  awakeningBreakdownDamageBonusStatus: document.querySelector('[data-awakening-mobile-status="damage-bonus"]'),
+  awakeningBreakdownShieldBonus: document.querySelector('[data-awakening-mobile="shield-bonus"]'),
+  awakeningBreakdownShieldBonusStatus: document.querySelector('[data-awakening-mobile-status="shield-bonus"]'),
+  awakeningBreakdownPartnerBonus: document.querySelector('[data-awakening-mobile="partner-bonus"]'),
+  awakeningBreakdownPartnerBonusStatus: document.querySelector('[data-awakening-mobile-status="partner-bonus"]'),
+  awakeningBreakdownTotal: document.querySelector('[data-awakening-mobile="total"]'),
   recentList: document.getElementById('recentList'),
   clearHistory: document.querySelector('[data-action="clear-history"]'),
   cardSearch: document.getElementById('cardSearch'),
@@ -1043,6 +1056,117 @@ function applyInlineAwakeningState({
   }
 }
 
+function getMobileBreakdownItemContainer(element) {
+  return element?.closest('.calc-breakdown__item') ?? null;
+}
+
+function resetOptionalBreakdownRow(valueEl, statusEl) {
+  if (valueEl) valueEl.textContent = '+--%';
+  if (statusEl) {
+    statusEl.textContent = '未適用';
+    statusEl.hidden = true;
+  }
+  const container = getMobileBreakdownItemContainer(valueEl);
+  if (container) container.hidden = true;
+}
+
+function updateOptionalBreakdownRow(valueEl, statusEl, { enabled, value, format }) {
+  if (typeof format !== 'function') {
+    return;
+  }
+  if (valueEl) valueEl.textContent = format(value ?? 0);
+  if (statusEl) {
+    statusEl.textContent = enabled ? '適用' : '未適用';
+    statusEl.hidden = !enabled;
+  }
+  const container = getMobileBreakdownItemContainer(valueEl);
+  if (container) {
+    const numericValue = Number(value);
+    const rounded = Number.isFinite(numericValue) ? Math.round(numericValue) : 0;
+    const shouldShow = enabled && rounded !== 0;
+    container.hidden = !shouldShow;
+  }
+}
+
+function resetAwakeningBreakdown() {
+  if (dom.awakeningBreakdown) {
+    dom.awakeningBreakdown.hidden = true;
+    dom.awakeningBreakdown.open = false;
+  }
+  if (dom.awakeningBreakdownPreGauge) dom.awakeningBreakdownPreGauge.textContent = '--%';
+  if (dom.awakeningBreakdownDamage) dom.awakeningBreakdownDamage.textContent = '+--%';
+  if (dom.awakeningBreakdownDamageNote) dom.awakeningBreakdownDamageNote.textContent = '想定被ダメージ: --';
+  resetOptionalBreakdownRow(dom.awakeningBreakdownOwnDown, dom.awakeningBreakdownOwnDownStatus);
+  resetOptionalBreakdownRow(dom.awakeningBreakdownDamageBonus, dom.awakeningBreakdownDamageBonusStatus);
+  resetOptionalBreakdownRow(dom.awakeningBreakdownShieldBonus, dom.awakeningBreakdownShieldBonusStatus);
+  resetOptionalBreakdownRow(dom.awakeningBreakdownPartnerBonus, dom.awakeningBreakdownPartnerBonusStatus);
+  if (dom.awakeningBreakdownTotal) dom.awakeningBreakdownTotal.textContent = '--%';
+}
+
+function updateAwakeningBreakdown(breakdown) {
+  if (!dom.awakeningBreakdown) {
+    return;
+  }
+  if (!breakdown) {
+    resetAwakeningBreakdown();
+    return;
+  }
+
+  const formatBase = (value) => {
+    if (!Number.isFinite(value)) return '--%';
+    return `${Math.round(value)}%`;
+  };
+
+  const formatSigned = (value) => {
+    if (!Number.isFinite(value)) return '+--%';
+    const rounded = Math.round(value);
+    const sign = rounded >= 0 ? '+' : '';
+    return `${sign}${rounded}%`;
+  };
+
+  dom.awakeningBreakdown.hidden = false;
+
+  if (dom.awakeningBreakdownPreGauge) {
+    dom.awakeningBreakdownPreGauge.textContent = formatBase(breakdown.baseGauge);
+  }
+  if (dom.awakeningBreakdownDamage) {
+    dom.awakeningBreakdownDamage.textContent = formatSigned(breakdown.damageIncrease);
+  }
+  if (dom.awakeningBreakdownDamageNote) {
+    if (Number.isFinite(breakdown.damageTaken) && Number.isFinite(breakdown.originalHp)) {
+      const taken = Math.round(breakdown.damageTaken);
+      const maxHp = Math.round(breakdown.originalHp);
+      const percent = maxHp > 0 ? Math.round((taken / maxHp) * 100) : 0;
+      dom.awakeningBreakdownDamageNote.textContent = `想定被ダメージ: ${taken.toLocaleString()} / ${maxHp.toLocaleString()} (${percent}%)`;
+    } else {
+      dom.awakeningBreakdownDamageNote.textContent = '想定被ダメージ: --';
+    }
+  }
+  updateOptionalBreakdownRow(dom.awakeningBreakdownOwnDown, dom.awakeningBreakdownOwnDownStatus, {
+    enabled: Boolean(breakdown.ownDownEnabled),
+    value: breakdown.ownDownValue ?? 0,
+    format: formatSigned,
+  });
+  updateOptionalBreakdownRow(dom.awakeningBreakdownDamageBonus, dom.awakeningBreakdownDamageBonusStatus, {
+    enabled: Boolean(breakdown.damageBonusEnabled),
+    value: breakdown.damageBonusValue ?? 0,
+    format: formatSigned,
+  });
+  updateOptionalBreakdownRow(dom.awakeningBreakdownShieldBonus, dom.awakeningBreakdownShieldBonusStatus, {
+    enabled: Boolean(breakdown.shieldBonusEnabled),
+    value: breakdown.shieldBonusValue ?? 0,
+    format: formatSigned,
+  });
+  updateOptionalBreakdownRow(dom.awakeningBreakdownPartnerBonus, dom.awakeningBreakdownPartnerBonusStatus, {
+    enabled: Boolean(breakdown.partnerBonusEnabled),
+    value: breakdown.partnerBonusValue ?? 0,
+    format: formatSigned,
+  });
+  if (dom.awakeningBreakdownTotal) {
+    dom.awakeningBreakdownTotal.textContent = formatBase(breakdown.total);
+  }
+}
+
 function clearSimulationResults() {
   if (dom.resultHp) {
     dom.resultHp.textContent = '--';
@@ -1075,6 +1199,7 @@ function clearSimulationResults() {
   if (dom.resultHpBar) {
     dom.resultHpBar.style.width = '0%';
   }
+  resetAwakeningBreakdown();
   applyInlineAwakeningState();
   if (dom.simResults) {
     dom.simResults.hidden = true;
@@ -1181,24 +1306,27 @@ function performSimulation({
   }
 
   const damageRatio = targetChar.hp > 0 ? damageInput / targetChar.hp : 0;
-  const gaugeFromDamage = Math.floor(damageRatio * 100 * AVERAGE_GAUGE_COEFFICIENT);
+  const gaugeCoefficient = getDamageGaugeCoefficient(targetChar.cost);
+  const gaugeFromDamage = Math.floor(damageRatio * 100 * gaugeCoefficient);
   const costKey = targetChar.cost.toFixed(1);
-  let bonus = 0;
-  if (dom.ownDown.checked) {
-    bonus += AWAKENING_BONUS_BY_COST[costKey] || 0;
-  }
-  if (dom.damageBonus.checked) {
-    bonus += parseInt(dom.bonusSelect.value, 10) || 0;
-  }
-  if (dom.shieldBonus && dom.shieldBonus.checked) {
-    const shieldBonusValue = dom.shieldBonusSelect ? parseInt(dom.shieldBonusSelect.value, 10) : 0;
-    bonus += shieldBonusValue || 0;
-  }
-  if (dom.partnerDown.checked) {
-    bonus += PARTNER_DOWN_AWAKENING_BONUS[costKey] || 0;
-  }
+  const ownDownValue = dom.ownDown && dom.ownDown.checked ? (AWAKENING_BONUS_BY_COST[costKey] || 0) : 0;
+  const damageBonusValue = dom.damageBonus && dom.damageBonus.checked
+    ? (dom.bonusSelect ? parseInt(dom.bonusSelect.value, 10) || 0 : 0)
+    : 0;
+  const shieldBonusValue = dom.shieldBonus && dom.shieldBonus.checked
+    ? (dom.shieldBonusSelect ? parseInt(dom.shieldBonusSelect.value, 10) || 0 : 0)
+    : 0;
+  const partnerBonusValue = dom.partnerDown && dom.partnerDown.checked
+    ? (PARTNER_DOWN_AWAKENING_BONUS[costKey] || 0)
+    : 0;
 
-  const finalGauge = clamp(Math.floor(gaugeBefore + gaugeFromDamage + bonus), 0, 100);
+  const totalBonus =
+    ownDownValue +
+    damageBonusValue +
+    shieldBonusValue +
+    partnerBonusValue;
+
+  const finalGauge = clamp(Math.floor(gaugeBefore + gaugeFromDamage + totalBonus), 0, 100);
   const isReadyToAwaken = finalGauge >= AWAKENING_THRESHOLD;
   const awakenText = isReadyToAwaken ? '覚醒可能' : '不可';
 
@@ -1242,6 +1370,22 @@ function performSimulation({
     statusText: awakenText,
     isReady: isReadyToAwaken,
     visible: true
+  });
+
+  updateAwakeningBreakdown({
+    baseGauge: gaugeBefore,
+    damageIncrease: gaugeFromDamage,
+    damageTaken: damageInput,
+    originalHp: targetChar.hp,
+    ownDownValue,
+    ownDownEnabled: Boolean(dom.ownDown && dom.ownDown.checked),
+    damageBonusValue,
+    damageBonusEnabled: Boolean(dom.damageBonus && dom.damageBonus.checked),
+    shieldBonusValue,
+    shieldBonusEnabled: Boolean(dom.shieldBonus && dom.shieldBonus.checked),
+    partnerBonusValue,
+    partnerBonusEnabled: Boolean(dom.partnerDown && dom.partnerDown.checked),
+    total: finalGauge
   });
 
   const shouldPersistHistory =
