@@ -441,16 +441,12 @@
     color: var(--surface-contrast-color);
     flex-shrink: 0;
     box-shadow: 0 12px 24px rgba(37, 99, 235, 0.35);
+    transform: translateX(clamp(4px, 1vw, 12px));
 }
 
 
 .history-entry__cta i {
     font-size: clamp(0.85rem, 1.6vw, 1rem);
-}
-
-.history-entry__cta i::before {
-    position: relative;
-    left: 1px;
 }
 
 @media (max-width: 960px) {
