@@ -93,10 +93,20 @@ body[data-theme="dark"] .search-label {
     border: 2px solid var(--light-grey-border);
     border-radius: 30px;
     font-size: 1.05em;
+    color: var(--text-color);
     background-color: var(--card-background);
     transition: all var(--transition-speed);
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     will-change: border-color, box-shadow, transform;
+}
+
+#characterSearch::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.85;
+}
+
+body[data-theme="dark"] #characterSearch::placeholder {
+    color: rgba(226, 232, 240, 0.6);
 }
 
 #characterSearch:focus {
