@@ -1343,7 +1343,9 @@ export function updateAwakeningGaugeUI(gaugeResult) {
 
     if(DOM.beforeShotdownHpInput) {
         DOM.beforeShotdownHpInput.style.borderColor = '';
-        if (DOM.beforeShotdownHpInput.value !== gaugeResult.validatedDamageTaken.toString()) {
+        const currentValue = DOM.beforeShotdownHpInput.value;
+        const nextValue = gaugeResult.validatedDamageTaken.toString();
+        if (currentValue !== '' && currentValue !== nextValue) {
              DOM.beforeShotdownHpInput.value = gaugeResult.validatedDamageTaken;
         }
     }
