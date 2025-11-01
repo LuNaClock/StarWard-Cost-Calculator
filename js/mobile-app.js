@@ -4,10 +4,10 @@ import {
   kanjiNameReadings,
   costRemainingMap,
   MAX_TEAM_COST,
-  AVERAGE_GAUGE_COEFFICIENT,
   AWAKENING_THRESHOLD,
   AWAKENING_BONUS_BY_COST,
-  PARTNER_DOWN_AWAKENING_BONUS
+  PARTNER_DOWN_AWAKENING_BONUS,
+  getDamageGaugeCoefficient
 } from '../data.js';
 import { toHiragana } from './utils.js';
 import { calculateTeamHpScenariosForCharacters } from './calculator.js';
@@ -1306,7 +1306,8 @@ function performSimulation({
   }
 
   const damageRatio = targetChar.hp > 0 ? damageInput / targetChar.hp : 0;
-  const gaugeFromDamage = Math.floor(damageRatio * 100 * AVERAGE_GAUGE_COEFFICIENT);
+  const gaugeCoefficient = getDamageGaugeCoefficient(targetChar.cost);
+  const gaugeFromDamage = Math.floor(damageRatio * 100 * gaugeCoefficient);
   const costKey = targetChar.cost.toFixed(1);
   const ownDownValue = dom.ownDown && dom.ownDown.checked ? (AWAKENING_BONUS_BY_COST[costKey] || 0) : 0;
   const damageBonusValue = dom.damageBonus && dom.damageBonus.checked

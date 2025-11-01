@@ -1,9 +1,9 @@
 import {
     MAX_TEAM_COST,
-    AVERAGE_GAUGE_COEFFICIENT,
     AWAKENING_THRESHOLD,
     AWAKENING_BONUS_BY_COST,
-    PARTNER_DOWN_AWAKENING_BONUS
+    PARTNER_DOWN_AWAKENING_BONUS,
+    getDamageGaugeCoefficient
 } from '../data.js';
 import { getSelectedPlayerChar, getSelectedPartnerChar } from './state.js';
 
@@ -323,7 +323,8 @@ export function calculateAwakeningGauge(inputs) {
     let actualDamageTaken = Math.max(0, Math.min(damageTakenInputValue, originalCharActualMaxHp));
 
     const hpLossPercentage = (originalCharActualMaxHp > 0) ? (actualDamageTaken / originalCharActualMaxHp) * 100 : 0;
-    const damageBasedGaugeIncrease = Math.floor(hpLossPercentage * AVERAGE_GAUGE_COEFFICIENT);
+    const gaugeCoefficient = getDamageGaugeCoefficient(charCost);
+    const damageBasedGaugeIncrease = Math.floor(hpLossPercentage * gaugeCoefficient);
 
     let costBonusOnOwnDown = 0;
     if (considerOwnDown) {
