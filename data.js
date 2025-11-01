@@ -80,6 +80,21 @@ export const costRemainingMap = {
 
 export const MAX_TEAM_COST = 6.0;
 export const AVERAGE_GAUGE_COEFFICIENT = 0.5980;
+export const DAMAGE_GAUGE_COEFFICIENT_BY_COST = {
+    "3.0": 0.5980, "3": 0.5980,
+    "2.5": 0.6380,
+    "2.0": 0.6380, "2": 0.6380,
+    "1.5": 0.6380
+};
+
+export function getDamageGaugeCoefficient(cost) {
+    if (typeof cost !== 'number' || Number.isNaN(cost)) {
+        return AVERAGE_GAUGE_COEFFICIENT;
+    }
+
+    const costKey = cost.toFixed(1);
+    return DAMAGE_GAUGE_COEFFICIENT_BY_COST[costKey] ?? AVERAGE_GAUGE_COEFFICIENT;
+}
 export const AWAKENING_THRESHOLD = 50;
 
 export const AWAKENING_BONUS_BY_COST = {

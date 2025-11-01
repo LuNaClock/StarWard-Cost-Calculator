@@ -422,8 +422,8 @@
                                     <div class="info-details__section">
                                         <h4>基礎増加（被ダメージ）</h4>
                                         <p>受けたダメージ量に応じてゲージが増加します。本来の体力に対する割合をもとにしています。</p>
-                                        <p class="info-details__formula"><strong>増加量 = (被ダメージ量 / 本来の体力) × 100 × 約0.598</strong></p>
-                                        <p class="info-details__tip">例: 体力3000の機体が1500ダメージで撃墜された場合、(1500 / 3000) × 100 × 約0.598 ≒ 約29.9% 増加します。</p>
+                                        <p class="info-details__formula"><strong>増加量 = (被ダメージ量 / 本来の体力) × 100 × 約0.598（3.0コスト） / 約0.638（2.5/2.0/1.5コスト）</strong></p>
+                                        <p class="info-details__tip">例: 体力3000の機体が1500ダメージで撃墜された場合、3.0コスト機体なら (1500 / 3000) × 100 × 約0.598 ≒ 約29.9% 増加、2.5/2.0/1.5コスト機体なら (1500 / 3000) × 100 × 約0.638 ≒ 約31.9% 増加します。</p>
                                     </div>
                                     <div class="info-details__section">
                                         <h4>再出撃直後のゲージ量（最低保証値）</h4>
@@ -453,7 +453,7 @@
                                     <div class="info-details__note">
                                         <h4>注意点</h4>
                                         <ul>
-                                            <li>被ダメージによる覚醒ゲージ増加率の係数は機体ごとに異なります。本ツールでは計測した平均的な係数を採用しています。</li>
+                                            <li>被ダメージによる覚醒ゲージ増加率の係数は機体ごとに異なります。本ツールではコスト帯ごとに計測した平均的な係数を採用しています。</li>
                                             <li>再出撃直後のゲージ量は基本的に自機コスト依存ですが、一部機体では異なる数値が設定されている場合があります。</li>
                                             <li>覚醒ゲージは小数点以下まで計算されていると推測されるため、ゲーム内の表示と多少の誤差が生じる可能性があります。</li>
                                         </ul>
@@ -945,8 +945,8 @@
                                             <div class="gauge-section">
                                                 <h5><i class="fas fa-heartbeat"></i> 基礎増加（被ダメージ）</h5>
                                                 <p>受けたダメージ量に応じて増加します。本来の体力に対するダメージ割合をもとにしています。</p>
-                                                <p class="formula small-formula"><strong>増加量 = (被ダメージ量 / 本来の体力) × 100 × 約<span id="avgGaugeCoeffValue"></span></strong></p>
-                                                <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: 例として、体力3000の機体が1500ダメージ受けて撃墜された場合、(1500/3000)*100*約<span id="avgGaugeCoeffExampleValue"></span> = 約29.9% 増加します。</p>
+                                                <p class="formula small-formula"><strong>増加量 = (被ダメージ量 / 本来の体力) × 100 × 約<span id="avgGaugeCoeffValue30"></span>（3.0コスト） / 約<span id="avgGaugeCoeffValueOthers"></span>（2.5/2.0/1.5コスト）</strong></p>
+                                                <p class="tip"><i class="fas fa-lightbulb"></i> ヒント: 例として、体力3000の機体が1500ダメージ受けて撃墜された場合、(1500/3000)*100*約<span id="avgGaugeCoeffExample30"></span> ≒ 約29.9%（3.0コスト機体）増加します。2.5/2.0/1.5コスト機体の場合は (1500/3000)*100*約<span id="avgGaugeCoeffExampleOthers"></span> ≒ 約31.9% 増加します。</p>
                                             </div>
                                             <div class="gauge-section">
                                                 <h5><i class="fas fa-rocket"></i> 再出撃直後のゲージ量（最低保証値）</h5>

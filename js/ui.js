@@ -1,5 +1,5 @@
 import * as DOM from './domElements.js';
-import { costRemainingMap, AVERAGE_GAUGE_COEFFICIENT, AWAKENING_BONUS_BY_COST, PARTNER_DOWN_AWAKENING_BONUS, AWAKENING_THRESHOLD } from '../data.js';
+import { costRemainingMap, AWAKENING_BONUS_BY_COST, PARTNER_DOWN_AWAKENING_BONUS, AWAKENING_THRESHOLD, getDamageGaugeCoefficient } from '../data.js';
 import { getCharacters, getSelectedPlayerChar, getSelectedPartnerChar } from './state.js';
 import * as Utils from './utils.js';
 
@@ -1417,8 +1417,13 @@ export function updateAwakeningGaugeUI(gaugeResult) {
 }
 
 export function setAwakeningDetailsConstants() {
-    if (DOM.avgGaugeCoeffValueSpan) DOM.avgGaugeCoeffValueSpan.textContent = AVERAGE_GAUGE_COEFFICIENT.toFixed(3);
-    if (DOM.avgGaugeCoeffExampleValueSpan) DOM.avgGaugeCoeffExampleValueSpan.textContent = AVERAGE_GAUGE_COEFFICIENT.toFixed(3);
+    const coeffForThirty = getDamageGaugeCoefficient(3.0).toFixed(3);
+    const coeffForOthers = getDamageGaugeCoefficient(2.5).toFixed(3);
+
+    if (DOM.avgGaugeCoeffValue30Span) DOM.avgGaugeCoeffValue30Span.textContent = coeffForThirty;
+    if (DOM.avgGaugeCoeffValueOthersSpan) DOM.avgGaugeCoeffValueOthersSpan.textContent = coeffForOthers;
+    if (DOM.avgGaugeCoeffExample30Span) DOM.avgGaugeCoeffExample30Span.textContent = coeffForThirty;
+    if (DOM.avgGaugeCoeffExampleOthersSpan) DOM.avgGaugeCoeffExampleOthersSpan.textContent = coeffForOthers;
     if (DOM.ownDownBonus30Span) DOM.ownDownBonus30Span.textContent = AWAKENING_BONUS_BY_COST["3.0"].toString();
     if (DOM.ownDownBonus20Span) DOM.ownDownBonus20Span.textContent = AWAKENING_BONUS_BY_COST["2.0"].toString();
     if (DOM.ownDownBonus15Span) DOM.ownDownBonus15Span.textContent = AWAKENING_BONUS_BY_COST["1.5"].toString();

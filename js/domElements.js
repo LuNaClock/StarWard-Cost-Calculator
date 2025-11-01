@@ -78,8 +78,10 @@ export const awakeningDetailPartnerBonusStatus = document.getElementById('awaken
 export const awakeningDetailTotalValue = document.getElementById('awakeningDetailTotalValue');
 
 // Awakening Gauge Calculation Details (for dynamic value insertion)
-export const avgGaugeCoeffValueSpan = document.getElementById('avgGaugeCoeffValue');
-export const avgGaugeCoeffExampleValueSpan = document.getElementById('avgGaugeCoeffExampleValue');
+export const avgGaugeCoeffValue30Span = document.getElementById('avgGaugeCoeffValue30');
+export const avgGaugeCoeffValueOthersSpan = document.getElementById('avgGaugeCoeffValueOthers');
+export const avgGaugeCoeffExample30Span = document.getElementById('avgGaugeCoeffExample30');
+export const avgGaugeCoeffExampleOthersSpan = document.getElementById('avgGaugeCoeffExampleOthers');
 export const ownDownBonus30Span = document.getElementById('ownDownBonus30');
 export const ownDownBonus20Span = document.getElementById('ownDownBonus20');
 export const ownDownBonus15Span = document.getElementById('ownDownBonus15');
