@@ -57,116 +57,15 @@
   display: none !important;
 }
 
-body[data-view-mode="mobile"] .mobile-app {
-  display: flex;
-  align-items: stretch;
-}
-
-body[data-view-mode="mobile"] .desktop-app {
-  display: none;
-}
-
-body[data-view-mode="auto"] .mobile-app {
-  display: none;
-}
-
-body[data-view-mode="auto"] .desktop-app {
-  display: block;
-}
-
-body[data-view-mode="desktop"] .mobile-app {
-  display: none;
-}
-
-body[data-view-mode="desktop"] .desktop-app {
-  display: block;
-}
-
 @media (max-width: 768px) {
-  body[data-view-mode="auto"] .mobile-app {
+  .mobile-app {
     display: flex;
     align-items: stretch;
   }
 
-  body[data-view-mode="auto"] .desktop-app {
+  .desktop-app {
     display: none;
   }
-}
-
-
-.view-switcher {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border-radius: 999px;
-}
-
-.view-switcher--floating {
-  position: fixed;
-  top: calc(16px + env(safe-area-inset-top, 0px));
-  right: 16px;
-  padding: 6px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: rgba(15, 23, 42, 0.85);
-  color: #f8fafc;
-  z-index: 1000;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.28);
-}
-
-body[data-view-mode="desktop"] .view-switcher--floating,
-body[data-view-mode="auto"] .view-switcher--floating {
-  background: rgba(241, 245, 249, 0.92);
-  color: #0f172a;
-  border-color: rgba(100, 116, 139, 0.25);
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
-}
-
-body[data-view-mode="desktop"][data-theme="dark"] .view-switcher--floating,
-body[data-view-mode="auto"][data-theme="dark"] .view-switcher--floating {
-  background: rgba(15, 23, 42, 0.88);
-  color: #e2e8f0;
-  border-color: rgba(59, 130, 246, 0.45);
-  box-shadow: 0 16px 32px rgba(2, 6, 23, 0.6);
-}
-
-.view-switcher--settings {
-  padding: 6px;
-  background: rgba(30, 41, 59, 0.8);
-  color: #f8fafc;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  box-shadow: 0 8px 18px rgba(8, 14, 24, 0.35);
-}
-
-.view-switcher__button {
-  appearance: none;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1;
-  cursor: pointer;
-  color: inherit;
-  background: transparent;
-  transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
-  min-width: 110px;
-}
-
-.view-switcher__button:hover,
-.view-switcher__button:focus-visible {
-  background: rgba(148, 163, 184, 0.2);
-  outline: none;
-}
-
-.view-switcher__button[aria-pressed="true"] {
-  background: linear-gradient(135deg, #2563eb, #22d3ee);
-  color: #ffffff;
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
-}
-
-.view-switcher__button[aria-pressed="true"]:focus-visible {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.45);
 }
 
 .app-shell {
