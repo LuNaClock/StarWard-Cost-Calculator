@@ -291,7 +291,8 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: clamp(16px, 2vw, 28px);
+    column-gap: clamp(28px, 5vw, 64px);
+    row-gap: clamp(16px, 2vw, 24px);
     cursor: pointer;
     text-align: left;
     box-shadow: 0 22px 40px rgba(8, 14, 24, 0.55);
@@ -440,6 +441,7 @@
     color: var(--surface-contrast-color);
     flex-shrink: 0;
     box-shadow: 0 12px 24px rgba(37, 99, 235, 0.35);
+    margin-left: clamp(10px, 2.6vw, 18px);
 }
 
 
@@ -450,6 +452,7 @@
 @media (max-width: 960px) {
     .history-entry {
         grid-template-columns: 1fr auto;
+        column-gap: clamp(20px, 4vw, 36px);
     }
 
     .history-entry__characters-grid {
@@ -463,9 +466,12 @@
         grid-template-columns: 1fr;
         justify-items: stretch;
         padding-right: clamp(20px, 6vw, 28px);
+        column-gap: 0;
+        row-gap: clamp(14px, 3vw, 18px);
     }
 
     .history-entry__cta {
         justify-self: end;
+        margin-left: 0;
     }
 }
