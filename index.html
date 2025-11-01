@@ -179,6 +179,7 @@
                                                 <div class="character-picker-list" data-picker-list="player" role="listbox" aria-label="自機候補一覧"></div>
                                             </div>
                                         </div>
+                                        <p class="input-helper" id="playerCost">選択中: <span data-bind="player-cost">--</span> コスト / <span data-bind="player-hp">--</span> 耐久</p>
                                     </div>
                                     <div class="form-field">
                                         <label for="mobilePartnerPickerToggle">相方</label>
@@ -214,6 +215,7 @@
                                                 <div class="character-picker-list" data-picker-list="partner" role="listbox" aria-label="相方候補一覧"></div>
                                             </div>
                                         </div>
+                                        <p class="input-helper" id="partnerCost">選択中: <span data-bind="partner-cost">--</span> コスト / <span data-bind="partner-hp">--</span> 耐久</p>
                                     </div>
                                     <div class="form-field">
                                         <span id="redeployLabel">再出撃する機体</span>
@@ -574,21 +576,21 @@
                         <path d="M4 7h16M7 4v6M12 4v6M17 4v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
                         <rect x="6" y="11" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.6"></rect>
                     </svg>
-                    シミュレーター
+                    Simulator
                 </button>
                 <button class="tab-button" id="tab-cards" role="tab" aria-controls="cards" aria-selected="false">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <rect x="4" y="4" width="7" height="16" rx="2" stroke="currentColor" stroke-width="1.6"></rect>
                         <rect x="13" y="7" width="7" height="13" rx="2" stroke="currentColor" stroke-width="1.6"></rect>
                     </svg>
-                    キャラ体力一覧
+                    Cards
                 </button>
                 <button class="tab-button" id="tab-settings" role="tab" aria-controls="settings" aria-selected="false">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"></circle>
                         <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06A1.65 1.65 0 0015 19.4a1.65 1.65 0 00-1 .6 1.65 1.65 0 00-.33 1.82l-.02.07a2 2 0 01-3.3 0l-.02-.07a1.65 1.65 0 00-.33-1.82 1.65 1.65 0 00-1-.6 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-.6-1 1.65 1.65 0 00-1.82-.33l-.07.02a2 2 0 010-3.3l.07-.02a1.65 1.65 0 001.82-.33 1.65 1.65 0 00.6-1 1.65 1.65 0 00-.6-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-.6 1.65 1.65 0 00.33-1.82l.02-.07a2 2 0 013.3 0l.02.07a1.65 1.65 0 00.33 1.82 1.65 1.65 0 001 .6 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.6 1 1.65 1.65 0 00.6 1.82z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
-                    ツール情報
+                    Settings
                 </button>
             </nav>
         </div>
