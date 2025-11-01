@@ -998,10 +998,18 @@
             </div>
         </div>
 
-        <div class="controls-container">
+        <div class="controls-container" aria-labelledby="cardControlsHeading">
+            <div class="controls-header">
+                <h2 id="cardControlsHeading" class="controls-title"><i class="fas fa-id-card"></i> カード検索と絞り込み</h2>
+                <p class="controls-description">キャラクターカード一覧を対象に、名前検索やコスト・体力順での並び替えが行えます。</p>
+            </div>
+
             <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="characterSearch" placeholder="キャラクター名で検索..." autocomplete="off">
+                <label for="characterSearch" class="search-label">キャラクターカードを名前で検索</label>
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                    <input type="text" id="characterSearch" placeholder="カード名で検索..." aria-label="表示中のキャラクターカードを検索" autocomplete="off">
+                </div>
             </div>
 
             <div class="filter-container">
