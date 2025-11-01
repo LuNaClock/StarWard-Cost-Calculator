@@ -63,6 +63,19 @@ export const shieldSuccessAwakeningBonusSelect = document.getElementById('shield
 export const considerPartnerDownCheckbox = document.getElementById('considerPartnerDownCheckbox');
 export const predictedAwakeningGaugeSpan = document.getElementById('predictedAwakeningGauge');
 export const awakeningAvailabilitySpan = document.getElementById('awakeningAvailability');
+export const awakeningBreakdownDetails = document.getElementById('awakeningBreakdownDetails');
+export const awakeningDetailPreGaugeValue = document.getElementById('awakeningDetailPreGaugeValue');
+export const awakeningDetailDamageValue = document.getElementById('awakeningDetailDamageValue');
+export const awakeningDetailDamageNote = document.getElementById('awakeningDetailDamageNote');
+export const awakeningDetailOwnDownValue = document.getElementById('awakeningDetailOwnDownValue');
+export const awakeningDetailOwnDownStatus = document.getElementById('awakeningDetailOwnDownStatus');
+export const awakeningDetailDamageBonusValue = document.getElementById('awakeningDetailDamageBonusValue');
+export const awakeningDetailDamageBonusStatus = document.getElementById('awakeningDetailDamageBonusStatus');
+export const awakeningDetailShieldBonusValue = document.getElementById('awakeningDetailShieldBonusValue');
+export const awakeningDetailShieldBonusStatus = document.getElementById('awakeningDetailShieldBonusStatus');
+export const awakeningDetailPartnerBonusValue = document.getElementById('awakeningDetailPartnerBonusValue');
+export const awakeningDetailPartnerBonusStatus = document.getElementById('awakeningDetailPartnerBonusStatus');
+export const awakeningDetailTotalValue = document.getElementById('awakeningDetailTotalValue');
 
 // Awakening Gauge Calculation Details (for dynamic value insertion)
 export const avgGaugeCoeffValueSpan = document.getElementById('avgGaugeCoeffValue');

@@ -1276,13 +1276,121 @@ export function updateRedeploySimulationUI(charToRedeploy, calculatedHp, actualC
 }
 
 export function updateAwakeningGaugeUI(gaugeResult) {
-    if (!gaugeResult || !DOM.predictedAwakeningGaugeSpan || !DOM.awakeningAvailabilitySpan) return;
+    if (!DOM.predictedAwakeningGaugeSpan || !DOM.awakeningAvailabilitySpan) return;
+
+    const getBreakdownItemContainer = (element) => element?.closest('.calculation-breakdown__item') || null;
+
+    const resetOptionalBreakdownRow = (valueEl, statusEl) => {
+        if (valueEl) valueEl.textContent = '+--%';
+        if (statusEl) {
+            statusEl.textContent = '未適用';
+            statusEl.hidden = true;
+        }
+        const container = getBreakdownItemContainer(valueEl);
+        if (container) container.hidden = true;
+    };
+
+    const updateOptionalBreakdownRow = (valueEl, statusEl, { enabled, value }) => {
+        if (valueEl) valueEl.textContent = formatSignedPercentage(value ?? 0);
+        if (statusEl) {
+            statusEl.textContent = enabled ? '適用' : '未適用';
+            statusEl.hidden = !enabled;
+        }
+        const container = getBreakdownItemContainer(valueEl);
+        if (container) {
+            const numericValue = Number(value);
+            const rounded = Number.isFinite(numericValue) ? Math.round(numericValue) : 0;
+            const shouldShow = enabled && rounded !== 0;
+            container.hidden = !shouldShow;
+        }
+    };
+
+    const resetBreakdown = () => {
+        if (DOM.awakeningBreakdownDetails) {
+            DOM.awakeningBreakdownDetails.hidden = true;
+            DOM.awakeningBreakdownDetails.open = false;
+        }
+        if (DOM.awakeningDetailPreGaugeValue) DOM.awakeningDetailPreGaugeValue.textContent = '--%';
+        if (DOM.awakeningDetailDamageValue) DOM.awakeningDetailDamageValue.textContent = '+--%';
+        if (DOM.awakeningDetailDamageNote) DOM.awakeningDetailDamageNote.textContent = '想定被ダメージ: --';
+        resetOptionalBreakdownRow(DOM.awakeningDetailOwnDownValue, DOM.awakeningDetailOwnDownStatus);
+        resetOptionalBreakdownRow(DOM.awakeningDetailDamageBonusValue, DOM.awakeningDetailDamageBonusStatus);
+        resetOptionalBreakdownRow(DOM.awakeningDetailShieldBonusValue, DOM.awakeningDetailShieldBonusStatus);
+        resetOptionalBreakdownRow(DOM.awakeningDetailPartnerBonusValue, DOM.awakeningDetailPartnerBonusStatus);
+        if (DOM.awakeningDetailTotalValue) DOM.awakeningDetailTotalValue.textContent = '--%';
+    };
+
+    const formatSignedPercentage = (value) => {
+        if (!Number.isFinite(value)) return '+--%';
+        const rounded = Math.round(value);
+        const sign = rounded >= 0 ? '+' : '';
+        return `${sign}${rounded}%`;
+    };
+
+    const formatBasePercentage = (value) => {
+        if (!Number.isFinite(value)) return '--%';
+        return `${Math.round(value)}%`;
+    };
+
+    const applyBreakdown = (breakdown) => {
+        if (!DOM.awakeningBreakdownDetails) return;
+        if (!breakdown) {
+            resetBreakdown();
+            return;
+        }
+        DOM.awakeningBreakdownDetails.hidden = false;
+
+        if (DOM.awakeningDetailPreGaugeValue) {
+            DOM.awakeningDetailPreGaugeValue.textContent = formatBasePercentage(breakdown.baseGauge);
+        }
+        if (DOM.awakeningDetailDamageValue) {
+            DOM.awakeningDetailDamageValue.textContent = formatSignedPercentage(breakdown.damageIncrease);
+        }
+        if (DOM.awakeningDetailDamageNote) {
+            if (Number.isFinite(breakdown.validatedDamageTaken) && Number.isFinite(breakdown.originalMaxHp)) {
+                const taken = Math.round(breakdown.validatedDamageTaken);
+                const maxHp = Math.round(breakdown.originalMaxHp);
+                const percent = maxHp > 0 ? Math.round((taken / maxHp) * 100) : 0;
+                DOM.awakeningDetailDamageNote.textContent = `想定被ダメージ: ${taken.toLocaleString()} / ${maxHp.toLocaleString()} (${percent}%)`;
+            } else {
+                DOM.awakeningDetailDamageNote.textContent = '想定被ダメージ: --';
+            }
+        }
+        updateOptionalBreakdownRow(DOM.awakeningDetailOwnDownValue, DOM.awakeningDetailOwnDownStatus, {
+            enabled: Boolean(breakdown.ownDown?.enabled),
+            value: breakdown.ownDown?.value ?? 0
+        });
+        updateOptionalBreakdownRow(DOM.awakeningDetailDamageBonusValue, DOM.awakeningDetailDamageBonusStatus, {
+            enabled: Boolean(breakdown.damageBonus?.enabled),
+            value: breakdown.damageBonus?.value ?? 0
+        });
+        updateOptionalBreakdownRow(DOM.awakeningDetailShieldBonusValue, DOM.awakeningDetailShieldBonusStatus, {
+            enabled: Boolean(breakdown.shieldBonus?.enabled),
+            value: breakdown.shieldBonus?.value ?? 0
+        });
+        updateOptionalBreakdownRow(DOM.awakeningDetailPartnerBonusValue, DOM.awakeningDetailPartnerBonusStatus, {
+            enabled: Boolean(breakdown.partnerBonus?.enabled),
+            value: breakdown.partnerBonus?.value ?? 0
+        });
+        if (DOM.awakeningDetailTotalValue) {
+            DOM.awakeningDetailTotalValue.textContent = formatBasePercentage(breakdown.total);
+        }
+    };
+
+    if (!gaugeResult) {
+        DOM.predictedAwakeningGaugeSpan.textContent = '--';
+        DOM.awakeningAvailabilitySpan.textContent = '--';
+        DOM.awakeningAvailabilitySpan.className = 'info-value';
+        resetBreakdown();
+        return;
+    }
 
     if (gaugeResult.error) {
         DOM.predictedAwakeningGaugeSpan.textContent = '---';
         DOM.awakeningAvailabilitySpan.textContent = '--';
         DOM.awakeningAvailabilitySpan.className = 'info-value';
         if(DOM.beforeShotdownHpInput) DOM.beforeShotdownHpInput.style.borderColor = 'red';
+        resetBreakdown();
         return;
     }
 
@@ -1295,7 +1403,7 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         }
     }
 
-    DOM.predictedAwakeningGaugeSpan.textContent = gaugeResult.finalPredictedGauge;
+    DOM.predictedAwakeningGaugeSpan.textContent = `${gaugeResult.finalPredictedGauge}`;
     DOM.awakeningAvailabilitySpan.classList.remove('awakening-possible', 'awakening-not-possible');
     if (gaugeResult.isThresholdMet) {
         DOM.awakeningAvailabilitySpan.textContent = '使用可能';
@@ -1304,6 +1412,8 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         DOM.awakeningAvailabilitySpan.textContent = '使用不可';
         DOM.awakeningAvailabilitySpan.classList.add('awakening-not-possible');
     }
+
+    applyBreakdown(gaugeResult.breakdown);
 }
 
 export function setAwakeningDetailsConstants() {

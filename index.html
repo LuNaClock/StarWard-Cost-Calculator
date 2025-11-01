@@ -356,6 +356,66 @@
                                         </div>
                                     </div>
                                 </div>
+                                <details id="awakeningBreakdownMobile" class="calc-breakdown" hidden>
+                                    <summary class="calc-breakdown__summary">
+                                        <span class="calc-breakdown__summary-text">
+                                            <i class="fas fa-list-ul" aria-hidden="true"></i>
+                                            計算内訳を表示
+                                        </span>
+                                    </summary>
+                                    <div class="calc-breakdown__content">
+                                        <dl class="calc-breakdown__list">
+                                            <div class="calc-breakdown__item">
+                                                <dt>被弾前の覚醒ゲージ量</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="pre-gauge">--%</span>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>被ダメージによる増加</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="damage">+--%</span>
+                                                    <small data-awakening-mobile="damage-note">想定被ダメージ: --</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>再出撃時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="own-down">+--%</span>
+                                                    <small data-awakening-mobile-status="own-down" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>攻撃時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="damage-bonus">+--%</span>
+                                                    <small data-awakening-mobile-status="damage-bonus" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>シールド成功時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="shield-bonus">+--%</span>
+                                                    <small data-awakening-mobile-status="shield-bonus" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>相方被撃墜時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="partner-bonus">+--%</span>
+                                                    <small data-awakening-mobile-status="partner-bonus" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item calc-breakdown__item--total">
+                                                <dt>合計</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="total">--%</span>
+                                                </dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                </details>
+
                                 <details class="info-details" data-role="awakening-guide">
                                     <summary>覚醒ゲージ計算の詳細 </summary>
                                     <p>覚醒ゲージは以下の要素に基づいて計算されます。</p>
@@ -814,6 +874,64 @@
                                         <span id="awakeningAvailability" class="info-value">--</span>
                                     </div>
                                 </div>
+
+                                <details id="awakeningBreakdownDetails" class="calculation-breakdown" hidden>
+                                    <summary class="calculation-breakdown__summary">
+                                        <i class="fas fa-list-ul" aria-hidden="true"></i>
+                                        <span>計算内訳を表示</span>
+                                    </summary>
+                                    <div class="calculation-breakdown__content">
+                                        <dl class="calculation-breakdown__list">
+                                            <div class="calculation-breakdown__item">
+                                                <dt>被弾前の覚醒ゲージ量</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailPreGaugeValue" class="calculation-breakdown__value">--%</span>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>被ダメージによる増加</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailDamageValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailDamageNote" class="calculation-breakdown__note">想定被ダメージ: --</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>再出撃時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailOwnDownValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailOwnDownStatus" class="calculation-breakdown__status" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>攻撃時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailDamageBonusValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailDamageBonusStatus" class="calculation-breakdown__status" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>シールド成功時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailShieldBonusValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailShieldBonusStatus" class="calculation-breakdown__status" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>相方被撃墜時のゲージ量加算</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailPartnerBonusValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailPartnerBonusStatus" class="calculation-breakdown__status" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item calculation-breakdown__item--total">
+                                                <dt>合計</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailTotalValue" class="calculation-breakdown__value">--%</span>
+                                                </dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                </details>
 
                                 <div class="sub-accordion-container accordion">
                                     <div class="accordion-item">
