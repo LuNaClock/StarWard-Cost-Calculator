@@ -869,12 +869,22 @@ function calculateRemainingTeamCost(totalCost, maxCost) {
 function updateSelectedSummaries({ persistHistory = true } = {}) {
   const selection = getSelectedCharacters();
   const { player, partner } = selection;
-  dom.playerCost.textContent = player ? player.cost.toFixed(1) : '--';
-  dom.playerHp.textContent = player ? player.hp.toLocaleString() : '--';
-  dom.partnerCost.textContent = partner ? partner.cost.toFixed(1) : '--';
-  dom.partnerHp.textContent = partner ? partner.hp.toLocaleString() : '--';
+  if (dom.playerCost) {
+    dom.playerCost.textContent = player ? player.cost.toFixed(1) : '--';
+  }
+  if (dom.playerHp) {
+    dom.playerHp.textContent = player ? player.hp.toLocaleString() : '--';
+  }
+  if (dom.partnerCost) {
+    dom.partnerCost.textContent = partner ? partner.cost.toFixed(1) : '--';
+  }
+  if (dom.partnerHp) {
+    dom.partnerHp.textContent = partner ? partner.hp.toLocaleString() : '--';
+  }
   const total = (player?.cost || 0) + (partner?.cost || 0);
-  dom.teamTotal.textContent = total.toFixed(1);
+  if (dom.teamTotal) {
+    dom.teamTotal.textContent = total.toFixed(1);
+  }
 
   if (dom.remainingCost) {
     const remaining = calculateRemainingTeamCost(total, MAX_TEAM_COST);
@@ -882,7 +892,9 @@ function updateSelectedSummaries({ persistHistory = true } = {}) {
   }
 
   const targetChar = resolveRedeployTarget(selection);
-  dom.damageTaken.max = targetChar ? String(targetChar.hp) : '';
+  if (dom.damageTaken) {
+    dom.damageTaken.max = targetChar ? String(targetChar.hp) : '';
+  }
 
   renderTeamSummary(selection);
   renderSelectedCharacterDetails(selection);
