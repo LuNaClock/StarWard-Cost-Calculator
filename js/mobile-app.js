@@ -869,10 +869,18 @@ function calculateRemainingTeamCost(totalCost, maxCost) {
 function updateSelectedSummaries({ persistHistory = true } = {}) {
   const selection = getSelectedCharacters();
   const { player, partner } = selection;
-  dom.playerCost.textContent = player ? player.cost.toFixed(1) : '--';
-  dom.playerHp.textContent = player ? player.hp.toLocaleString() : '--';
-  dom.partnerCost.textContent = partner ? partner.cost.toFixed(1) : '--';
-  dom.partnerHp.textContent = partner ? partner.hp.toLocaleString() : '--';
+  if (dom.playerCost) {
+    dom.playerCost.textContent = player ? player.cost.toFixed(1) : '--';
+  }
+  if (dom.playerHp) {
+    dom.playerHp.textContent = player ? player.hp.toLocaleString() : '--';
+  }
+  if (dom.partnerCost) {
+    dom.partnerCost.textContent = partner ? partner.cost.toFixed(1) : '--';
+  }
+  if (dom.partnerHp) {
+    dom.partnerHp.textContent = partner ? partner.hp.toLocaleString() : '--';
+  }
   const total = (player?.cost || 0) + (partner?.cost || 0);
   dom.teamTotal.textContent = total.toFixed(1);
 
