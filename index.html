@@ -43,15 +43,7 @@
     <link rel="stylesheet" href="css/main.css?v=1.4">
     <link rel="stylesheet" href="css/mobile-app.css">
 </head>
-<body data-view-mode="auto" data-theme="dark">
-    <div class="view-switcher view-switcher--floating" role="group" aria-label="表示切替" hidden aria-hidden="true">
-        <button type="button" class="view-switcher__button" data-view-mode="desktop" aria-pressed="true">
-            Web版
-        </button>
-        <button type="button" class="view-switcher__button" data-view-mode="mobile" aria-pressed="false">
-            モバイル版
-        </button>
-    </div>
+<body data-theme="dark">
     <div class="mobile-app" data-theme="dark">
         <div class="app-shell">
             <header class="app-header">
@@ -526,21 +518,9 @@
                             <p class="panel-subtitle">ツールに関する情報を確認できます。</p>
                         </div>
                         <div class="setting-group">
-                            <div class="setting-item setting-item--view-mode">
-                                <h3 class="setting-item__title">表示モード</h3>
-                                <p class="setting-item__description">Web版とモバイル版を切り替えできます。</p>
-                                <div class="view-switcher view-switcher--settings" role="group" aria-label="表示切替" hidden aria-hidden="true">
-                                    <button type="button" class="view-switcher__button" data-view-mode="desktop" aria-pressed="false">
-                                        Web版
-                                    </button>
-                                    <button type="button" class="view-switcher__button" data-view-mode="mobile" aria-pressed="true">
-                                        モバイル版
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="setting-item setting-item--about">
-                                <h3 class="setting-item__title">お問い合わせ</h3>
-                                <p class="setting-item__description">
+                        <div class="setting-item setting-item--about">
+                            <h3 class="setting-item__title">お問い合わせ</h3>
+                            <p class="setting-item__description">
                                     ツール作者:
                                     <span class="setting-item__accent">Lu:Na:Clock</span>
                                 </p>
@@ -1062,7 +1042,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <!-- Your application scripts -->
-    <script type="module" src="js/view-toggle.js"></script>
     <script type="module" src="js/mobile-app.js"></script>
     <script type="module" src="js/app.js"></script>
 </body>
