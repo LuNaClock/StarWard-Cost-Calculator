@@ -504,6 +504,21 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
     font-weight: 600;
 }
 
+.desktop-app #preGauge::placeholder,
+.desktop-app #damageTaken::placeholder,
+.desktop-app #beforeShotdownAwakeningGaugeInput::placeholder,
+.desktop-app #beforeShotdownHpInput::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.85;
+}
+
+body[data-theme="dark"] .desktop-app #preGauge::placeholder,
+body[data-theme="dark"] .desktop-app #damageTaken::placeholder,
+body[data-theme="dark"] .desktop-app #beforeShotdownAwakeningGaugeInput::placeholder,
+body[data-theme="dark"] .desktop-app #beforeShotdownHpInput::placeholder {
+    color: rgba(226, 232, 240, 0.65);
+}
+
 /* レスポンシブ対応 */
 @media (max-width: 480px) {
     .total-hp-display-area h3 {
