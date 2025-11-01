@@ -1155,12 +1155,16 @@ function performSimulation({
 
   const allocatedCost = Math.min(remainingCost, targetChar.cost);
   const calculatedHp = Math.round(targetChar.hp * (allocatedCost / targetChar.cost));
-  const gaugeBefore = clamp(parseFloat(dom.preGauge.value) || 0, 0, 100);
-  if (commitInputs) {
+  const preGaugeRaw = dom.preGauge.value;
+  const parsedPreGauge = clamp(parseFloat(preGaugeRaw), 0, 100);
+  const gaugeBefore = Number.isNaN(parsedPreGauge) ? 0 : parsedPreGauge;
+  if (commitInputs && preGaugeRaw !== '') {
     dom.preGauge.value = String(gaugeBefore);
   }
-  const damageInput = clamp(parseFloat(dom.damageTaken.value) || 0, 0, targetChar.hp);
-  if (commitInputs) {
+  const damageRaw = dom.damageTaken.value;
+  const parsedDamage = clamp(parseFloat(damageRaw), 0, targetChar.hp);
+  const damageInput = Number.isNaN(parsedDamage) ? 0 : parsedDamage;
+  if (commitInputs && damageRaw !== '') {
     dom.damageTaken.value = String(damageInput);
   }
 

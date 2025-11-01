@@ -410,8 +410,8 @@ export function resetSimulationResultsUI() {
             if (DOM.redeployCalculatedHpSpan) { DOM.redeployCalculatedHpSpan.classList.remove('low-hp-value', 'red-value');}
 
             if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'none';
-            if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = "0";
-            if (DOM.beforeShotdownHpInput) { DOM.beforeShotdownHpInput.value = "0"; DOM.beforeShotdownHpInput.style.borderColor = '';}
+            if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = '';
+            if (DOM.beforeShotdownHpInput) { DOM.beforeShotdownHpInput.value = ''; DOM.beforeShotdownHpInput.style.borderColor = '';}
             if(DOM.considerOwnDownCheckbox) DOM.considerOwnDownCheckbox.checked = false;
             if (DOM.considerDamageDealtCheckbox) {
                 DOM.considerDamageDealtCheckbox.checked = false;

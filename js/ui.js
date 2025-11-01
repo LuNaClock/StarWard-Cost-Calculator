@@ -1064,9 +1064,9 @@ export function resetSimulationResultsUI({ animate = true } = {}) {
         }
 
         if (DOM.awakeningSimulationArea) DOM.awakeningSimulationArea.style.display = 'none';
-        if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = "0";
+        if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = '';
         if (DOM.beforeShotdownHpInput) {
-            DOM.beforeShotdownHpInput.value = "0";
+            DOM.beforeShotdownHpInput.value = '';
             DOM.beforeShotdownHpInput.style.borderColor = '';
         }
         if (DOM.considerOwnDownCheckbox) DOM.considerOwnDownCheckbox.checked = false;

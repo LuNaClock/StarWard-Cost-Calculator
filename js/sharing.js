@@ -175,10 +175,10 @@ export function parseUrlAndRestoreState() {
             DOM.beforeShotdownAwakeningGaugeInput.value = agValue;
         } else {
             // console.warn("Invalid 'ag' (awakening gauge) parameter from URL or element not found:", agValue);
-            if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = "0";
+            if (DOM.beforeShotdownAwakeningGaugeInput) DOM.beforeShotdownAwakeningGaugeInput.value = '';
         }
     } else if (DOM.beforeShotdownAwakeningGaugeInput) {
-        DOM.beforeShotdownAwakeningGaugeInput.value = "0";
+        DOM.beforeShotdownAwakeningGaugeInput.value = '';
     }
     
     const simTypeForHpValidation = params.get('sim');
@@ -195,10 +195,10 @@ export function parseUrlAndRestoreState() {
             DOM.beforeShotdownHpInput.value = ahValue;
         } else {
             // console.warn("Invalid 'ah' (awakening HP/damage taken) parameter from URL or element not found:", ahValue);
-            if (DOM.beforeShotdownHpInput) DOM.beforeShotdownHpInput.value = "0";
+            if (DOM.beforeShotdownHpInput) DOM.beforeShotdownHpInput.value = '';
         }
     } else if (DOM.beforeShotdownHpInput) {
-        DOM.beforeShotdownHpInput.value = "0";
+        DOM.beforeShotdownHpInput.value = '';
     }
     
     if (DOM.considerOwnDownCheckbox) {
