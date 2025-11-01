@@ -128,18 +128,21 @@
                             </h2>
                             <p class="panel-subtitle">チーム構成を入力</p>
                         </div>
-                        <div class="section-group">
-                            <button class="section-toggle" type="button" aria-expanded="true" data-collapse="#sim-team">
-                                チーム情報
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </button>
-                            <div id="sim-team" class="collapse" data-open="true">
-                                <div class="input-list">
-                                    <div class="form-field">
-                                        <label for="mobilePlayerPickerToggle">自機</label>
-                                        <div class="character-picker" data-picker-role="player">
+                            <div class="section-group">
+                                <button class="section-toggle" type="button" aria-expanded="true" data-collapse="#sim-team">
+                                    チーム情報
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div id="sim-team" class="collapse" data-open="true">
+                                    <p class="panel-subtitle panel-description">
+                                        自機と相方を選択し、現在のチーム残りコストを入力することで、どちらかの機体が再出撃した場合の体力をシミュレーションできます。
+                                    </p>
+                                    <div class="input-list">
+                                        <div class="form-field">
+                                            <label for="mobilePlayerPickerToggle">自機</label>
+                                            <div class="character-picker" data-picker-role="player">
                                             <button id="mobilePlayerPickerToggle" class="character-picker-toggle" type="button" data-picker-toggle="player" aria-expanded="false">
                                                 <div class="character-picker-toggle-content">
                                                     <div class="character-picker-selected-icon is-placeholder" data-picker-selected-icon="player">?</div>
