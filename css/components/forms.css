@@ -89,7 +89,7 @@ body[data-theme="dark"] .search-label {
 
 #characterSearch {
     width: 100%;
-    padding: 16px 18px 16px 60px;
+    padding: 16px 18px 16px 18px;
     border: 2px solid var(--light-grey-border);
     border-radius: 30px;
     font-size: 1.05em;
