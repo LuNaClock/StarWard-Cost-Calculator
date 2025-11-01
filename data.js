@@ -82,9 +82,9 @@ export const MAX_TEAM_COST = 6.0;
 export const AVERAGE_GAUGE_COEFFICIENT = 0.5980;
 export const DAMAGE_GAUGE_COEFFICIENT_BY_COST = {
     "3.0": 0.5980, "3": 0.5980,
-    "2.5": 0.6380,
-    "2.0": 0.6380, "2": 0.6380,
-    "1.5": 0.6380
+    "2.5": 0.6400,
+    "2.0": 0.6400, "2": 0.6400,
+    "1.5": 0.6400
 };
 
 export function getDamageGaugeCoefficient(cost) {
