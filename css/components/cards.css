@@ -209,6 +209,58 @@
     animation: hpNumberPop 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+.character-adjusted-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 1em;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--light-grey-border);
+}
+
+.character-adjusted-label {
+    font-size: 0.95em;
+    font-weight: 600;
+    color: var(--stat-label-color);
+    letter-spacing: 0.04em;
+}
+
+.character-adjusted-hp {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    color: var(--primary-light);
+    text-align: right;
+}
+
+.hp-reset-control {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+.hp-reset-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 191, 255, 0.6);
+    background: rgba(0, 191, 255, 0.08);
+    color: var(--primary-light);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hp-reset-button:hover {
+    background: rgba(0, 191, 255, 0.16);
+    box-shadow: 0 4px 12px rgba(0, 191, 255, 0.2);
+}
+
+.hp-reset-button:active {
+    transform: translateY(1px);
+    background: rgba(0, 191, 255, 0.24);
+}
+
 /* HPバー */
 .hp-bar-container {
     width: 100%;

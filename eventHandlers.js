@@ -99,6 +99,12 @@ function handleCharacterCardClick(event) {
 
     const originalHp = parseFloat(card.dataset.originalHp);
     const clickedRedeployCell = clickedElement.closest('.cost-table td[data-redeploy-hp]');
+    const resetButton = clickedElement.closest('.hp-reset-button');
+
+    if (resetButton) {
+        UI.animateHpDisplayOnCard(card, originalHp);
+        return;
+    }
 
     if (clickedRedeployCell && clickedRedeployCell.dataset.redeployHp) {
         UI.animateHpDisplayOnCard(card, parseFloat(clickedRedeployCell.dataset.redeployHp));
