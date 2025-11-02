@@ -858,21 +858,24 @@ export function animateHpDisplayOnCard(card, targetHp) {
     const percentageAsInt = Math.round(clampedHpPercentage * 100);
 
     gsap.killTweensOf(currentHpSpan);
-    gsap.set(currentHpSpan, { color: '#38BDF8', textShadow: '0 0 6px rgba(56, 189, 248, 0.35)' });
-    currentHpSpan.textContent = originalHp.toLocaleString();
+    currentHpSpan.textContent = normalizedOriginalHp.toLocaleString();
     currentHpSpan.classList.remove('animating');
+    currentHpSpan.style.removeProperty('color');
+    currentHpSpan.style.removeProperty('text-shadow');
     gsap.killTweensOf(hpBarFill);
 
     if (adjustedHpSpan) {
+        gsap.killTweensOf(adjustedHpSpan);
         adjustedHpSpan.textContent = formatAdjustedHpDisplay(normalizedTargetHp, safeOriginalHp);
+        adjustedHpSpan.classList.remove('animating');
+        adjustedHpSpan.style.removeProperty('color');
+        adjustedHpSpan.style.removeProperty('text-shadow');
     }
 
     if (normalizedTargetHp === normalizedOriginalHp) {
         gsap.to(hpBarFill, { scaleX: 1, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true });
         hpBarFill.classList.remove('hp-bar-low-pulse');
         allRedeployCellsInCard.forEach(cell => cell.classList.remove('active-hp-display'));
-        currentHpSpan.classList.add('animating');
-        gsap.delayedCall(0.8, () => currentHpSpan.classList.remove('animating'));
         hpPercentageDisplayElement.textContent = '100%';
         hpPercentageDisplayElement.classList.add('show');
     } else {
@@ -889,8 +892,6 @@ export function animateHpDisplayOnCard(card, targetHp) {
             onComplete: () => { hpPercentageDisplayElement.textContent = `${percentageAsInt}%`; }
         });
         if (clampedHpPercentage <= 0.3) hpBarFill.classList.add('hp-bar-low-pulse'); else hpBarFill.classList.remove('hp-bar-low-pulse');
-        currentHpSpan.classList.add('animating');
-        gsap.delayedCall(0.8, () => currentHpSpan.classList.remove('animating'));
 
         hpPercentageDisplayElement.classList.add('show');
         hpPercentageDisplayElement.textContent = `${percentageAsInt}%`;
@@ -901,6 +902,26 @@ export function animateHpDisplayOnCard(card, targetHp) {
             return Number.isFinite(cellHp) && Math.round(cellHp) === normalizedTargetHp;
         });
         if (clickedCell) clickedCell.classList.add('active-hp-display');
+    }
+
+    if (adjustedHpSpan) {
+        const adjustedHighlightTimeline = gsap.timeline({ overwrite: true });
+        adjustedHighlightTimeline.fromTo(
+            adjustedHpSpan,
+            { color: '#F9B7B0', textShadow: '0 0 0 rgba(231, 76, 60, 0)', transformOrigin: 'center' },
+            { color: '#E74C3C', textShadow: '0 0 12px rgba(231, 76, 60, 0.45)', duration: 0.45, ease: 'power2.out' }
+        );
+        adjustedHighlightTimeline.to(
+            adjustedHpSpan,
+            { textShadow: '0 0 0 rgba(231, 76, 60, 0)', duration: 0.3, ease: 'power2.inOut' },
+            '-=0.15'
+        );
+        adjustedHighlightTimeline.call(() => {
+            adjustedHpSpan.style.removeProperty('text-shadow');
+            adjustedHpSpan.style.removeProperty('color');
+        });
+        adjustedHpSpan.classList.add('animating');
+        gsap.delayedCall(0.8, () => adjustedHpSpan.classList.remove('animating'));
     }
 }
 
