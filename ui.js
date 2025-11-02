@@ -17,6 +17,41 @@ function createTextElement(tag, className, textContent) {
     return element;
 }
 
+function formatAdjustedHpDisplay(targetHp, originalHp) {
+    const normalizedOriginal = Number.isFinite(originalHp) ? Math.max(0, Math.round(originalHp)) : 0;
+    const normalizedTarget = Number.isFinite(targetHp) ? Math.max(0, Math.round(targetHp)) : normalizedOriginal;
+
+    if (normalizedOriginal === 0) {
+        const fallbackPercent = normalizedTarget > 0 ? 100 : 0;
+        return `${normalizedTarget.toLocaleString()} (${fallbackPercent}%)`;
+    }
+
+    const ratioPercent = Math.round((normalizedTarget / normalizedOriginal) * 100);
+    return `${normalizedTarget.toLocaleString()} (${ratioPercent}%)`;
+}
+
+function createAdjustedStatsSection(character) {
+    const adjustedStats = document.createElement('div');
+    adjustedStats.className = 'character-adjusted-stats';
+    adjustedStats.appendChild(createTextElement('span', 'character-adjusted-label', '変動後の体力:'));
+    adjustedStats.appendChild(createTextElement('span', 'character-adjusted-hp', formatAdjustedHpDisplay(character.hp, character.hp)));
+    return adjustedStats;
+}
+
+function createHpResetControl() {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'hp-reset-control';
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'hp-reset-button';
+    button.textContent = '体力表示をリセット';
+    button.setAttribute('aria-label', '体力表示を初期状態にリセット');
+
+    wrapper.appendChild(button);
+    return wrapper;
+}
+
 export function generateCharacterCards(charactersToDisplay) {
     showLoading();
     gsap.to(Array.from(DOM.characterGrid.children), {
@@ -80,6 +115,9 @@ export function generateCharacterCards(charactersToDisplay) {
                 stats.appendChild(createTextElement('span', 'character-hp', character.hp.toLocaleString()));
                 body.appendChild(stats);
 
+                const adjustedStats = createAdjustedStatsSection(character);
+                body.appendChild(adjustedStats);
+
                 // HP Bar
                 const hpBarContainer = document.createElement('div');
                 hpBarContainer.className = 'hp-bar-container';
@@ -121,6 +159,8 @@ export function generateCharacterCards(charactersToDisplay) {
                 table.appendChild(tbody);
                 body.appendChild(table);
 
+                body.appendChild(createHpResetControl());
+
                 card.appendChild(body);
                 DOM.characterGrid.appendChild(card);
             });
@@ -134,41 +174,78 @@ export function animateHpDisplayOnCard(card, targetHp) {
     const originalHp = parseFloat(card.dataset.originalHp);
     const currentHpSpan = card.querySelector('.character-hp');
     const hpPercentageDisplayElement = card.querySelector('.hp-percentage-display');
+    const adjustedHpSpan = card.querySelector('.character-adjusted-hp');
     const allRedeployCellsInCard = card.querySelectorAll('.cost-table td[data-redeploy-hp]');
 
     if (!hpBarFill || !currentHpSpan || !hpPercentageDisplayElement) return;
 
-    gsap.killTweensOf(currentHpSpan); 
-    gsap.set(currentHpSpan, { color: '#E74C3C', textShadow: '0 0 5px rgba(231, 76, 60, 0.3)' }); 
-    currentHpSpan.textContent = originalHp.toLocaleString(); 
-    currentHpSpan.classList.remove('animating'); 
-    gsap.killTweensOf(hpBarFill); 
+    const safeOriginalHp = Number.isFinite(originalHp) ? Math.max(0, originalHp) : 0;
+    const normalizedTargetHp = Number.isFinite(targetHp) ? Math.max(0, Math.round(targetHp)) : Math.max(0, Math.round(safeOriginalHp));
+    const hpPercentage = safeOriginalHp > 0 ? (normalizedTargetHp / safeOriginalHp) : (normalizedTargetHp > 0 ? 1 : 0);
+    const clampedHpPercentage = Math.max(0, hpPercentage);
+    const percentageAsInt = Math.round(clampedHpPercentage * 100);
 
-    if (targetHp === originalHp) {
+    gsap.killTweensOf(currentHpSpan);
+    currentHpSpan.textContent = Math.max(0, Math.round(safeOriginalHp)).toLocaleString();
+    currentHpSpan.classList.remove('animating');
+    currentHpSpan.style.removeProperty('color');
+    currentHpSpan.style.removeProperty('text-shadow');
+    gsap.killTweensOf(hpBarFill);
+
+    if (adjustedHpSpan) {
+        gsap.killTweensOf(adjustedHpSpan);
+        adjustedHpSpan.textContent = formatAdjustedHpDisplay(normalizedTargetHp, safeOriginalHp);
+        adjustedHpSpan.classList.remove('animating');
+        adjustedHpSpan.style.removeProperty('color');
+        adjustedHpSpan.style.removeProperty('text-shadow');
+    }
+
+    if (normalizedTargetHp === Math.round(safeOriginalHp)) {
         gsap.to(hpBarFill, { scaleX: 1, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true });
         hpBarFill.classList.remove('hp-bar-low-pulse');
         allRedeployCellsInCard.forEach(cell => cell.classList.remove('active-hp-display'));
-        currentHpSpan.classList.add('animating'); 
-        gsap.delayedCall(0.8, () => currentHpSpan.classList.remove('animating'));
         hpPercentageDisplayElement.textContent = '100%';
         hpPercentageDisplayElement.classList.add('show');
     } else {
-        const hpPercentage = (originalHp > 0 ? (targetHp / originalHp) : 0);
         gsap.to(hpBarFill, {
-            scaleX: hpPercentage, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true,
-            onUpdate: () => { hpPercentageDisplayElement.textContent = `${Math.round(gsap.getProperty(hpBarFill, "scaleX") * 100)}%`; },
-            onComplete: () => { hpPercentageDisplayElement.textContent = `${Math.round(hpPercentage * 100)}%`; }
+            scaleX: clampedHpPercentage, duration: 0.8, ease: "power3.out", transformOrigin: 'left center', overwrite: true,
+            onUpdate: () => {
+                const animatedScale = gsap.getProperty(hpBarFill, "scaleX");
+                hpPercentageDisplayElement.textContent = `${Math.round(animatedScale * 100)}%`;
+            },
+            onComplete: () => { hpPercentageDisplayElement.textContent = `${percentageAsInt}%`; }
         });
-        if (hpPercentage <= 0.3) hpBarFill.classList.add('hp-bar-low-pulse'); else hpBarFill.classList.remove('hp-bar-low-pulse');
-        currentHpSpan.classList.add('animating'); 
-        gsap.delayedCall(0.8, () => currentHpSpan.classList.remove('animating'));
-        
+        if (clampedHpPercentage <= 0.3) hpBarFill.classList.add('hp-bar-low-pulse'); else hpBarFill.classList.remove('hp-bar-low-pulse');
+
         hpPercentageDisplayElement.classList.add('show');
-        hpPercentageDisplayElement.textContent = `${Math.round(hpPercentage * 100)}%`;
-        
+        hpPercentageDisplayElement.textContent = `${percentageAsInt}%`;
+
         allRedeployCellsInCard.forEach(cell => cell.classList.remove('active-hp-display'));
-        const clickedCell = Array.from(allRedeployCellsInCard).find(cell => parseFloat(cell.dataset.redeployHp) === targetHp);
+        const clickedCell = Array.from(allRedeployCellsInCard).find(cell => {
+            const cellHp = Number.parseFloat(cell.dataset.redeployHp);
+            return Number.isFinite(cellHp) && Math.round(cellHp) === normalizedTargetHp;
+        });
         if (clickedCell) clickedCell.classList.add('active-hp-display');
+    }
+
+    if (adjustedHpSpan) {
+        const adjustedHighlightTimeline = gsap.timeline({ overwrite: true });
+        adjustedHighlightTimeline.fromTo(
+            adjustedHpSpan,
+            { color: '#F9B7B0', textShadow: '0 0 0 rgba(231, 76, 60, 0)', transformOrigin: 'center' },
+            { color: '#E74C3C', textShadow: '0 0 12px rgba(231, 76, 60, 0.45)', duration: 0.45, ease: 'power2.out' }
+        );
+        adjustedHighlightTimeline.to(
+            adjustedHpSpan,
+            { textShadow: '0 0 0 rgba(231, 76, 60, 0)', duration: 0.3, ease: 'power2.inOut' },
+            '-=0.15'
+        );
+        adjustedHighlightTimeline.call(() => {
+            adjustedHpSpan.style.removeProperty('text-shadow');
+            adjustedHpSpan.style.removeProperty('color');
+        });
+        adjustedHpSpan.classList.add('animating');
+        gsap.delayedCall(0.8, () => adjustedHpSpan.classList.remove('animating'));
     }
 }
 
