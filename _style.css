@@ -1093,6 +1093,11 @@ h1 {
     border-bottom-right-radius: 8px;
 }
 
+.cost-table tr:last-child td:last-child.active-hp-display {
+    background-color: #D3EEFF;
+    color: var(--hp-low);
+}
+
 /* ----- ローディングインジケーターのスタイル ----- */
 .loading-overlay {
     position: fixed;

@@ -112,6 +112,16 @@ body[data-theme="dark"] .cost-table tr:last-child td:first-child {
     color: inherit;
 }
 
+.cost-table tr:last-child td:last-child.active-hp-display {
+    background-color: rgba(0, 191, 255, 0.15);
+    color: var(--primary-light);
+}
+
+body[data-theme="dark"] .cost-table tr:last-child td:last-child.active-hp-display {
+    background-color: rgba(59, 130, 246, 0.28);
+    color: var(--surface-contrast-color);
+}
+
 /* ローディングオーバーレイ */
 .loading-overlay {
     position: fixed;

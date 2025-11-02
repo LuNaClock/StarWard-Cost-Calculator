@@ -21,22 +21,13 @@ function formatAdjustedHpDisplay(targetHp, originalHp) {
     const normalizedOriginal = Number.isFinite(originalHp) ? Math.max(0, Math.round(originalHp)) : 0;
     const normalizedTarget = Number.isFinite(targetHp) ? Math.max(0, Math.round(targetHp)) : normalizedOriginal;
 
-    let ratioPercent;
-    let diffPercent;
-    if (normalizedOriginal > 0) {
-        ratioPercent = Math.round((normalizedTarget / normalizedOriginal) * 100);
-        const diffPercentValue = ratioPercent - 100;
-        diffPercent = diffPercentValue === 0
-            ? '0%'
-            : diffPercentValue > 0
-                ? `+${diffPercentValue}%`
-                : `${diffPercentValue}%`;
-    } else {
-        ratioPercent = normalizedTarget > 0 ? 100 : 0;
-        diffPercent = '--';
+    if (normalizedOriginal === 0) {
+        const fallbackPercent = normalizedTarget > 0 ? 100 : 0;
+        return `${normalizedTarget.toLocaleString()} (${fallbackPercent}%)`;
     }
 
-    return `${normalizedTarget.toLocaleString()} (本来比 ${ratioPercent}% / 差分 ${diffPercent})`;
+    const ratioPercent = Math.round((normalizedTarget / normalizedOriginal) * 100);
+    return `${normalizedTarget.toLocaleString()} (${ratioPercent}%)`;
 }
 
 function createAdjustedStatsSection(character) {
