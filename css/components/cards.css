@@ -204,7 +204,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
-    font-size: 1em;
+    font-size: 1.2em;
     gap: 12px;
     padding-bottom: 10px;
     border-bottom: 1px dashed var(--light-grey-border);
