@@ -185,24 +185,14 @@
 .character-hp {
     font-family: 'Rajdhani', sans-serif; /* SFフォント適用 */
     font-weight: 700;
-    color: #E74C3C;
+    color: var(--primary-light);
     font-size: 1.3em; /* さらに大きく */
-    cursor: crosshair; /* SFカーソル */
+    cursor: default;
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
     overflow: hidden;
-    text-shadow: 0 0 5px rgba(231, 76, 60, 0.3);
+    text-shadow: 0 0 6px rgba(56, 189, 248, 0.35);
     will-change: color, text-shadow, transform; /* will-changeを追加 */
-}
-
-.character-hp:hover {
-    color: var(--primary-light);
-    text-shadow: 0 0 12px rgba(0, 191, 255, 0.7); /* ホバー時のグロー */
-}
-
-.character-hp:active {
-    transform: translateY(2px) scale(0.96);
-    color: #C0392B;
 }
 
 .character-hp.animating {
@@ -230,7 +220,7 @@
 .character-adjusted-hp {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    color: var(--primary-light);
+    color: #E74C3C;
     text-align: right;
 }
 

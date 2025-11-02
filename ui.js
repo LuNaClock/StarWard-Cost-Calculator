@@ -186,7 +186,7 @@ export function animateHpDisplayOnCard(card, targetHp) {
     const percentageAsInt = Math.round(clampedHpPercentage * 100);
 
     gsap.killTweensOf(currentHpSpan);
-    gsap.set(currentHpSpan, { color: '#E74C3C', textShadow: '0 0 5px rgba(231, 76, 60, 0.3)' });
+    gsap.set(currentHpSpan, { color: '#38BDF8', textShadow: '0 0 6px rgba(56, 189, 248, 0.35)' });
     currentHpSpan.textContent = originalHp.toLocaleString();
     currentHpSpan.classList.remove('animating');
     gsap.killTweensOf(hpBarFill);

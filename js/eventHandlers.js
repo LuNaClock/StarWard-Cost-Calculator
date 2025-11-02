@@ -145,8 +145,6 @@ function handleCharacterCardClick(event) {
 
     if (clickedRedeployCell && clickedRedeployCell.dataset.redeployHp) {
         UI.animateHpDisplayOnCard(card, parseFloat(clickedRedeployCell.dataset.redeployHp));
-    } else if (clickedElement.classList.contains('character-hp')) {
-        UI.animateHpDisplayOnCard(card, originalHp);
     }
 }
 
