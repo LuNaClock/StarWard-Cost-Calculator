@@ -123,3 +123,9 @@ export const PARTNER_DOWN_AWAKENING_BONUS = {
     "2.0": 7, "2": 7,
     "1.5": 5
 };
+
+export const PARTNER_C_AWAKENING_BONUS = {
+    "0": 0,
+    "50": 19,
+    "100": 46
+};

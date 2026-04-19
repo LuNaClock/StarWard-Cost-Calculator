@@ -226,6 +226,16 @@ function handleDamageDealtCheckboxChange(event) {
     processAwakeningGaugeCalculation();
 }
 
+function handlePartnerCAwakeningCheckboxChange(event) {
+    if (DOM.partnerCAwakeningOptionsContainer) {
+        DOM.partnerCAwakeningOptionsContainer.style.display = event.target.checked ? 'block' : 'none';
+    }
+    if (!event.target.checked && DOM.partnerCAwakeningBonusSelect) {
+        DOM.partnerCAwakeningBonusSelect.value = "0";
+    }
+    processAwakeningGaugeCalculation();
+}
+
 function handleShieldSuccessCheckboxChange(event) {
     if (DOM.shieldSuccessOptionsContainer) {
         DOM.shieldSuccessOptionsContainer.style.display = event.target.checked ? 'block' : 'none';
@@ -423,6 +433,7 @@ export function setupEventListeners() {
         DOM.beforeShotdownAwakeningGaugeInput,
         DOM.beforeShotdownHpInput,
         DOM.damageDealtAwakeningBonusSelect,
+        DOM.partnerCAwakeningBonusSelect,
         DOM.shieldSuccessAwakeningBonusSelect,
         DOM.considerOwnDownCheckbox,
         DOM.considerPartnerDownCheckbox
@@ -434,7 +445,11 @@ export function setupEventListeners() {
         }
     });
     if (DOM.considerDamageDealtCheckbox) DOM.considerDamageDealtCheckbox.addEventListener('change', handleDamageDealtCheckboxChange);
+    if (DOM.considerPartnerCAwakeningCheckbox) DOM.considerPartnerCAwakeningCheckbox.addEventListener('change', handlePartnerCAwakeningCheckboxChange);
     if (DOM.considerShieldSuccessCheckbox) DOM.considerShieldSuccessCheckbox.addEventListener('change', handleShieldSuccessCheckboxChange);
+    if (DOM.partnerCAwakeningOptionsContainer && (!DOM.considerPartnerCAwakeningCheckbox || !DOM.considerPartnerCAwakeningCheckbox.checked)) {
+        DOM.partnerCAwakeningOptionsContainer.style.display = 'none';
+    }
     if (DOM.shieldSuccessOptionsContainer && (!DOM.considerShieldSuccessCheckbox || !DOM.considerShieldSuccessCheckbox.checked)) {
         DOM.shieldSuccessOptionsContainer.style.display = 'none';
     }

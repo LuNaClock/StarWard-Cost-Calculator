@@ -886,9 +886,9 @@ body[data-theme="dark"] .character-picker-search-input:focus {
 }
 
 .awakening-additional-options { /* Container for new checkbox groups */
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
     margin-top: 20px;
     padding: 20px;
     background-color: rgba(0, 191, 255, 0.05);
@@ -896,10 +896,21 @@ body[data-theme="dark"] .character-picker-search-input:focus {
     border: 1px solid rgba(0, 191, 255, 0.2);
 }
 
+.awakening-additional-options .simulation-input-group {
+    width: 100%;
+    min-width: 0;
+}
+
 .awakening-additional-options .checkbox-group {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.awakening-additional-options .checkbox-group:last-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+    min-width: min(100%, 320px);
 }
 
 .awakening-additional-options .checkbox-group label {
@@ -934,28 +945,37 @@ body[data-theme="dark"] .character-picker-search-input:focus {
 /* レスポンシブ対応 */
 @media (min-width: 768px) { /* Apply for wider screens */
     .awakening-additional-options {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        gap: 20px;
+        grid-template-columns: repeat(2, minmax(260px, 1fr));
     }
 
     .awakening-additional-options .simulation-input-group.checkbox-group {
-        flex: 0 0 auto;
-        min-width: 200px;
+        min-width: 0;
     }
 
     .awakening-additional-options .select-dropdown-container {
-        flex: 1;
-        min-width: 200px;
+        min-width: 0;
     }
 
     .awakening-additional-options .simulation-input-group.has-dropdown {
-        flex: 1;
-        min-width: 200px;
+        min-width: 0;
     }
 
     .awakening-additional-options .simulation-input-group.has-dropdown .select-dropdown-container {
-        flex: 1;
+        width: 100%;
     }
-} 
+}
+
+@media (max-width: 480px) {
+    .awakening-additional-options {
+        gap: 12px;
+        padding: 14px;
+    }
+
+    .awakening-additional-options .checkbox-group {
+        align-items: flex-start;
+    }
+
+    .awakening-additional-options .checkbox-group label {
+        line-height: 1.35;
+    }
+}

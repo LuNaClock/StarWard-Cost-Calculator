@@ -62,6 +62,13 @@ export function generateShareUrlForRedeploy() {
             params.set('ddb', DOM.damageDealtAwakeningBonusSelect.value);
         }
     }
+    if (DOM.considerPartnerCAwakeningCheckbox && DOM.considerPartnerCAwakeningCheckbox.checked) {
+        params.set('pca', '1');
+        hasAwakeningParams = true;
+        if (DOM.partnerCAwakeningBonusSelect && DOM.partnerCAwakeningBonusSelect.value !== "0") {
+            params.set('pcab', DOM.partnerCAwakeningBonusSelect.value);
+        }
+    }
     if (DOM.considerShieldSuccessCheckbox && DOM.considerShieldSuccessCheckbox.checked) {
         params.set('ss', '1');
         hasAwakeningParams = true;
@@ -203,6 +210,20 @@ export function parseUrlAndRestoreState() {
     
     if (DOM.considerOwnDownCheckbox) {
         DOM.considerOwnDownCheckbox.checked = params.get('od') === '1';
+    }
+
+    const pcaParam = params.get('pca');
+    const hasPartnerCAwakeningParam = pcaParam === '1' || (params.has('pcab') && params.get('pcab') !== "0");
+    if (DOM.considerPartnerCAwakeningCheckbox) {
+        DOM.considerPartnerCAwakeningCheckbox.checked = hasPartnerCAwakeningParam;
+        if (DOM.partnerCAwakeningOptionsContainer) {
+            DOM.partnerCAwakeningOptionsContainer.style.display = hasPartnerCAwakeningParam ? 'block' : 'none';
+        }
+    }
+    if (DOM.partnerCAwakeningBonusSelect) {
+        const pcabValue = params.get('pcab') || "0";
+        const isValidPcab = Array.from(DOM.partnerCAwakeningBonusSelect.options).some(opt => opt.value === pcabValue);
+        DOM.partnerCAwakeningBonusSelect.value = hasPartnerCAwakeningParam && isValidPcab ? pcabValue : "0";
     }
 
     const ddParam = params.get('dd');

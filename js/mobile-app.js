@@ -7,6 +7,7 @@ import {
   AWAKENING_THRESHOLD,
   AWAKENING_BONUS_BY_COST,
   PARTNER_DOWN_AWAKENING_BONUS,
+  PARTNER_C_AWAKENING_BONUS,
   getDamageGaugeCoefficient
 } from '../data.js';
 import { toHiragana } from './utils.js';
@@ -54,6 +55,9 @@ const dom = {
   damageBonus: document.getElementById('damageBonus'),
   bonusSelectField: document.querySelector('[data-field="bonus-select"]'),
   bonusSelect: document.getElementById('bonusSelect'),
+  partnerCAwakeningBonus: document.getElementById('partnerCAwakeningBonus'),
+  partnerCAwakeningField: document.querySelector('[data-field="partner-c-awakening-select"]'),
+  partnerCAwakening: document.getElementById('partnerCAwakening'),
   shieldBonus: document.getElementById('shieldBonus'),
   shieldBonusField: document.querySelector('[data-field="shield-bonus-select"]'),
   shieldBonusSelect: document.getElementById('shieldBonusSelect'),
@@ -86,6 +90,8 @@ const dom = {
   awakeningBreakdownOwnDownStatus: document.querySelector('[data-awakening-mobile-status="own-down"]'),
   awakeningBreakdownDamageBonus: document.querySelector('[data-awakening-mobile="damage-bonus"]'),
   awakeningBreakdownDamageBonusStatus: document.querySelector('[data-awakening-mobile-status="damage-bonus"]'),
+  awakeningBreakdownPartnerCAwakening: document.querySelector('[data-awakening-mobile="partner-c-awakening"]'),
+  awakeningBreakdownPartnerCAwakeningStatus: document.querySelector('[data-awakening-mobile-status="partner-c-awakening"]'),
   awakeningBreakdownShieldBonus: document.querySelector('[data-awakening-mobile="shield-bonus"]'),
   awakeningBreakdownShieldBonusStatus: document.querySelector('[data-awakening-mobile-status="shield-bonus"]'),
   awakeningBreakdownPartnerBonus: document.querySelector('[data-awakening-mobile="partner-bonus"]'),
@@ -974,6 +980,12 @@ function setupBonusToggle() {
     }
     dom.shieldBonusField.toggleAttribute('hidden', !dom.shieldBonus.checked);
   };
+  const togglePartnerCAwakeningField = () => {
+    if (!dom.partnerCAwakeningField || !dom.partnerCAwakeningBonus) {
+      return;
+    }
+    dom.partnerCAwakeningField.toggleAttribute('hidden', !dom.partnerCAwakeningBonus.checked);
+  };
 
   if (dom.damageBonus) {
     dom.damageBonus.addEventListener('change', () => {
@@ -992,6 +1004,17 @@ function setupBonusToggle() {
       performSimulation({ commitInputs: true });
     });
     toggleShieldField();
+  }
+
+  if (dom.partnerCAwakeningBonus) {
+    dom.partnerCAwakeningBonus.addEventListener('change', () => {
+      togglePartnerCAwakeningField();
+      if (!dom.partnerCAwakeningBonus.checked && dom.partnerCAwakening) {
+        dom.partnerCAwakening.value = '0';
+      }
+      performSimulation({ commitInputs: true });
+    });
+    togglePartnerCAwakeningField();
   }
 }
 
@@ -1017,6 +1040,10 @@ function setupSimulationAutoUpdate() {
 
   if (dom.bonusSelect) {
     dom.bonusSelect.addEventListener('change', () => performSimulation({ commitInputs: true }));
+  }
+
+  if (dom.partnerCAwakening) {
+    dom.partnerCAwakening.addEventListener('change', () => performSimulation({ commitInputs: true }));
   }
 
   if (dom.shieldBonusSelect) {
@@ -1098,6 +1125,7 @@ function resetAwakeningBreakdown() {
   if (dom.awakeningBreakdownDamageNote) dom.awakeningBreakdownDamageNote.textContent = '想定被ダメージ: --';
   resetOptionalBreakdownRow(dom.awakeningBreakdownOwnDown, dom.awakeningBreakdownOwnDownStatus);
   resetOptionalBreakdownRow(dom.awakeningBreakdownDamageBonus, dom.awakeningBreakdownDamageBonusStatus);
+  resetOptionalBreakdownRow(dom.awakeningBreakdownPartnerCAwakening, dom.awakeningBreakdownPartnerCAwakeningStatus);
   resetOptionalBreakdownRow(dom.awakeningBreakdownShieldBonus, dom.awakeningBreakdownShieldBonusStatus);
   resetOptionalBreakdownRow(dom.awakeningBreakdownPartnerBonus, dom.awakeningBreakdownPartnerBonusStatus);
   if (dom.awakeningBreakdownTotal) dom.awakeningBreakdownTotal.textContent = '--%';
@@ -1150,6 +1178,11 @@ function updateAwakeningBreakdown(breakdown) {
   updateOptionalBreakdownRow(dom.awakeningBreakdownDamageBonus, dom.awakeningBreakdownDamageBonusStatus, {
     enabled: Boolean(breakdown.damageBonusEnabled),
     value: breakdown.damageBonusValue ?? 0,
+    format: formatSigned,
+  });
+  updateOptionalBreakdownRow(dom.awakeningBreakdownPartnerCAwakening, dom.awakeningBreakdownPartnerCAwakeningStatus, {
+    enabled: Boolean(breakdown.partnerCAwakeningEnabled),
+    value: breakdown.partnerCAwakeningValue ?? 0,
     format: formatSigned,
   });
   updateOptionalBreakdownRow(dom.awakeningBreakdownShieldBonus, dom.awakeningBreakdownShieldBonusStatus, {
@@ -1313,6 +1346,10 @@ function performSimulation({
   const damageBonusValue = dom.damageBonus && dom.damageBonus.checked
     ? (dom.bonusSelect ? parseInt(dom.bonusSelect.value, 10) || 0 : 0)
     : 0;
+  const partnerCAwakeningKey = dom.partnerCAwakening ? dom.partnerCAwakening.value : '0';
+  const partnerCAwakeningValue = dom.partnerCAwakeningBonus && dom.partnerCAwakeningBonus.checked
+    ? (PARTNER_C_AWAKENING_BONUS[partnerCAwakeningKey] || 0)
+    : 0;
   const shieldBonusValue = dom.shieldBonus && dom.shieldBonus.checked
     ? (dom.shieldBonusSelect ? parseInt(dom.shieldBonusSelect.value, 10) || 0 : 0)
     : 0;
@@ -1323,6 +1360,7 @@ function performSimulation({
   const totalBonus =
     ownDownValue +
     damageBonusValue +
+    partnerCAwakeningValue +
     shieldBonusValue +
     partnerBonusValue;
 
@@ -1381,6 +1419,8 @@ function performSimulation({
     ownDownEnabled: Boolean(dom.ownDown && dom.ownDown.checked),
     damageBonusValue,
     damageBonusEnabled: Boolean(dom.damageBonus && dom.damageBonus.checked),
+    partnerCAwakeningValue,
+    partnerCAwakeningEnabled: Boolean(dom.partnerCAwakeningBonus && dom.partnerCAwakeningBonus.checked),
     shieldBonusValue,
     shieldBonusEnabled: Boolean(dom.shieldBonus && dom.shieldBonus.checked),
     partnerBonusValue,

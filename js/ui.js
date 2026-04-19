@@ -1108,6 +1108,11 @@ export function resetSimulationResultsUI({ animate = true } = {}) {
             if (DOM.damageDealtOptionsContainer) DOM.damageDealtOptionsContainer.style.display = 'none';
             if (DOM.damageDealtAwakeningBonusSelect) DOM.damageDealtAwakeningBonusSelect.value = "0";
         }
+        if (DOM.considerPartnerCAwakeningCheckbox) {
+            DOM.considerPartnerCAwakeningCheckbox.checked = false;
+            if (DOM.partnerCAwakeningOptionsContainer) DOM.partnerCAwakeningOptionsContainer.style.display = 'none';
+        }
+        if (DOM.partnerCAwakeningBonusSelect) DOM.partnerCAwakeningBonusSelect.value = "0";
         if (DOM.considerShieldSuccessCheckbox) {
             DOM.considerShieldSuccessCheckbox.checked = false;
             if (DOM.shieldSuccessOptionsContainer) DOM.shieldSuccessOptionsContainer.style.display = 'none';
@@ -1403,6 +1408,7 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         if (DOM.awakeningDetailDamageNote) DOM.awakeningDetailDamageNote.textContent = '想定被ダメージ: --';
         resetOptionalBreakdownRow(DOM.awakeningDetailOwnDownValue, DOM.awakeningDetailOwnDownStatus);
         resetOptionalBreakdownRow(DOM.awakeningDetailDamageBonusValue, DOM.awakeningDetailDamageBonusStatus);
+        resetOptionalBreakdownRow(DOM.awakeningDetailPartnerCAwakeningValue, DOM.awakeningDetailPartnerCAwakeningStatus);
         resetOptionalBreakdownRow(DOM.awakeningDetailShieldBonusValue, DOM.awakeningDetailShieldBonusStatus);
         resetOptionalBreakdownRow(DOM.awakeningDetailPartnerBonusValue, DOM.awakeningDetailPartnerBonusStatus);
         if (DOM.awakeningDetailTotalValue) DOM.awakeningDetailTotalValue.textContent = '--%';
@@ -1451,6 +1457,10 @@ export function updateAwakeningGaugeUI(gaugeResult) {
         updateOptionalBreakdownRow(DOM.awakeningDetailDamageBonusValue, DOM.awakeningDetailDamageBonusStatus, {
             enabled: Boolean(breakdown.damageBonus?.enabled),
             value: breakdown.damageBonus?.value ?? 0
+        });
+        updateOptionalBreakdownRow(DOM.awakeningDetailPartnerCAwakeningValue, DOM.awakeningDetailPartnerCAwakeningStatus, {
+            enabled: Boolean(breakdown.partnerCAwakening?.enabled),
+            value: breakdown.partnerCAwakening?.value ?? 0
         });
         updateOptionalBreakdownRow(DOM.awakeningDetailShieldBonusValue, DOM.awakeningDetailShieldBonusStatus, {
             enabled: Boolean(breakdown.shieldBonus?.enabled),

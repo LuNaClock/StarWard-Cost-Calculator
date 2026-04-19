@@ -488,7 +488,7 @@ body[data-theme="dark"] .redeploy-target-button[aria-pressed="true"] i {
 }
 
 .awakening-additional-options .simulation-input-group {
-    margin-bottom: 15px;
+    margin-bottom: 0;
 }
 
 .awakening-additional-options .select-dropdown-container {

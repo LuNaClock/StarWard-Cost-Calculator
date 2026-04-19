@@ -3,6 +3,7 @@ import {
     AWAKENING_THRESHOLD,
     AWAKENING_BONUS_BY_COST,
     PARTNER_DOWN_AWAKENING_BONUS,
+    PARTNER_C_AWAKENING_BONUS,
     getDamageGaugeCoefficient
 } from '../data.js';
 import { getSelectedPlayerChar, getSelectedPartnerChar } from './state.js';
@@ -306,6 +307,8 @@ export function calculateAwakeningGauge(inputs) {
         considerOwnDown, // boolean
         considerDamageDealt, // boolean
         damageDealtBonus, // string representing a number
+        considerPartnerCAwakening, // boolean
+        partnerCAwakeningBonus, // string key for partner C awakening bonus
         considerShieldSuccess, // boolean
         shieldSuccessBonus, // string representing a number
         considerPartnerDown // boolean
@@ -342,6 +345,12 @@ export function calculateAwakeningGauge(inputs) {
         }
     }
 
+    let additionalGaugeFromPartnerCAwakening = 0;
+    if (considerPartnerCAwakening) {
+        const partnerCAwakeningKey = String(partnerCAwakeningBonus ?? "0");
+        additionalGaugeFromPartnerCAwakening = PARTNER_C_AWAKENING_BONUS[partnerCAwakeningKey] || 0;
+    }
+
     let additionalGaugeFromShieldSuccess = 0;
     if (considerShieldSuccess) {
         const bonus = parseInt(shieldSuccessBonus, 10);
@@ -355,7 +364,7 @@ export function calculateAwakeningGauge(inputs) {
         additionalGaugeFromPartnerDown = PARTNER_DOWN_AWAKENING_BONUS[charCost.toFixed(1)] || 0;
     }
 
-    let finalPredictedGauge = gaugeBeforeShotdown + damageBasedGaugeIncrease + costBonusOnOwnDown + additionalGaugeFromDamageDealt + additionalGaugeFromShieldSuccess + additionalGaugeFromPartnerDown;
+    let finalPredictedGauge = gaugeBeforeShotdown + damageBasedGaugeIncrease + costBonusOnOwnDown + additionalGaugeFromDamageDealt + additionalGaugeFromPartnerCAwakening + additionalGaugeFromShieldSuccess + additionalGaugeFromPartnerDown;
     finalPredictedGauge = Math.max(0, Math.min(100, Math.floor(finalPredictedGauge)));
 
     const breakdown = {
@@ -370,6 +379,10 @@ export function calculateAwakeningGauge(inputs) {
         damageBonus: {
             enabled: considerDamageDealt,
             value: additionalGaugeFromDamageDealt
+        },
+        partnerCAwakening: {
+            enabled: considerPartnerCAwakening,
+            value: additionalGaugeFromPartnerCAwakening
         },
         shieldBonus: {
             enabled: considerShieldSuccess,

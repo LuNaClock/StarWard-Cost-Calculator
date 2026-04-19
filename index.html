@@ -319,6 +319,20 @@
                                     </label>
                                     <label class="checkbox-field">
                                         <span class="checkbox-field__control">
+                                            <input type="checkbox" id="partnerCAwakeningBonus">
+                                            <span class="checkbox-field__label">相方C覚醒によるゲージ量加算</span>
+                                        </span>
+                                    </label>
+                                    <div class="form-field" data-field="partner-c-awakening-select" hidden>
+                                        <label for="partnerCAwakening">相方C覚醒によるゲージ量加算</label>
+                                        <select id="partnerCAwakening">
+                                            <option value="0">なし</option>
+                                            <option value="50">相方C覚醒(50%) +19%</option>
+                                            <option value="100">相方C覚醒(100%) +46%</option>
+                                        </select>
+                                    </div>
+                                    <label class="checkbox-field">
+                                        <span class="checkbox-field__control">
                                             <input type="checkbox" id="damageBonus">
                                             <span class="checkbox-field__label">攻撃時のゲージ量加算</span>
                                         </span>
@@ -400,6 +414,13 @@
                                                 <dd>
                                                     <span data-awakening-mobile="damage-bonus">+--%</span>
                                                     <small data-awakening-mobile-status="damage-bonus" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calc-breakdown__item">
+                                                <dt>相方C覚醒によるゲージ量加算</dt>
+                                                <dd>
+                                                    <span data-awakening-mobile="partner-c-awakening">+--%</span>
+                                                    <small data-awakening-mobile-status="partner-c-awakening" hidden>未適用</small>
                                                 </dd>
                                             </div>
                                             <div class="calc-breakdown__item">
@@ -840,6 +861,19 @@
                                     </div>
 
                                     <div class="simulation-input-group checkbox-group has-dropdown">
+                                        <i class="fas fa-bolt"></i>
+                                        <input type="checkbox" id="considerPartnerCAwakeningCheckbox">
+                                        <label for="considerPartnerCAwakeningCheckbox">相方C覚醒によるゲージ量加算</label>
+                                        <div class="select-dropdown-container" id="partnerCAwakeningOptionsContainer">
+                                            <select id="partnerCAwakeningBonusSelect" class="select-dropdown">
+                                                <option value="0">選択なし</option>
+                                                <option value="50">相方C覚醒(50%) +19%</option>
+                                                <option value="100">相方C覚醒(100%) +46%</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="simulation-input-group checkbox-group has-dropdown">
                                         <i class="fas fa-fist-raised"></i>
                                         <input type="checkbox" id="considerDamageDealtCheckbox">
                                         <label for="considerDamageDealtCheckbox">攻撃時のゲージ量加算</label>
@@ -917,6 +951,13 @@
                                                 <dd>
                                                     <span id="awakeningDetailDamageBonusValue" class="calculation-breakdown__value">+--%</span>
                                                     <small id="awakeningDetailDamageBonusStatus" class="calculation-breakdown__status" hidden>未適用</small>
+                                                </dd>
+                                            </div>
+                                            <div class="calculation-breakdown__item">
+                                                <dt>相方C覚醒によるゲージ量加算</dt>
+                                                <dd>
+                                                    <span id="awakeningDetailPartnerCAwakeningValue" class="calculation-breakdown__value">+--%</span>
+                                                    <small id="awakeningDetailPartnerCAwakeningStatus" class="calculation-breakdown__status" hidden>未適用</small>
                                                 </dd>
                                             </div>
                                             <div class="calculation-breakdown__item">
